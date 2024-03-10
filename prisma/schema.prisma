@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Attendance {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userID     String    @db.Uuid
+  eventID    String    @db.Uuid
+  cw         Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model Events {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String    @db.VarChar(50)
+  user       String    @db.Uuid
+  cw         Int
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model User {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username    String  @db.VarChar(24)
+  displayname String  @db.VarChar(50)
+  password    String  @db.VarChar(100)
+  permission  Int?    @default(0)
+  group       String? @db.VarChar(24)
+}

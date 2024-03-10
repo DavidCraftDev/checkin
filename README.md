@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+CREATE TABLE "User" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "username" VARCHAR(24) NOT NULL,
+    "displayname" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(100) NOT NULL,
+    "permission" INT CHECK (permission >= 0 AND permission <= 2) DEFAULT 0,
+    "group" VARCHAR(24)
+);
 
-## Getting Started
+CREATE TABLE "Events" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "name" VARCHAR(50) NOT NULL,
+    "user" UUID NOT NULL,
+    "cw" INT CHECK (cw >= 12024 AND cw <= 532024) NOT NULL,
+    "created_at" TIMESTAMP DEFAULT NOW()
+);
 
-First, run the development server:
+CREATE TABLE "Attendance" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "userID" UUID NOT NULL,
+    "eventID" UUID NOT NULL,
+    "cw" INT CHECK (cw >= 12024 AND cw <= 532024) NOT NULL,
+    "created_at" TIMESTAMP DEFAULT NOW()
+);
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+INSERT INTO "User" (username, displayname, password, permission, "group")
+VALUES ('user.name', 'Display Name', 'Test', 2, 'Class');
