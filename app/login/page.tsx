@@ -3,25 +3,34 @@ import {
     LogoutButton,
     ProfileButton,
     RegisterButton,
-  } from "@/app/login/buttons.component";
-  
-  export default function Login() {
-    return (
-      <main
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "70vh",
-        }}
-      >
-        <div>
-          <LoginButton />
-          <RegisterButton />
-          <LogoutButton />
-          <ProfileButton />
-        </div>
-      </main>
-    );
-  }
+  } from "./buttons.component";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/src/modules/auth";
+
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  console.log(session);
+
+  return (
+    <main
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "70vh",
+      }}
+    >
+      <div>
+        <LoginButton />
+        <RegisterButton />
+        <LogoutButton />
+        <ProfileButton />
+
+        <h1>Server Session</h1>
+        <pre>{JSON.stringify(session)}</pre>
+      </div>
+    </main>
+  );
+}
+
   

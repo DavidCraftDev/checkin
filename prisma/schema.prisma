@@ -25,7 +25,7 @@ model Events {
 
 model User {
   id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username    String  @db.VarChar(24)
+  username    String  @db.VarChar(24) @unique
   displayname String  @db.VarChar(50)
   password    String  @db.VarChar(100)
   permission  Int?    @default(0)
