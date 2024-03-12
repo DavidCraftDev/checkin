@@ -8,7 +8,7 @@ export default async function User() {
     if (!session) {
       redirect("/api/auth/signin");
     }
-    	const group: string = session.user?.group;
+    	const group: string = session.user.group;
     const user = await db.user.findMany({
       where: {
         group: group
