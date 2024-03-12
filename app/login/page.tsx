@@ -1,9 +1,9 @@
 import {
-    LoginButton,
-    LogoutButton,
-    ProfileButton,
-    RegisterButton,
-  } from "./buttons.component";
+  LoginButton,
+  LogoutButton,
+  ProfileButton,
+  RegisterButton,
+} from "@/app/login/buttons.component";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/src/modules/auth";
 
@@ -32,5 +32,3 @@ export default async function Home() {
     </main>
   );
 }
-
-  

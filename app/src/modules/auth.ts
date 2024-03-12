@@ -1,5 +1,3 @@
-import db from "@/app/src/modules/db";
-import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -11,34 +9,16 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Sign in",
       credentials: {
-        username: {
-          label: "Nutzername",
-          type: "username",
-          placeholder: "max.mustermann",
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "example@example.com",
         },
-        password: { label: "Passwort", type: "password" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials.password) {
-          return null;
-        }
-
-        const user = await db.user.findUnique({
-          where: {
-            username: credentials.username,
-          },
-        });
-
-        if (!user || !(await compare(credentials.password, user.password))) {
-          return null;
-        }
-        return {
-          id: user.id,
-          username: user.username,
-          displayname: user.displayname,
-          permission: user.permission,
-          group: user.group,
-        };
+        const user = { id: "1", name: "Admin", email: "admin@admin.com" };
+        return user;
       },
     }),
   ],
