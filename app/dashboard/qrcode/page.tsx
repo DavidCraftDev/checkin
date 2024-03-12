@@ -8,9 +8,9 @@ export default async function QR() {
   if (!session) {
     redirect("/api/auth/signin");
   }
-  const userID: string = session.user.id;
-  const displayname: string = session.user.name;
-  const username: string = session.user.username;
+  const userID: string = session.user?.id;
+  const displayname: string = session.user?.name || "";
+  const username: string = session.user?.username;
 
   return (
     <div className="text-black">
