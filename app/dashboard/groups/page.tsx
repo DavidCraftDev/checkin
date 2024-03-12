@@ -10,7 +10,7 @@ export default async function User() {
         <div className="text-black">
             <p>Gruppen</p>
             {Array.from(groups).map((group) => (
-        <div className="bg-white mb-3 px-5 py-3 rounded-md">
+        <div key={group} className="bg-white mb-3 px-5 py-3 rounded-md">
           {group}
         </div>
       ))}
