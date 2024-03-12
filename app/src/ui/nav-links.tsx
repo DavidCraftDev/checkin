@@ -4,6 +4,10 @@ import {
   UserGroupIcon,
   HomeIcon,
   QrCodeIcon,
+  CalendarDaysIcon,
+  PlusCircleIcon,
+  UserCircleIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -12,12 +16,12 @@ import clsx from 'clsx';
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'QR-Code',
-    href: '/dashboard/qrcode',
-    icon: QrCodeIcon,
-  },
-  { name: 'Gruppenansicht', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon },
+  { name: 'Teilgenomme Veranstalltungen', href: '/dashboard/events/attendedEvent', icon: CalendarDaysIcon },
+  { name: 'Erstellte Veranstalltungen', href: '/dashboard/events/createdEvent', icon: PlusCircleIcon },
+  { name: 'Meine Gruppe', href: '/dashboard/group', icon: UsersIcon },
+  { name: 'Gruppen', href: '/dashboard/groups', icon: UserGroupIcon },
+  { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon },
 ];
 
 export default function NavLinks() {
