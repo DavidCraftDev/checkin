@@ -19,8 +19,8 @@ const links = [
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon },
   { name: 'Teilgenomme Veranstalltungen', href: '/dashboard/events/attendedEvent', icon: CalendarDaysIcon },
   { name: 'Erstellte Veranstalltungen', href: '/dashboard/events/createdEvent', icon: PlusCircleIcon },
-  { name: 'Meine Gruppe', href: '/dashboard/group', icon: UsersIcon },
-  { name: 'Gruppen', href: '/dashboard/groups', icon: UserGroupIcon },
+  { name: 'Meine Gruppe', href: '/dashboard/groups/mygroup', icon: UsersIcon },
+  { name: 'Gruppen', href: '/dashboard/groups/groups', icon: UserGroupIcon },
   { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon },
 ];
 
