@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
+import db from "@/app/src/modules/db";
+import CreatEventButton from "./createEventButton.component";
 
 export default async function createdEvent() {
     const session = await getServerSession(authOptions);
@@ -36,11 +38,7 @@ export default async function createdEvent() {
       ];
     return (
         <div>
-        <form>
-        <button className="bg-black text-white p-5 mb-5 rounded-lg">
-          Generate Posts
-        </button>
-      </form>
+          <CreatEventButton />
         <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
