@@ -8,8 +8,6 @@ interface SearchParams {
     id: string; 
   }
 
-export let qrdata: string;
-
 export default async function checkIN({searchParams}: {searchParams: SearchParams}) {
     const session = await  getServerSession(authOptions);
     if (!session || (session.user.permission < 1)) {
@@ -25,13 +23,13 @@ export default async function checkIN({searchParams}: {searchParams: SearchParam
         redirect("/dashboard");
     }
     const userID = user.id;
-    const EventID = searchParams.id
-    if(!EventID) {
+    const eventID = searchParams.id;
+    if(!eventID) {
         redirect("/dashboard/");
     }
     const event = await db.events.findUniqueOrThrow({
         where: {
-            id: EventID
+            id: eventID
         }
     }).catch((error) => {
         console.error(error);
@@ -40,7 +38,6 @@ export default async function checkIN({searchParams}: {searchParams: SearchParam
     if(event.user !== userID) {
         redirect("/dashboard/");
     }
-
     return (
         <div className="text-black">
             <p>Event</p>
