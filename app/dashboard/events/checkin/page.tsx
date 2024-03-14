@@ -2,11 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
 import db from "@/app/src/modules/db";
-import QRScanner from "./qrscanner.component";
+import QRScanner from './qrscanner.component';
 
 interface SearchParams {
     id: string; 
   }
+
+export let qrdata: string;
 
 export default async function checkIN({searchParams}: {searchParams: SearchParams}) {
     const session = await  getServerSession(authOptions);
@@ -43,7 +45,7 @@ export default async function checkIN({searchParams}: {searchParams: SearchParam
         <div className="text-black">
             <p>Event</p>
             <p>{event.name}</p>
-            <QRScanner onScan={(result) => console.log(result)} />
+            <QRScanner />
         </div>
     );
 }
