@@ -6,6 +6,7 @@ export default async function User() {
     user.forEach((user) => {
         groups.add(String(user.group));
     });
+    //groupBy
     return (
         <div className="text-black">
             <p>Gruppen</p>
