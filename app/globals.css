@@ -8,6 +8,6 @@ h1 {
 
 @layer components {
   .btn {
-    @apply bg-green-600 text-white px-6 py-1 w-min h-min rounded-full text-xl;
+    @apply bg-green-600 text-white px-6 py-1 w-fit h-min rounded-full text-xl;
   }
 }

@@ -11,7 +11,18 @@ export async function getSesession() {
     return session;
 }
 
-export async function getSesessionUser() {
+export async function getSesessionUser(permission?: Number) {
     const session = await getSesession();
-    return await getUserPerID(session.user.id);
+    if(permission) {
+        if(session.user.permission < permission) {
+            redirect("/dashboard");
+        }
+    }
+    const user = await getUserPerID(session.user.id);
+    if(permission) {
+        if(user.permission < permission) {
+            redirect("/dashboard");
+        }
+    }
+    return user;
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { submitHandler } from "./page";
+import submitHandler from "./submitHandler";
 
 const EventForm = () => {
     return (

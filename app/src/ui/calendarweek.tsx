@@ -44,7 +44,7 @@ const CalendarWeek = ({searchParams}: {searchParams: SearchParams}) => {
     const cw = searchParams.cw || currentWeek;
     const userID = searchParams.userID;
     return (
-        <div className="grid grid-cols-3 grid-rows-1 gap-0 items-center text-center w-64">
+        <div className="grid grid-cols-3 grid-rows-1 gap-0 items-center text-center w-max">
             <button className="btn" onClick={async () => await addWeek(pathname, year, cw, userID, router)}>+</button>
                 <div className="grid grid-cols-1 grid-rows-2 gap-0 items-center text-center">
                     <p>{year}</p>

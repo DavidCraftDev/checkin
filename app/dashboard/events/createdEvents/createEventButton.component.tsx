@@ -3,17 +3,19 @@
 import { redirect } from "next/navigation"
 
 const createEvent = () => {
-    redirect("/dashboard/events/createEvent")
+    redirect("/dashboard/events/createdEvents?create=true")
   }
 
 const CreatEventButton = () => {
     return (
         <form action={createEvent}>
-          <button className="bg-black text-white p-5 mb-5 rounded-lg">
+          <button className="btn">
             Neue Veranstaltung erstellen
           </button>
       </form>
     )
 }
+
+
 
 export default CreatEventButton;

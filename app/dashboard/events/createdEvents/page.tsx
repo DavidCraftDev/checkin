@@ -1,113 +1,59 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
-import db from "@/app/src/modules/db";
+import moment from "moment";
 import CreatEventButton from "./createEventButton.component";
+import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
+import CalendarWeek from "@/app/src/ui/calendarweek";
+import CreateEventModal from "./createEventModal.component";
 
-export default async function createdEvents() {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-        redirect("/api/auth/signin");
-    }
-    const people = [
-        {
-          name: 'Jane Cooper',
-          title: 'Regional Paradigm Technician',
-          department: 'Optimization',
-          role: 'Admin',
-          email: 'jane.cooper@example.com',
-          image: 'https://bit.ly/33HnjK0',
-        },
-        {
-          name: 'John Doe',
-          title: 'Regional Paradigm Technician',
-          department: 'Optimization',
-          role: 'Tester',
-          email: 'john.doe@example.com',
-          image: 'https://bit.ly/3I9nL2D',
-        },
-        {
-          name: 'Veronica Lodge',
-          title: 'Regional Paradigm Technician',
-          department: 'Optimization',
-          role: ' Software Engineer',
-          email: 'veronica.lodge@example.com',
-          image: 'https://bit.ly/3vaOTe1',
-        },
-        // More people...
-      ];
+type SearchParams = {
+  userID: string;
+  cw: number;
+  year: number;
+};
+
+export default async function createdEvents({searchParams}: {searchParams: SearchParams}) {
+  const sessionUser = await getSesessionUser(1);
+  if(sessionUser.permission < 1) redirect("/dashboard");
+
+  const currentWeek = moment().week();
+  const currentYear = moment().year();
+  const cw = searchParams.cw || currentWeek;
+  const year = searchParams.year || currentYear;
+  if(cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
+  if(year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
+
+  const data = await getCreatedEventsPerUser(sessionUser.id, cw, year);
     return (
-        <div>
-          <CreatEventButton />
-        <div className="flex flex-col">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Teilnehmer
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Erstellt am
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Anzeigen</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {people.map(person => (
-                    <tr key={person.email}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <img className="h-10 w-10 rounded-full" src={person.image} alt="" />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{person.name}</div>
-                            <div className="text-sm text-gray-500">{person.email}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{person.title}</div>
-                        <div className="text-sm text-gray-500">{person.department}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className="px-2 inline-flex text-xs leading-5
-                        font-semibold rounded-full bg-green-100 text-green-800"
-                        >
-                          Active
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      <div>
+      <h1>Erstellte Veranstalltungen</h1>
+      <div>von { sessionUser.displayname }</div>
+      <CreatEventButton />
+      <CalendarWeek searchParams={searchParams} />
+      <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
+      <table className="table-auto w-full text-left">
+          <thead>
+              <tr className="border-b border-gray-600">
+                  <th className="py-4 px-2">Name</th>
+                  <th className="py-4 px-2">Teilnehmer</th>
+                  <th className="py-4 px-2">Zeit</th>
+                  <th className="py-4 px-2">Anzeigen</th>
+              </tr>
+          </thead>
+          <tbody>
+          {data.map((event: any) => (
+              <tr key={event.event.id} className="border-b border-gray-200">
+                  <td className="p-2">{event.event.name}</td>
+                  <td className="p-2">{event.user}</td>
+                  <td className="p-2">{moment(Date.parse(event.event.created_at)).format("DD.MM.YYYY HH:mm")}</td>
+                  <td className="p-2"><a href={`/dashboard/events/event?id=${event.event.id}`} className="hover:underline">Anzeigen</a></td>
+              </tr>
+          ))}
+          </tbody>
+      </table>
       </div>
-      </div>
+      <p>Export Soon™</p>
+      <CreateEventModal/>
+  </div>
     );
 }
