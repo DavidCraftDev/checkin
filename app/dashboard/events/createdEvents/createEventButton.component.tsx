@@ -16,6 +16,4 @@ const CreatEventButton = () => {
     )
 }
 
-
-
 export default CreatEventButton;
