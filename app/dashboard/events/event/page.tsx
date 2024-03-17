@@ -31,7 +31,7 @@ export default async function event({searchParams}: {searchParams: SearchParams}
                 <thead>
                     <tr className="border-b border-gray-600">
                         <th className="py-4 px-2">Name</th>
-                        <th className="py-4 px-2">Wann eingetragen</th>
+                        <th className="py-4 px-2">Wann hinzugefügt</th>
                     </tr>
                 </thead>
                 <tbody>
