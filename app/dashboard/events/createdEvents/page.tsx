@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import db from "@/app/src/modules/db";
 import CreatEventButton from "./createEventButton.component";
 
-export default async function createdEvent() {
+export default async function createdEvents() {
     const session = await getServerSession(authOptions);
     if (!session) {
         redirect("/api/auth/signin");
