@@ -29,11 +29,19 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
 }
 
 export async function getAttendancesPerEvent(eventID: string) {
-    const data = await db.attendance.findMany({
+    const dataAttendance = await db.attendance.findMany({
         where: {
             eventID: eventID
         }
     });
+    const data = new Array();
+    for (let i = 0; i < dataAttendance.length; i++) {
+        const dataUser = await getUserPerID(dataAttendance[i].userID);
+        data.push({
+            attendance: dataAttendance[i],
+            user: dataUser
+        });
+    }
     if(!data) return [] as any;
     return data;
 }
