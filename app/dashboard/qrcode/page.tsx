@@ -14,10 +14,12 @@ export default async function QR() {
 
   return (
     <div className="text-black">
-      <p >QR</p>
-      <QRCode data={ "checkin://" + userID}/>
-      <p>{ displayname }</p>
-      <p>{ "Alternaive per Nutzername: " + username }</p>
+      <h1>QR-Code</h1>
+      <div className="text-center w-max">
+        <QRCode data={ "checkin://" + userID}/>
+        <p>{ displayname }</p>
+        <p>{ "Nutzername: " + username }</p>
+      </div>
     </div>
   );
 }
