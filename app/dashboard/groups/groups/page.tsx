@@ -1,20 +1,38 @@
-import db from "@/app/src/modules/db"
+import { redirect } from "next/navigation";
+import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import db from "@/app/src/modules/db";
+import { getGroups } from "@/app/src/modules/groupUtilities";
 
-export default async function User() {
-    const user = await db.user.findMany();
-    let groups = new Set<string>();
-    user.forEach((user) => {
-        groups.add(String(user.group));
-    });
-    //groupBy
+export default async function groups() {
+  const sessionUser = await getSesessionUser(2);
+
+  let groups = await getGroups();
+  const gruppenAnzahl = Array.from(groups).length;
     return (
-        <div className="text-black">
-            <p>Gruppen</p>
-            {Array.from(groups).map((group) => (
-        <div key={group} className="bg-white mb-3 px-5 py-3 rounded-md">
-          {group}
-        </div>
-      ))}
-        </div>
+      <div>
+      <h1>Gruppen</h1>
+      <p>{gruppenAnzahl} Gruppen</p>
+      <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
+      <table className="table-auto w-full text-left">
+          <thead>
+              <tr className="border-b border-gray-600">
+                  <th className="py-4 px-2">Gruppenname</th>
+                  <th className="py-4 px-2">Teilnehmer</th>
+                  <th className="py-4 px-2">Anzeigen</th>
+              </tr>
+          </thead>
+          <tbody>
+          {groups.map((group: any) => (
+              <tr key={group.group} className="border-b border-gray-200">
+                  <td className="p-2">{group.group}</td>
+                  <td className="p-2">{group.members} Teilnehmer</td>
+                  <td className="p-2"><a href={`/dashboard/groups/group?groupID=${group.group}`} className="hover:underline">Anzeigen</a></td>
+              </tr>
+          ))}
+          </tbody>
+      </table>
+      </div>
+      <p>Export Soon™</p>
+  </div>
     );
 }

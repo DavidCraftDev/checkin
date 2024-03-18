@@ -2,9 +2,9 @@
 
 import submitHandler from "./submitHandler";
 
-const EventForm = () => {
+const EventForm = async () => {
     return (
-        <form action={submitHandler}>
+        <form action={await submitHandler}>
         <div>
             <label htmlFor="eventName">Veranstaltungsname</label><br />
             <input type="text" name="name" id="eventName" className="rounded-full p-2 m-4 border-2 border-black-600" />

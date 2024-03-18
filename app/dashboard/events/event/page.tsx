@@ -1,18 +1,13 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
-import db from "@/app/src/modules/db";
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
-
-interface SearchParams {
-    id: string; 
-  }
+import { SearchParams } from "@/app/src/interfaces/searchParams";
+import CheckINButton from "./checkinButton.component";
+import CreateCheckinModal from "./checkinModal.component";
 
 export default async function event({searchParams}: {searchParams: SearchParams}) {
     const user = await getSesessionUser(1);
-    const userPermission: number = user.permission || 0;
     const userID = user.id;
     const EventID = searchParams.id
     if(!EventID) redirect("/dashboard/");
@@ -21,11 +16,14 @@ export default async function event({searchParams}: {searchParams: SearchParams}
     if(event.user !== userID) redirect("/dashboard/");
     const attendances = await getAttendancesPerEvent(EventID);
     const attendanceCount = attendances.length;
+    let addable = false;
+    if((event.cw === moment().week()) && (moment(event.created_at).year() === moment().year())) addable = true;
     return (
         <div>
             <h1>Veranstalltung: {event.name}</h1>
             <p>erstellt am {moment(Date.parse(event.created_at)).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
             <p>{attendanceCount} Teilnehmer</p>
+            {addable ? <CheckINButton searchParams={searchParams} /> : null}
             <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
             <table className="table-auto w-full text-left">
                 <thead>
@@ -45,6 +43,7 @@ export default async function event({searchParams}: {searchParams: SearchParams}
             </table>
             </div>
             <p>Export Soon™</p>
+            <CreateCheckinModal />
         </div>
     );
 }

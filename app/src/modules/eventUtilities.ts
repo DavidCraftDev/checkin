@@ -1,6 +1,6 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import db from "./db";
-import { getUserPerID } from "./userUtilities";
+import { existUserPerID, getUserPerID } from "./userUtilities";
 import moment from "moment";
 
 export async function getAttendancesPerUser(userID: string, cw: number, year: number) {
@@ -43,6 +43,32 @@ export async function getAttendancesPerEvent(eventID: string) {
         });
     }
     if(!data) return [] as any;
+    return data;
+}
+
+export async function getAttendanceCountPerUser(userID: string, cw: number, year: number) {
+    const data = await db.attendance.count({
+        where: {
+            userID: userID,
+            cw: Number(cw),
+            created_at: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31")
+            }
+        }
+    });
+    if(!data) return 0 as number;
+    return data;
+}
+
+export async function attendanceExists(eventID: string, userID: string) {
+    const data = await db.attendance.count({
+        where: {
+            eventID: eventID,
+            userID: userID
+        }
+    });
+    if(!data) return 0 as number;
     return data;
 }
 
@@ -104,4 +130,28 @@ export async function createEvent(name: string, userID: string) {
     });
     if(!data) return {} as any;
     return data;
+}
+
+export async function eventExists(eventID: string) {
+    const data = await db.events.count({
+        where: {
+            id: eventID
+        }
+    });
+    if(!data) return 0 as number;
+    return data;
+}
+
+export async function checkINHandler(eventID: string, userID: string) {
+    if(await existUserPerID(userID) === 0) return "ErrorNotFound"
+    if(await attendanceExists(eventID, userID) > 0) return "ErrorAlreadyCheckedIn"
+    if(await eventExists(eventID) === 0) return "ErrorEventNotFound"
+    let data = await db.attendance.create({
+        data: {
+            eventID: eventID,
+            userID: userID,
+            cw: moment().week(),
+        }
+    });
+    return "Success" + data.userID;
 }

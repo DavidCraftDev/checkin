@@ -4,12 +4,7 @@ import { getUserPerID } from "@/app/src/modules/userUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import moment from "moment";
 import { redirect } from "next/navigation";
-
-type SearchParams = {
-    cw: number;
-    year: number;
-    userID: string;
-  };
+import { SearchParams } from "@/app/src/interfaces/searchParams";
 
 export default async function attendedEvents({searchParams}: {searchParams: SearchParams}) {
     const sessionUser = await getSesessionUser();
@@ -18,7 +13,7 @@ export default async function attendedEvents({searchParams}: {searchParams: Sear
     let userData;
     if(searchParams.userID) userData = await getUserPerID(userID);
     else userData = sessionUser;
-    if(searchParams.userID && (sessionUser.permission < 2 || sessionUser.group !== userData.group)) redirect("/dashboard");
+    if(searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
 
     const currentWeek = moment().week();
     const currentYear = moment().year();

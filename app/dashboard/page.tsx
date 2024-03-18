@@ -9,7 +9,7 @@ export default async function Dashboard() {
     }
     return (
         <div className="text-black">
-            <p>Dashboard</p>
+            <h1>Dashboard</h1>
             <p>Hallo { session.user.name }</p>
         </div>
     );

@@ -5,12 +5,7 @@ import { getSesessionUser } from "@/app/src/modules/authUtilities";
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import CreateEventModal from "./createEventModal.component";
-
-type SearchParams = {
-  userID: string;
-  cw: number;
-  year: number;
-};
+import { SearchParams } from "@/app/src/interfaces/searchParams";
 
 export default async function createdEvents({searchParams}: {searchParams: SearchParams}) {
   const sessionUser = await getSesessionUser(1);
