@@ -13,7 +13,7 @@ export default async function QR() {
   const username: string = session.user.username;
 
   return (
-    <div className="text-black">
+    <div>
       <h1>QR-Code</h1>
       <div className="text-center w-max">
         <QRCode data={ "checkin://" + userID}/>
