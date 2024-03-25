@@ -1,13 +1,14 @@
 'use client'
 
+import QRScanner from "./qr.component";
 import { submitHandler, setEventID } from "./submitHandler";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const CheckinForm = async () => {
     const eventID = useSearchParams().get("id") || "";
     return (
-        <form action={await submitHandler} onSubmit={async () => setEventID(eventID)}>
-            <p>QR Code Scannen Work in Progress</p>
+        <form action={await submitHandler} onSubmit={async () => setEventID(eventID)} className="flex flex-col items-center flex-auto justify-center">
+            <QRScanner />
         <div>
             <label htmlFor="username">Nutzername</label><br />
             <input type="text" name="name" id="username" className="rounded-full p-2 m-4 border-2 border-black-600" />

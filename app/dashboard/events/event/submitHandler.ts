@@ -10,7 +10,7 @@ let eventID: string = ""
 export async function setEventID(id: string) {
     eventID = id
 }
-
+ 
 export async function submitHandler(formData: FormData) {
     if (!formData.get("name")) return;
     const name: string = String(formData.get("name"));

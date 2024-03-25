@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 
 function UserTable(users: any) {
     return (
-        <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
+        <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md overflow-y-scroll">
         <table className="table-auto w-full text-left">
             <thead>
                 <tr className="border-b border-gray-600">
