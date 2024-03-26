@@ -15,7 +15,7 @@ function CreatedEventTable(events: any) {
                 </tr>
             </thead>
             <tbody>
-            {events.map((event: any) => (
+            {events.events.map((event: any) => (
                 <tr key={event.event.id}>
                     <td>{event.event.name}</td>
                     <td>{event.user}</td>

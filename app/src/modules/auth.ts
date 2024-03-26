@@ -22,7 +22,6 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
-
         const user = await db.user.findUnique({
           where: {
             username: credentials.username.toLowerCase(),
@@ -39,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           name: user.displayname,
           permission: user.permission,
           group: user.group,
+          loginVersion: user.loginVersion,
         };
       },
     }),
@@ -54,6 +54,7 @@ export const authOptions: NextAuthOptions = {
           username: token.username,
           permission: token.permission,
           group: token.group,
+          loginVersion: token.loginVersion,
         },
       };
     },
@@ -67,6 +68,7 @@ export const authOptions: NextAuthOptions = {
           username: u.username,
           permission: u.permission,
           group: u.group,
+          loginVersion: u.loginVersion,
         };
       }
       return token;

@@ -8,7 +8,7 @@ export default async function User() {
     const users = await db.user.findMany()
     return (
         <div>
-            <div className="grid grid-rows-1 grid-cols-2 place-items-stretch">
+            <div className="grid grid-rows-1 grid-cols-2">
                 <div>
                     <h1>Nutzer</h1>
                     <p>{users.length} Nutzer</p>

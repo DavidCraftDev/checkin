@@ -27,7 +27,6 @@ export async function getUserID(name: string) {
       username: name.toLowerCase()
     }
   });
-  console.log(user)
   if(!user) return "" as string;
   return user.id;
 }

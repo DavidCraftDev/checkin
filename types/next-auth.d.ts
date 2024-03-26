@@ -12,6 +12,7 @@ declare module "next-auth" {
       name: string
       permission: int
       group: string
+      loginVersion: number
     }
   }
 }

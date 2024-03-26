@@ -48,7 +48,7 @@ const CalendarWeek = ({searchParams}: {searchParams: SearchParams}) => {
     const userID = searchParams.userID;
     const groupID = searchParams.groupID;
     return (
-        <div className="grid grid-cols-3 grid-rows-1 gap-0 items-center text-center w-max">
+        <div className="grid grid-cols-3 grid-rows-1 gap-0 place-self-center items-center">
             <button className="btn text-bold" onClick={async () => await subWeek(pathname, year, cw, router, userID, groupID)}>-</button>
                 <div className="grid grid-cols-1 grid-rows-2 gap-0 items-center text-center">
                     <p>{year}</p>

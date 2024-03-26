@@ -8,26 +8,29 @@ datasource db {
 }
 
 model Attendance {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userID     String    @db.Uuid
-  eventID    String    @db.Uuid
+  id         String    @default(cuid()) @id @unique
+  userID     String      
+  eventID    String    
   cw         Int
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  teacherNote String?
+  studentNote String?
+  created_at DateTime @default(now())
 }
 
 model Events {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name       String    @db.VarChar(50)
-  user       String    @db.Uuid
+  id         String    @default(cuid()) @id @unique
+  name       String    
+  user       String    
   cw         Int
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  created_at DateTime @default(now())
 }
 
 model User {
-  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username    String  @db.VarChar(24) @unique
-  displayname String  @db.VarChar(50)
-  password    String  @db.VarChar(100)
-  permission  Int?    @default(0)
-  group       String? @db.VarChar(24)
+  id          String  @default(cuid()) @id @unique
+  username    String  @unique
+  displayname String 
+  password    String  
+  permission  Int     @default(0)
+  group       String? 
+  loginVersion Int @default(0)
 }
