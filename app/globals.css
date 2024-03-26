@@ -11,7 +11,7 @@ h1 {
     @apply bg-green-600 text-white p-2 rounded-full hover:bg-green-700;
   }
   .table {
-    @apply w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md overflow-x-auto
+    @apply w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md;
   }
   .table table{
     @apply table-auto w-full text-left;
