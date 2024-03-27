@@ -7,6 +7,8 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const user = await getSesessionUser(1);
+    user.password = undefined
+    user.loginVersion = undefined
     
     const currentWeek: number = Number(moment().week())
     const currentYear: number = Number(moment().year())

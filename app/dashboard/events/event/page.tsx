@@ -29,7 +29,7 @@ export default async function event({searchParams}: {searchParams: SearchParams}
                 {addable ? <CheckinForm eventID={EventID}/> : null}
             </div>
             <EventTable attendances={attendances} addable={addable}/>
-            <a href={"/export/events/created/json?cw="} download={"created_events"} className="hover:underline">Exportieren</a>
+            <a href={"/export/events/event/json?eventID=" + EventID} download={"event" + EventID + ".json"} className="hover:underline">Exportieren</a>
         </div>
     );
 }
