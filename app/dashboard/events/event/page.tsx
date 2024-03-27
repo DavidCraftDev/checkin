@@ -3,8 +3,6 @@ import { getSesessionUser } from "@/app/src/modules/authUtilities";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
-import CheckINButton from "./checkinButton.component";
-import CreateCheckinModal from "./checkinModal.component";
 import EventTable from "./eventTable.component";
 import CheckinForm from "./checkinForm.component";
 
