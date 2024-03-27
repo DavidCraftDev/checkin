@@ -152,5 +152,5 @@ export async function checkINHandler(eventID: string, userID: string) {
             cw: moment().week(),
         }
     });
-    return "Success" + data.userID;
+    return "success" + data.userID;
 }
