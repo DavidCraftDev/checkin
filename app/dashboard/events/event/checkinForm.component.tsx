@@ -31,7 +31,7 @@ async function CheckinForm(data: any) {
         </div>
         <div>
             <button type="submit" className="btn m-1">Hinzufügen</button>
-            <button className="btn m-1" onClick={() => redirect("/dashboard/event/qr?id=" + eventID)}>QR-Scanner</button>
+            <a className="btn m-1" href={"/dashboard/events/event/qr?id=" + eventID}>QR-Scanner</a>
         </div>
         </form>
     )
