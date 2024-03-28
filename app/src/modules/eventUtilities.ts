@@ -154,3 +154,16 @@ export async function checkINHandler(eventID: string, userID: string) {
     });
     return "success" + data.userID;
 }
+
+export async function createTeacherNote(id: string, note: string) {
+    const data: any = await db.attendance.update({
+        where: {
+            id: id
+        },
+        data: {
+           teacherNote: note
+        }
+    });
+    if(!data) return {} as any;
+    return data;
+}

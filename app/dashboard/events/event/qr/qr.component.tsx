@@ -51,7 +51,7 @@ const QRScannerComponent: React.FC = async () => {
     startScanner();
   }, []);
   return (
-    <div className='w-3/5'>
+    <div className='w-full'>
       <video ref={videoRef}></video>
     </div>
   );

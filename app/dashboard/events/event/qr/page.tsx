@@ -20,7 +20,10 @@ export default async function qrscanner({searchParams}: {searchParams: SearchPar
     if(!addable) redirect("/dashboard/");
     return (
         <div>
-            <h1>QR Code Scanner: {event.name}</h1>
+            <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
+                <h1>QR Code Scanner: {event.name}</h1>
+                <a className="btn w-max h-min" href={"/dashboard/events/event?id=" + EventID}>Zurück zum Event</a>
+            </div>
             <QRScannerComponent />
         </div>
     )
