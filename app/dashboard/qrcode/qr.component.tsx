@@ -7,10 +7,10 @@ type QRCodeProps = {
   };
   
   const QRCode = ({ data }: QRCodeProps) => {
-    const { Image } = useQRCode();
+    const { SVG } = useQRCode();
   
     return (
-      <Image
+      <SVG
         text={data}
       />
     );
