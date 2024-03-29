@@ -6,7 +6,7 @@ import { getUserPerID } from "./userUtilities";
 export async function getSesession() {
     const session = await getServerSession(authOptions);
     if (!session) {
-        redirect("/logout");
+        redirect("/api/auth/signin");
     }
     return session;
 }
