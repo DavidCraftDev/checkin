@@ -12,8 +12,6 @@ import {
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
@@ -24,7 +22,7 @@ const links = [
   { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon, mobile: false, permission: 2 },
 ];
 
-export default async function NavLinks({ permission }: { permission: number }) {
+export default function NavLinks({ permission }: { permission: number }) {
 const pathname = usePathname();
   return (
     <>
