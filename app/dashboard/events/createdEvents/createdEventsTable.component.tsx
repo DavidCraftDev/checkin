@@ -4,6 +4,7 @@ import moment from "moment";
 
 function CreatedEventTable(events: any) {
     return (
+        <div className="overflow-x-auto">
         <div className="table">
         <table>
             <thead>
@@ -25,6 +26,7 @@ function CreatedEventTable(events: any) {
             ))}
             </tbody>
         </table>
+        </div>
         </div>
     )
 }

@@ -15,6 +15,7 @@ async function EventTable(attendances: any) {
         toast.error("Fehler beim speichern der Notiz")
     }
     return (
+        <div className="overflow-x-auto">
         <div className="table">
         <table>
             <thead>
@@ -36,6 +37,7 @@ async function EventTable(attendances: any) {
             ))}
             </tbody>
         </table>
+        </div>
         </div>
     )
 }

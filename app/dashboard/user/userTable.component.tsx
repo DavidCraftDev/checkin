@@ -2,6 +2,7 @@
 
 function UserTable(users: any) {
     return (
+        <div className="overflow-x-auto">
         <div className="table">
         <table>
             <thead>
@@ -25,6 +26,7 @@ function UserTable(users: any) {
             ))}
             </tbody>
         </table>
+        </div>
         </div>
     );
 }
