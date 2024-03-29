@@ -5,7 +5,7 @@ import setTeacherNote from "./teacherNoteHandler";
 import toast from "react-hot-toast";
 
 
-async function EventTable(attendances: any) {
+function EventTable(attendances: any) {
     async function handleTeacherNoteChange(event: any, attendanceID: any) {
         const data = await setTeacherNote(event, attendanceID)
         if(data === "success") {

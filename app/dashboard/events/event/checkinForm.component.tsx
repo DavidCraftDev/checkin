@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { submitHandler } from "./submitHandler";
 import toast from "react-hot-toast";
 
-async function CheckinForm(data: any) {
+function CheckinForm(data: any) {
     const eventID = data.eventID
     async function eventHandler(formData: FormData) {
         const data: any = await submitHandler(formData, eventID)
@@ -24,7 +24,7 @@ async function CheckinForm(data: any) {
         return
     }
     return (
-        <form action={await eventHandler} className="flex flex-col items-center flex-auto justify-center">
+        <form action={eventHandler} className="flex flex-col items-center flex-auto justify-center">
         <div>
             <label htmlFor="username">Nutzername</label><br />
             <input type="text" name="name" id="username" placeholder="max.musterschueler" className="rounded-full p-2 m-4 border-2 border-black-600" />
