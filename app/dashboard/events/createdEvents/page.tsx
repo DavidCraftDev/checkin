@@ -15,9 +15,8 @@ export default async function createdEvents({searchParams}: {searchParams: Searc
   const currentYear = moment().year();
   const cw = searchParams.cw || currentWeek;
   const year = searchParams.year || currentYear;
-  if(cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
-  if(year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
-
+  if(cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/createEvents");
+  if(year == currentYear && cw > currentWeek) redirect("/dashboard/events/createEvents");
   const data = await getCreatedEventsPerUser(sessionUser.id, cw, year);
     return (
       <div>
