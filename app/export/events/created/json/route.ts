@@ -1,6 +1,5 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
-import db from "@/app/src/modules/db";
-import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
+import { getAttendancesPerEvent, getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
 
 import { NextRequest } from "next/server";
@@ -27,7 +26,18 @@ export async function GET(request: NextRequest) {
             time: new Date()
         }
     })
-    data.push(events, user)
-   
-    return Response.json({ data })
+    const eventsData = new Array()
+    for (const event of events) {
+        const attendances = await getAttendancesPerEvent(event.id)
+        for (const attendance of attendances) {
+            attendance.user.password = undefined
+            attendance.user.loginVersion = undefined
+        }
+        eventsData.push({
+            event,
+            attendances: attendances
+        })
+    }
+    data.push(eventsData, user)
+    return Response.json(data)
   }
