@@ -1,15 +1,17 @@
 'use client'
 
-import { redirect } from "next/navigation";
 import { submitHandler } from "./submitHandler";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function CheckinForm(data: any) {
     const eventID = data.eventID
+    const router = useRouter()
     async function eventHandler(formData: FormData) {
         const data: any = await submitHandler(formData, eventID)
         if(data.startsWith("success")) {
             toast.success(formData.get("name") + " erfolgreich hinzugefügt")
+            router.refresh()
             return
         }
         if(data === "ErrorNotFound") {
