@@ -28,13 +28,14 @@ export async function GET(request: NextRequest) {
     })
     const eventsData = new Array()
     for (const event of events) {
-        const attendances = await getAttendancesPerEvent(event.id)
+        let eventData = event.event
+        const attendances = await getAttendancesPerEvent(eventData.id)
         for (const attendance of attendances) {
             attendance.user.password = undefined
             attendance.user.loginVersion = undefined
         }
         eventsData.push({
-            event,
+            eventData,
             attendances: attendances
         })
     }
