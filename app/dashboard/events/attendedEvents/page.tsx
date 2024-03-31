@@ -5,6 +5,7 @@ import CalendarWeek from "@/app/src/ui/calendarweek";
 import moment from "moment";
 import { redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
+import AttendedEventTable from "./attendedEventsTable.component";
 
 export default async function attendedEvents({searchParams}: {searchParams: SearchParams}) {
     const sessionUser = await getSesessionUser();
@@ -15,39 +16,27 @@ export default async function attendedEvents({searchParams}: {searchParams: Sear
     else userData = sessionUser;
     if(searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
 
-    const currentWeek = moment().week();
-    const currentYear = moment().year();
-    const cw = searchParams.cw || currentWeek;
-    const year = searchParams.year || currentYear;
+    const currentWeek: number = moment().week();
+    const currentYear: number = moment().year();
+    const cw: number = searchParams.cw || currentWeek;
+    const year: number = searchParams.year || currentYear;
     if(cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
     if(year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
     const data = await getAttendancesPerUser(userID, cw, year);
-    return (
+    let addable: boolean = false;
+    if((cw == currentWeek) && (year == currentYear)) addable = true;
+    if((searchParams.userID) && (searchParams.userID !== sessionUser.id)) addable = false;
+            return (
         <div>
-            <h1>Teilgenomme Veranstalltungen</h1>
-            <div>von { userData.displayname }</div>
-            <CalendarWeek searchParams={searchParams} />
-            <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
-            <table className="table-auto w-full text-left">
-                <thead>
-                    <tr className="border-b border-gray-600">
-                        <th className="py-4 px-2">Name</th>
-                        <th className="py-4 px-2">Lehrer</th>
-                        <th className="py-4 px-2">Zeit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {data.map((event: any) => (
-                    <tr key={event.attendance.id} className="border-b border-gray-200">
-                        <td className="p-2">{event.event.name}</td>
-                        <td className="p-2">{event.eventUser.displayname}</td>
-                        <td className="p-2">{moment(Date.parse(event.attendance.created_at)).format("DD.MM.YYYY HH:mm")}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+        <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
+            <div>
+                <h1>Erstellte Veranstalltungen</h1>
+                <p>von { userData.displayname }</p>
             </div>
+            <CalendarWeek searchParams={searchParams} />
+        </div>
+        <AttendedEventTable attendances={data} addable={addable} />
             <p>Export Soon™</p>
         </div>
     );

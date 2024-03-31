@@ -167,3 +167,16 @@ export async function createTeacherNote(id: string, note: string) {
     if(!data) return {} as any;
     return data;
 }
+
+export async function createStudentNote(id: string, note: string) {
+    const data: any = await db.attendance.update({
+        where: {
+            id: id
+        },
+        data: {
+           studentNote: note
+        }
+    });
+    if(!data) return {} as any;
+    return data;
+}
