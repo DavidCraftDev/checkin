@@ -31,7 +31,7 @@ export default async function attendedEvents({searchParams}: {searchParams: Sear
         <div>
         <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
             <div>
-                <h1>Erstellte Veranstalltungen</h1>
+                <h1>Teilgenommene Veranstalltungen</h1>
                 <p>von { userData.displayname }</p>
             </div>
             <CalendarWeek searchParams={searchParams} />
