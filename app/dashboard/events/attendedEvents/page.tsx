@@ -37,7 +37,7 @@ export default async function attendedEvents({searchParams}: {searchParams: Sear
             <CalendarWeek searchParams={searchParams} />
         </div>
         <AttendedEventTable attendances={data} addable={addable} />
-            <p>Export Soon™</p>
+        <a href={"/export/events/attended/json?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".json"} className="hover:underline">Exportieren</a>
         </div>
     );
 }

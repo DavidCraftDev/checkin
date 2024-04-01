@@ -3,6 +3,7 @@
 import moment from "moment";
 import setStudentNote from "./studentNoteHandler";
 import toast from "react-hot-toast";
+import { GetSortOrderByCreatedAt } from "@/app/src/modules/sortUtilities";
 
 
 function AttendedEventTable(attendances: any) {
@@ -14,6 +15,7 @@ function AttendedEventTable(attendances: any) {
         }
         toast.error("Fehler beim speichern der Notiz")
     }
+    attendances.attendances.sort(GetSortOrderByCreatedAt("event"))
     return (
         <div className="overflow-x-auto">
         <div className="table">
