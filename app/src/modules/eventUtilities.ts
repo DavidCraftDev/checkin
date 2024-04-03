@@ -17,6 +17,8 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
     for (let i = 0; i < dataAttendance.length; i++) {
         const dataEvent = await getEventPerID(dataAttendance[i].eventID);
         const dataUserEvent = await getUserPerID(dataEvent.user);
+        dataUserEvent.password = undefined
+        dataUserEvent.loginVersion = undefined
         data.push({
             attendance: dataAttendance[i],
             event: dataEvent,

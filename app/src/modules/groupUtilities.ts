@@ -1,5 +1,5 @@
 import db from "./db";
-import { getAttendanceCountPerUser } from "./eventUtilities";
+import { getAttendanceCountPerUser, getAttendancesPerUser } from "./eventUtilities";
 
 export async function getGroupMembers(groupID: string, cw?: number, year?: number) {
     const userData = await db.user.findMany({
@@ -22,6 +22,26 @@ export async function getGroupMembers(groupID: string, cw?: number, year?: numbe
             attendances: dataAttendance
         });
     }
+    }
+    if(!data) return [] as any;
+    return data;
+}
+
+export async function getGroupMembersWithAttendances(groupID: string, cw: number, year: number) {
+    const userData = await db.user.findMany({
+        where: {
+            group: groupID
+        }
+    });
+    const data = new Array();
+    for (let i = 0; i < userData.length; i++) {
+        const dataAttendance = await getAttendancesPerUser(userData[i].id, cw, year);
+        userData[i].password = ""
+        userData[i].loginVersion = 0
+        data.push({
+            user: userData[i],
+            attendances: dataAttendance
+        });
     }
     if(!data) return [] as any;
     return data;
