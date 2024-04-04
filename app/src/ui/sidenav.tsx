@@ -2,7 +2,10 @@ import Link from 'next/link';
 import NavLinks from '@/app/src/ui/nav-links';
 import { PowerIcon } from '@heroicons/react/24/outline';
 
-export default function SideNav({ permission }: { permission: number}) {
+export default function SideNav(props: any) {
+  const user = props.user
+  const permission: number = user.permission
+  const group: boolean = user.group ? true : false
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 text-black">
       <Link
@@ -14,7 +17,7 @@ export default function SideNav({ permission }: { permission: number}) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks permission={permission}/>
+        <NavLinks permission={permission} group={group}/>
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
           <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">

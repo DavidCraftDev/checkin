@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { propagateServerField } from 'next/dist/server/lib/render-server';
 
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
@@ -22,13 +23,16 @@ const links = [
   { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon, mobile: false, permission: 2 },
 ];
 
-export default function NavLinks({ permission }: { permission: number }) {
+export default function NavLinks(props: any) {
+const permission: number = props.permission;
+const group: boolean = props.group;
 const pathname = usePathname();
   return (
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
         if(permission < link.permission) return;
+        if(link.name === "Meine Gruppe" && !group) return;
         return (
           <a
             key={link.name}
