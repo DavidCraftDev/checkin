@@ -20,6 +20,7 @@ export async function submitCreateHandler(formdata: FormData) {
     if(!password) {
         return "password"
     }
-    await createUser(username, displayname, parseInt(permission), group, password)
+    const data = await createUser(username, displayname, parseInt(permission), group, password)
+    if(data === "exist") return "exist"
     return "success"
 }

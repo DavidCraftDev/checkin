@@ -29,6 +29,11 @@ const UserCreateForm = () => {
             toast.error("Bitte ein Passwort eingeben")
             return
         }
+        if(data === "exist") {
+            usernameError = true
+            toast.error("Der Nutzername ist bereits belegt")
+            return
+        }
         toast.success("Nutzer erstellt")
     }
     return (
