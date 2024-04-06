@@ -1,22 +1,45 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/src/modules/auth";
+"use client";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+import { signIn } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const router = useRouter();
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    const formdata: FormData = new FormData(e.target);
+    const username = formdata.get("username") as string;
+    const password = formdata.get("password") as string;
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+    if (result?.ok) {
+      router.push("/dashboard");
+    } else {
+      toast.error("Falscher Nutzername oder Passwort");
+    }
+  }
 
   return (
-    <main
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "70vh",
-      }}
-    >
-      <div>
-        <h1>Server Session</h1>
-        <pre>{JSON.stringify(session)}</pre>
-      </div>
-    </main>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Nutzername"
+          name="username"
+        />
+        <input
+          type="password"
+          placeholder="Passwort"
+          name="password"
+        />
+        <button type="submit">Einloggen</button>
+      </form>
+      <Toaster position="bottom-center" />
+    </div>
   );
 }
