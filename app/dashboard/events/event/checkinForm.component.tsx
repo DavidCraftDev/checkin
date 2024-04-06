@@ -8,6 +8,7 @@ function CheckinForm(data: any) {
     const eventID = data.eventID
     const router = useRouter()
     async function eventHandler(formData: FormData) {
+        if(!formData.get("name")) return;
         const data: any = await submitHandler(formData, eventID)
         if(data.startsWith("success")) {
             toast.success(formData.get("name") + " erfolgreich hinzugefügt")
