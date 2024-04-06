@@ -6,7 +6,7 @@ export default async function User() {
     await getSesessionUser(2);
     return (
         <div>
-            <h1>Nutzer bearbeiten</h1>
+            <h1>Nutzer erstellen</h1>
             <UserCreateForm />
         </div>
     );
