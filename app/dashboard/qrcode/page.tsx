@@ -6,7 +6,7 @@ import QRCode from './qr.component';
 export default async function QR() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect("/api/auth/signin");
+    redirect("/login");
   }
   const userID: string = session.user.id;
   const displayname: string = session.user.name;
