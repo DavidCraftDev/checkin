@@ -36,6 +36,8 @@ export async function GET(request: NextRequest) {
             exportedEntries: attendances.length,
             userID: userID,
             requestedBy: user.id,
+            cw: cw,
+            year: year,
             time: new Date()
         }
     })
