@@ -1,11 +1,9 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
-import { getAttendancesPerEvent, getAttendancesPerUser, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
-import XLSX from "xlsx";
-
+import writeXlsxFile from "write-excel-file/node";
 import { NextRequest } from "next/server";
-import { buffer } from "stream/consumers";
 
 export async function GET(request: NextRequest) {
     const user = await getSesessionUser();
@@ -31,28 +29,129 @@ export async function GET(request: NextRequest) {
     })
     user.password = undefined
     user.loginVersion = undefined
+    const dataold = new Array()
+    dataold.push(attendances, user)
     const data = new Array()
-    data.push({
-        meta: {
-            type: "attendedEvents",
-            exportedEntries: attendances.length,
-            userID: userID,
-            requestedBy: user.id,
-            time: new Date()
-        }
+    data.push([{
+        "type": String,
+        "value": "Teilgenommene Veranstalltungen von " + userData.displayname,
+        "fontWeight": "bold"
+    }])
+    data.push([{
+        "type": String,
+        "value": "Exportiert am:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Exportierte Einträge:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Exportiert von:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Exportiert für:",
+        "fontWeight": "bold"
+    }])
+    data.push([{
+        "type": Date,
+        "value": new Date(),
+        "format": "DD.MM.YYYY HH:mm"
+    },
+    { 
+        "type": Number,
+        "value": attendances.length
+    },
+    {
+        "type": String,
+        "value": user.displayname
+    },
+    {
+        "type": String,
+        "value": cw + "/" + year
+    }])
+    data.push([{}])
+    data.push([{
+        "type": String,
+        "value": "Veranstaltung",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Lehrer",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Schülernotiz",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Lehrernotiz",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Datum",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Wann hinzugefügt",
+        "fontWeight": "bold"
+    }])
+    attendances.forEach((attendance: any) => {
+        data.push([{
+            "type": String,
+            "value": attendance.event.name,
+            "wrap": true
+        },
+        {
+            "type": String,
+            "value": attendance.eventUser.displayname
+        },
+        {
+            "type": String,
+            "value": attendance.attendance.studentNote,
+            "wrap": true
+        },
+        {
+            "type": String,
+            "value": attendance.attendance.teacherNote,
+            "wrap": true
+        },
+        {
+            "type": Date,
+            "value": new Date(attendance.event.created_at),
+            "format": "DD.MM.YYYY HH:mm"
+        },
+        {
+            "type": Date,
+            "value": new Date(attendance.attendance.created_at),
+            "format": "DD.MM.YYYY HH:mm"
+        }])
     })
-    data.push(attendances, user)
-    
-    //Convert data to xlsx
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
+
     console.log(data)
-    XLSX.utils.book_append_sheet(wb, ws, "attendedEvents");
-    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" })
-    return new Response(buffer, {
+    //Convert data to xlsx
+    const columns = [
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 }
+      ];
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: userData.displayname, columns: columns } )
+    return new Response(bufferData, {
         status: 200,
         headers: {
-            'Content-Disposition': `attachment; filename="test.xlsx"`,
+            'Content-Disposition': `attachment; filename="attended_events${cw + "_" + year + userData.id}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
   })
