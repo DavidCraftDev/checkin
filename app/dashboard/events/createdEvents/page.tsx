@@ -29,7 +29,10 @@ export default async function createdEvents({searchParams}: {searchParams: Searc
         </div>
       <CreateEventForm />
       <CreatedEventTable events={data} />
-      <a href={"/export/events/created/json?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".json"} className="hover:underline">Exportieren</a>
+      <p>Exportieren als:
+        <a href={"/export/events/created/json?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
+        <a href={"/export/events/created/xlsx?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".xlsx"} className="hover:underline mx-1">XLSX</a>
+      </p>
   </div>
     );
 }
