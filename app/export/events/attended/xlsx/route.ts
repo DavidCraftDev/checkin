@@ -136,9 +136,6 @@ export async function GET(request: NextRequest) {
             "format": "DD.MM.YYYY HH:mm"
         }])
     })
-
-    console.log(data)
-    //Convert data to xlsx
     const columns = [
         { width: 20 },
         { width: 20 },
