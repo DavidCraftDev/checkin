@@ -14,7 +14,10 @@ export default async function groups() {
       <h1>Gruppen</h1>
       <p>{gruppenAnzahl} Gruppen</p>
       <GroupsTable groups={groups} />
-      <a href={"/export/groups/groups/json"} download={"groups" + ".json"} className="hover:underline">Exportieren</a>
+      <p>Exportieren als:
+        <a href={"/export/groups/groups/json"} download={"groups" + ".json"} className="hover:underline mx-1">JSON</a>
+        <a href={"/export/groups/groups/xlsx"} download={"groups" + ".xlsx"} className="hover:underline mx-1">XLSX</a>
+      </p>
   </div>
     );
 }
