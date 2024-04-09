@@ -31,7 +31,10 @@ export default async function group({searchParams}: {searchParams: SearchParams}
             <CalendarWeek searchParams={searchParams} />
         </div>
       <GroupTable user={groupData} cw={cw} year={year} />
-      <a href={"/export/groups/group/json?groupID=" + groupID + "&cw=" + cw + "&year=" + year} download={"group" + cw + "_" + year + ".json"} className="hover:underline">Exportieren</a>
+      <p>Exportieren als:
+        <a href={"/export/groups/group/json?groupID=" + groupID + "&cw=" + cw + "&year=" + year} download={"group" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
+        <a href={"/export/groups/group/xlsx?groupID=" + groupID + "&cw=" + cw + "&year=" + year} download={"group" + cw + "_" + year + ".xlsx"} className="hover:underline mx-1">XLSX</a>
+      </p>
   </div>
     );
 }
