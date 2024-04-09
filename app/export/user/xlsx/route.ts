@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     const data = new Array()
     data.push([{
         "type": String,
-        "value": "Alle Nuter",
+        "value": "Alle Nutzer",
         "fontWeight": "bold"
     }])
     data.push([{
