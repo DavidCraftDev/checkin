@@ -16,7 +16,10 @@ export default async function User() {
                 <CreateUserButton />
             </div>
             <UserTable users={users} />
-            <a href="/export/user/json" download="users.json" className="hover:underline">Exportieren</a>
+            <p>Exportieren als:
+                <a href="/export/user/json" download="users.json" className="hover:underline mx-1">JSON</a>
+                <a href="/export/user/xlsx" download="users.xlsx" className="hover:underline mx-1">XLSX</a>
+            </p>
         </div>
     );
 }
