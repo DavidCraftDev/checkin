@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 
-export default function login() {
+export default function Login() {
   const router = useRouter();
   let usernameError = false;
   let passwordError = false;
