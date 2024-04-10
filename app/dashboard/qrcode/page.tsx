@@ -3,7 +3,7 @@ import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
 import QRCode from './qr.component';
 
-export default async function QR() {
+export default async function qrCode() {
   const session = await getServerSession(authOptions);
   if (!session) {
     redirect("/login");

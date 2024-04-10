@@ -1,6 +1,6 @@
 import { getSesession } from "../src/modules/authUtilities";
 
-export default async function Dashboard() {
+export default async function dashboard() {
     const session = await getSesession();
     return (
         <div>

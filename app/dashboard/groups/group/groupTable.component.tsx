@@ -1,7 +1,5 @@
 "use client";
 
-import moment from "moment";
-
 function GroupTable(users: any) {
     return (
         <div className="overflow-x-auto">

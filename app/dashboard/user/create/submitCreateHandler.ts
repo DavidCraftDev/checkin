@@ -2,7 +2,6 @@
 
 import { createUser } from "@/app/src/modules/userUtilities";
 
-
 export async function submitCreateHandler(formdata: FormData) {
     const displayname = formdata.get('displayname') as string || "_";
     const username = formdata.get('username') as string || "_";

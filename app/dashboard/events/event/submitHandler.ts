@@ -1,9 +1,8 @@
 "use server"
 
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
-import { checkINHandler, createEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { getUserID } from "@/app/src/modules/userUtilities";
-import { redirect } from "next/navigation";
 
 export async function submitHandler(formData: FormData, eventID: string) {
     if (!formData.get("name")) return;

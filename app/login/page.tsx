@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 
-export default function LoginPage() {
+export default function login() {
   const router = useRouter();
   let usernameError = false;
   let passwordError = false;
@@ -46,7 +46,6 @@ export default function LoginPage() {
       }
     }
   }
-
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
       <form action={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">

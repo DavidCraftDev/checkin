@@ -1,11 +1,9 @@
-import { redirect } from "next/navigation";
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
-import db from "@/app/src/modules/db";
 import { getGroups } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./groupsTable.component";
 
 export default async function groups() {
-  const sessionUser = await getSesessionUser(2);
+  await getSesessionUser(2);
 
   let groups = await getGroups();
   const gruppenAnzahl = Array.from(groups).length;

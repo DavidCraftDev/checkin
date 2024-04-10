@@ -1,9 +1,7 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
 import { getAllGroups } from "@/app/src/modules/groupUtilities";
 
-import { NextRequest } from "next/server";
-
-export async function GET(request: NextRequest) {
+export async function GET() {
     const user = await getSesessionUser(2);
     user.password = undefined
     user.loginVersion = undefined

@@ -3,7 +3,7 @@ import UserEditForm from "./userEditForm.component";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 
-export default async function User(searchParams: { searchParams: SearchParams }) {
+export default async function userEdit(searchParams: { searchParams: SearchParams }) {
     await getSesessionUser(2);
     const userData = await getUserPerID(searchParams.searchParams.userID);
     return (

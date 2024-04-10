@@ -1,6 +1,5 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
-
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

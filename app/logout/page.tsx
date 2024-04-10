@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-export default function SignOut() {
+export default function logout() {
   useEffect(() => {
     signOut();
     redirect("/");

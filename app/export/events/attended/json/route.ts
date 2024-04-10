@@ -1,5 +1,5 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
-import { getAttendancesPerEvent, getAttendancesPerUser, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
 

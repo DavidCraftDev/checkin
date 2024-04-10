@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import QRScannerComponent from "./qr.component";
 
 
-export default async function qrscanner({ searchParams }: { searchParams: SearchParams }) {
+export default async function qrScanner({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSesessionUser(1);
     const userID = user.id;
     const EventID = searchParams.id

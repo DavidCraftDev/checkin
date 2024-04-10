@@ -11,7 +11,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { propagateServerField } from 'next/dist/server/lib/render-server';
 
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },

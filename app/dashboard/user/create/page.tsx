@@ -1,7 +1,7 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
 import UserCreateForm from "./userCreateForm.component";
 
-export default async function User() {
+export default async function userCreate() {
     await getSesessionUser(2);
     return (
         <div>

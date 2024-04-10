@@ -2,7 +2,7 @@ import { getSesessionUser } from "@/app/src/modules/authUtilities"
 import db from "@/app/src/modules/db";
 import writeXlsxFile from "write-excel-file/node";
 
-export async function GET(request: Request) {
+export async function GET() {
     const user = await getSesessionUser(2);
     const users = await db.user.findMany()
     users.forEach((user: any) => {
