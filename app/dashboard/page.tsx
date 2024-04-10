@@ -5,7 +5,7 @@ export default async function Dashboard() {
     return (
         <div>
             <h1>Dashboard</h1>
-            <p>Hallo { session.user.name }</p>
+            <p>Hallo {session.user.name}</p>
         </div>
     );
 }

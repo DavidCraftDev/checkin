@@ -46,7 +46,7 @@ export async function GET(request: Request) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": users.length
     },
@@ -100,13 +100,13 @@ export async function GET(request: Request) {
         { width: 20 },
         { width: 20 },
         { width: 20 }
-      ];
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns } )
+    ];
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
     return new Response(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="users.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-  })
-  }
+    })
+}

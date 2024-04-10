@@ -7,7 +7,7 @@ export async function getUserPerID(id: string) {
       id: id
     }
   });
-  if(!user) return {} as any;
+  if (!user) return {} as any;
   return user;
 }
 
@@ -17,7 +17,7 @@ export async function existUserPerID(id: string) {
       id: id
     }
   });
-  if(!user) return 0 as Number;
+  if (!user) return 0 as Number;
   return user
 }
 
@@ -27,7 +27,7 @@ export async function getUserID(name: string) {
       username: name.toLowerCase()
     }
   });
-  if(!user) return "" as string;
+  if (!user) return "" as string;
   return user.id;
 }
 
@@ -38,7 +38,7 @@ export async function createUser(name: string, displayname: string, permission: 
       username: name.toLowerCase()
     }
   });
-  if(username > 0) return "exist";
+  if (username > 0) return "exist";
   const user = await db.user.create({
     data: {
       username: name.toLowerCase(),
@@ -53,20 +53,20 @@ export async function createUser(name: string, displayname: string, permission: 
 
 export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string, password?: string) {
   let passwordHash
-  if(password) {
+  if (password) {
     passwordHash = await hash(password, 12);
   }
   const userData = await getUserPerID(id);
-  if(userData.username !== name) {
-  const username = await db.user.count({
-    where: {
-      username: name.toLowerCase()
-    }
-  });
-  if(username > 0) return "exist";
+  if (userData.username !== name) {
+    const username = await db.user.count({
+      where: {
+        username: name.toLowerCase()
+      }
+    });
+    if (username > 0) return "exist";
   }
   const data = new Array();
-  if(password) {
+  if (password) {
     data.push({
       password: passwordHash
     });

@@ -9,7 +9,7 @@ let lastResult: string = "";
 export default async function submitHandler(formData: FormData) {
     if (!formData.get("name")) return;
     const name: string = String(formData.get("name"));
-    if(name === lastResult) return;
+    if (name === lastResult) return;
     lastResult = name;
     const sessionUser = await getSesessionUser(1);
     const userID: string = sessionUser.id || "";

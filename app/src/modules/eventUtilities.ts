@@ -25,7 +25,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             eventUser: dataUserEvent
         });
     }
-    if(!data) return [] as any;
+    if (!data) return [] as any;
     return data;
 }
 
@@ -43,7 +43,7 @@ export async function getAttendancesPerEvent(eventID: string) {
             user: dataUser
         });
     }
-    if(!data) return [] as any;
+    if (!data) return [] as any;
     return data;
 }
 
@@ -58,7 +58,7 @@ export async function getAttendanceCountPerUser(userID: string, cw: number, year
             }
         }
     });
-    if(!data) return 0 as number;
+    if (!data) return 0 as number;
     return data;
 }
 
@@ -69,7 +69,7 @@ export async function attendanceExists(eventID: string, userID: string) {
             userID: userID
         }
     });
-    if(!data) return 0 as number;
+    if (!data) return 0 as number;
     return data;
 }
 
@@ -79,7 +79,7 @@ export async function getEventsPerUser(userID: string) {
             user: userID
         }
     });
-    if(!data) return [] as any;
+    if (!data) return [] as any;
     return data;
 }
 
@@ -89,7 +89,7 @@ export async function getEventPerID(eventID: string) {
             id: eventID
         }
     });
-    if(!data) return {} as any;
+    if (!data) return {} as any;
     return data;
 }
 
@@ -116,7 +116,7 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             user: attendedUser
         });
     }
-    if(!data) return [] as any;
+    if (!data) return [] as any;
     return data;
 }
 
@@ -129,7 +129,7 @@ export async function createEvent(name: string, userID: string) {
             cw: cw
         }
     });
-    if(!data) return {} as any;
+    if (!data) return {} as any;
     return data;
 }
 
@@ -139,14 +139,14 @@ export async function eventExists(eventID: string) {
             id: eventID
         }
     });
-    if(!data) return 0 as number;
+    if (!data) return 0 as number;
     return data;
 }
 
 export async function checkINHandler(eventID: string, userID: string) {
-    if(await existUserPerID(userID) === 0) return "ErrorNotFound"
-    if(await attendanceExists(eventID, userID) > 0) return "ErrorAlreadyCheckedIn"
-    if(await eventExists(eventID) === 0) return "ErrorEventNotFound"
+    if (await existUserPerID(userID) === 0) return "ErrorNotFound"
+    if (await attendanceExists(eventID, userID) > 0) return "ErrorAlreadyCheckedIn"
+    if (await eventExists(eventID) === 0) return "ErrorEventNotFound"
     let data = await db.attendance.create({
         data: {
             eventID: eventID,
@@ -163,10 +163,10 @@ export async function createTeacherNote(id: string, note: string) {
             id: id
         },
         data: {
-           teacherNote: note
+            teacherNote: note
         }
     });
-    if(!data) return {} as any;
+    if (!data) return {} as any;
     return data;
 }
 
@@ -176,9 +176,9 @@ export async function createStudentNote(id: string, note: string) {
             id: id
         },
         data: {
-           studentNote: note
+            studentNote: note
         }
     });
-    if(!data) return {} as any;
+    if (!data) return {} as any;
     return data;
 }

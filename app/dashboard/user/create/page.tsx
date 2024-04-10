@@ -1,5 +1,4 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
-import db from "@/app/src/modules/db"
 import UserCreateForm from "./userCreateForm.component";
 
 export default async function User() {

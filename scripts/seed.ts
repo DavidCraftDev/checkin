@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 async function main() {
   const passwordHash = await hash("password123", 12);
   const user = await prisma.user.create({
-      data: {
-          username: "test",
-          displayname: "Test User",
-          password: passwordHash
-      }
+    data: {
+      username: "test",
+      displayname: "Test User",
+      password: passwordHash
+    }
   })
   console.log({ user });
 }

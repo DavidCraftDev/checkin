@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
     const user = await getSesessionUser();
     let userID = request.nextUrl.searchParams.get("userID")
     let userData
-    if(userID && (userID !== user.id) && (user.permission < 1)) {
-        return Response.json({ error: "Not authorzied"})
+    if (userID && (userID !== user.id) && (user.permission < 1)) {
+        return Response.json({ error: "Not authorzied" })
     } else if (!userID || (userID === user.id)) {
         userData = user
         userID = user.id
@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
         userData = await getUserPerID(userID)
         userID = userData.id
     }
-    if(userID && (user.permission < 2 && user.group !== userData.group)) return Response.json({ error: "Not authorzied"})
-    if(!userID) return Response.json({ error: "System not found UserID" })
+    if (userID && (user.permission < 2 && user.group !== userData.group)) return Response.json({ error: "Not authorzied" })
+    if (!userID) return Response.json({ error: "System not found UserID" })
     const cw: number = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year: number = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const attendances = await getAttendancesPerUser(userID, cw, year)
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": attendances.length
     },
@@ -135,13 +135,13 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 },
         { width: 20 }
-      ];
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: userData.displayname, columns: columns } )
+    ];
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: userData.displayname, columns: columns })
     return new Response(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="attended_events${cw + "_" + year + userData.id}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-  })
+    })
 }

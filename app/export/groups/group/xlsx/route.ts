@@ -1,5 +1,4 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
-import { getAttendancesPerEvent } from "@/app/src/modules/eventUtilities";
 import { getGroupMembersWithAttendances } from "@/app/src/modules/groupUtilities";
 import moment from "moment";
 
@@ -10,15 +9,15 @@ export async function GET(request: NextRequest) {
     const user = await getSesessionUser(1);
     user.password = undefined
     user.loginVersion = undefined
-    
+
     const currentWeek: number = Number(moment().week())
     const currentYear: number = Number(moment().year())
     const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
     const year: number = Number(request.nextUrl.searchParams.get("year")) || currentYear
 
     const groupID: string = String(request.nextUrl.searchParams.get("groupID")) || user.group
-    if(groupID !== user.group && user.permission < 2) return Response.json({ error: "User not authorized" })
-    
+    if (groupID !== user.group && user.permission < 2) return Response.json({ error: "User not authorized" })
+
     const group = await getGroupMembersWithAttendances(groupID, calendarWeek, year)
     const data = new Array()
     const sheetData = new Array()
@@ -54,7 +53,7 @@ export async function GET(request: NextRequest) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": group.length
     },
@@ -95,7 +94,7 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 },
         { width: 20 }
-      ]);
+    ]);
     for (const userGroup of group) {
         const userData = new Array()
         userData.push([{
@@ -128,7 +127,7 @@ export async function GET(request: NextRequest) {
             "value": new Date(),
             "format": "DD.MM.YYYY HH:mm"
         },
-        { 
+        {
             "type": Number,
             "value": userGroup.attendances.length
         },
@@ -203,13 +202,13 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(userData)
-        if(sheetData.includes(userGroup.user.displayname)) {
-            for(let i = 1; i < 9999; i++) {
-                if(!sheetData.includes(userGroup.user.displayname + " (" + i + ")")) {
-                    sheetData.push(userGroup.user.displayname + " (" + i + ")" )
+        if (sheetData.includes(userGroup.user.displayname)) {
+            for (let i = 1; i < 9999; i++) {
+                if (!sheetData.includes(userGroup.user.displayname + " (" + i + ")")) {
+                    sheetData.push(userGroup.user.displayname + " (" + i + ")")
                     break
                 }
-        } 
+            }
         } else {
             sheetData.push(userGroup.user.displayname)
         }
@@ -220,14 +219,14 @@ export async function GET(request: NextRequest) {
             { width: 20 },
             { width: 20 },
             { width: 20 }
-          ]);
+        ]);
     }
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData } )
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData })
     return new Response(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="group${calendarWeek + "_" + year + groupID}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-  })
-  }
+    })
+}

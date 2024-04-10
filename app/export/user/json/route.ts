@@ -20,6 +20,6 @@ export async function GET(request: Request) {
         }
     })
     data.push(users, user)
-   
+
     return Response.json({ data })
-  }
+}

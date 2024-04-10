@@ -8,10 +8,10 @@ import writeXlsxFile from "write-excel-file/node";
 export async function GET(request: NextRequest) {
     const user = await getSesessionUser(1);
     const eventID = request.nextUrl.searchParams.get("eventID")
-    if(!eventID) return Response.json({ error: "No eventID provided" })
+    if (!eventID) return Response.json({ error: "No eventID provided" })
     const event = await getEventPerID(eventID)
-    if(!event.id) return Response.json({ error: "Event not found" })
-    if((event.user !== user.id) && (user.permission < 2)) return Response.json({ error: "User not authorized" })
+    if (!event.id) return Response.json({ error: "Event not found" })
+    if ((event.user !== user.id) && (user.permission < 2)) return Response.json({ error: "User not authorized" })
     const eventUser = await getUserPerID(event.user)
     const attendances = await getAttendancesPerEvent(eventID)
     const data = new Array()
@@ -55,15 +55,15 @@ export async function GET(request: NextRequest) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": attendances.length
     },
-    { 
+    {
         "type": String,
         "value": user.displayname
     },
-    { 
+    {
         "type": String,
         "value": eventUser.displayname
     },
@@ -125,13 +125,13 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 },
         { width: 20 }
-      ];
-const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: event.name, columns: columns } )
-return new Response(bufferData, {
-    status: 200,
-    headers: {
-        'Content-Disposition': `attachment; filename="event${event.id}.xlsx"`,
-        'Content-Type': 'application/vnd.ms-excel',
-    }
-})
-  }
+    ];
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: event.name, columns: columns })
+    return new Response(bufferData, {
+        status: 200,
+        headers: {
+            'Content-Disposition': `attachment; filename="event${event.id}.xlsx"`,
+            'Content-Type': 'application/vnd.ms-excel',
+        }
+    })
+}

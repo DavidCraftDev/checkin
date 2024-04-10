@@ -20,4 +20,4 @@ export async function GET(request: NextRequest) {
     })
     data.push(groups, user)
     return Response.json(data)
-  }
+}

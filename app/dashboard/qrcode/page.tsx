@@ -16,9 +16,9 @@ export default async function QR() {
     <div>
       <h1>QR-Code</h1>
       <div className="text-center w-full md:w-1/3">
-        <QRCode data={ "checkin://" + userID}/>
-        <p>{ displayname }</p>
-        <p>{ "Nutzername: " + username }</p>
+        <QRCode data={"checkin://" + userID} />
+        <p>{displayname}</p>
+        <p>{"Nutzername: " + username}</p>
       </div>
     </div>
   );

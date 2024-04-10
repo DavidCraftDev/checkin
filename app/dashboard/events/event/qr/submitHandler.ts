@@ -9,7 +9,7 @@ export async function submitHandler(userID: any, eventID: any) {
     const event = await getEventPerID(eventID);
     if (event.user !== sessionUser.id) return;
     const userExist = await existUserPerID(userID)
-    if(!userExist) return "UserNotFound"
+    if (!userExist) return "UserNotFound"
     const data = await checkINHandler(eventID, userID)
     return data;
 };

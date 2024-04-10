@@ -11,16 +11,16 @@ export async function submitCreateHandler(formdata: FormData) {
     const password = formdata.get('password') as string;
     //Displayname only letters and spaces
     if (!/^[a-zA-Z\s]*$/.test(displayname)) {
-         return "displayname"
+        return "displayname"
     }
     //Username only letters and dots
     if (!/^[a-zA-Z.]*$/.test(username)) {
         return "username"
     }
-    if(!password) {
+    if (!password) {
         return "password"
     }
     const data = await createUser(username, displayname, parseInt(permission), group, password)
-    if(data === "exist") return "exist"
+    if (data === "exist") return "exist"
     return "success"
 }

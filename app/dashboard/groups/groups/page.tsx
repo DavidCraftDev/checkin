@@ -9,8 +9,8 @@ export default async function groups() {
 
   let groups = await getGroups();
   const gruppenAnzahl = Array.from(groups).length;
-    return (
-      <div>
+  return (
+    <div>
       <h1>Gruppen</h1>
       <p>{gruppenAnzahl} Gruppen</p>
       <GroupsTable groups={groups} />
@@ -18,6 +18,6 @@ export default async function groups() {
         <a href={"/export/groups/groups/json"} download={"groups" + ".json"} className="hover:underline mx-1">JSON</a>
         <a href={"/export/groups/groups/xlsx"} download={"groups" + ".xlsx"} className="hover:underline mx-1">XLSX</a>
       </p>
-  </div>
-    );
+    </div>
+  );
 }

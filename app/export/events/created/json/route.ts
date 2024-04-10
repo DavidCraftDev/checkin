@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const user = await getSesessionUser(1);
     user.password = undefined
     user.loginVersion = undefined
-    
+
     const currentWeek: number = Number(moment().week())
     const currentYear: number = Number(moment().year())
     const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
@@ -41,4 +41,4 @@ export async function GET(request: NextRequest) {
     }
     data.push(eventsData, user)
     return Response.json(data)
-  }
+}

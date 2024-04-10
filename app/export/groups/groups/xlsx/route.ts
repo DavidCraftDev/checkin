@@ -1,6 +1,5 @@
 import { getSesessionUser } from "@/app/src/modules/authUtilities"
 import { getAllGroups } from "@/app/src/modules/groupUtilities";
-
 import { NextRequest } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
 
@@ -37,7 +36,7 @@ export async function GET(request: NextRequest) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": groups.length
     },
@@ -73,7 +72,7 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 },
         { width: 20 }
-      ]);
+    ]);
     for (const group of groups) {
         const groupData = new Array()
         groupData.push([{
@@ -101,7 +100,7 @@ export async function GET(request: NextRequest) {
             "value": new Date(),
             "format": "DD.MM.YYYY HH:mm"
         },
-        { 
+        {
             "type": Number,
             "value": group.members.length
         },
@@ -131,13 +130,13 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(groupData)
-        if(sheetData.includes(group.group)) {
-            for(let i = 1; i < 9999; i++) {
-                if(!sheetData.includes(group.group + " (" + i + ")")) {
-                    sheetData.push(group.group + " (" + i + ")" )
+        if (sheetData.includes(group.group)) {
+            for (let i = 1; i < 9999; i++) {
+                if (!sheetData.includes(group.group + " (" + i + ")")) {
+                    sheetData.push(group.group + " (" + i + ")")
                     break
                 }
-        } 
+            }
         } else {
             sheetData.push(group.group)
         }
@@ -145,14 +144,14 @@ export async function GET(request: NextRequest) {
             { width: 20 },
             { width: 20 },
             { width: 20 }
-          ]);
+        ]);
     }
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData } )
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData })
     return new Response(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="groups.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-  })
-  }
+    })
+}

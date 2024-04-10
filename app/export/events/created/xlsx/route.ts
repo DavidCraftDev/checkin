@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const user = await getSesessionUser(1);
     user.password = undefined
     user.loginVersion = undefined
-    
+
     const currentWeek: number = Number(moment().week())
     const currentYear: number = Number(moment().year())
     const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         "value": new Date(),
         "format": "DD.MM.YYYY HH:mm"
     },
-    { 
+    {
         "type": Number,
         "value": events.length
     },
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         "value": "Erstellt am",
         "fontWeight": "bold"
     }])
-    for(const event of events) {
+    for (const event of events) {
         meta.push([{
             "type": String,
             "value": event.event.name
@@ -136,11 +136,11 @@ export async function GET(request: NextRequest) {
             "value": new Date(),
             "format": "DD.MM.YYYY HH:mm"
         },
-        { 
+        {
             "type": Number,
             "value": attendances.length
         },
-        { 
+        {
             "type": String,
             "value": user.displayname
         },
@@ -196,13 +196,13 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(eventData)
-        if(sheetData.includes(event.event.name)) {
-            for(let i = 1; i < 9999; i++) {
-                if(!sheetData.includes(event.event.name + " (" + i + ")")) {
-                    sheetData.push(event.event.name + " (" + i + ")" )
+        if (sheetData.includes(event.event.name)) {
+            for (let i = 1; i < 9999; i++) {
+                if (!sheetData.includes(event.event.name + " (" + i + ")")) {
+                    sheetData.push(event.event.name + " (" + i + ")")
                     break
                 }
-        } 
+            }
         } else {
             sheetData.push(event.event.name)
         }
@@ -223,12 +223,12 @@ export async function GET(request: NextRequest) {
         }])
     }
 
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData } )
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData })
     return new Response(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="created_events${calendarWeek + "_" + year + user.id}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-  })
-  }
+    })
+}
