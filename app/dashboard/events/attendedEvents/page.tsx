@@ -3,7 +3,7 @@ import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import moment from "moment";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
 
@@ -14,6 +14,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     let userData;
     if (searchParams.userID) userData = await getUserPerID(userID);
     else userData = sessionUser;
+    if (!userData.id) notFound();
     if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
 
     const currentWeek: number = moment().week();

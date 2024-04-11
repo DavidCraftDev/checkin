@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getSesessionUser } from "@/app/src/modules/authUtilities";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
@@ -10,9 +10,9 @@ export default async function event({ searchParams }: { searchParams: SearchPara
     const user = await getSesessionUser(1);
     const userID = user.id;
     const EventID = searchParams.id
-    if (!EventID) redirect("/dashboard/");
+    if (!EventID) notFound();
     const event = await getEventPerID(EventID);
-    if (!event.id) redirect("/dashboard/");
+    if (!event.id) notFound();
     if (event.user !== userID) redirect("/dashboard/");
     const attendances = await getAttendancesPerEvent(EventID);
     const attendanceCount = attendances.length;
