@@ -14,7 +14,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  throw new Error('Not implemented');
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
