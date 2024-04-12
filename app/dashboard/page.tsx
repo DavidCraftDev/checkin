@@ -6,7 +6,6 @@ export default async function dashboard() {
         <div>
             <h1>Dashboard</h1>
             <p>Hallo {session.user.name}</p>
-            <a onClick={() => {throw new Error("Test Error")}}>Throw Error</a>  
         </div>
     );
 }
