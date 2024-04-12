@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 
 let lastResult: string
 
-const QRScannerComponent: React.FC = async () => {
+const QRScannerComponent: React.FC =  () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const id = useSearchParams().get('id');
   const startScanner = async () => {
@@ -49,7 +49,7 @@ const QRScannerComponent: React.FC = async () => {
   };
   useEffect(() => {
     startScanner();
-  }, []);
+  }, [startScanner]);
   return (
     <div className='w-full'>
       <video ref={videoRef}></video>
