@@ -60,7 +60,7 @@ export async function getGroupMemberCount(groupID: string) {
 export async function getGroups() {
     const user = await db.user.findMany();
     let groups = new Set<string>();
-    user.forEach((user) => {
+    user.forEach((user: any) => {
         if (!user.group) return;
         groups.add(String(user.group));
     });
