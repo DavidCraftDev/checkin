@@ -28,4 +28,4 @@ RUN npm run build
 EXPOSE 3000  
 
 # Start the app
-ENTRYPOINT ["tini", "--", "scripts/entrypoint.sh"]
+ENTRYPOINT ["scripts/entrypoint.sh"]
