@@ -17,6 +17,7 @@ RUN \
 
 RUN npx next telemetry disable
 
+COPY prisma/schema.prisma ./prisma/
 RUN npx prisma generate
 
 # Rebuild the source code only when needed
