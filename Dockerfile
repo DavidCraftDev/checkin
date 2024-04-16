@@ -1,6 +1,8 @@
 # Use the official Node.js image as the base  
 FROM node:18-alpine
 
+LABEL org.opencontainers.image.source = "https://github.com/DavidCraftDev/checkin"
+
 # Set the working directory inside the container  
 WORKDIR /app  
 
