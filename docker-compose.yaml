@@ -1,6 +1,6 @@
 version: '3'
 services:
-  checkin:
+  web:
     image: ghcr.io/davidcraftdev/checkin:master
     restart: unless-stopped
     depends_on:
@@ -8,7 +8,7 @@ services:
     environment:
       - TZ=Europe/Berlin
       # Please replace the following environment variables with your own values, you need to set the same values in the db service
-      - POSTGRES_PRISMA_URL=postgres://postgres:postgres@db:5342/postgres
+      - POSTGRES_PRISMA_URL=postgres://postgres:postgres@db:5432/postgres
       # Please replace the following environment variables with your own random secret
       - NEXTAUTH_SECRET=YOUR_SECRET
       # Please set own default admin credentials
@@ -18,6 +18,7 @@ services:
       - "3030:3000"
   db:
     image: postgres:16-alpine
+
     restart: always
     environment:
       - TZ=Europe/Berlin
