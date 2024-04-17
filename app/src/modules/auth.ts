@@ -19,7 +19,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials) {
-        console.log("Credentials", credentials)
         if (!credentials?.username || !credentials.password) {
           return null;
         }
@@ -28,10 +27,8 @@ export const authOptions: NextAuthOptions = {
             username: credentials.username.toLowerCase(),
           },
         });
-        console.log("User", user)
-        if(!user) return null;
+
         if (!user || !(await compare(credentials.password, user.password))) {
-          console.log(compare(credentials.password, user.password))
           return null;
         }
 

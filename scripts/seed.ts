@@ -20,15 +20,13 @@ async function main() {
     const passwordHash = await hash(password, 12);
     const user = await prisma.user.create({
       data: {
-        username: process.env.DEFAULT_ADMIN_USERNAME,
+        username: process.env.DEFAULT_ADMIN_USERNAME.toLowerCase(),
         displayname: "Default Admin",
         password: passwordHash,
         permission: 2
       }
     })
     console.log("New default admin created because no admins were found in the database.");
-    console.log("Username: ", user.username);
-    console.log("Password: ", password);
     console.log({ user });
   }
 }
