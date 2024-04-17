@@ -28,9 +28,9 @@ export const authOptions: NextAuthOptions = {
             username: credentials.username.toLowerCase(),
           },
         });
-        console.log("User", user)
+        console.log("User", user?)
         if (!user || !(await compare(credentials.password, user.password))) {
-          console.log(compare(credentials.password, user.password))
+          console.log(compare(credentials.password, user?.password))
           return null;
         }
 
