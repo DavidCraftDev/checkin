@@ -16,7 +16,8 @@ async function main() {
     if(!process.env.DEFAULT_ADMIN_USERNAME) {
       throw new Error("No default admin username provided in environment variables. Please provide one in the .env file.");
     }
-    const passwordHash = await hash(process.env.DEFAULT_ADMIN_PASSWORD, 12);
+    const password: string = process.env.DEFAULT_ADMIN_PASSWORD;
+    const passwordHash = await hash(password, 12);
     const user = await prisma.user.create({
       data: {
         username: process.env.DEFAULT_ADMIN_USERNAME,
@@ -27,7 +28,7 @@ async function main() {
     })
     console.log("New default admin created because no admins were found in the database.");
     console.log("Username: ", user.username);
-    console.log("Password: ", process.env.DEFAULT_ADMIN_PASSWORD);
+    console.log("Password: ", password);
     console.log({ user });
   }
 }
