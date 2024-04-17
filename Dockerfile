@@ -18,6 +18,9 @@ COPY . .
 # Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Set NextAuth URL
+ENV NEXTAUTH_URL http://localhost:3000
+
 # Generate Prisma client
 RUN npx prisma generate
 
