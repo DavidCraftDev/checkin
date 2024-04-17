@@ -26,6 +26,8 @@ async function main() {
       }
     })
     console.log("New default admin created because no admins were found in the database.");
+    console.log("Username: ", user.username);
+    console.log("Password: ", process.env.DEFAULT_ADMIN_PASSWORD);
     console.log({ user });
   }
 }
