@@ -22,7 +22,7 @@ async function main() {
       }
     });
     if(usernameCount > 0) {
-      throw new Error("Default admin username already exists in the database. Please provide a different username in the .env file.");
+      throw new Error("Default admin username already exists in the database and there a no other admin user. Please provide a different username in the .env file.");
     }
     const password: string = process.env.DEFAULT_ADMIN_PASSWORD;
     const passwordHash = await hash(password, 12);
