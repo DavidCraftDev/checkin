@@ -8,7 +8,7 @@ Ein System um die Anwesendheit von Schülern zu überprüfen
 ```yaml
 services:
   web:
-    image: ghcr.io/davidcraftdev/checkin:master
+    image: ghcr.io/davidcraftdev/checkin:main
     restart: unless-stopped
     depends_on:
       - db
