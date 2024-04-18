@@ -8,8 +8,9 @@ Ein System um die Anwesendheit von Schülern zu überprüfen
 ```yaml
 services:
   web:
+    container_name: checkin
     image: ghcr.io/davidcraftdev/checkin:main
-    restart: unless-stopped
+    restart: always
     depends_on:
       - db
     environment:
@@ -26,6 +27,7 @@ services:
     ports:
       - "3030:3000"
   db:
+    container_name: checkin-db
     image: postgres:16-alpine
     restart: always
     environment:
@@ -35,8 +37,9 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - checkin_db:/var/lib/postgresql/data
 
 volumes:
-  pgdata: {}
+  checkin_pgdata:
+    name: checkin_db
 ```
