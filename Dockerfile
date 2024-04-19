@@ -1,24 +1,27 @@
-# Use the official Node.js image as the base  
-FROM node:18-alpine
-# Label Image Source
-LABEL org.opencontainers.image.source = "https://github.com/DavidCraftDev/checkin"
-# Set the working directory inside the container  
-WORKDIR /app  
-# Copy package.json and package-lock.json to the container  
-COPY package*.json ./  
-# Install dependencies  
-RUN npm ci  
-# Copy the app source code to the container  
-COPY . .  
-# Disable Next.js telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
-# Generate Prisma client
-RUN npx prisma generate
-# Build the Next.js app  
-RUN npm run build  
-# Expose the port the app will run on  
-EXPOSE 3000  
-# Make script executable
-RUN chmod 755 scripts/entrypoint.sh
-# Start the app
-ENTRYPOINT ["scripts/entrypoint.sh"]
+# syntax=docker/dockerfile:labs
+FROM --platform="$BUILDPLATFORM" alpine:3.19.1 as build
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+COPY . /app
+ARG NEXT_TELEMETRY_DISABLED=1 \
+    NODE_ENV=production \
+    TARGETARCH
+WORKDIR /app
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache ca-certificates nodejs-current npm && \
+    wget -q https://gobinaries.com/tj/node-prune -O - | sh && \
+    if [ "$TARGETARCH" = "amd64" ]; then npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install; \
+    elif [ "$TARGETARCH" = "arm64" ]; then npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install; fi && \
+    node-prune && \
+    npx prisma generate && \
+    npm run build
+
+FROM alpine:3.19.1
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache ca-certificates tzdata tini nodejs-current
+COPY --from=build /app /app
+COPY --chmod=775 scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+WORKDIR /app
+ENTRYPOINT ["tini", "--", "entrypoint.sh"]
+HEALTHCHECK CMD wget -q http://localhost:80 -O /dev/null || exit 1
+ENV NEXT_TELEMETRY_DISABLED=1
+EXPOSE 3000/tcp
