@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base  
-FROM node:18-alpine
+FROM node:21-alpine
 # Label Image Source
 LABEL org.opencontainers.image.source = "https://github.com/DavidCraftDev/checkin"
 # Set the working directory inside the container  
