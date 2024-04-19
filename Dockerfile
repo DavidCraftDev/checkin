@@ -20,8 +20,10 @@ RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini nodejs-current
 COPY --from=build /app /app
 COPY --chmod=775 scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+USER nobody
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
-HEALTHCHECK CMD wget -q http://localhost:80 -O /dev/null || exit 1
-ENV NEXT_TELEMETRY_DISABLED=1
+HEALTHCHECK CMD wget -q http://localhost:3000 -O /dev/null || exit 1
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
 EXPOSE 3000/tcp
