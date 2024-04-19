@@ -1,6 +1,6 @@
 # CheckIN
 
-Ein System um die Anwesendheit von Schülern zu überprüfen 
+Ein System um die Anwesendheit von Schülerinnen und Schülern zu überprüfen 
 
 ## Installation
 
