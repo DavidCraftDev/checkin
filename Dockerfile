@@ -8,10 +8,8 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs-current npm && \
-    wget -q https://gobinaries.com/tj/node-prune -O - | sh && \
     if [ "$TARGETARCH" = "amd64" ]; then npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install; \
     elif [ "$TARGETARCH" = "arm64" ]; then npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install; fi && \
-    node-prune && \
     npx prisma generate && \
     npm run build
 
