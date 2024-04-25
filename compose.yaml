@@ -29,8 +29,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      - checkin_db:/var/lib/postgresql/data
+      - checkin_pgdata:/var/lib/postgresql/data
 
 volumes:
   checkin_pgdata:
-    name: checkin_db
+    name: checkin_pgdata
