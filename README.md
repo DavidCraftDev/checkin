@@ -9,7 +9,7 @@ Ein System um die Anwesendheit von Schülerinnen und Schülern zu überprüfen
 services:
   web:
     container_name: checkin
-    image: ghcr.io/davidcraftdev/checkin:main
+    image: ghcr.io/davidcraftdev/checkin:stable
     restart: always
     depends_on:
       - db
