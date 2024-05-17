@@ -25,6 +25,5 @@ WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
 HEALTHCHECK CMD wget -q http://localhost:3000 -O /dev/null || exit 1
 ENV NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1 \
-    NEXTAUTH_URL=http://localhost:3000 
+    NEXT_TELEMETRY_DISABLED=1
 EXPOSE 3000/tcp
