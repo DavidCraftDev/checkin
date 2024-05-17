@@ -22,8 +22,6 @@ services:
       # Please set own default admin credentials
       - DEFAULT_ADMIN_USERNAME=OwnUsername
       - DEFAULT_ADMIN_PASSWORD=OwnPassword
-      # Provide the URL of your CheckIN Web instance here
-      - NEXTAUTH_URL=http://localhost:3030
     ports:
       - "3030:3000"
   db:
