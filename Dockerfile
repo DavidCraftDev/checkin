@@ -17,7 +17,7 @@ RUN apk upgrade --no-cache -a && \
 
 FROM alpine:3.19.1
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates tzdata tini nodejs-current
+    apk add --no-cache ca-certificates tzdata tini nodejs-current npm
 COPY --from=build /app /app
 COPY --chmod=775 scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 USER nobody
