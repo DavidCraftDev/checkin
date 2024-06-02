@@ -47,6 +47,8 @@ const CalendarWeek = ({ searchParams }: { searchParams: SearchParams }) => {
     const cw = searchParams.cw || currentWeek;
     const userID = searchParams.userID;
     const groupID = searchParams.groupID;
+    let isCurrentWeek = false;
+    if (String(year) === String(currentYear) && String(cw) === String(currentWeek)) isCurrentWeek = true;
     return (
         <div className="grid grid-cols-3 grid-rows-1 gap-0 place-self-center items-center">
             <button className="btn text-bold" onClick={async () => await subWeek(pathname, year, cw, router, userID, groupID)}>-</button>
@@ -54,7 +56,7 @@ const CalendarWeek = ({ searchParams }: { searchParams: SearchParams }) => {
                 <p>{year}</p>
                 <p className="text-4xl">{cw}</p>
             </div>
-            <button className="btn" onClick={async () => await addWeek(pathname, year, cw, router, userID, groupID)}>+</button>
+            <button className="btn" onClick={async () => await addWeek(pathname, year, cw, router, userID, groupID)} disabled={isCurrentWeek}>+</button>
         </div>
     )
 }

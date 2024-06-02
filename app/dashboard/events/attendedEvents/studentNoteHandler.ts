@@ -2,10 +2,9 @@
 
 import { createStudentNote } from "@/app/src/modules/eventUtilities";
 
-async function setStudentNote(event: FormData, attendanceID?: any) {
-    const note: string = String(event.get("Note"))
-    const data = await createStudentNote(attendanceID, note)
-    if (data.studentNote === note) return "success"
+async function setStudentNote(studentNote: string, attendanceID?: any) {
+    const data = await createStudentNote(attendanceID, studentNote)
+    if (data.studentNote === studentNote) return "success"
     return "error"
 }
 

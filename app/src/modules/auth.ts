@@ -38,6 +38,8 @@ export const authOptions: NextAuthOptions = {
           name: user.displayname,
           permission: user.permission,
           group: user.group,
+          needs: user.needs,
+          competence: user.competence,
           loginVersion: user.loginVersion,
         };
       },
@@ -54,6 +56,8 @@ export const authOptions: NextAuthOptions = {
           username: token.username,
           permission: token.permission,
           group: token.group,
+          needs: token.needs,
+          competence: token.competence,
           loginVersion: token.loginVersion,
         },
       };
