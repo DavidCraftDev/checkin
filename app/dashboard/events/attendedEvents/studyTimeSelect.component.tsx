@@ -3,7 +3,6 @@ import { getNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
 async function StudyTimeSelect(props: any) {
     let defaultValue = "default";
     if(props.attendance.type) defaultValue = props.attendance.type;
-    console.log(props)
     const needed: Array<String> = await getNeededStudyTimes(props.attendance.userID, props.attendance.eventID)
 return (
     <td>
