@@ -1,6 +1,6 @@
 import submitHandler from "./submitHandler";
 
-const CreateEventForm = async () => {
+async function CreateEventForm() {
     return (
         <form action={submitHandler}>
             <div>

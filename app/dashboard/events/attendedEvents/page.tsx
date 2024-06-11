@@ -6,7 +6,7 @@ import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
     const sessionUser = await getSesessionUser();
@@ -31,6 +31,8 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     if ((searchParams.userID) && (searchParams.userID !== sessionUser.id)) addable = false;
     const studyTime: boolean = isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
+    let needed: Array<String> = [];
+    if(studyTime) needed = await getNeededStudyTimes(props.attendance.userID, props.attendance.userID);
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
@@ -41,7 +43,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                 </div>
                 <CalendarWeek searchParams={searchParams} />
             </div>
-            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime}/>
+            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} needed={needed}/>
             <p>Exportieren als:
                 <a href={"/export/events/attended/json?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".json"} className="hover:underline mx-1">JSON</a>
                 <a href={"/export/events/attended/xlsx?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".xlsx"} className="hover:underline mx-1">XLSX</a>

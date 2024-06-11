@@ -8,7 +8,7 @@ let displaynameError = false
 let usernameError = false
 let passwordError = false
 
-const UserCreateForm = () => {
+function UserCreateForm() {
     async function handleSubmit(formdata: FormData) {
         displaynameError = false
         usernameError = false

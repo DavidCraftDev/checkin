@@ -1,6 +1,6 @@
 "use client";
 
-function GroupTable(users: any) {
+function GroupTable(props: any) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -13,11 +13,11 @@ function GroupTable(users: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.user.map((user: any) => (
+                        {props.user.map((user: any) => (
                             <tr key={user.user.id}>
                                 <td>{user.user.displayname}</td>
                                 <td>{user.attendances}</td>
-                                <td><a href={`/dashboard/events/attendedEvents?userID=${user.user.id}&cw=${users.cw}&year=${users.year}`} className="hover:underline">Anzeigen</a></td>
+                                <td><a href={`/dashboard/events/attendedEvents?userID=${user.user.id}&cw=${props.cw}&year=${props.year}`} className="hover:underline">Anzeigen</a></td>
                             </tr>
                         ))}
                     </tbody>
