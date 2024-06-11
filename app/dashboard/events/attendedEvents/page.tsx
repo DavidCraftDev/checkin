@@ -32,7 +32,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     const studyTime: boolean = isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
     let needed: Array<String> = [];
-    if(studyTime) needed = await getNeededStudyTimes(props.attendance.userID, props.attendance.userID);
+    if(studyTime) needed = await getNeededStudyTimes(userData.userID, userData.attendance.userID);
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
