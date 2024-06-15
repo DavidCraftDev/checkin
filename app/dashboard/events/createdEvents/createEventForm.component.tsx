@@ -6,6 +6,7 @@ async function CreateEventForm() {
             <div>
                 <label htmlFor="eventName">Veranstaltungsname</label><br />
                 <input type="text" name="name" id="eventName" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                <input type="checkbox" name="studyTime" id="studyTime" className="m-2 p-2" />
             </div>
             <button type="submit" className="btn">Veranstaltung Erstellen</button>
         </form>

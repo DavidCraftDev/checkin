@@ -1,4 +1,4 @@
-import { getNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimesSelect } from "@/app/src/modules/studytimeUtilities";
 
 async function StudyTimeSelect(props: any) {
     let defaultValue = "default";

@@ -1,6 +1,5 @@
 import { getSesession } from "../src/modules/authUtilities";
-import { isStudyTimeEnabled } from "../src/modules/studytimeUtilities";
-import { getNeededStudyTimes } from "../src/modules/userUtilities";
+import { getNeededStudyTimes, isStudyTimeEnabled } from "../src/modules/studytimeUtilities";
 import { getStudyTimes } from "../src/modules/eventUtilities";
 import moment from "moment";
 
@@ -13,7 +12,7 @@ export default async function dashboard() {
         <div>
             <h1>Dashboard</h1>
             <p>Hallo {session.user.name}</p>
-            {studyTime? <p>{String(hasStudyTimes) + "/" + String(needsStudyTimes)} Studienzeiten erledigt</p> : null}
+            {studyTime ? <p>{String(hasStudyTimes) + "/" + String(needsStudyTimes)} Studienzeiten erledigt</p> : null}
         </div>
     );
 }

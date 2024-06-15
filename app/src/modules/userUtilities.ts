@@ -1,6 +1,5 @@
 import { hash } from "bcryptjs";
 import db from "./db";
-import { Prisma } from "@prisma/client";
 
 export async function getUserPerID(id: string) {
   const user = await db.user.findUnique({
@@ -87,10 +86,4 @@ export async function updateUser(id: string, name: string, displayname: string, 
     }
   });
   return user;
-}
-
-export async function getNeededStudyTimes(userID: string) {
-const user = await getUserPerID(userID);
-if(!user.id) return [] as Prisma.JsonArray;
-return user.needs as Prisma.JsonArray;
 }

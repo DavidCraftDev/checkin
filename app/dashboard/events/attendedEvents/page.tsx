@@ -6,7 +6,7 @@ import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getNeededStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimesSelect, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
     const sessionUser = await getSesessionUser();
@@ -32,18 +32,18 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     const studyTime: boolean = isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
     let needed: Array<String> = [];
-    if(studyTime) needed = await getNeededStudyTimes(userData.id, userData.id);
+    if (studyTime) needed = await getNeededStudyTimesSelect(userData.id, userData.id);
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Veranstalltungen</h1>
                     <p>von {userData.displayname}</p>
-                    {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit": "Studienzeiten"}</p> : null}
+                    {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
                 </div>
                 <CalendarWeek searchParams={searchParams} />
             </div>
-            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} needed={needed}/>
+            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} needed={needed} />
             <p>Exportieren als:
                 <a href={"/export/events/attended/json?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".json"} className="hover:underline mx-1">JSON</a>
                 <a href={"/export/events/attended/xlsx?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".xlsx"} className="hover:underline mx-1">XLSX</a>
