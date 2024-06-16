@@ -120,13 +120,14 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
     return data;
 }
 
-export async function createEvent(name: string, userID: string) {
+export async function createEvent(name: string, userID: string, studyTime: boolean) {
     const cw = moment().week();
     const data = await db.events.create({
         data: {
             name: name,
             user: userID,
-            cw: cw
+            cw: cw,
+            studyTime: studyTime
         }
     });
     if (!data) return {} as any;

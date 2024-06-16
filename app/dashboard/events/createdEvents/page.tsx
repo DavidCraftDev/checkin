@@ -29,7 +29,7 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
         </div>
         <CalendarWeek searchParams={searchParams} />
       </div>
-      <CreateEventForm />
+      <CreateEventForm studyTime={studyTime} />
       <CreatedEventTable events={data} studyTime={studyTime} />
       <p>Exportieren als:
         <a href={"/export/events/created/json?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
