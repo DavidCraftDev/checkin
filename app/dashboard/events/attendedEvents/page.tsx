@@ -29,10 +29,18 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     let addable: boolean = false;
     if ((cw == currentWeek) && (year == currentYear)) addable = true;
     if ((searchParams.userID) && (searchParams.userID !== sessionUser.id)) addable = false;
-    const studyTime: boolean = isStudyTimeEnabled();
+    const studyTime: boolean = await isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
-    let needed: Array<String> = [];
-    if (studyTime) needed = await getNeededStudyTimesSelect(userData.id, userData.id);
+    let neededOld: Array<String> = [];
+    if (studyTime) neededOld = await getNeededStudyTimesSelect(userData.id, userData.id);
+    const studyTimeTypes: any = {};
+    if (studyTime) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].event.studyTime) {
+                studyTimeTypes[data[i].attendance.id] = await getNeededStudyTimesSelect(userData.id, data[i].eventUser.id)
+            }
+        }
+    }
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
@@ -43,7 +51,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                 </div>
                 <CalendarWeek searchParams={searchParams} />
             </div>
-            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} needed={needed} />
+            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} studyTimeTypes={studyTimeTypes} />
             <p>Exportieren als:
                 <a href={"/export/events/attended/json?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".json"} className="hover:underline mx-1">JSON</a>
                 <a href={"/export/events/attended/xlsx?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".xlsx"} className="hover:underline mx-1">XLSX</a>

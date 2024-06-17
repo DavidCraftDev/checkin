@@ -1,9 +1,12 @@
+"use server"
+
 import moment from "moment";
 import { getAttendancesPerUser } from "./eventUtilities";
 import { getUserPerID } from "./userUtilities";
 import { Prisma } from "@prisma/client";
+import db from "./db";
 
-export function isStudyTimeEnabled() {
+export async function isStudyTimeEnabled() {
   let result: boolean = false;
   if (process.env.study_time === "true") {
     result = true;
@@ -19,13 +22,13 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
   let vertretung: Array<String> = [];
   function addVertretung() {
     vertretung.forEach((vertretung: any) => {
-      neededStudyTimes.push("Vertretung:" + vertretung);
+      neededStudyTimes.push("parallel:" + vertretung);
     });
   }
   userData.needs.forEach((need: any) => {
     let found = false;
     attendances.forEach((attendance: any) => {
-      if (attendance.type === need) {
+      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "") === need) {
         found = true;
       }
     });
@@ -90,4 +93,24 @@ export async function getAttendedStudyTimesCount(userID: any, cw: number, year: 
     needed: neededStudyTimes
   })
   return attendedStudyTimesCount[0];
+}
+
+export async function saveStudyTimeType(attendanceID: string, type: string) {
+  let check = await db.attendance.findMany({
+    where: {
+      type: type,
+      cw: moment().week(),
+      created_at: {
+        gte: moment().startOf("week").toISOString(),
+        lte: moment().endOf("week").toISOString()
+      }
+    }
+  });
+  if (check.length > 0) return "error";
+  let data = await db.attendance.update({
+    where: { id: attendanceID },
+    data: { type: type }
+  });
+  if (data.type === type) return "success";
+  return "error";
 }
