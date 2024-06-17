@@ -50,7 +50,7 @@ function EventTable(attendances: any) {
                         {attendances.attendances.map((attendance: any) => (
                             <tr key={attendance.attendance.id}>
                                 <td>{attendance.user.displayname}</td>
-                                {attendances.studyTime ? <td>{attendance.attendance.type}</td> : null}
+                                {attendances.studyTime ? attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:")}</td> : <td>❌</td> : null}
                                 <td>{attendance.attendance.studentNote}</td>
                                 {attendances.addable ? <td><textarea defaultValue={attendance.attendance.teacherNote} onChange={(e) => handleTeacherNoteChange(e.target.value, attendance.attendance.id)} placeholder="Lehrer Notiz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea></td> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td>{moment(Date.parse(attendance.attendance.created_at)).format("DD.MM.YYYY HH:mm")}</td>
