@@ -19,7 +19,7 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
   if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/createEvents");
   if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/createEvents");
   const data = await getCreatedEventsPerUser(sessionUser.id, cw, year);
-  const studyTime: boolean = isStudyTimeEnabled();
+  const studyTime: boolean = await isStudyTimeEnabled();
   return (
     <div>
       <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">

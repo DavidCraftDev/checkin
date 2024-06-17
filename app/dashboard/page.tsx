@@ -5,7 +5,7 @@ import moment from "moment";
 
 export default async function dashboard() {
     const session = await getSesession();
-    const studyTime: boolean = isStudyTimeEnabled();
+    const studyTime: boolean = await isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(session.user.id, moment().week(), moment().year()).then((result) => result.length);
     const needsStudyTimes = await getNeededStudyTimes(session.user.id).then((result) => result.length);
     return (

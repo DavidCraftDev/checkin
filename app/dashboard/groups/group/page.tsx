@@ -22,7 +22,7 @@ export default async function group({ searchParams }: { searchParams: SearchPara
 
   let groupData = await getGroupMembers(groupID, cw, year);
   const gruppenMitglieder = groupData.length;
-  const studyTime = isStudyTimeEnabled();
+  const studyTime = await isStudyTimeEnabled();
   const data: any = {};
   for (const user of groupData) {
     data[user.user.id] = await getAttendedStudyTimesCount(user.user.id, cw, year);
