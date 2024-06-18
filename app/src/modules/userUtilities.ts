@@ -1,5 +1,6 @@
 import { hash } from "bcryptjs";
 import db from "./db";
+import { Prisma } from "@prisma/client";
 
 export async function getUserPerID(id: string) {
   const user = await db.user.findUnique({
@@ -31,7 +32,7 @@ export async function getUserID(name: string) {
   return user.id;
 }
 
-export async function createUser(name: string, displayname: string, permission: number, group: string, password: string) {
+export async function createUser(name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password: string) {
   const passwordHash = await hash(password, 12);
   const username = await db.user.count({
     where: {
@@ -45,13 +46,15 @@ export async function createUser(name: string, displayname: string, permission: 
       displayname: displayname,
       permission: permission,
       group: group,
+      needs: needs,
+      competence: competence,
       password: passwordHash
     }
   });
   return user;
 }
 
-export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string, password?: string) {
+export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password?: string) {
   let passwordHash
   if (password) {
     passwordHash = await hash(password, 12);
@@ -75,7 +78,9 @@ export async function updateUser(id: string, name: string, displayname: string, 
     username: name.toLowerCase(),
     displayname: displayname,
     permission: permission,
-    group: group
+    group: group,
+    needs: needs,
+    competence: competence
   });
   const user = await db.user.update({
     where: {
