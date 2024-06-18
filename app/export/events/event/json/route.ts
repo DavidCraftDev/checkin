@@ -1,9 +1,9 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const user = await getSesessionUser(1);
+    const user = await getSessionUser(1);
     const eventID = request.nextUrl.searchParams.get("eventID")
     if (!eventID) return Response.json({ error: "No eventID provided" })
     const event = await getEventPerID(eventID)

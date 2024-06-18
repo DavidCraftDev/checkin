@@ -1,4 +1,4 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getAttendancesPerUser, getStudyTimes } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
@@ -10,7 +10,7 @@ import { getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSe
 import CreateStudyTimeNote from "./createStudyTimeNote.component";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
-    const sessionUser = await getSesessionUser();
+    const sessionUser = await getSessionUser();
     if (searchParams.userID && sessionUser.permission < 1) redirect("/dashboard");
     const userID = searchParams.userID || sessionUser.id;
     let userData;

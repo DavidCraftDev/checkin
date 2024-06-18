@@ -11,7 +11,7 @@ export async function getSesession() {
     return session;
 }
 
-export async function getSesessionUser(permission?: Number) {
+export async function getSessionUser(permission?: Number) {
     const session = await getSesession();
     if (permission) {
         if (session.user.permission < permission) {

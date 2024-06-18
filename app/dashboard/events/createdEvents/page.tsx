@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import moment from "moment";
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
@@ -9,7 +9,7 @@ import CreateEventForm from "./createEventForm.component";
 import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
-  const sessionUser = await getSesessionUser(1);
+  const sessionUser = await getSessionUser(1);
   if (sessionUser.permission < 1) redirect("/dashboard");
 
   const currentWeek = moment().week();

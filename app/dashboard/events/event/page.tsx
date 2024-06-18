@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
@@ -8,7 +8,7 @@ import CheckinForm from "./checkinForm.component";
 import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function event({ searchParams }: { searchParams: SearchParams }) {
-    const user = await getSesessionUser(1);
+    const user = await getSessionUser(1);
     const userID = user.id;
     const EventID = searchParams.id
     if (!EventID) notFound();

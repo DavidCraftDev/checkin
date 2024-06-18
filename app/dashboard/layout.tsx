@@ -1,9 +1,9 @@
 import SideNav from '@/app/src/ui/sidenav';
-import { getSesessionUser } from '../src/modules/authUtilities';
+import { getSessionUser } from '../src/modules/authUtilities';
 import { Toaster } from "react-hot-toast";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const user = await getSesessionUser();
+  const user = await getSessionUser();
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
       <Toaster position="bottom-center" />

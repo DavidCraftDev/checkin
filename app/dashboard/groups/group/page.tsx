@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import moment from "moment";
 import { getGroupMembers } from "@/app/src/modules/groupUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
@@ -8,7 +8,7 @@ import GroupTable from "./groupTable.component";
 import { getAttendedStudyTimesCount, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function group({ searchParams }: { searchParams: SearchParams }) {
-  const sessionUser = await getSesessionUser(1);
+  const sessionUser = await getSessionUser(1);
   if (searchParams.userID && sessionUser.permission < 2) redirect("/dashboard");
   const groupID = searchParams.groupID || sessionUser.group;
   if (!groupID) notFound();
