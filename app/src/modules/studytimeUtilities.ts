@@ -78,7 +78,7 @@ export async function getAttendedStudyTimesCount(userID: any, cw: number, year: 
     result.forEach((studyTime: String) => {
       if (studyTime.startsWith("parallel:")) {
         parallelStudyTimes++;
-      } else if (studyTime.startsWith("noted:")) {
+      } else if (studyTime.startsWith("note:")) {
         notedStudyTimes++;
       } else {
         normalStudyTimes++;
@@ -113,4 +113,35 @@ export async function saveStudyTimeType(attendanceID: string, type: string) {
   });
   if (data.type === type) return "success";
   return "error";
+}
+
+export async function createUserStudyTimeNote(userID: string, cw: number) {
+  let note = await db.attendance.create({
+    data: {
+      userID: userID,
+      eventID: "NOTE",
+      cw: Number(cw),
+      teacherNote: "- Studienzeit Notiz -"
+    }
+  });
+  if (note.eventID === "NOTE") return "success";
+  return "error";
+}
+
+export async function getNeededStudyTimesForNotes(userID: string) {
+  const user = await getUserPerID(userID);
+  const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
+  let neededStudyTimes: Array<String> = [];
+  user.needs.forEach((need: any) => {
+    let found = false;
+    attendances.forEach((attendance: any) => {
+      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need) {
+        found = true;
+      }
+    });
+    if (!found) {
+      neededStudyTimes.push("note:" + need);
+    }
+  });
+  return neededStudyTimes;
 }

@@ -26,7 +26,7 @@ function AttendedEventTable(props: any) {
                             <tr key={attendance.attendance.id}>
                                 <td>{attendance.event.name}</td>
                                 <td>{attendance.eventUser.displayname}</td>
-                                {props.studyTime ? attendance.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendance.attendance} studyTimeTypes={props.studyTimeTypes[attendance.attendance.id]} /> : attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
+                                {props.studyTime ? attendance.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendance.attendance} studyTimeTypes={props.studyTimeTypes[attendance.attendance.id]} /> : attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
                                 {props.addable ? <StudentNote attendance={attendance.attendance} /> : <td>{attendance.attendance.studentNote}</td>}
                                 <td>{attendance.attendance.teacherNote}</td>
                                 <td>{moment(Date.parse(attendance.attendance.created_at)).format("DD.MM.YYYY HH:mm")}</td>

@@ -6,7 +6,8 @@ import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getNeededStudyTimesSelect, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimesForNotes, getNeededStudyTimesSelect, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import CreateStudyTimeNote from "./createStudyTimeNote.component";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
     const sessionUser = await getSesessionUser();
@@ -31,13 +32,15 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     if ((searchParams.userID) && (searchParams.userID !== sessionUser.id)) addable = false;
     const studyTime: boolean = await isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
-    let neededOld: Array<String> = [];
-    if (studyTime) neededOld = await getNeededStudyTimesSelect(userData.id, userData.id);
     const studyTimeTypes: any = {};
     if (studyTime) {
         for (let i = 0; i < data.length; i++) {
             if (data[i].event.studyTime) {
-                studyTimeTypes[data[i].attendance.id] = await getNeededStudyTimesSelect(userData.id, data[i].eventUser.id)
+                if (data[i].event.id !== "NOTE") {
+                    studyTimeTypes[data[i].attendance.id] = await getNeededStudyTimesSelect(userData.id, data[i].eventUser.id)
+                } else {
+                    studyTimeTypes[data[i].attendance.id] = await getNeededStudyTimesForNotes(userData.id)
+                }
             }
         }
     }
@@ -48,6 +51,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                     <h1>Teilgenommene Veranstalltungen</h1>
                     <p>von {userData.displayname}</p>
                     {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {studyTime && addable ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
                 <CalendarWeek searchParams={searchParams} />
             </div>
