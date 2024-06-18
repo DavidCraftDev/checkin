@@ -19,6 +19,7 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
   const teacherData = await getUserPerID(teacherID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
   let neededStudyTimes: Array<String> = [];
+  if (!userData.needs) return [];
   let vertretung: Array<String> = [];
   function addVertretung() {
     vertretung.forEach((vertretung: any) => {
@@ -53,6 +54,7 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
 export async function getNeededStudyTimes(userID: string) {
   const user = await getUserPerID(userID);
   if (!user.id) return [] as Prisma.JsonArray;
+  if (!user.needs) return [] as Prisma.JsonArray;
   return user.needs as Prisma.JsonArray;
 }
 
@@ -132,6 +134,7 @@ export async function getNeededStudyTimesForNotes(userID: string) {
   const user = await getUserPerID(userID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
   let neededStudyTimes: Array<String> = [];
+  if (!user.needs) return [];
   user.needs.forEach((need: any) => {
     let found = false;
     attendances.forEach((attendance: any) => {
