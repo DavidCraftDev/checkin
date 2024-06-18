@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import Link from 'next/link';
 
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
@@ -33,7 +34,7 @@ export default function NavLinks(props: any) {
         if (permission < link.permission) return;
         if (link.name === "Meine Gruppe" && !group) return;
         return (
-          <a
+          <Link
             key={link.name}
             href={link.href}
             className={clsx(
@@ -46,7 +47,7 @@ export default function NavLinks(props: any) {
           >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
-          </a>
+          </Link>
         );
       })}
     </>
