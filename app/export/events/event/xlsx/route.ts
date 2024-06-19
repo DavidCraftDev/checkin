@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const data = new Array()
     data.push([{
         "type": String,
-        "value": "Veranstalltungen " + event.name,
+        "value": "Veranstaltungen " + event.name,
         "fontWeight": "bold"
     }])
     data.push([{

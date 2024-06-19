@@ -24,7 +24,7 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
     <div>
       <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
         <div>
-          <h1>Erstellte Veranstalltungen</h1>
+          <h1>Erstellte Veranstaltungen</h1>
           <p>von {sessionUser.displayname}</p>
         </div>
         <CalendarWeek searchParams={searchParams} />

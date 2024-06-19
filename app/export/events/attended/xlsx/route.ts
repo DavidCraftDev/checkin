@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     const data = new Array()
     data.push([{
         "type": String,
-        "value": "Teilgenommene Veranstalltungen von " + userData.displayname,
+        "value": "Teilgenommene Veranstaltungen von " + userData.displayname,
         "fontWeight": "bold"
     }])
     data.push([{

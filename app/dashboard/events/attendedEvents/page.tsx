@@ -49,7 +49,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>Teilgenommene Veranstalltungen</h1>
+                    <h1>Teilgenommene Veranstaltungen</h1>
                     <p>von {userData.displayname}</p>
                     {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {studyTime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}

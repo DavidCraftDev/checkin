@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
     },
     {
         "type": String,
-        "value": "Teilgenomme Veranstalltungen",
+        "value": "Teilgenomme Veranstaltungen",
         "fontWeight": "bold"
     }])
     group.forEach((user: any) => {
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         const userData = new Array()
         userData.push([{
             "type": String,
-            "value": "Teilgenommene Veranstalltungen von " + userGroup.user.displayname,
+            "value": "Teilgenommene Veranstaltungen von " + userGroup.user.displayname,
             "fontWeight": "bold"
         }])
         userData.push([{

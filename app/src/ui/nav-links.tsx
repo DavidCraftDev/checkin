@@ -16,8 +16,8 @@ import Link from 'next/link';
 const links = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
-  { name: 'Teilgenomme Veranstalltungen', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
-  { name: 'Erstellte Veranstalltungen', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
+  { name: 'Teilgenomme Veranstaltungen', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
+  { name: 'Erstellte Veranstaltungen', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
   { name: 'Gruppen', href: '/dashboard/groups/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
   { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon, mobile: false, permission: 2 },

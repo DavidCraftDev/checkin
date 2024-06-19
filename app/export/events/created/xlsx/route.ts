@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const meta = new Array()
     meta.push([{
         "type": String,
-        "value": "Erstellte Veranstalltungen von " + user.displayname,
+        "value": "Erstellte Veranstaltungen von " + user.displayname,
         "fontWeight": "bold"
     }])
     meta.push([{
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     meta.push([{}])
     meta.push([{
         "type": String,
-        "value": "Veranstalltung",
+        "value": "Veranstaltung",
         "fontWeight": "bold"
     },
     {
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
         const eventData = new Array()
         eventData.push([{
             "type": String,
-            "value": "Veranstalltungen " + event.event.name,
+            "value": "Veranstaltungen " + event.event.name,
             "fontWeight": "bold"
         }])
         eventData.push([{
