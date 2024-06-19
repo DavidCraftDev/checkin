@@ -16,11 +16,11 @@ function StudentNote(attendance: any) {
     }
     async function handleStudentNoteChange(studentNote: string, attendanceID: any) {
         if (cooldown > 0) {
-            cooldown = 50
+            cooldown = 75
             currentNote = studentNote
             return
         } else {
-            cooldown = 50
+            cooldown = 75
             currentNote = studentNote
             while (cooldown > 0) {
                 cooldown--;
