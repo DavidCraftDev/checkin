@@ -3,7 +3,7 @@
 import setStudentNote from "./studentNoteHandler";
 import toast from "react-hot-toast";
 
-function StudentNote(attendance: any) {
+function StudentNote(props: any) {
     let cooldown: number = 0;
     let currentNote: string = ""
     async function setStudentNoteHandler(studentNote: string, attendanceID: any) {
@@ -33,7 +33,7 @@ function StudentNote(attendance: any) {
     }
     return (
         <td>
-            <textarea defaultValue={attendance.attendance.studentNote} onChange={(e) => handleStudentNoteChange(e.target.value, attendance.attendance.id)} placeholder="Schüler Noitz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
+            <textarea defaultValue={props.attendance.studentNote} onChange={(e) => handleStudentNoteChange(e.target.value, props.attendance.id)} placeholder="Schüler Noitz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
         </td>
     )
 }
