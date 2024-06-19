@@ -12,7 +12,6 @@ export default async function dashboard() {
     const hasStudyTimes = await getStudyTimes(session.user.id, moment().week(), moment().year());
     const neededStudyTimes = await getNeededStudyTimes(session.user.id);
     const normalEvents = await getNormalEventsAttendances(session.user.id, moment().week(), moment().year());
-    console.log(normalEvents)
     return (
         <div>
             <h1>Dashboard</h1>
