@@ -212,3 +212,24 @@ export async function getStudyTimes(userID: string, cw: number, year: number) {
     if (!data) return [] as any;
     return data;
 }
+
+export async function getNormalEventsAttendances(userID: string, cw: number, year: number) {
+    const dataAttendances = await db.attendance.findMany({
+        where: {
+            userID: userID,
+            cw: Number(cw),
+            created_at: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31"),
+            },
+            type: null
+        }
+    });
+    // Get Event Data from dataAttendances
+    const data = new Array();
+    for (let i = 0; i < dataAttendances.length; i++) {
+        const dataEvent = await getEventPerID(dataAttendances[i].eventID);
+        data.push(dataEvent);
+    }
+    return data;
+}
