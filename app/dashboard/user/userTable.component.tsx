@@ -1,6 +1,6 @@
 "use client";
 
-function UserTable(users: any) {
+function UserTable(props: any) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -15,7 +15,7 @@ function UserTable(users: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.users.map((user: any) => (
+                        {props.users.map((user: any) => (
                             <tr key={user.id}>
                                 <td>{user.displayname}</td>
                                 <td>{user.username}</td>

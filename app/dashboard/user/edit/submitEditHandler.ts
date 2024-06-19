@@ -1,6 +1,7 @@
 'use server'
 
 import { updateUser } from "@/app/src/modules/userUtilities";
+import { Prisma } from "@prisma/client";
 
 export async function submitEditHandler(formdata: FormData, id: string) {
     const displayname = formdata.get('displayname') as string || "_";
@@ -9,6 +10,10 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     const group = formdata.get('group') as string;
     const password = formdata.get('password') as string;
     const passwordAgain = formdata.get('passwordAgain') as string;
+    const needsData = formdata.get('needs') as string || "";
+    const needsArray = needsData.split(",") as Prisma.JsonArray;
+    const competenceData = formdata.get('competence') as string || "";
+    const competenceArray = competenceData.split(",") as Prisma.JsonArray;
     //Displayname only letters and spaces
     if (!/^[a-zA-Z\s]*$/.test(displayname)) {
         return "displayname"
@@ -20,7 +25,7 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     if (password && (password !== passwordAgain)) {
         return "passwordAgain"
     }
-    const data = await updateUser(id, username, displayname, parseInt(permission), group, password)
+    const data = await updateUser(id, username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
     if (data === "exist") return "exist"
     return "success"
 }

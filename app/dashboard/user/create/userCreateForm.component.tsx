@@ -8,7 +8,7 @@ let displaynameError = false
 let usernameError = false
 let passwordError = false
 
-const UserCreateForm = () => {
+function UserCreateForm(props: any) {
     async function handleSubmit(formdata: FormData) {
         displaynameError = false
         usernameError = false
@@ -56,6 +56,12 @@ const UserCreateForm = () => {
                     <label htmlFor="group">Gruppe</label><br />
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br />
+                    <label htmlFor="needs" className={props.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={props.studyTime ? "" : "hidden"} />
+                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
+                    <br className={props.studyTime ? "" : "hidden"} />
+                    <label htmlFor="competence" className={props.studyTime ? "" : "hidden"} >Kompetenzen (Durch Komma getrennt)</label><br className={props.studyTime ? "" : "hidden"} />
+                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
+                    <br className={props.studyTime ? "" : "hidden"} />
                     <label htmlFor="password">Passwort*</label><br />
                     <input type="text" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
                 </div>

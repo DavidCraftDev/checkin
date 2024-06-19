@@ -11,6 +11,10 @@ h1 {
     @apply bg-green-600 text-white p-2 rounded-full hover:bg-green-700;
   }
 
+  .btn:disabled {
+    @apply bg-green-700 cursor-not-allowed;
+  }
+
   .table {
     @apply w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md;
   }

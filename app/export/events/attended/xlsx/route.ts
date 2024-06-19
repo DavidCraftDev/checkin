@@ -1,4 +1,4 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
@@ -6,7 +6,7 @@ import writeXlsxFile from "write-excel-file/node";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const user = await getSesessionUser();
+    const user = await getSessionUser();
     let userID = request.nextUrl.searchParams.get("userID")
     let userData
     if (userID && (userID !== user.id) && (user.permission < 1)) {

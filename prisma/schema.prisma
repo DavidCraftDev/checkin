@@ -8,20 +8,22 @@ datasource db {
 }
 
 model Attendance {
-  id         String    @default(cuid()) @id @unique
+  id         String   @default(cuid()) @id @unique
   userID     String      
   eventID    String    
   cw         Int
   teacherNote String?
   studentNote String?
+  type       String?
   created_at DateTime @default(now())
 }
 
 model Events {
-  id         String    @default(cuid()) @id @unique
+  id         String   @default(cuid()) @id @unique
   name       String    
   user       String    
   cw         Int
+  studyTime  Boolean  @default(false)
   created_at DateTime @default(now())
 }
 
@@ -32,5 +34,7 @@ model User {
   password    String  
   permission  Int     @default(0)
   group       String? 
-  loginVersion Int @default(0)
+  needs       Json?
+  competence  Json?
+  loginVersion Int    @default(0)
 }

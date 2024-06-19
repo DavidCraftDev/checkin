@@ -1,6 +1,6 @@
 "use client";
 
-function GroupsTable(groups: any) {
+function GroupsTable(props: any) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -13,7 +13,7 @@ function GroupsTable(groups: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {groups.groups.map((group: any) => (
+                        {props.groups.map((group: any) => (
                             <tr key={group.group}>
                                 <td>{group.group}</td>
                                 <td>{group.members} Teilnehmer</td>

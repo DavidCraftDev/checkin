@@ -1,8 +1,8 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAllGroups } from "@/app/src/modules/groupUtilities";
 
 export async function GET() {
-    const user = await getSesessionUser(2);
+    const user = await getSessionUser(2);
     user.password = undefined
     user.loginVersion = undefined
 

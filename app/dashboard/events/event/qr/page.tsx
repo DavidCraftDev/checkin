@@ -1,5 +1,5 @@
 import { SearchParams } from "@/app/src/interfaces/searchParams";
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getEventPerID } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
 import { redirect } from "next/navigation";
@@ -7,7 +7,7 @@ import QRScannerComponent from "./qr.component";
 
 
 export default async function qrScanner({ searchParams }: { searchParams: SearchParams }) {
-    const user = await getSesessionUser(1);
+    const user = await getSessionUser(1);
     const userID = user.id;
     const EventID = searchParams.id
     if (!EventID) redirect("/dashboard/");

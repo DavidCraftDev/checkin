@@ -14,6 +14,8 @@ services:
       # Please set own default admin credentials
       - DEFAULT_ADMIN_USERNAME=OwnUsername
       - DEFAULT_ADMIN_PASSWORD=OwnPassword
+      # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
+      - study_time=false
     ports:
       - "3030:3000"
   db:

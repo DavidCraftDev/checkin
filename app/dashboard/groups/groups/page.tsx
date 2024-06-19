@@ -1,9 +1,9 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getGroups } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./groupsTable.component";
 
 export default async function groups() {
-  await getSesessionUser(2);
+  await getSessionUser(2);
 
   let groups = await getGroups();
   const gruppenAnzahl = Array.from(groups).length;

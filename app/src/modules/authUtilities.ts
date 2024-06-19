@@ -3,7 +3,7 @@ import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
 import { getUserPerID } from "./userUtilities";
 
-export async function getSesession() {
+export async function getSession() {
     const session = await getServerSession(authOptions);
     if (!session) {
         redirect("/login");
@@ -11,8 +11,8 @@ export async function getSesession() {
     return session;
 }
 
-export async function getSesessionUser(permission?: Number) {
-    const session = await getSesession();
+export async function getSessionUser(permission?: Number) {
+    const session = await getSession();
     if (permission) {
         if (session.user.permission < permission) {
             redirect("/dashboard");

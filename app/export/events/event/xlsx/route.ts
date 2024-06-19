@@ -1,4 +1,4 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
-    const user = await getSesessionUser(1);
+    const user = await getSessionUser(1);
     const eventID = request.nextUrl.searchParams.get("eventID")
     if (!eventID) return Response.json({ error: "No eventID provided" })
     const event = await getEventPerID(eventID)

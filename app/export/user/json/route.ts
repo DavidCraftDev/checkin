@@ -1,8 +1,8 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import db from "@/app/src/modules/db";
 
 export async function GET() {
-    const user = await getSesessionUser(2);
+    const user = await getSessionUser(2);
     const users = await db.user.findMany()
     users.forEach((user: any) => {
         user.password = undefined

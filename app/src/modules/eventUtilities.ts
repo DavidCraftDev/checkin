@@ -15,8 +15,21 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
     });
     const data = new Array();
     for (let i = 0; i < dataAttendance.length; i++) {
-        const dataEvent = await getEventPerID(dataAttendance[i].eventID);
-        const dataUserEvent = await getUserPerID(dataEvent.user);
+        let dataEvent;
+        let dataUserEvent;
+        if (dataAttendance[i].eventID === "NOTE") {
+            dataEvent = {
+                id: "NOTE",
+                name: "Notiz",
+                user: userID,
+                cw: cw,
+                studyTime: true
+            };
+            dataUserEvent = await getUserPerID(dataAttendance[i].userID);
+        } else {
+            dataEvent = await getEventPerID(dataAttendance[i].eventID);
+            dataUserEvent = await getUserPerID(dataEvent.user);
+        }
         dataUserEvent.password = undefined
         dataUserEvent.loginVersion = undefined
         data.push({
@@ -120,13 +133,14 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
     return data;
 }
 
-export async function createEvent(name: string, userID: string) {
+export async function createEvent(name: string, userID: string, studyTime: boolean) {
     const cw = moment().week();
     const data = await db.events.create({
         data: {
             name: name,
             user: userID,
-            cw: cw
+            cw: cw,
+            studyTime: studyTime
         }
     });
     if (!data) return {} as any;
@@ -180,5 +194,21 @@ export async function createStudentNote(id: string, note: string) {
         }
     });
     if (!data) return {} as any;
+    return data;
+}
+
+export async function getStudyTimes(userID: string, cw: number, year: number) {
+    const data = await db.attendance.findMany({
+        where: {
+            userID: userID,
+            cw: Number(cw),
+            created_at: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31")
+            },
+            type: { not: null }
+        }
+    });
+    if (!data) return [] as any;
     return data;
 }

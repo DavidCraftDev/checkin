@@ -1,10 +1,10 @@
-import { getSesessionUser } from "@/app/src/modules/authUtilities"
+import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getGroupMembersWithAttendances } from "@/app/src/modules/groupUtilities";
 import moment from "moment";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    const user = await getSesessionUser(1);
+    const user = await getSessionUser(1);
     user.password = undefined
     user.loginVersion = undefined
 

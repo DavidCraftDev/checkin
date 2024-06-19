@@ -2,10 +2,9 @@
 
 import { createTeacherNote } from "@/app/src/modules/eventUtilities";
 
-async function setTeacherNote(event: FormData, attendanceID?: any) {
-    const note: string = String(event.get("Note"))
-    const data = await createTeacherNote(attendanceID, note)
-    if (data.teacherNote === note) return "success"
+async function setTeacherNote(teacherNote: string, attendanceID?: any) {
+    const data = await createTeacherNote(attendanceID, teacherNote)
+    if (data.teacherNote === teacherNote) return "success"
     return "error"
 }
 
