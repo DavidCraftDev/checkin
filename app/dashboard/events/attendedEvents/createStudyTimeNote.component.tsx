@@ -1,6 +1,6 @@
 "use client";
 
-import createNote from "./createNoteHandler";
+import createNote from "./createStudyTimeNoteHandler";
 import { useRouter } from 'next/navigation';
 
 function CreateStudyTimeNote(props: any) {
