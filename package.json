@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "2.1.4",
-    "@prisma/client": "5.14.0",
+    "@prisma/client": "5.15.1",
     "autoprefixer": "10.4.19",
     "bcryptjs": "2.4.3",
     "clsx": "2.1.1",
