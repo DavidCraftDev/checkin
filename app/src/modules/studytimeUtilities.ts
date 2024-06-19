@@ -18,36 +18,28 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
   const userData = await getUserPerID(userID);
   const teacherData = await getUserPerID(teacherID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
-  let neededStudyTimes: Array<String> = [];
   if (!userData.needs) return [];
+  let neededStudyTimes: Array<String> = [];
   let vertretung: Array<String> = [];
+
   function addVertretung() {
     vertretung.forEach((vertretung: any) => {
       neededStudyTimes.push("parallel:" + vertretung);
     });
   }
+
   userData.needs.forEach((need: any) => {
-    let found = false;
-    attendances.forEach((attendance: any) => {
-      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "") === need) {
-        found = true;
-      }
-    });
+    let found = attendances.find((attendance: any) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)
     if (!found) {
-      let foundTeacher = false;
-      teacherData.competence.forEach((competence: any) => {
-        if (competence === need) {
-          foundTeacher = true;
-        }
-      });
-      if (foundTeacher) {
+      if (teacherData.competence.includes(need)) {
         neededStudyTimes.push(need);
       } else {
         vertretung.push(need);
       }
     }
-    addVertretung();
   })
+
+  addVertretung();
   return neededStudyTimes;
 }
 
