@@ -16,12 +16,12 @@ function UserCreateForm(props: any) {
         const data = await submitCreateHandler(formdata)
         if (data === "displayname") {
             displaynameError = true
-            toast.error("Der Name darf nur Buchstaben und Leerzeichen enthalten")
+            toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
             return
         }
         if (data === "username") {
             usernameError = true
-            toast.error("Der Nutzername darf nur Buchstaben und Punkte enthalten")
+            toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
             return
         }
         if (data === "password") {

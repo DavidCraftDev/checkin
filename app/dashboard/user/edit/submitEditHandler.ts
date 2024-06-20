@@ -14,12 +14,12 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     const needsArray = needsData.split(",") as Prisma.JsonArray;
     const competenceData = formdata.get('competence') as string || "";
     const competenceArray = competenceData.split(",") as Prisma.JsonArray;
-    //Displayname only letters and spaces
-    if (!/^[a-zA-Z\s]*$/.test(displayname)) {
+    //Displayname only letters, numbers, commen special character and spaces
+    if (!/^[a-zA-Z0-9 .\-_@#$%&*!]*$/.test(displayname)) {
         return "displayname"
     }
-    //Username only letters and dots
-    if (!/^[a-zA-Z.]*$/.test(username)) {
+    //Username only letters, numbers and dots
+    if (!/^[a-zA-Z0-9.]*$/.test(username)) {
         return "username"
     }
     if (password && (password !== passwordAgain)) {
