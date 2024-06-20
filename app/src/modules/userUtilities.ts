@@ -1,6 +1,7 @@
 import { hash } from "bcryptjs";
 import db from "./db";
 import { Prisma } from "@prisma/client";
+import { randomInt } from "crypto";
 
 export async function getUserPerID(id: string) {
   const user = await db.user.findUnique({
@@ -74,13 +75,15 @@ export async function updateUser(id: string, name: string, displayname: string, 
       password: passwordHash
     });
   }
+  let loginVersion: number = randomInt(1000000);
   data.push({
     username: name.toLowerCase(),
     displayname: displayname,
     permission: permission,
     group: group,
     needs: needs,
-    competence: competence
+    competence: competence,
+    loginVersion: loginVersion
   });
   const user = await db.user.update({
     where: {
