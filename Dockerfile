@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.0 as build
+FROM --platform="$BUILDPLATFORM" alpine:3.20.1 as build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
@@ -15,7 +15,7 @@ RUN apk upgrade --no-cache -a && \
     npx prisma generate && \
     npm run build
 
-FROM alpine:3.20.0
+FROM alpine:3.20.1
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini nodejs-current npm
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
