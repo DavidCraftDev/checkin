@@ -24,7 +24,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>{studyTime ? "Studienzeit" : "Veranstaltung"}: {event.name}</h1>
+                    <h1>{studyTime ? null : "Veranstaltung: "}{event.name}</h1>
                     <p>erstellt am {moment(Date.parse(event.created_at)).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
                     <p>{attendanceCount} Teilnehmer</p>
                 </div>

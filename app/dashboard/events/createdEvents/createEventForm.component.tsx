@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import submitHandler from "./submitHandler";
+import { submitHandlerEvent, submitHandlerStudyTime } from "./submitHandler";
 
 function CreateEventForm(props: any) {
-    const [type, setType] = useState("");
     return (
-        <form action={submitHandler}>
-            <div>
-                <label htmlFor="eventName">Veranstaltungsname</label><br />
-                <input type="text" name="eventName" id="eventName" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
-                <input type="hidden" name="type" value={type} />
-            </div>
-            <button type="submit" className="btn mb-1 md:mr-1 md:mb-0" onClick={() => setType("event")}>Veranstaltung Erstellen</button>
-            {props.studyTime ? <button type="submit" className="btn" onClick={() => setType("studyTime")}>Studienzeit Erstellen</button> : null}
-        </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1">
+            <form action={submitHandlerStudyTime}>
+                <div>
+                    <label htmlFor="studyTime">Studienzeit</label><br />
+                    <select id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1">
+                        <option disabled value="default" selected>Studienzeit wählen</option>
+                        {props.user.competence.map((competence: any) => (
+                            <option key={competence} value={competence}>{competence}</option>
+                        ))}
+                        <option value="parallel">Vertretung</option>
+                    </select> <br />
+                    <button type="submit" className="btn" >Studienzeit Erstellen</button>
+                </div>
+            </form>
+            <form action={submitHandlerEvent}>
+                <div>
+                    <label htmlFor="eventName">Veranstaltungsname</label><br />
+                    <input type="text" name="eventName" id="eventName" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                </div>
+                <button type="submit" className="btn">Veranstaltung Erstellen</button>
+            </form>
+        </div>
     )
 }
 
