@@ -6,7 +6,7 @@ import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSelect, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getMissingStudyTimes, getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSelect, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 import CreateStudyTimeNote from "./createStudyTimeNote.component";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
@@ -33,6 +33,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     const studyTime: boolean = await isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
     const needsStudyTimes = await getNeededStudyTimes(userData.id).then((result) => result.length);
+    const missingStudyTimes = await getMissingStudyTimes(userData.id);
     const studyTimeTypes: any = {};
     if (studyTime) {
         for (let i = 0; i < data.length; i++) {
@@ -52,6 +53,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                     <h1>Teilgenommene Veranstaltungen</h1>
                     <p>von {userData.displayname}</p>
                     {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {studyTime && addable && needsStudyTimes ? <p>Fehlende Studienzeiten: {missingStudyTimes.map((studyTime: any) => studyTime + ", ")}</p> : null}
                     {studyTime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
                 <CalendarWeek searchParams={searchParams} />
