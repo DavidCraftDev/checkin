@@ -140,3 +140,15 @@ export async function getNeededStudyTimesForNotes(userID: string) {
   });
   return neededStudyTimes;
 }
+
+export async function getMissingStudyTimes(userID: string) {
+  const neededStudyTimes = await getNeededStudyTimes(userID);
+  const attendedStudyTimes = await getAttendedStudyTimes(userID, moment().week(), moment().year());
+  let missingStudyTimes: Array<String> = [];
+  neededStudyTimes.forEach((neededStudyTime: any) => {
+    if (!attendedStudyTimes.find((attendedStudyTime: any) => attendedStudyTime.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
+      missingStudyTimes.push(neededStudyTime);
+    }
+  });
+  return missingStudyTimes;
+}

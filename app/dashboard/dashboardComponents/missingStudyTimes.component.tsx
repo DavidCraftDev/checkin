@@ -11,18 +11,14 @@ function MissingStudyTimes(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Test</td>
-                        </tr>
-                        <tr>
-                            <td>Test</td>
-                        </tr>
-                        <tr>
-                            <td>Test</td>
-                        </tr>
-                        <tr>
-                            <td>Test</td>
-                        </tr>
+                        {props.missingStudyTimes.map((studyTime: any) => {
+                            return (
+                                <tr key={studyTime}>
+                                    <td>{studyTime}</td>
+                                </tr>
+                            )
+                        })}
+                        {props.missingStudyTimes.length === 0 ? <tr><td className="italic">Alle Studienzeiten erledigt!</td></tr> : null}
                     </tbody>
                 </table>
             </div>
