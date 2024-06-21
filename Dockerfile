@@ -13,7 +13,7 @@ RUN apk upgrade --no-cache -a && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm install --force @next/swc-linux-x64-musl && \
-      rm -rv /app/node_modules/@next/swc-linux-arm64-* && \
+      rm -rvf /app/node_modules/@next/swc-linux-arm64-* && \
       rm -rv /app/node_modules/@next/swc-linux-*-gnu && \
       rm -v /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       rm -v /app/node_modules/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node && \
