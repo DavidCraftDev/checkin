@@ -12,9 +12,9 @@ RUN apk upgrade --no-cache -a && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npm install --force @next/swc-linux-x64-musl && \
-      rm -rvf /app/node_modules/@next/swc-linux-arm64-* && \
-      rm -rv /app/node_modules/@next/swc-linux-*-gnu && \
+#      npm_config_target_platform=linux npm_config_target_arch=x64 npm install --force @next/swc-linux-x64-musl && \
+#      rm -rvf /app/node_modules/@next/swc-linux-arm64-* && \
+#      rm -rv /app/node_modules/@next/swc-linux-*-gnu && \
       rm -v /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       rm -v /app/node_modules/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node && \
       rm -v /app/node_modules/.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node && \
@@ -25,9 +25,9 @@ RUN apk upgrade --no-cache -a && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm install --force @next/swc-linux-arm64-musl && \
-      rm -rv /app/node_modules/@next/swc-linux-x64-* && \
-      rm -rvf /app/node_modules/@next/swc-linux-*-gnu && \
-      rm -rv /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
+#      rm -rv /app/node_modules/@next/swc-linux-x64-* && \
+#      rm -rvf /app/node_modules/@next/swc-linux-*-gnu && \
+#      rm -rv /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       rm -v /app/node_modules/prisma/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
       rm -v /app/node_modules/.prisma/client/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
