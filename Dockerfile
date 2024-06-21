@@ -8,7 +8,7 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs-current npm file binutils && \
-    npm install --global eslint clean-modules && \
+    npm install --global clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npx prisma generate && \
