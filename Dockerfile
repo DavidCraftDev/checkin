@@ -20,6 +20,7 @@ RUN apk upgrade --no-cache -a && \
     fi && \
     npm cache clean --force && \
     clean-modules --yes && \
+    find /app/node_modules -name "*gnu.node" -delete && \
     find /app/node_modules -name '*.node' -exec strip -s {} \;
 
 FROM alpine:3.20.1
