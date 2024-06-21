@@ -12,14 +12,14 @@ RUN apk upgrade --no-cache -a && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npm install @next/swc-linux-x64-musl && \
+      npm_config_target_platform=linux npm_config_target_arch=x64 npm install --force @next/swc-linux-x64-musl && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npx prisma generate && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm run build && \
       for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "x86-64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
-      npm_config_target_platform=linux npm_config_target_arch=arm64 npm install @next/swc-linux-arm64-musl && \
+      npm_config_target_platform=linux npm_config_target_arch=arm64 npm install --force @next/swc-linux-arm64-musl && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm run build && \
       for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "aarch64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
