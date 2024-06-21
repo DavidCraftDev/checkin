@@ -28,6 +28,8 @@ RUN apk upgrade --no-cache -a && \
       rm -rv /app/node_modules/@next/swc-linux-x64-* && \
       rm -rvf /app/node_modules/@next/swc-linux-*-gnu && \
       rm -rv /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
+      rm -v /app/node_modules/prisma/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
+      rm -v /app/node_modules/.prisma/client/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx next build && \
       for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "aarch64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
