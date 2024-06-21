@@ -26,7 +26,7 @@ RUN apk upgrade --no-cache -a && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm install --force @next/swc-linux-arm64-musl && \
       rm -rv /app/node_modules/@next/swc-linux-x64-* && \
-      rm -rv /app/node_modules/@next/swc-linux-*-gnu && \
+      rm -rvf /app/node_modules/@next/swc-linux-*-gnu && \
       rm -rv /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx next build && \
