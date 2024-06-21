@@ -29,8 +29,9 @@ RUN apk upgrade --no-cache -a && \
 FROM alpine:3.20.1 AS strip
 COPY --from=build /app /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates binutils && \
-    find /app/node_modules -name "*.node" -exec strip -s {} \;
+    apk add --no-cache ca-certificates binutils file && \
+    find /app/node_modules -name '*.node' -exec strip -s {} \; && \
+    find /app/node_modules -name "*.node" -exec file {} \;
 
 FROM alpine:3.20.1
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
