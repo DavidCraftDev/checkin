@@ -13,16 +13,18 @@ RUN apk upgrade --no-cache -a && \
       sed -i "s|\[\"native\"\]|\[\"linux-musl-openssl-3.0.x\"\]|g" /app/prisma/schema.prisma && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
       npm_config_target_platform=linux npm_config_target_arch=x64 npx prisma generate && \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npm run build; \
+      npm_config_target_platform=linux npm_config_target_arch=x64 npm run build && \
+      for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "x86-64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
       sed -i "s|\[\"native\"\]|\[\"linux-musl-arm64-openssl-3.0.x\"\]|g" /app/prisma/schema.prisma && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install && \
       npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
-      npm_config_target_platform=linux npm_config_target_arch=arm64 npm run build; \
+      npm_config_target_platform=linux npm_config_target_arch=arm64 npm run build && \
+      for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "aarch64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
     fi && \
     npm cache clean --force && \
     clean-modules --yes && \
-    find /app/node_modules -name "*gnu.node" -delete && \
+    rm -vr /app/node_modules/@next/swc-linux-* && \
     find /app/node_modules -name '*.node' -exec strip -s {} \;
 
 FROM alpine:3.20.1
