@@ -7,7 +7,7 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
     TARGETARCH
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs-current npm file binutils && \
+    apk add --no-cache ca-certificates nodejs-current npm file && \
     npm install --global clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
@@ -25,14 +25,18 @@ RUN apk upgrade --no-cache -a && \
       for file in $(find /app/node_modules -name "*.node" -exec file {} \; | grep -v "aarch64" | sed "s|\(.*\):.*|\1|g"); do rm -v "$file"; done; \
     fi && \
     npm cache clean --force && \
-    clean-modules --yes && \
-    find /app/node_modules -name '*.node' -exec strip -s {} \;
+    clean-modules --yes
+FROM alpine:3.20.1 AS strip
+COPY --from=build /app /app
+RUN apk upgrade --no-cache -a && \
+    apk add --no-cache ca-certificates binutils && \
+    find /app/node_modules -name "*.node" -exec strip -s {} \;
 
 FROM alpine:3.20.1
+COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --from=strip --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini nodejs-current npm
-COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY --from=build --chown=nobody:nobody /app                  /app
 USER nobody
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
