@@ -27,12 +27,21 @@ model Events {
   created_at DateTime @default(now())
 }
 
+model StudyTimeData {
+  id        String   @default(cuid()) @id @unique
+  userID    String
+  completed Json
+  missing   Json
+  cw        Int
+  year      Int
+}
+
 model User {
   id          String  @default(cuid()) @id @unique
   username    String  @unique
   displayname String 
-  password    String  
   permission  Int     @default(0)
+  password    String?  
   group       String? 
   needs       Json?
   competence  Json?
