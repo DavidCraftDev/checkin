@@ -25,6 +25,6 @@ export async function submitHandlerStudyTime(formData: FormData) {
     const sessionUser = await getSessionUser(1);
     const userID: string = sessionUser.id || "";
     const studyTimeType: string = String(formData.get("studyTime"));
-    const data = await createEvent("Studienzeit " + studyTimeType + " " + sessionUser.displayname, userID, true);
+    const data = await createEvent("Studienzeit " + studyTimeType.replace("parallel", "Vertretung") + " " + sessionUser.displayname, userID, true);
     redirect("/dashboard/events/event?id=" + data.id);
 }
