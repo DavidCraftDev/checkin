@@ -7,13 +7,20 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
     TARGETARCH
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs-current npm && \
+    apk add --no-cache ca-certificates nodejs-current npm file binutils && \
     npm install --global clean-modules && \
-    if [ "$TARGETARCH" = "amd64" ]; then npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install; \
-    elif [ "$TARGETARCH" = "arm64" ]; then npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install; fi && \
+    if [ "$TARGETARCH" = "amd64" ]; then \
+      npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
+      npm_config_target_platform=linux npm_config_target_arch=x64 npx prisma generate && \
+      npm_config_target_platform=linux npm_config_target_arch=x64 npm run build; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+      npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install && \
+      npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
+      npm_config_target_platform=linux npm_config_target_arch=arm64 npm run build; \
+    fi && \
+    npm cache clean --force && \
     clean-modules --yes && \
-    npx prisma generate && \
-    npm run build
+    find /app/node_modules -name '*.node' -exec strip -s {} \;
 
 FROM alpine:3.20.1
 RUN apk upgrade --no-cache -a && \
