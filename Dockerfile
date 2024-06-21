@@ -1,21 +1,19 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.0 as build
+FROM alpine:3.20.1 AS build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=production \
-    TARGETARCH
+    NODE_ENV=production
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs-current npm && \
     npm install --global clean-modules && \
-    if [ "$TARGETARCH" = "amd64" ]; then npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install; \
-    elif [ "$TARGETARCH" = "arm64" ]; then npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install; fi && \
+    npm clean-install && \
     clean-modules --yes && \
     npx prisma generate && \
     npm run build
 
-FROM alpine:3.20.0
+FROM alpine:3.20.1
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini nodejs-current npm
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
