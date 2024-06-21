@@ -1,14 +1,16 @@
 # syntax=docker/dockerfile:labs
-FROM alpine:3.20.1 AS build
+FROM --platform="$BUILDPLATFORM" alpine:3.20.1 as build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=production
+    NODE_ENV=production \
+    TARGETARCH
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs-current npm && \
     npm install --global clean-modules && \
-    npm clean-install && \
+    if [ "$TARGETARCH" = "amd64" ]; then npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install; \
+    elif [ "$TARGETARCH" = "arm64" ]; then npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install; fi && \
     clean-modules --yes && \
     npx prisma generate && \
     npm run build
