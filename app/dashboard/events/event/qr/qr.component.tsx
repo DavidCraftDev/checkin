@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import QrScanner from 'qr-scanner';
 import { submitHandler } from './submitHandler';
 import toast from 'react-hot-toast';
@@ -8,10 +8,10 @@ import { useSearchParams } from 'next/navigation';
 
 let lastResult: string
 
-const QRScannerComponent: React.FC =  () => {
+function QRScannerComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const id = useSearchParams().get('id');
-  const startScanner = async () => {
+  const startScanner = useCallback(async () => {
     const qrScanner = new QrScanner(
       videoRef.current!,
       async result => {
@@ -24,20 +24,19 @@ const QRScannerComponent: React.FC =  () => {
         const eventID = id
         const userID = result.data.replace("checkin://", "")
         const data: any = await submitHandler(userID, eventID)
-        if (data.startsWith("success")) {
-          toast.success("Nutzer erfolgreich hinzugefügt")
-          return
-        }
         if (data === "ErrorNotFound") {
           toast.error("Nutzer nicht gefunden")
           return
-        }
-        if (data === "ErrorAlreadyCheckedIn") {
+        } else if (data === "ErrorAlreadyCheckedIn") {
           toast.error("Nutzer bereits hinzugefügt")
           return
+        } else if (data.id == userID) {
+          toast.success(data.displayname + " erfolgreich hinzugefügt")
+          return
+        } else {
+          toast.error("Unbekannter Fehler")
+          return
         }
-        toast.error("Unbekannter Fehler")
-        return
       },
       {
         maxScansPerSecond: 10,
@@ -46,7 +45,7 @@ const QRScannerComponent: React.FC =  () => {
       },
     );
     qrScanner.start();
-  };
+  }, [id]);
   useEffect(() => {
     startScanner();
   }, [startScanner]);

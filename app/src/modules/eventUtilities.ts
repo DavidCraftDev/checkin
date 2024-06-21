@@ -168,7 +168,10 @@ export async function checkINHandler(eventID: string, userID: string) {
             cw: moment().week(),
         }
     });
-    return "success" + data.userID;
+    let userData = await getUserPerID(userID);
+    userData.password = undefined
+    userData.loginVersion = undefined
+    return userData;
 }
 
 export async function createTeacherNote(id: string, note: string) {

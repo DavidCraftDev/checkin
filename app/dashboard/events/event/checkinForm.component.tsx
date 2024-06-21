@@ -10,21 +10,20 @@ function CheckinForm(data: any) {
     async function eventHandler(formData: FormData) {
         if (!formData.get("name")) return;
         const data: any = await submitHandler(formData, eventID)
-        if (data.startsWith("success")) {
-            toast.success(formData.get("name") + " erfolgreich hinzugefügt")
-            router.refresh()
-            return
-        }
         if (data === "ErrorNotFound") {
             toast.error("Nutzer nicht gefunden")
             return
-        }
-        if (data === "ErrorAlreadyCheckedIn") {
+        } else if (data === "ErrorAlreadyCheckedIn") {
             toast.error("Nutzer bereits hinzugefügt")
             return
+        } else if (data.username == formData.get("name")) {
+            toast.success(data.displayname + " erfolgreich hinzugefügt")
+            router.refresh()
+            return
+        } else {
+            toast.error("Unbekannter Fehler")
+            return
         }
-        toast.error("Unbekannter Fehler")
-        return
     }
     return (
         <form action={eventHandler} className="flex flex-col items-center flex-auto justify-center">
