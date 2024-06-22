@@ -44,6 +44,7 @@ model User {
   password    String?  
   group       String? 
   needs       Json?
+  needsStatus String?
   competence  Json?
   loginVersion Int    @default(0)
 }

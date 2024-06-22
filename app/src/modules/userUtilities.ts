@@ -2,6 +2,10 @@ import { hash } from "bcryptjs";
 import db from "./db";
 import { Prisma } from "@prisma/client";
 import { randomInt } from "crypto";
+import moment from "moment";
+import { saveNeededStudyTimes } from "./studytimeUtilities";
+
+let saveNeedsCache = new Map<string, number>();
 
 export async function getUserPerID(id: string) {
   const user = await db.user.findUnique({
@@ -9,7 +13,14 @@ export async function getUserPerID(id: string) {
       id: id
     }
   });
-  if (!user) return {} as any;
+  if (!user) return {};
+  const cacheValue = saveNeedsCache.get(user.id) || -1;
+  if (!saveNeedsCache.has(user.id) || !saveNeedsCache.get(user.id) || cacheValue < moment().week()) {
+    {
+      saveNeedsCache.set(user.id, moment().week());
+      saveNeededStudyTimes(user);
+    }
+  }
   return user;
 }
 
