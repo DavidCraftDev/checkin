@@ -174,7 +174,7 @@ export async function saveNeededStudyTimes(user: any) {
   });
   await db.user.update({
     where: { id: user.id },
-    data: { needsStatus: String(moment().week() + "/" + moment().week()) }
+    data: { needsStatus: String(moment().week()) }
   });
   return data;
 }
