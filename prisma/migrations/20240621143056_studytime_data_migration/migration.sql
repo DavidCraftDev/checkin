@@ -5,8 +5,7 @@ ALTER TABLE "User" ALTER COLUMN "password" DROP NOT NULL;
 CREATE TABLE "StudyTimeData" (
     "id" TEXT NOT NULL,
     "userID" TEXT NOT NULL,
-    "completed" JSONB NOT NULL,
-    "missing" JSONB NOT NULL,
+    "needs" JSONB NOT NULL,
     "cw" INTEGER NOT NULL,
     "year" INTEGER NOT NULL,
 

@@ -31,8 +31,7 @@ model Events {
 model StudyTimeData {
   id        String   @default(cuid()) @id @unique
   userID    String
-  completed Json
-  missing   Json
+  needs     Json
   cw        Int
   year      Int
 }
