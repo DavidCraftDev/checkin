@@ -13,9 +13,9 @@ export async function getUserPerID(id: string) {
       id: id
     }
   });
-  if (!user) return {};
+  if (!user) return {} as any;
   const cacheValue = saveNeedsCache.get(user.id) || -1;
-  if (!saveNeedsCache.has(user.id) || !saveNeedsCache.get(user.id) || cacheValue < moment().week()) {
+  if (!saveNeedsCache.has(user.id) || !saveNeedsCache.get(user.id) || cacheValue !== moment().week()) {
     {
       saveNeedsCache.set(user.id, moment().week());
       saveNeededStudyTimes(user);
