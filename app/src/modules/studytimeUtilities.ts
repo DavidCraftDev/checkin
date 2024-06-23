@@ -178,3 +178,30 @@ export async function saveNeededStudyTimes(user: any) {
   });
   return data;
 }
+
+export async function getSavedNeededStudyTimes(userID: string, cw: number, year: number) {
+  const data = await db.studyTimeData.findMany({
+    where: {
+      userID: userID,
+      cw: Number(cw),
+      year: Number(year)
+    }
+  });
+  return data[0]
+}
+
+export async function getSavedMissingStudyTimes(userID: string, cw: number, year: number) {
+  const savedData = await getSavedNeededStudyTimes(userID, cw, year);
+  if (savedData && savedData.needs) {
+    const attendances = await getAttendancesPerUser(userID, cw, year);
+    let missingStudyTimes: Array<String> = [];
+    const needs = savedData.needs as Array<String>;
+    needs.forEach((neededStudyTime: any) => {
+      if (!attendances.find((attendance: any) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
+        missingStudyTimes.push(neededStudyTime);
+      }
+    });
+    return missingStudyTimes;
+  }
+  return [];
+}
