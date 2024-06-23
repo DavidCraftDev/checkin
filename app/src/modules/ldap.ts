@@ -8,7 +8,7 @@ else if(!process.env.LDAP_URI?.startsWith('ldap://') && !process.env.LDAP_URI?.s
 else if(isLDAPEnabled()){
     try {
     ldapClient = createClient({
-        url: process.env.LDAP_URI,
+        url: process.env.LDAP_URI as string,
         reconnect: true
     });
     } catch (error) {
