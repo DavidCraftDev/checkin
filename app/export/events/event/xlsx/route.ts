@@ -75,11 +75,25 @@ export async function GET(request: NextRequest) {
     {
         "type": String,
         "value": event.cw + "/" + moment(event.created_at).year()
+    },
+    {
+        "type": Boolean,
+        "value": event.event.studyTime,
+    },
+    {
+        "type": String,
+        "value": "Studienzeit:",
+        "fontWeight": "bold"
     }])
     data.push([{}])
     data.push([{
         "type": String,
         "value": "Schüler",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Studienzeit",
         "fontWeight": "bold"
     },
     {
@@ -104,6 +118,11 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": String,
+            "value": attendance.attendance.type,
+            "wrap": true
+        },
+        {
+            "type": String,
             "value": attendance.attendance.studentNote,
             "wrap": true
         },
@@ -124,9 +143,10 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 },
         { width: 20 },
+        { width: 20 },
         { width: 20 }
     ];
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: event.name, columns: columns })
+    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: event.name.replace("Studienzeit", "SZ"), columns: columns })
     return new Response(bufferData, {
         status: 200,
         headers: {

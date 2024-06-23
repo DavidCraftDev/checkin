@@ -10,7 +10,7 @@ export default async function groups() {
   return (
     <div>
       <h1>Gruppen</h1>
-      <p>{gruppenAnzahl} Gruppen</p>
+      <p>{gruppenAnzahl} {gruppenAnzahl == 1 ? "Gruppe" : "Gruppen"}</p>
       <GroupsTable groups={groups} />
       <p>Exportieren als:
         <a href={"/export/groups/groups/json"} download={"groups" + ".json"} className="hover:underline mx-1">JSON</a>

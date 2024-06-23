@@ -11,15 +11,6 @@ export async function GET() {
     })
     user.password = undefined
     user.loginVersion = undefined
-    const dataOLD = new Array()
-    dataOLD.push({
-        meta: {
-            type: "user",
-            exportedEntries: users.length,
-            requestedBy: user.id,
-            time: new Date()
-        }
-    })
     const data = new Array()
     data.push([{
         "type": String,
@@ -74,6 +65,16 @@ export async function GET() {
         "type": String,
         "value": "Gruppe",
         "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Benötigte Studienzeiten",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Kompetenzen",
+        "fontWeight": "bold"
     }])
     users.forEach((userData: any) => {
         data.push([{
@@ -93,13 +94,25 @@ export async function GET() {
             "type": String,
             "value": userData.group,
             "wrap": true
+        },
+        {
+            "type": String,
+            "value": userData.needs.toString().replaceAll(",", ", "),
+            "wrap": true
+        },
+        {
+            "type": String,
+            "value": userData.competence.toString().replaceAll(",", ", "),
+            "wrap": true
         }])
     })
     const columns = [
         { width: 20 },
         { width: 20 },
         { width: 20 },
-        { width: 20 }
+        { width: 20 },
+        { width: 24 },
+        { width: 24 }
     ];
     const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
     return new Response(bufferData, {

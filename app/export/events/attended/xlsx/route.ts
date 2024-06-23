@@ -4,6 +4,7 @@ import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
 import writeXlsxFile from "write-excel-file/node";
 import { NextRequest } from "next/server";
+import { getAttendedStudyTimes, getSavedMissingStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser();
@@ -67,6 +68,49 @@ export async function GET(request: NextRequest) {
         "value": cw + "/" + year
     }])
     data.push([{}])
+    if (await isStudyTimeEnabled()) {
+        const studyTimes = await getAttendedStudyTimes(userID, cw, year)
+        const missing = await getSavedMissingStudyTimes(userID, cw, year)
+        data.push([{
+            "type": String,
+            "value": "Erledigte Studienzeiten:",
+            "fontWeight": "bold"
+        },
+        {
+            "type": String,
+            "value": "Davon Vertretungen:",
+            "fontWeight": "bold"
+        },
+        {
+            "type": String,
+            "value": "Davon nur mit Notizen:",
+            "fontWeight": "bold"
+        },
+        {
+            "type": String,
+            "value": "Fehlende Studienzeiten:",
+            "fontWeight": "bold"
+        }])
+        data.push([{
+            "type": String,
+            "value": studyTimes.toString().replaceAll(",", ", "),
+            "wrap": true
+        },
+        {
+            "type": Number,
+            "value": studyTimes.filter((studyTime: any) => studyTime.includes("parallel:")).length,
+        },
+        {
+            "type": Number,
+            "value": studyTimes.filter((studyTime: any) => studyTime.includes("note:")).length,
+        },
+        {
+            "type": String,
+            "value": missing.toString().replaceAll(",", ", "),
+            "wrap": true
+        }])
+        data.push([{}])
+    }
     data.push([{
         "type": String,
         "value": "Veranstaltung",
@@ -75,6 +119,11 @@ export async function GET(request: NextRequest) {
     {
         "type": String,
         "value": "Lehrer",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Type",
         "fontWeight": "bold"
     },
     {
@@ -109,6 +158,11 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": String,
+            "value": attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:"),
+            "wrap": true
+        },
+        {
+            "type": String,
             "value": attendance.attendance.studentNote,
             "wrap": true
         },
@@ -129,6 +183,7 @@ export async function GET(request: NextRequest) {
         }])
     })
     const columns = [
+        { width: 20 },
         { width: 20 },
         { width: 20 },
         { width: 20 },

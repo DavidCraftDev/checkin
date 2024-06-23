@@ -79,12 +79,12 @@ export async function getAttendedStudyTimesCount(userID: any, cw: number, year: 
       }
     });
   });
-  let neededStudyTimes: number = await getNeededStudyTimes(userID).then((result) => result.length);
+  let neededStudyTimes = await getSavedNeededStudyTimes(userID, cw, year).then((result) => result.needs) as Array<String> || [];
   attendedStudyTimesCount.push({
     normal: normalStudyTimes,
     parallel: parallelStudyTimes,
     noted: notedStudyTimes,
-    needed: neededStudyTimes
+    needed: neededStudyTimes.length || 0
   })
   return attendedStudyTimesCount[0];
 }
@@ -187,7 +187,7 @@ export async function getSavedNeededStudyTimes(userID: string, cw: number, year:
       year: Number(year)
     }
   });
-  return data[0]
+  return data[0] || [] as any;
 }
 
 export async function getSavedMissingStudyTimes(userID: string, cw: number, year: number) {

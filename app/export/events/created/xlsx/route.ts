@@ -69,6 +69,11 @@ export async function GET(request: NextRequest) {
         "type": String,
         "value": "Erstellt am",
         "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Studienzeit",
+        "fontWeight": "bold"
     }])
     for (const event of events) {
         meta.push([{
@@ -83,11 +88,18 @@ export async function GET(request: NextRequest) {
             "type": Date,
             "value": new Date(event.event.created_at),
             "format": "DD.MM.YYYY HH:mm"
+        },
+        {
+            "type": Boolean,
+            "value": event.event.studyTime,
         }])
     }
     data.push(meta)
     sheetData.push("Meta")
     columeData.push([{
+        width: 20
+    },
+    {
         width: 20
     },
     {
@@ -103,7 +115,7 @@ export async function GET(request: NextRequest) {
         const eventData = new Array()
         eventData.push([{
             "type": String,
-            "value": "Veranstaltungen " + event.event.name,
+            "value": event.event.name,
             "fontWeight": "bold"
         }])
         eventData.push([{
@@ -130,6 +142,11 @@ export async function GET(request: NextRequest) {
             "type": String,
             "value": "Event CW/Jahr:",
             "fontWeight": "bold"
+        },
+        {
+            "type": String,
+            "value": "Studienzeit:",
+            "fontWeight": "bold"
         }])
         eventData.push([{
             "type": Date,
@@ -152,11 +169,20 @@ export async function GET(request: NextRequest) {
         {
             "type": String,
             "value": calendarWeek + "/" + year
+        },
+        {
+            "type": Boolean,
+            "value": event.event.studyTime,
         }])
         eventData.push([{}])
         eventData.push([{
             "type": String,
             "value": "Schüler",
+            "fontWeight": "bold"
+        },
+        {
+            "type": String,
+            "value": "Studienzeit",
             "fontWeight": "bold"
         },
         {
@@ -181,6 +207,11 @@ export async function GET(request: NextRequest) {
             },
             {
                 "type": String,
+                "value": attendance.attendance.type,
+                "wrap": true
+            },
+            {
+                "type": String,
                 "value": attendance.attendance.studentNote,
                 "wrap": true
             },
@@ -196,17 +227,20 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(eventData)
-        if (sheetData.includes(event.event.name)) {
-            for (let i = 1; i < 9999; i++) {
-                if (!sheetData.includes(event.event.name + " (" + i + ")")) {
-                    sheetData.push(event.event.name + " (" + i + ")")
+        if (sheetData.includes(event.event.name.replace("Studienzeit", "SZ"))) {
+            for (let i = 1; i < 999; i++) {
+                if (!sheetData.includes(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")) {
+                    sheetData.push(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetData.push(event.event.name)
+            sheetData.push(event.event.name.replace("Studienzeit", "SZ"))
         }
         columeData.push([{
+            width: 20
+        },
+        {
             width: 20
         },
         {
