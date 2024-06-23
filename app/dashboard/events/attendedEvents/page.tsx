@@ -59,7 +59,7 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                 <div>
                     <h1>Teilgenommene Veranstaltungen</h1>
                     <p>von {userData.displayname}</p>
-                    {studyTime ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {studyTime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {studyTime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.toString().replaceAll(",", ", ")} ({missingStudyTimes.length})</p> : null}
                     {studyTime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
