@@ -1,7 +1,10 @@
 import ldapClient from "@/app/src/modules/ldap";
+import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
 export default function TestPage() {
-    let client = ldapClient
+    if(isLDAPEnabled()) {
+        let client = ldapClient
+    }
     return (
         <div>
         <h1>Test Page</h1>
