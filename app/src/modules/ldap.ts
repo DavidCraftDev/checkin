@@ -4,7 +4,7 @@ import { isLDAPEnabled } from './ldapUtilities';
 let ldapClient: Client | null = null;
 
 if(!process.env.LDAP_URI && isLDAPEnabled()) throw new Error('LDAP_URI is required')
-else if(!process.env.LDAP_URI?.startsWith('ldap://') && !process.env.LDAP_URI?.startsWith("ldaps://")) throw new Error('LDAP_URI must start with ldap://')
+else if(!process.env.LDAP_URI?.startsWith('ldap://') && !process.env.LDAP_URI?.startsWith("ldaps://") && isLDAPEnabled()) throw new Error('LDAP_URI must start with ldap://')
 else if(isLDAPEnabled()){
     try {
     ldapClient = createClient({
