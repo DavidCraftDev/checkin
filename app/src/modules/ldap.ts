@@ -19,6 +19,7 @@ else if(isLDAPEnabled()){
     ldapClient.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS, (error: any) => {
         if(error) console.log(error)
         else console.log('LDAP bind successful')
+        ldapClient?.unbind()
     })
 }
 
