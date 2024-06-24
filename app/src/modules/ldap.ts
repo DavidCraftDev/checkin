@@ -2,6 +2,9 @@ import { Client, createClient } from 'ldapjs';
 import { isLDAPEnabled } from './ldapUtilities';
 
 console.log('LDAP enabled:', isLDAPEnabled())
+console.log('LDAP URI:', process.env.LDAP_URI)
+console.log('LDAP BIND DN:', process.env.LDAP_BIND_DN)
+console.log('LDAP BIND CREDENTIALS:', process.env.LDAP_BIND_CREDENTIALS)
 
 async function getLdapClient() {
     if (!process.env.LDAP_URI && isLDAPEnabled()) throw new Error('LDAP_URI is required');
