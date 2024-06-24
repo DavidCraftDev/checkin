@@ -1,12 +1,13 @@
 "use client"
 
-import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 import { useState } from "react";
 import { handleSubmit } from "./handlesubmit";
+import { useSearchParams } from 'next/navigation'
 
 export default  function TestPage() {
     const [result, setResult] = useState("")
-    if(!isLDAPEnabled()) {
+    const searchParams = useSearchParams()
+    if(!searchParams.get("ldap")) {
         return (
             <div>
             <h1>Test Page</h1>
