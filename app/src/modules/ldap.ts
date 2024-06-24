@@ -1,4 +1,4 @@
-import { Client, createClient } from 'ldapjs';
+import { Client, createClient, SearchOptions } from 'ldapjs';
 import { isLDAPEnabled } from './ldapUtilities';
 
 let client: Client;
@@ -41,22 +41,23 @@ export function unbind() {
 
 
 export async function search(filter: string, base: string) {
+    let options = {
+        filter: filter,
+        scope: 'sub',
+        attributes: ['cn', 'sn', 'mail']
+    } as SearchOptions;
     return new Promise((resolve, reject) => {
-        client.search(base, {
-            filter: filter,
-            scope: 'sub',
-            attributes: ['cn', 'sn', 'mail']
-        }, (error: any, res: any) => {
+        client.search(base, options, (error: any, res: any) => {
             if (error) {
-                reject(error);
+                throw new Error("LDAP search failed: " + error);
             }
             res.on('searchRequest', (searchRequest: any) => {
                 console.log('searchRequest: ', searchRequest.messageId);
               });
             let items: any[] = [];
             res.on('searchEntry', (entry: any) => {
-                console.log('entry: ' + JSON.stringify(entry));
-                items.push(entry);
+                console.log('entry: ' + String(entry.object));
+                items.push(entry.object);
             });
             res.on('error', (err: any) => {
                 console.error('error: ' + err.message);
