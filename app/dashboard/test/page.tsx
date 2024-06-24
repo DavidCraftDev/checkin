@@ -1,14 +1,13 @@
+import getLdapClient from "@/app/src/modules/ldap";
 import ldapClient from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
-export default function TestPage() {
-    if(isLDAPEnabled()) {
-        let client = ldapClient
-    }
+export default async function TestPage() {
+    let data = await getLdapClient();
     return (
         <div>
         <h1>Test Page</h1>
-        <p>This is a test page.</p>
+        <p>{data}</p>
         </div>
     );
 }
