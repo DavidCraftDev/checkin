@@ -1,51 +1,63 @@
-// TypeScript code to connect to an LDAP server and attempt to bind. 
-// All errors and results are returned as the function result.
+import { Client, createClient } from 'ldapjs';
+import { isLDAPEnabled } from './ldapUtilities';
 
-import { createClient } from 'ldapjs';
+let client: Client;
 
-interface LdapConnectionResult {
-  success: boolean;
-  message: string;
+if (isLDAPEnabled()) {
+    if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
+    if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
+    if (!process.env.LDAP_BIND_CREDENTIALS) throw new Error("LDAP_BIND_CREDENTIALS is required");
+    if (!process.env.LDAP_URI.startsWith('ldap://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
+    console.log("Connect to LDAP Server " + process.env.LDAP_URI + "...")
+    const tlsOptions = { rejectUnauthorized: false };
+    try {
+        client = createClient({
+            url: process.env.LDAP_URI,
+            reconnect: true,
+            tlsOptions: tlsOptions
+        });
+    } catch (error) {
+        throw new Error("Failed to create LDAP client: " + error);
+    }
+    console.log("LDAP client created successfully!")
+
+    console.log("Bind to LDAP Server...")
+    try {
+        client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS, (error: any) => {
+            if (error) throw new Error("LDAP bind failed: " + error);
+            console.log("LDAP bind successful")
+        });
+    } catch (error) {
+        throw new Error("LDAP bind failed: " + error);
+    }
 }
 
-export async function connectAndBindToLdap(ldapUri: string, bindDn: string, bindCredentials: string): Promise<LdapConnectionResult> {
-  // Validate input parameters
-  if (!ldapUri.startsWith('ldap://') && !ldapUri.startsWith('ldaps://')) {
-    return { success: false, message: 'LDAP_URI must start with ldap:// or ldaps://' };
-  }
-  if (!bindDn) {
-    return { success: false, message: 'LDAP_BIND_DN is required' };
-  }
-  if (!bindCredentials) {
-    return { success: false, message: 'LDAP_BIND_CREDENTIALS is required' };
-  }
+export function unbind() {
+    client.unbind((error: any) => {
+        if (error) throw new Error("LDAP unbind failed: " + error);
+        console.log("LDAP unbind successful")
+    });
+}
 
-  // Create LDAP client with TLS options
-  const tlsOptions = { rejectUnauthorized: false };
-  let ldapClient;
-  try {
-    ldapClient = createClient({
-      url: ldapUri,
-      reconnect: true,
-      tlsOptions: tlsOptions
-    });
-  } catch (error) {
-    return { success: false, message: 'Failed to create LDAP client: ' + error };
-  }
-  console.log(process.env.LDAP_URI, process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS)
-  // Attempt to bind with the provided DN and credentials
-  try {
-    await new Promise((resolve, reject) => {
-      ldapClient.bind(bindDn, bindCredentials, (error: any) => {
-        if (error) reject(error);
-        else resolve("LDAP bind successful");
-      });
-    });
-    // Unbind after successful bind
-    ldapClient.unbind();
-    return { success: true, message: 'LDAP bind successful' };
-  } catch (error) {
-    ldapClient.unbind();
-    return { success: false, message: 'LDAP bind failed: ' + error };
-  }
+
+export function search(filter: string, base: string, attributes: string[]) {
+    return new Promise((resolve, reject) => {
+        client.search(base, {
+            filter: filter,
+            scope: 'sub',
+            attributes: attributes
+        }, (error: any, res: any) => {
+            if (error) {
+                reject(error);
+            }
+            let items: any[] = [];
+            res.on('searchEntry', (entry: any) => {
+                items.push(entry.object);
+            });
+            res.on('end', () => {
+                resolve(items);
+            });
+        });
+    }
+    );
 }
