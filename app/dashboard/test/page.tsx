@@ -1,5 +1,4 @@
-import getLdapClient from "@/app/src/modules/ldap";
-import ldapClient from "@/app/src/modules/ldap";
+import { connectAndBindToLdap } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
@@ -11,12 +10,13 @@ export default async function TestPage() {
             </div>
         );
     }
-    let data = await getLdapClient();
+    let data = await connectAndBindToLdap(process.env.LDAP_URI || "ERROR", process.env.LDAP_BIND_DN || "Error", process.env.LDAP_BIND_CREDENTIALS || "Error");
     return (
         <div>
         <h1>Test Page</h1>
         <p>State: {process.env.ldap}</p>
-        <p>{data}</p>
+        <p>{data.success}</p>
+        <p>{data.message}</p>
         </div>
     );
 }
