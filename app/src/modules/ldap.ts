@@ -32,11 +32,11 @@ export async function connectAndBindToLdap(ldapUri: string, bindDn: string, bind
   } catch (error) {
     return { success: false, message: 'Failed to create LDAP client: ' + error };
   }
-
+  console.log(process.env.LDAP_URI, process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS)
   // Attempt to bind with the provided DN and credentials
   try {
     await new Promise((resolve, reject) => {
-      ldapClient.bind("CN=" + bindDn, bindCredentials, (error: any) => {
+      ldapClient.bind(bindDn, bindCredentials, (error: any) => {
         if (error) reject(error);
         else resolve("LDAP bind successful");
       });
