@@ -1,4 +1,4 @@
-import { Client, createClient, SearchOptions } from 'ldapjs';
+import { Client, createClient, SearchCallbackResponse, SearchEntry, SearchOptions, SearchResultDone } from 'ldapjs';
 import { isLDAPEnabled } from './ldapUtilities';
 
 let client: Client;
@@ -76,5 +76,26 @@ export async function search(filter: string, base: string) {
 export async function testFunction() {
     if(!process.env.test) throw new Error("LDAP test base is required");
     if(!process.env.example) throw new Error("LDAP test filter is required");
-    return await search(process.env.example, process.env.test)
+    const searchOptions: SearchOptions = {
+        filter: process.env.example,
+        scope: 'sub',
+        attributes: ['cn', 'sn', 'mail']
+    };
+    let data: any
+    client.search(process.env.test, searchOptions, (error: Error | null, res: SearchCallbackResponse) => {
+        if (error) throw new Error("LDAP search failed: " + error);
+        res.on('searchEntry', (entry: SearchEntry) => {
+            console.log(entry.toString());
+            console.log(entry.attributes)
+            data.push(entry.json);
+        });
+        res.on('error', (err) => {
+            console.error('error: ' + err.message);
+          });
+        res.on('end', (result: SearchResultDone | null) => {
+            console.log('search done');
+            console.log(result?.toString())
+        });
+    });
+    return data;
 }
