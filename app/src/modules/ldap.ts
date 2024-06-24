@@ -40,23 +40,30 @@ export function unbind() {
 }
 
 
-export async function search(filter: string, base: string, attributes: string[]) {
+export async function search(filter: string, base: string) {
     return new Promise((resolve, reject) => {
         client.search(base, {
             filter: filter,
             scope: 'sub',
-            attributes: attributes
+            attributes: ['cn', 'sn', 'mail']
         }, (error: any, res: any) => {
             if (error) {
                 reject(error);
             }
+            res.on('searchRequest', (searchRequest: any) => {
+                console.log('searchRequest: ', searchRequest.messageId);
+              });
             let items: any[] = [];
             res.on('searchEntry', (entry: any) => {
-                console.log('entry: ' + JSON.stringify(entry.object));
-                items.push(entry.object);
+                console.log('entry: ' + JSON.stringify(entry));
+                items.push(entry);
             });
-            res.on('end', () => {
+            res.on('error', (err: any) => {
+                console.error('error: ' + err.message);
+              });
+            res.on('end', (result: any) => {
                 console.log('search done');
+                console.log(result.status)
                 console.log(items)
                 resolve(items);
             });
@@ -67,5 +74,5 @@ export async function search(filter: string, base: string, attributes: string[])
 
 export async function testFunction() {
     if(!process.env.test) throw new Error("LDAP test base is required");
-    return await search('(OU=Classes)', process.env.test, ['cn', 'sn', 'mail'])
+    return await search('(OU=Classes)', process.env.test)
 }
