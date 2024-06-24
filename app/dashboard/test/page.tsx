@@ -1,8 +1,8 @@
 "use client"
 
-import { search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 import { useState } from "react";
+import { handleSubmit } from "./handlesubmit";
 
 export default  function TestPage() {
     const [result, setResult] = useState("")
@@ -14,17 +14,9 @@ export default  function TestPage() {
             </div>
         );
     }
-    function handleSubmit(event: any) {
-        "use server"
-        event.preventDefault();
-        const data = new FormData(event.target);
-        const filter = data.get('filter') as string;
-        const base = data.get('base') as string;
-        const attributes = data.get('attributes') as string;
-        search(filter, base, attributes.split(',')).then((result) => {
-            setResult(JSON.stringify(result, null, 2));
-        }).catch((error) => {
-            setResult("Error: " + error);
+    async function manageSubmit(event: any) {
+        await handleSubmit(event).then((result) => {
+            setResult(String(result));
         });
     }
     return (
