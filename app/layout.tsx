@@ -14,6 +14,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (process.env.MAINTANCE === "true") {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          <div className="flex items-center justify-center h-screen bg-gray-200">
+            <div className="p-4 bg-white rounded-lg shadow-md">
+              <div className="flex flex-col space-y-4">
+                <h1>Wartungen</h1>
+                <p>Das System ist momentan nicht verfügbar, da Wartungsarbeiten durchgeführt werden.</p>
+                <p>Bitte versuche es später erneut!</p>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    );
+  }
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
