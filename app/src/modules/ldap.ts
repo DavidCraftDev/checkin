@@ -7,7 +7,7 @@ if (isLDAPEnabled()) {
     if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
     if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
     if (!process.env.LDAP_BIND_CREDENTIALS) throw new Error("LDAP_BIND_CREDENTIALS is required");
-    if (!process.env.LDAP_URI.startsWith('ldap://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
+    //if (!process.env.LDAP_URI.startsWith('ldap://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
     console.log("Connect to LDAP Server " + process.env.LDAP_URI + "...")
     const tlsOptions = { rejectUnauthorized: false };
     try {
