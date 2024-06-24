@@ -52,9 +52,12 @@ export async function search(filter: string, base: string, attributes: string[])
             }
             let items: any[] = [];
             res.on('searchEntry', (entry: any) => {
+                console.log('entry: ' + JSON.stringify(entry.object));
                 items.push(entry.object);
             });
             res.on('end', () => {
+                console.log('search done');
+                console.log(items)
                 resolve(items);
             });
         });
