@@ -1,13 +1,8 @@
-"use client"
+import { testFunction } from "@/app/src/modules/ldap";
+import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
-import { useState } from "react";
-import { handleSubmit } from "./handlesubmit";
-import { useSearchParams } from 'next/navigation'
-
-export default  function TestPage() {
-    const [result, setResult] = useState("")
-    const searchParams = useSearchParams()
-    if(!searchParams.get("ldap")) {
+export default async function TestPage() {
+    if(!isLDAPEnabled()) {
         return (
             <div>
             <h1>Test Page</h1>
@@ -15,26 +10,12 @@ export default  function TestPage() {
             </div>
         );
     }
-    async function manageSubmit(event: any) {
-        event.preventDefault();
-        await handleSubmit(event).then((result) => {
-            setResult(String(result));
-        });
-    }
+let data = await testFunction().then((data) => String(data))
     return (
         <div>
-        <h1>LDAP Page</h1>
+        <h1>Test Page</h1>
         <p>State: {process.env.ldap}</p>
-            <form onSubmit={manageSubmit}>
-                <label htmlFor="filter">Filter:</label>
-                <input type="text" id="filter" name="filter" />
-                <label htmlFor="base">Base:</label>
-                <input type="text" id="base" name="base" />
-                <label htmlFor="attributes">Attributes:</label>
-                <input type="text" id="attributes" name="attributes" />
-                <button type="submit">Submit</button>
-            </form>
-            <pre>Ergebnis: {result}</pre>
+        <p>{data}</p>
         </div>
     );
 }

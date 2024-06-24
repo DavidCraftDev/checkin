@@ -40,7 +40,7 @@ export function unbind() {
 }
 
 
-export function search(filter: string, base: string, attributes: string[]) {
+export async function search(filter: string, base: string, attributes: string[]) {
     return new Promise((resolve, reject) => {
         client.search(base, {
             filter: filter,
@@ -60,4 +60,9 @@ export function search(filter: string, base: string, attributes: string[]) {
         });
     }
     );
+}
+
+export async function testFunction() {
+    if(!process.env.test) throw new Error("LDAP test base is required");
+    return await search('(&(objectClass=person)(cn=*))', process.env.test, ['cn', 'sn', 'mail'])
 }
