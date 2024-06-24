@@ -23,7 +23,7 @@ export default  function TestPage() {
         <div>
         <h1>LDAP Page</h1>
         <p>State: {process.env.ldap}</p>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={manageSubmit}>
                 <label htmlFor="filter">Filter:</label>
                 <input type="text" id="filter" name="filter" />
                 <label htmlFor="base">Base:</label>
