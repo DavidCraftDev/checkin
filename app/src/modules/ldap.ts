@@ -95,7 +95,7 @@ export async function testFunction() {
         res.on('end', (result: SearchResultDone | null) => {
             console.log('search done');
             console.log(result?.toString())
+            console.log(data)
         });
     });
-    return data;
 }
