@@ -19,15 +19,16 @@ async function getLdapClient() {
             } catch (error) {
                 throw new Error('LDAP_URI is invalid: ' + error)
             }
-            if(!process.env.LDAP_BIND_DN) throw new Error('LDAP_BIND_DN is required')
-            if(!process.env.LDAP_BIND_CREDENTIALS) throw new Error('LDAP_BIND_CREDENTIALS is required')
+            if(!process.env.LDAP_BIND_DN) return 'LDAP_BIND_DN is required' as string
+            if(!process.env.LDAP_BIND_CREDENTIALS) return 'LDAP_BIND_CREDENTIALS is required' as string
+            let result: string = 'Binding to LDAP server...'
             ldapClient.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS, (error: any) => {
-                if(error) return error as string
-                else return "LDAP bind successful" as string
+                if(error) result = error as string
+                else result = "LDAP bind successful" as string
                 ldapClient?.unbind()
             })
+            return result
         }
-    return "LDAP is not enabled"
 }
 
 export default getLdapClient
