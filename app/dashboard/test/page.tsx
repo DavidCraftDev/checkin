@@ -1,8 +1,10 @@
+"use client"
+
 import { search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 import { useState } from "react";
 
-export default async function TestPage() {
+export default  function TestPage() {
     const [result, setResult] = useState("")
     if(!isLDAPEnabled()) {
         return (
@@ -13,6 +15,7 @@ export default async function TestPage() {
         );
     }
     function handleSubmit(event: any) {
+        "use server"
         event.preventDefault();
         const data = new FormData(event.target);
         const filter = data.get('filter') as string;
