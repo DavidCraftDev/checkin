@@ -16,6 +16,7 @@ export default  function TestPage() {
         );
     }
     async function manageSubmit(event: any) {
+        event.preventDefault();
         await handleSubmit(event).then((result) => {
             setResult(String(result));
         });

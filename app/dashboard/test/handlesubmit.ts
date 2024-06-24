@@ -7,8 +7,8 @@ export async function handleSubmit(event: any) {
     const data = new FormData(event.target);
     const filter = data.get('filter') as string;
     const base = data.get('base') as string;
-    const attributes = data.get('attributes') as string;
-    search(filter, base, attributes.split(',')).then((result) => {
+    //const attributes = data.get('attributes') as string;
+    search(filter, base, ['dn', 'sn', 'cn']).then((result) => {
         return (JSON.stringify(result, null, 2)) as string;
     }).catch((error) => {
         return ("Error: " + error) as string;
