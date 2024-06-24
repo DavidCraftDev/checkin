@@ -6,10 +6,12 @@ let ldapClient: Client | null = null;
 if(!process.env.LDAP_URI && isLDAPEnabled()) throw new Error('LDAP_URI is required')
 else if(!process.env.LDAP_URI?.startsWith('ldap://') && !process.env.LDAP_URI?.startsWith("ldaps://") && isLDAPEnabled()) throw new Error('LDAP_URI must start with ldap://')
 else if(isLDAPEnabled()){
+    const tlsOptions = { 'rejectUnauthorized': false }
     try {
     ldapClient = createClient({
         url: process.env.LDAP_URI as string,
-        reconnect: true
+        reconnect: true,
+        tlsOptions: tlsOptions
     });
     } catch (error) {
         throw new Error('LDAP_URI is invalid: ' + error)
