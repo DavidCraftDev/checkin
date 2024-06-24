@@ -2,6 +2,8 @@ import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { isLDAPEnabled } from "./ldapUtilities";
+import client from "./ldap";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -22,6 +24,24 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
+        if(isLDAPEnabled() && client) {
+          client.bind(credentials.username, credentials.password, (error) => {
+            if(error) {
+              return null;
+            } else {
+              return {
+                id: credentials.username,
+                username: credentials.username,
+                name: credentials.username,
+                permission: 0,
+                group: "ldap",
+                needs: [],
+                competence: [],
+                loginVersion: 1,
+              };
+            }
+          });
+        } else {
         const user = await db.user.findUnique({
           where: {
             username: credentials.username.toLowerCase(),
@@ -42,6 +62,7 @@ export const authOptions: NextAuthOptions = {
           competence: user.competence,
           loginVersion: user.loginVersion,
         };
+      }
       },
     }),
   ],
