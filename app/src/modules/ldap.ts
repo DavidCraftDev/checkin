@@ -74,5 +74,6 @@ export async function search(filter: string, base: string) {
 
 export async function testFunction() {
     if(!process.env.test) throw new Error("LDAP test base is required");
-    return await search('(OU=Classes)', process.env.test)
+    if(!process.env.example) throw new Error("LDAP test filter is required");
+    return await search(process.env.example, process.env.test)
 }
