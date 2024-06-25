@@ -54,7 +54,7 @@ export async function search(filter: string, base: string) {
             }
             res.on('searchRequest', (searchRequest: any) => {
                 console.log('searchRequest: ', searchRequest.messageId);
-              });
+            });
             let items: any[] = [];
             res.on('searchEntry', (entry: any) => {
                 console.log('entry: ' + String(entry.object));
@@ -62,7 +62,7 @@ export async function search(filter: string, base: string) {
             });
             res.on('error', (err: any) => {
                 console.error('error: ' + err.message);
-              });
+            });
             res.on('end', (result: any) => {
                 console.log('search done');
                 console.log(result.status)
@@ -71,13 +71,20 @@ export async function search(filter: string, base: string) {
             });
         });
     }
-    );
+    ).then(() => {
+        client.on('error', (error: any) => {
+            console.error('LDAP client error: ' + error);
+        });
+        client.on("resultError", (error: any) => {
+            console.error('LDAP client resultError: ' + error);
+        });
+    })
 }
 
 export async function testFunction() {
-    if(!process.env.test) throw new Error("LDAP test base is required");
+    if (!process.env.test) throw new Error("LDAP test base is required");
     console.log(process.env.test)
-    if(!process.env.example) throw new Error("LDAP test filter is required");
+    if (!process.env.example) throw new Error("LDAP test filter is required");
     console.log(process.env.example)
     const searchOptions: SearchOptions = {
         filter: String(process.env.example),
@@ -94,7 +101,7 @@ export async function testFunction() {
         });
         res.on('error', (err) => {
             console.error('error: ' + err.message);
-          });
+        });
         res.on('end', (result: SearchResultDone | null) => {
             console.log('search done');
             console.log(result?.toString())
