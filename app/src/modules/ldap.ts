@@ -82,7 +82,7 @@ export async function testFunction() {
     const searchOptions: SearchOptions = {
         filter: String(process.env.example),
         scope: 'sub',
-        attributes: ['cn', 'sn', 'mail']
+        attributes: ['*']
     };
     let data: any[] = [];
     client.search(String(process.env.test), searchOptions, (error: Error | null, res: SearchCallbackResponse) => {
