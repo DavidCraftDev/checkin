@@ -4,7 +4,7 @@ import { getSavedMissingStudyTimes, isStudyTimeEnabled } from "../../studytimeUt
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     let sheetData: any = new Array()
-    let columnData: any = new Array()
+    let columnData: any = []
     const sheetName: String = user.displayname.substring(0, 31)
     const studyTime: Boolean = await isStudyTimeEnabled()
     const attendances = await getAttendancesPerUser(user.id, cw, year)
