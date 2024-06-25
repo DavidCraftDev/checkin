@@ -75,9 +75,6 @@ export async function search(filter: string, base: string) {
 }
 
 export async function testFunction() {
-    for(let i = 0; i < 200; i++) {
-        console.log("Test " + i)
-    }
     if(!process.env.test) throw new Error("LDAP test base is required");
     console.log(process.env.test)
     if(!process.env.example) throw new Error("LDAP test filter is required");
@@ -87,7 +84,7 @@ export async function testFunction() {
         scope: 'sub',
         attributes: ['cn', 'sn', 'mail']
     };
-    let data: any
+    let data: any[] = [];
     client.search(String(process.env.test), searchOptions, (error: Error | null, res: SearchCallbackResponse) => {
         if (error) throw new Error("LDAP search failed: " + error);
         res.on('searchEntry', (entry: SearchEntry) => {
