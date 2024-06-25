@@ -26,6 +26,7 @@ if (isLDAPEnabled()) {
         client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS, (error: any) => {
             if (error) throw new Error("LDAP bind failed: " + error);
             console.log("LDAP bind successful")
+            testFunction();
         });
     } catch (error) {
         throw new Error("LDAP bind failed: " + error);
@@ -75,14 +76,16 @@ export async function search(filter: string, base: string) {
 
 export async function testFunction() {
     if(!process.env.test) throw new Error("LDAP test base is required");
+    console.log(process.env.test)
     if(!process.env.example) throw new Error("LDAP test filter is required");
+    console.log(process.env.example)
     const searchOptions: SearchOptions = {
-        filter: process.env.example,
+        filter: String(process.env.example),
         scope: 'sub',
         attributes: ['cn', 'sn', 'mail']
     };
     let data: any
-    client.search(process.env.test, searchOptions, (error: Error | null, res: SearchCallbackResponse) => {
+    client.search(String(process.env.test), searchOptions, (error: Error | null, res: SearchCallbackResponse) => {
         if (error) throw new Error("LDAP search failed: " + error);
         res.on('searchEntry', (entry: SearchEntry) => {
             console.log(entry.toString());
@@ -95,7 +98,7 @@ export async function testFunction() {
         res.on('end', (result: SearchResultDone | null) => {
             console.log('search done');
             console.log(result?.toString())
-            console.log(data)
+            console.log("Data: " + data)
         });
     });
 }
