@@ -1,19 +1,41 @@
+import { search } from "@/app/src/modules/ldap";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  if (!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
+  const ldapData = await search(process.env.example, process.env.test);
+  ldapData.forEach(async (entry) => {
+    const count = await prisma.user.count({
+      where: {
+        id: String(entry.objectGUID)
+      }
+    });
+    if (count === 0) {
+      const user = await prisma.user.create({
+        data: {
+          id: String(entry.objectGUID),
+          username: String(entry.sAMAccountName).toLowerCase(),
+          displayname: String(entry.displayName),
+          permission: 0,
+          loginVersion: Number(entry.pwdLastSet)
+        }
+      })
+      console.log("New user created from LDAP data:" + user.displayname);
+    }
+  });
   const adminCount = await prisma.user.count({
     where: {
       permission: 2
     }
   });
-  if(adminCount < 1) {
-    if(!process.env.DEFAULT_ADMIN_PASSWORD) {
+  if (adminCount < 1) {
+    if (!process.env.DEFAULT_ADMIN_PASSWORD) {
       throw new Error("No default admin password provided in environment variables. Please provide one in the .env file.");
     }
-    if(!process.env.DEFAULT_ADMIN_USERNAME) {
+    if (!process.env.DEFAULT_ADMIN_USERNAME) {
       throw new Error("No default admin username provided in environment variables. Please provide one in the .env file.");
     }
     const usernameCount = await prisma.user.count({
@@ -21,7 +43,7 @@ async function main() {
         username: process.env.DEFAULT_ADMIN_USERNAME.toLowerCase()
       }
     });
-    if(usernameCount > 0) {
+    if (usernameCount > 0) {
       throw new Error("Default admin username already exists in the database and there a no other admin user. Please provide a different username in the .env file.");
     }
     const password: string = process.env.DEFAULT_ADMIN_PASSWORD;
