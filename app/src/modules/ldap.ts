@@ -22,6 +22,7 @@ client.bind(
     username, password,
     (any: any) => {testLdap()}
 )
+return "LDAP bind successful"
 }
 
 function testLdap() {
