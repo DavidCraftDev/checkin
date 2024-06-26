@@ -41,6 +41,7 @@ export async function search(filter: string, base: string) {
     await bind();
     console.log("Searching LDAP server...")
     const { searchEntries, searchReferences } = await client.search(base, {
+        scope: 'sub',
         filter: filter,
     })
     console.log(searchEntries)
