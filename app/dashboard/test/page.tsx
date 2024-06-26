@@ -13,12 +13,18 @@ export default async function TestPage() {
     }
     if(!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
     let data: any[] = await search(process.env.example, process.env.test);
-    console.log(data)
     return (
         <div>
         <h1>Test Page</h1>
         <p>State: {process.env.ldap}</p>
-        <p>{String(data[0].displayName)}</p>
+        {data.map((entry) => {
+            return (
+                <div key={entry.objectGUID}>
+                    <p>{JSON.stringify(entry)}</p>
+                </div>
+            );
+        })
+        }
         </div>
     );
 }
