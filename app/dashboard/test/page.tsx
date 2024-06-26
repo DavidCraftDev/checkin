@@ -1,6 +1,6 @@
 
+import { connectBind } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
-import { connectBind } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
     if(!isLDAPEnabled()) {
