@@ -1,61 +1,47 @@
-const ldap = require('ldapjs');
+import { Client } from 'ldapts';
+import { isLDAPEnabled } from './ldapUtilities';
 
-const tlsOptions = {rejectUnauthorized: false}
+let client: Client
 
-let client: any
+if (isLDAPEnabled()) {
+    if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
+    if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
+    if (!process.env.LDAP_BIND_CREDENTIALS) throw new Error("LDAP_BIND_CREDENTIALS is required");
+    //if (!process.env.LDAP_URI.startsWith('ldap://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
+    console.log("Connect to LDAP Server " + process.env.LDAP_URI + "...")
+    const tlsOptions = { rejectUnauthorized: false };
+    try {
+        client = new Client({
+            url: process.env.LDAP_URI,
+            tlsOptions: tlsOptions
+        });
+    } catch (error) {
+        throw new Error("Failed to create LDAP client: " + error);
+    }
+    console.log("LDAP client created successfully!")
 
-if(process.env.ldap === 'true') {
-const url = process.env.LDAP_URI
-client = ldap.createClient({
-    url: [url + ':636', url + ':636'],
-    tlsOptions: tlsOptions
-});
+    console.log("Bind to LDAP Server...")
+    try {
+        client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS);
+        console.log("LDAP bind successful")
+    } catch (error) {
+        throw new Error("LDAP bind failed: " + error);
+    }
 }
 
-function unbind() {
-    client.unbind((err: any, any: any) => {
-        if (err) throw new Error("LDAP unbind failed: " + err);
-        console.log("LDAP unbind successful")
-    });
+export function unbind() {
+    client.unbind();
 }
 
-export function connectBind() {
-const username = process.env.LDAP_BIND_DN
-const password = process.env.LDAP_BIND_CREDENTIALS
-client.bind(
-    username, password,
-    (any: any) => {testLdap()}
-)
-return "LDAP bind successful"
-}
 
-function testLdap() {
-    let data: any = []
-    let options = {
-        filter: '(|(sAMAccountName=ntadmin)(mail=ntadmin))',
-        scope: 'sub',
-        attributes: ['*']
-    };
-    const base = process.env.test
-    client.search(base, options, (err: any, res: any) => {
-        res.on('searchRequest', (searchRequest: any) => {
-            console.log('searchRequest: ', searchRequest.messageId);
-        });
-        res.on('searchEntry', (entry: any) => {
-            console.log('entry: ' + JSON.stringify(entry.pojo));
-            data.push(entry)
-        });
-        res.on('searchReference', (referral: any) => {
-            console.log('referral: ' + referral.uris.join());
-        });
-        res.on('error', (err: any) => {
-            console.error('error: ' + err.message);
-        });
-        res.on('end', (result: any) => {
-            console.log('status: ' + result.status);
-            console.log('data: ' + JSON.stringify(data));
-        });
-    });
-    unbind()
+export async function search(filter: string, base: string) {
+    let result
+    await client.search(base, {
+        filter: filter,
+    }).then((res) => {
+        result = res.searchEntries
+        console.log(res.searchEntries)
+        console.log(res.searchReferences)
+    })
+    return result
 }
-
