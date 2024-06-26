@@ -2,11 +2,15 @@ const ldap = require('ldapjs');
 
 const tlsOptions = {rejectUnauthorized: false}
 
+let client: any
+
+if(process.env.ldap === 'true') {
 const url = process.env.LDAP_URI
-const client = ldap.createClient({
+client = ldap.createClient({
     url: [url + ':636', url + ':636'],
     tlsOptions: tlsOptions
 });
+}
 
 function unbind() {
     client.unbind((err: any, any: any) => {
@@ -52,3 +56,4 @@ function testLdap() {
     });
     unbind()
 }
+
