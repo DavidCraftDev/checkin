@@ -6,10 +6,9 @@ const prisma = new PrismaClient();
 
 async function main() {
   if (!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
-  const ldapData = await search(process.env.example, process.env.test);
+  const ldapData: any[] = await search(process.env.example, process.env.test);
   ldapData.forEach(async (entry) => {
-    console.log(JSON.parse(entry.dn).objectGUID)
-    console.log(entry.objectGUID)
+    console.log(entry)
     const count = await prisma.user.count({
       where: {
         id: String(entry.objectGUID)

@@ -20,7 +20,11 @@ export default async function TestPage() {
         {data.map((entry) => {
             return (
                 <div key={entry.objectGUID}>
-                    <p>{JSON.stringify(entry)}</p>
+                    <p>{entry.objectGUID}</p>
+                    <p>{entry.sAMAccountName}</p>
+                    <p>{entry.displayName}</p>
+                    <p>{entry.pwdLastSet}</p>
+                    <p>----</p>
                 </div>
             );
         })
