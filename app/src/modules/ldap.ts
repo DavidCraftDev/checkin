@@ -36,14 +36,11 @@ export function unbind() {
 
 export async function search(filter: string, base: string) {
     console.log("Searching LDAP server...")
-    let result
-    await client.search(base, {
+    const { searchEntries, searchReferences } = await client.search(base, {
         filter: filter,
-    }).then((res) => {
-        result = res.searchEntries
-        console.log(res.searchEntries)
-        console.log(res.searchReferences)
     })
+    console.log(searchEntries)
+    console.log(searchReferences)
     console.log("LDAP search successful")
-    return result
+    return searchEntries
 }

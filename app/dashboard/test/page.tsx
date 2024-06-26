@@ -13,6 +13,7 @@ export default async function TestPage() {
     }
     if(!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
     let data = await search(process.env.example, process.env.test);
+    console.log(data)
     return (
         <div>
         <h1>Test Page</h1>
