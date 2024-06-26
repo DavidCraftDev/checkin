@@ -31,7 +31,6 @@ async function bind() {
         throw new Error("LDAP bind failed: " + error);
     }
 }
-bind()
 
 export async function unbind() {
     await client.unbind();
@@ -39,10 +38,14 @@ export async function unbind() {
 
 
 export async function search(filter: string, base: string) {
+    console.log(client.isConnected)
+    await bind()
+    console.log(client.isConnected)
     const { searchEntries, searchReferences } = await client.search(base, {
         scope: 'sub',
         filter: filter,
     })
+    await unbind();
     return searchEntries
 }
 
