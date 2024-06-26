@@ -38,9 +38,9 @@ export async function unbind() {
 
 
 export async function search(filter: string, base: string) {
-    console.log(client.isConnected)
+    console.log("Vor:" + client.isConnected)
     await bind()
-    console.log(client.isConnected)
+    console.log("Nach:" + client.isConnected)
     const { searchEntries, searchReferences } = await client.search(base, {
         scope: 'sub',
         filter: filter,

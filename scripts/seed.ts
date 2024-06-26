@@ -1,4 +1,4 @@
-import { search } from "@/app/src/modules/ldap";
+import { search } from "../app/src/modules/ldap";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
