@@ -30,7 +30,7 @@ return "LDAP bind successful"
 }
 
 function testLdap() {
-    let data = []
+    let data: any = []
     let options = {
         filter: '(|(sAMAccountName=ntadmin)(mail=ntadmin))',
         scope: 'sub',
@@ -43,6 +43,7 @@ function testLdap() {
         });
         res.on('searchEntry', (entry: any) => {
             console.log('entry: ' + JSON.stringify(entry.pojo));
+            data.push(entry)
         });
         res.on('searchReference', (referral: any) => {
             console.log('referral: ' + referral.uris.join());
@@ -52,6 +53,7 @@ function testLdap() {
         });
         res.on('end', (result: any) => {
             console.log('status: ' + result.status);
+            console.log('data: ' + JSON.stringify(data));
         });
     });
     unbind()
