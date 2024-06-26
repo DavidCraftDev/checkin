@@ -15,7 +15,7 @@ function unbind() {
     });
 }
 
-function connect() {
+export function connectBind() {
 const username = process.env.LDAP_BIND_DN
 const password = process.env.LDAP_BIND_CREDENTIALS
 client.bind(

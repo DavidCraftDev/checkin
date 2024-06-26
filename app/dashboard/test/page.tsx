@@ -1,5 +1,6 @@
-import { testFunction } from "@/app/src/modules/ldap";
+
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
+import { connectBind } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
     if(!isLDAPEnabled()) {
@@ -10,7 +11,7 @@ export default async function TestPage() {
             </div>
         );
     }
-let data = await testFunction().then((data) => String(data))
+let data = await connectBind();
     return (
         <div>
         <h1>Test Page</h1>
