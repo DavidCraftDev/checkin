@@ -1,5 +1,5 @@
 
-import { search } from "@/app/src/modules/ldap";
+import { convertGUID, search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
@@ -20,7 +20,7 @@ export default async function TestPage() {
         {data.map((entry) => {
             return (
                 <div key={entry.objectGUID}>
-                    <p>{entry.objectGUID}</p>
+                    <p>{convertGUID(entry.objectGUID)}</p>
                     <p>{entry.sAMAccountName}</p>
                     <p>{entry.displayName}</p>
                     <p>{entry.pwdLastSet}</p>
