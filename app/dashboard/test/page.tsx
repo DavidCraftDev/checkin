@@ -20,10 +20,10 @@ export default async function TestPage() {
         <div>
         <h1>Test Page</h1>
         <p>State: {process.env.ldap}</p>
-        {data.map((entry) => {
+        {data.map(async (entry) => {
             return (
                 <div key={entry.objectGUID}>
-                    <p>{entry.objectGUID}</p>
+                    <p>{await convertGUID(entry.objectGUID)}</p>
                     <p>{entry.sAMAccountName}</p>
                     <p>{entry.displayName}</p>
                     <p>{entry.pwdLastSet}</p>

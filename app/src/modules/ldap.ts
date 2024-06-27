@@ -48,17 +48,16 @@ export async function search(filter: string, base: string) {
     return searchEntries
 }
 
-export async function convertGUID(guid: number[]) {
-    let data = Buffer.from(guid).toString('hex')
-    let result = [
-        data.slice(0, 8),
-        data.slice(8, 12),
-        data.slice(12, 16),
-        data.slice(16, 20),
-        data.slice(20)
-      ].join('-');
-    
-    return result
+export async function convertGUID(rawGUID: any) {
+    const hex = [...rawGUID].map(b => b.toString(16).padStart(2, '0')).join('');
+    const guid = [
+        hex.slice(6, 8), hex.slice(4, 6), hex.slice(2, 4), hex.slice(0, 2),
+        hex.slice(10, 12), hex.slice(8, 10),
+        hex.slice(14, 16), hex.slice(12, 14),
+        hex.slice(16, 20),
+        hex.slice(20, 32)
+    ].join('-');
+    return guid;
 }
 
 process.on('exit', async () => {
