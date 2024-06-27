@@ -49,9 +49,8 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(guid: number[]) {
-    return guid.map((b) => ('00' + b.toString(16)).slice(-2))
-      .join('')
-      .replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5');
+    const data = Buffer.from(guid).toString('hex').replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5')
+    return data
 }
 
 process.on('exit', async () => {
