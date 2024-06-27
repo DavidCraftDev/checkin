@@ -49,15 +49,20 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(rawGUID: any) {
-    const hex = [...rawGUID].map(b => b.toString(16).padStart(2, '0')).join('');
-    const guid = [
-        hex.slice(6, 8), hex.slice(4, 6), hex.slice(2, 4), hex.slice(0, 2),
-        hex.slice(10, 12), hex.slice(8, 10),
-        hex.slice(14, 16), hex.slice(12, 14),
-        hex.slice(16, 20),
-        hex.slice(20, 32)
-    ].join('-');
-    return guid;
+    const hex = Buffer.from(rawGUID, 'binary').toString('hex');
+
+    const p1 =
+        hex.slice(-26, 2) +
+        hex.slice(-28, 2) +
+        hex.slice(-30, 2) +
+        hex.slice(-32, 2);
+
+    const p2 = hex.slice(-22, 2) + hex.slice(-24, 2);
+    const p3 = hex.slice(-18, 2) + hex.slice(-20, 2);
+    const p4 = hex.slice(-16, 4);
+    const p5 = hex.slice(-12, 12);
+
+    return [p1, p2, p3, p4, p5].join('-') as string;
 }
 
 process.on('exit', async () => {
