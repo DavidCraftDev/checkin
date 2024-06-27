@@ -14,7 +14,7 @@ export default async function TestPage() {
     if(!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
     let data: any[] = await search(process.env.example, process.env.test);
     data.forEach(async (entry) => {
-        entry.objectGUID = await convertGUID(entry.objectGUID);
+        console.log(await convertGUID(entry.objectGUID))
     });
     return (
         <div>

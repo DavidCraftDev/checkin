@@ -49,8 +49,16 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(guid: number[]) {
-    const data = Buffer.from(guid).toString('hex').replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5')
-    return data
+    let data = Buffer.from(guid).toString('hex')
+    let result = [
+        data.slice(0, 8),
+        data.slice(8, 12),
+        data.slice(12, 16),
+        data.slice(16, 20),
+        data.slice(20)
+      ].join('-');
+    
+    return result
 }
 
 process.on('exit', async () => {
