@@ -50,8 +50,8 @@ export async function search(filter: string, base: string) {
     return searchEntries
 }
 
-export async function convertGUID(guidRaw: string) {
-    return Buffer.from(guidRaw, 'binary').toString('hex');
+export async function convertGUID(guidRaw: Buffer) {
+    return (guidRaw as Buffer).toString("hex")
 }
 
 process.on('exit', async () => {
