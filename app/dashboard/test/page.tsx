@@ -25,7 +25,6 @@ export default async function TestPage() {
         {data.map(async (entry) => {
             return (
                 <div key={entry.objectGUID}>
-                    <p>{entry}</p>
                     <p>{await convertGUID(entry.objectGUID)}</p>
                     <p>{entry.sAMAccountName}</p>
                     <p>{entry.displayName}</p>
