@@ -25,7 +25,7 @@ export default async function TestPage() {
         <p>State: {process.env.ldap}</p>
         <p>{newData[0].displayName}</p>
         <p>{newData[0].sAMAccountName}</p>
-        <p>{await (newData[0].objectGUID)}</p>
+        <p>{await convertGUID(newData[0].objectGUID)}</p>
         <p>----</p>
         {data.map(async (entry) => {
             return (
