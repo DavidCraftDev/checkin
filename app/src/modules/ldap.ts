@@ -49,15 +49,24 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(rawGUID: any) {
-    const data = Buffer.from(rawGUID, 'binary');
-    
-    var template = '{3}{2}{1}{0}-{5}{4}-{7}{6}-{8}{9}-{10}{11}{12}{13}{14}{15}';
-    for ( var i = 0; i < data.length; i++ ) {
-        var dataStr = data[ i ].toString( 16 );
-        dataStr = data[ i ] >= 16 ? dataStr : '0' + dataStr;
-        template = template.replace( new RegExp( '\\{' + i + '\\}', 'g' ), dataStr );
-    }
-    return template;
+    const guidFormat = [
+        [3,2,1,0],
+        [5,4],
+        [7,6],
+        [8,9],
+        [10,11,12,13,14,15]
+    ];
+    const guidArray = guidFormat.map( part => {
+        const stringPart = part.map(byte => {
+            const byteString = rawGUID[byte] < 16 ?
+                `0${rawGUID[byte].toString(16)}` :
+                rawGUID[byte].toString(16)
+
+            return byteString
+        });
+        return `${stringPart.join('')}`;
+    });
+    return guidArray.join('-');
 }
 
 process.on('exit', async () => {
