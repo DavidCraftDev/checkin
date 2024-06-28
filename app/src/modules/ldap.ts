@@ -53,10 +53,10 @@ export async function search(filter: string, base: string) {
 export async function convertGUID(guidRaw: Buffer) {
     const hex = (guidRaw as Buffer).toString("hex")
     let formattedGUID = `${hex.substring(6, 8)}${hex.substring(4, 6)}${hex.substring(2, 4)}${hex.substring(0, 2)}-` +
-    `${hex.substring(10, 12)}${hex.substring(8, 10)}-` +
-    `${hex.substring(14, 16)}${hex.substring(12, 14)}-` +
-    `${hex.substring(16, 20)}-` +
-    `${hex.substring(20)}`.toUpperCase();
+        `${hex.substring(10, 12)}${hex.substring(8, 10)}-` +
+        `${hex.substring(14, 16)}${hex.substring(12, 14)}-` +
+        `${hex.substring(16, 20)}-` +
+        `${hex.substring(20)}`
     return formattedGUID;
 }
 
