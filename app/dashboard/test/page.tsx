@@ -18,10 +18,15 @@ export default async function TestPage() {
     data.forEach(async (entry) => {
         console.log(await convertGUID(entry.objectGUID))
     });
+    let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.test);
     return (
         <div>
         <h1>Test Page</h1>
         <p>State: {process.env.ldap}</p>
+        <p>{newData[0].displayName}</p>
+        <p>{newData[0].sAMAccountName}</p>
+        <p>{await (newData[0].objectGUID)}</p>
+        <p>----</p>
         {data.map(async (entry) => {
             return (
                 <div key={entry.objectGUID}>

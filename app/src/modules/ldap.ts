@@ -51,7 +51,7 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(guidRaw: Buffer) {
-    return (guidRaw as Buffer).toString("hex")
+    return (guidRaw as Buffer).toString("hex").toUpperCase()
 }
 
 process.on('exit', async () => {
