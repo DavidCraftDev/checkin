@@ -48,25 +48,20 @@ export async function search(filter: string, base: string) {
     return searchEntries
 }
 
-export async function convertGUID(rawGUID: any) {
-    const guidFormat = [
-        [3,2,1,0],
-        [5,4],
-        [7,6],
-        [8,9],
-        [10,11,12,13,14,15]
-    ];
-    const guidArray = guidFormat.map( part => {
-        const stringPart = part.map(byte => {
-            const byteString = rawGUID[byte] < 16 ?
-                `0${rawGUID[byte].toString(16)}` :
-                rawGUID[byte].toString(16)
+export async function convertGUID(guidRaw: string) {
+    const hexParts = [];
+    for (const byte of guid) {
+        hexParts.push(('00' + byte.toString(16)).slice(-2));
+    }
 
-            return byteString
-        });
-        return `${stringPart.join('')}`;
-    });
-    return guidArray.join('-');
+    // Join the hexadecimal parts into the UUID format (8-4-4-4-12)
+    return [
+        hexParts.slice(0, 4).join(''), // 8 characters
+        hexParts.slice(4, 6).join(''), // 4 characters
+        hexParts.slice(6, 8).join(''), // 4 characters
+        hexParts.slice(8, 10).join(''), // 4 characters
+        hexParts.slice(10, 16).join(''), // 12 characters
+    ].join('-');
 }
 
 process.on('exit', async () => {
