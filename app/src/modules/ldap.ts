@@ -1,5 +1,6 @@
 import { Client } from 'ldapts';
 import { isLDAPEnabled } from './ldapUtilities';
+import { v4 as uuidv4 } from 'uuid';
 
 let client: Client
 
@@ -49,19 +50,8 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(guidRaw: string) {
-    const hexParts = [];
-    for (const byte of guid) {
-        hexParts.push(('00' + byte.toString(16)).slice(-2));
-    }
-
-    // Join the hexadecimal parts into the UUID format (8-4-4-4-12)
-    return [
-        hexParts.slice(0, 4).join(''), // 8 characters
-        hexParts.slice(4, 6).join(''), // 4 characters
-        hexParts.slice(6, 8).join(''), // 4 characters
-        hexParts.slice(8, 10).join(''), // 4 characters
-        hexParts.slice(10, 16).join(''), // 12 characters
-    ].join('-');
+    const data = uuidv4({ random: Buffer.from(guidRaw, 'binary') });
+    return data
 }
 
 process.on('exit', async () => {

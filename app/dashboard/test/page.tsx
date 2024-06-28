@@ -1,6 +1,5 @@
 import { convertGUID, search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
-import { UuidTool } from "uuid-tool";
 
 export default async function TestPage() {
     if(!isLDAPEnabled()) {
@@ -16,6 +15,9 @@ export default async function TestPage() {
     data.forEach(async (entry) => {
         console.log(entry)
     });
+    data.forEach(async (entry) => {
+        console.log(await convertGUID(entry.objectGUID))
+    });
     return (
         <div>
         <h1>Test Page</h1>
@@ -24,6 +26,7 @@ export default async function TestPage() {
             return (
                 <div key={entry.objectGUID}>
                     <p>{entry}</p>
+                    <p>{await convertGUID(entry.objectGUID)}</p>
                     <p>{entry.sAMAccountName}</p>
                     <p>{entry.displayName}</p>
                     <p>{entry.pwdLastSet}</p>
