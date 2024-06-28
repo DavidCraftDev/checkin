@@ -1,4 +1,4 @@
-import { search } from "../app/src/modules/ldap";
+import { convertGUID, search } from "../app/src/modules/ldap";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
@@ -11,13 +11,13 @@ async function main() {
     console.log(entry)
     const count = await prisma.user.count({
       where: {
-        id: String(entry.objectGUID)
+        id: String(await convertGUID(entry.objectGUID))
       }
     });
     if (count === 0) {
       const user = await prisma.user.create({
         data: {
-          id: String(entry.objectGUID),
+          id: String(await convertGUID(entry.objectGUID)),
           username: String(entry.sAMAccountName).toLowerCase(),
           displayname: String(entry.displayName),
           permission: 0,
