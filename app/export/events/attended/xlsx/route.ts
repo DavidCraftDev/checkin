@@ -1,4 +1,5 @@
 // @ts-nocheck
+// Ignore this file, because error with Buffer in the writeXlsxFile function
 
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getUserPerID } from "@/app/src/modules/userUtilities";
