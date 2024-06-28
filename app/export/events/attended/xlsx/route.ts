@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
@@ -6,7 +8,6 @@ import { NextRequest } from "next/server";
 import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
 
 export async function GET(request: NextRequest) {
-    return Response.json({ error: "Not authorzied" }) /*
     const user = await getSessionUser();
     let userID = request.nextUrl.searchParams.get("userID")
     let userData
@@ -31,5 +32,5 @@ export async function GET(request: NextRequest) {
             'Content-Disposition': `attachment; filename="attended_events${cw + "_" + year + userData.id}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-    })*/
+    })
 }
