@@ -13,6 +13,7 @@ async function main() {
         id: String(await convertGUID(entry.objectGUID))
       }
     });
+    console.log(count)
     if (count === 0) {
       const user = await prisma.user.create({
         data: {
