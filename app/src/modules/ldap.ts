@@ -45,13 +45,13 @@ export async function search(filter: string, base: string) {
     const { searchEntries, searchReferences } = await client.search(base, {
         scope: 'sub',
         filter: filter,
+        explicitBufferAttributes: ['objectGUID']
     })
     return searchEntries
 }
 
 export async function convertGUID(guidRaw: string) {
-    const guid = uuid.parse(guidRaw)
-    return uuid.stringify(guid).toUpperCase()
+    return Buffer.from(guidRaw, 'binary').toString('hex');
 }
 
 process.on('exit', async () => {
