@@ -1,6 +1,6 @@
 import { Client } from 'ldapts';
 import { isLDAPEnabled } from './ldapUtilities';
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'uuid';
 
 let client: Client
 
@@ -50,8 +50,8 @@ export async function search(filter: string, base: string) {
 }
 
 export async function convertGUID(guidRaw: string) {
-    const data = uuidv4({ random: Buffer.from(guidRaw, 'binary') });
-    return data
+    const guid = uuid.parse(guidRaw)
+    return uuid.stringify(guid).toUpperCase()
 }
 
 process.on('exit', async () => {
