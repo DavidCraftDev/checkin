@@ -20,8 +20,7 @@ async function main() {
           id: String(await convertGUID(entry.objectGUID)),
           username: String(entry.sAMAccountName).toLowerCase(),
           displayname: String(entry.displayName),
-          permission: 0,
-          loginVersion: Number(entry.pwdLastSet)
+          permission: 0
         }
       })
       console.log("New user created from LDAP data:" + user.displayname);
