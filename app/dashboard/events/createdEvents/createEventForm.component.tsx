@@ -8,8 +8,8 @@ function CreateEventForm(props: any) {
             {props.studyTime ? <form action={submitHandlerStudyTime}>
                 <div>
                     <label htmlFor="studyTime">Studienzeit</label><br />
-                    <select id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1">
-                        <option disabled value="default" selected>Studienzeit wählen</option>
+                    <select defaultValue="default" id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1">
+                        <option disabled value="default">Studienzeit wählen</option>
                         {props.user.competence.map((competence: any) => (
                             <option key={competence} value={competence}>{competence}</option>
                         ))}
