@@ -5,7 +5,7 @@ import { submitHandlerEvent, submitHandlerStudyTime } from "./submitHandler";
 function CreateEventForm(props: any) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1">
-            <form action={submitHandlerStudyTime}>
+            {props.studyTime ? <form action={submitHandlerStudyTime}>
                 <div>
                     <label htmlFor="studyTime">Studienzeit</label><br />
                     <select id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1">
@@ -17,7 +17,7 @@ function CreateEventForm(props: any) {
                     </select> <br />
                     <button type="submit" className="btn" >Studienzeit Erstellen</button>
                 </div>
-            </form>
+            </form> : null}
             <form action={submitHandlerEvent}>
                 <div>
                     <label htmlFor="eventName">Veranstaltungsname</label><br />
