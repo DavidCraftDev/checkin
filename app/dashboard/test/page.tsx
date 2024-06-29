@@ -1,4 +1,4 @@
-import { convertGUID, search } from "@/app/src/modules/ldap";
+import { convertGUIDToString, search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
@@ -16,7 +16,7 @@ export default async function TestPage() {
         console.log(entry)
     });
     data.forEach(async (entry) => {
-        console.log(await convertGUID(entry.objectGUID))
+        console.log(await convertGUIDToString(entry.objectGUID))
     });
     let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.test);
     return (
@@ -25,12 +25,12 @@ export default async function TestPage() {
         <p>State: {process.env.ldap}</p>
         <p>{newData[0].displayName}</p>
         <p>{newData[0].sAMAccountName}</p>
-        <p>{await convertGUID(newData[0].objectGUID)}</p>
+        <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
         <p>----</p>
         {data.map(async (entry) => {
             return (
                 <div key={entry.objectGUID}>
-                    <p>{await convertGUID(entry.objectGUID)}</p>
+                    <p>{await convertGUIDToString(entry.objectGUID)}</p>
                     <p>{entry.sAMAccountName}</p>
                     <p>{entry.displayName}</p>
                     <p>{entry.pwdLastSet}</p>

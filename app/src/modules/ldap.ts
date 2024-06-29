@@ -50,14 +50,34 @@ export async function search(filter: string, base: string) {
     return searchEntries
 }
 
-export async function convertGUID(guidRaw: Buffer) {
+export async function convertGUIDToString(guidRaw: Buffer) {
     const hex = (guidRaw as Buffer).toString("hex")
+    console.log(hex)
     let formattedGUID = `${hex.substring(6, 8)}${hex.substring(4, 6)}${hex.substring(2, 4)}${hex.substring(0, 2)}-` +
         `${hex.substring(10, 12)}${hex.substring(8, 10)}-` +
         `${hex.substring(14, 16)}${hex.substring(12, 14)}-` +
         `${hex.substring(16, 20)}-` +
         `${hex.substring(20)}`
+    convertGUIDToBinary(formattedGUID)
     return formattedGUID;
+}
+
+export async function convertGUIDToBinary(guid: string) {
+        const hexParts = guid.replace(/-/g, '').match(/.{1,2}/g) || [];
+
+        // Umordnung der Hex-Teile in die ursprüngliche Reihenfolge für GUID
+        const reorderedHexParts = [
+            hexParts[3], hexParts[2], hexParts[1], hexParts[0],
+            hexParts[5], hexParts[4],
+            hexParts[7], hexParts[6],
+            hexParts[8], hexParts[9],
+            hexParts[10], hexParts[11], hexParts[12], hexParts[13], hexParts[14], hexParts[15]
+        ];
+        console.log(reorderedHexParts)
+    
+        // Zusammenfügen der Teile und Umwandlung in einen Buffer
+        const guidRaw = Buffer.from(reorderedHexParts.join(''), 'hex');
+        return guidRaw;
 }
 
 process.on('exit', async () => {
