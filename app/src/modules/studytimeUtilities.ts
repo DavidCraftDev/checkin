@@ -8,7 +8,7 @@ import db from "./db";
 
 export async function isStudyTimeEnabled() {
   let result: boolean = false;
-  if (process.env.study_time === "true") {
+  if (process.env.STUDYTIME === "true") {
     result = true;
   }
   return result;
