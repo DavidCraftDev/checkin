@@ -1,4 +1,4 @@
-import { convertGUIDToString, search } from "@/app/src/modules/ldap";
+import { convertGUIDToBinary, convertGUIDToString, search } from "@/app/src/modules/ldap";
 import { isLDAPEnabled } from "@/app/src/modules/ldapUtilities";
 
 export default async function TestPage() {
@@ -26,6 +26,8 @@ export default async function TestPage() {
         <p>{newData[0].displayName}</p>
         <p>{newData[0].sAMAccountName}</p>
         <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
+        <p>{newData[0].objectGUID}</p>
+        <p>{await convertGUIDToBinary(await convertGUIDToString(newData[0].objectGUID))}</p>
         <p>----</p>
         {data.map(async (entry) => {
             return (
