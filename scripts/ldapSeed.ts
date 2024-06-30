@@ -1,4 +1,4 @@
-import { convertGUIDToString, getAllUsers } from "@/app/src/modules/ldap";
+import { getAllUsers } from "../app/src/modules/ldap";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 

@@ -26,7 +26,7 @@ async function bind() {
     console.log("Bind to LDAP Server...")
     if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
     try {
-        await client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_CREDENTIALS);
+        await client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD);
         console.log("LDAP bind successful")
     } catch (error) {
         throw new Error("LDAP bind failed: " + error);
