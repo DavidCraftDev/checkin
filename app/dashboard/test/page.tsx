@@ -13,7 +13,7 @@ export default async function TestPage() {
     if(!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
     let data: any[] = await search(process.env.example, process.env.test);
     data.forEach(async (entry) => {
-        console.log("UUID " + await convertGUIDToString(entry.objectGUID) + "  OG " + Buffer.from(entry.objectGUID).toString("hex") + "  RA " + (await convertGUIDToBinary(await convertGUIDToString(entry.objectGUID))).toString("hex"))
+        //console.log("UUID " + await convertGUIDToString(entry.objectGUID) + "  OG " + Buffer.from(entry.objectGUID).toString("hex") + "  RA " + (await convertGUIDToBinary(await convertGUIDToString(entry.objectGUID))).toString("hex"))
     });
     let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.test);
     return (
@@ -24,7 +24,7 @@ export default async function TestPage() {
         <p>{newData[0].sAMAccountName}</p>
         <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
         <p>{(newData[0].objectGUID as Buffer).toString("hex")}</p>
-        <p>{(await convertGUIDToBinary((await convertGUIDToString(newData[0].objectGUID)))).toString("hex")}</p>
+        <p>{(await convertGUIDToBinary((await convertGUIDToString(newData[0].objectGUID))))}</p>
         <p>----</p>
         {data.map(async (entry) => {
             return (
