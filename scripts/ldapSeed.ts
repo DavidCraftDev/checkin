@@ -36,7 +36,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 needs: ["Ja"] as Prisma.JsonArray,
                 competence: ["Ja"] as Prisma.JsonArray,
             })
-            console.log("User created from LDAP data:" + entry.displayname);
+            console.log("User created from LDAP data:" + entry.displayName);
         }
     }));
     if (createData.length > 0) await prisma.user.createMany({ data: createData })
@@ -59,4 +59,5 @@ export async function seedLdapData(prisma: PrismaClient) {
             console.log("Local Admin created: local/" + username)
         }
     }
+    return "LDAP data seeded"
 }

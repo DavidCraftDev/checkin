@@ -35,4 +35,5 @@ export async function seedDefaultData(prisma: PrismaClient) {
         console.log("New default admin created because no admins were found in the database.");
         console.log({ user });
     }
+    return "Default data seeded"
 }
