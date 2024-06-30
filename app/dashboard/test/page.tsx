@@ -17,6 +17,8 @@ export default async function TestPage() {
     });
     data.forEach(async (entry) => {
         console.log(await convertGUIDToString(entry.objectGUID))
+        console.log(Buffer.from(entry.objectGUID).toString("hex"))
+        console.log(await convertGUIDToBinary(await convertGUIDToString(entry.objectGUID)))
     });
     let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.test);
     return (
