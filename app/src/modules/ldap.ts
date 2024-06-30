@@ -60,13 +60,6 @@ export async function convertGUIDToString(guidRaw: Buffer) {
     return formattedGUID;
 }
 
-export async function convertGUIDToBinary(guid: string) {
-        const replacedGuid = guid.replace("-", "")
-        const reorderdGuid = replacedGuid.substring(6, 8) + replacedGuid.substring(4, 6) + replacedGuid.substring(2, 4) + replacedGuid.substring(0, 2) + replacedGuid.substring(10, 12) + replacedGuid.substring(8, 10) + replacedGuid.substring(14, 16) + replacedGuid.substring(12, 14) + replacedGuid.substring(16, 20) + replacedGuid.substring(20)
-        const buffer = Buffer.from(reorderdGuid, "hex")
-        return reorderdGuid;
-}
-
 process.on('exit', async () => {
     await unbind();
 });
