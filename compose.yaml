@@ -13,7 +13,7 @@ services:
       - NEXTAUTH_SECRET=YOUR_SECRET
       # Please set own default admin credentials
       - DEFAULT_ADMIN_USERNAME=OwnUsername
-      - DEFAULT_ADMIN_PASSWORD=OwnPassword
+      - DEFAULT_ADMIN_USERNAME=OwnPassword
       # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
       - study_time=false
       # The LDAP auth feature may not work with your envorinment. Please test it before using it in production, and when it not works, ask for help!
@@ -30,6 +30,8 @@ services:
       - LDAP_USER_SEARCH_FILTER=(cn=*)
       # Create local admin user if LDAP auth is enabled (true/false) The user will be created with the default admin credentials, the username will start with "local/"
       - LDAP_CREATE_LOCAL_ADMIN=true
+      # Exßperimental feature: Automatically detect users group LDAP groups (true/false)
+      - LDAP_AUTO_GROUPS=false
       # Experimental feature: Automatically detect users needed studyTimes from LDAP groups (true/false)
       - LDAP_AUTO_STUDYTIME=false
     ports:

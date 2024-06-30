@@ -1,4 +1,4 @@
-import { convertGUIDToString, search } from "@/app/src/modules/ldap";
+import { convertGUIDToString, getAllUsers, search } from "@/app/src/modules/ldap";
 
 export default async function TestPage() {
     if (process.env.USE_LDAP !== "true") {
@@ -10,7 +10,7 @@ export default async function TestPage() {
         );
     }
     if (!process.env.LDAP_SEARCH_BASE || !process.env.LDAP_SEARCH_BASE) throw new Error("LDAP search filter and base are required");
-    let data: any[] = await search(process.env.LDAP_SEARCH_BASE, process.env.LDAP_SEARCH_BASE);
+    let data: any[] = await getAllUsers();
     data.forEach(async (entry) => {
         console.log(entry)
     });
