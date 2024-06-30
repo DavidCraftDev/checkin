@@ -5,20 +5,20 @@ export default async function TestPage() {
         return (
             <div>
                 <h1>Test Page</h1>
-                <p>State: {process.env.ldap}</p>
+                <p>State: {process.env.USE_LDAP}</p>
             </div>
         );
     }
-    if (!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
-    let data: any[] = await search(process.env.example, process.env.test);
+    if (!process.env.LDAP_SEARCH_BASE || !process.env.LDAP_SEARCH_BASE) throw new Error("LDAP search filter and base are required");
+    let data: any[] = await search(process.env.LDAP_SEARCH_BASE, process.env.LDAP_SEARCH_BASE);
     data.forEach(async (entry) => {
         console.log(entry)
     });
-    let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.test);
+    let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.LDAP_SEARCH_BASE);
     return (
         <div>
             <h1>Test Page</h1>
-            <p>State: {process.env.ldap}</p>
+            <p>State: {process.env.USE_LDAP}</p>
             <p>{newData[0].displayName}</p>
             <p>{newData[0].sAMAccountName}</p>
             <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
