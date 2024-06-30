@@ -17,13 +17,12 @@ services:
       # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
       - study_time=false
       # The LDAP auth feature may not work with your envorinment. Please test it before using it in production, and when it not works, ask for help!
-      # Use the LDAP auth feature instead of the own user management from the CheckIN (true/false)
+      # Use the LDAP auth feature instead of the own user management from the CheckIN (true/false). Please only enable before the first start of the CheckIN, otherwise the own user management will be disabled and you can't login with the default admin credentials.
       - USE_LDAP=false
       # LDAP server URL starting with ldap:// or ldaps://
-      - LDAP_URL=ldap://ldap.example.com
-      # LDAP bind DN
+      - LDAP_URI=ldap://ldap.example.com
+      # LDAP bind DN credentials
       - LDAP_BIND_DN=cn=admin,dc=example,dc=com
-      # LDAP bind password
       - LDAP_BIND_PASSWORD=example
       # LDAP search base
       - LDAP_SEARCH_BASE=dc=example,dc=com
