@@ -61,10 +61,10 @@ export async function convertGUIDToString(guidRaw: Buffer) {
 }
 
 export async function convertGUIDToBinary(guid: string) {
-        const parts = guid.replace(/-/g, '').match(/.{1,2}/g) || [];
-        const reorderedHexParts = parts[3] + parts[2] + parts[1] + parts[0] + parts[5] + parts[4] + parts[7] + parts[6] + parts[8] + parts[9] + parts[10] + parts[11] + parts[12] + parts[13] + parts[14] + parts[15]
-        const guidRaw = Buffer.from(reorderedHexParts, 'hex');
-        return guidRaw;
+        const replacedGuid = guid.replace("-", "")
+        const reorderdGuid = replacedGuid.substring(6, 8) + replacedGuid.substring(4, 6) + replacedGuid.substring(2, 4) + replacedGuid.substring(0, 2) + replacedGuid.substring(10, 12) + replacedGuid.substring(8, 10) + replacedGuid.substring(14, 16) + replacedGuid.substring(12, 14) + replacedGuid.substring(16, 20) + replacedGuid.substring(20)
+        const buffer = Buffer.from(reorderdGuid, "hex")
+        return buffer;
 }
 
 process.on('exit', async () => {
