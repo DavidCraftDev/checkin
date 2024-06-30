@@ -5,6 +5,7 @@ import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
+  /*
   if (!process.env.example || !process.env.test) throw new Error("LDAP search filter and base are required");
   const ldapData: any[] = await search(process.env.example, process.env.test);
   ldapData.forEach(async (entry) => {
@@ -25,7 +26,7 @@ async function main() {
       })
       console.log("New user created from LDAP data:" + user.displayname);
     }
-  });
+  });*/
   const adminCount = await prisma.user.count({
     where: {
       permission: 2
