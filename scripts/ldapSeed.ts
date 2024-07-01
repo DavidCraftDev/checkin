@@ -22,7 +22,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             }
         })
         exist.push(user.id)
-        console.log("User password updated from LDAP data:" + user.displayname);
+        console.log("User data updated from LDAP data:" + user.displayname);
     }));
     const createData: any[] = []
     await Promise.all(ldapData.map(async (entry) => {
