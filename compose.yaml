@@ -13,7 +13,7 @@ services:
       - NEXTAUTH_SECRET=YOUR_SECRET
       # Please set own default admin credentials
       - DEFAULT_ADMIN_USERNAME=OwnUsername
-      - DEFAULT_ADMIN_USERNAME=OwnPassword
+      - DEFAULT_ADMIN_PASSWORD=OwnPassword
       # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
       - STUDYTIME=false
       # The LDAP auth feature may not work with your envorinment. Please test it before using it in production, and when it not works, ask for help!

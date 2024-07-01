@@ -3,5 +3,6 @@
 import { signOut } from "next-auth/react";
 
 export default function Logout() {
-  signOut({ callbackUrl: "/login", redirect: true});
+  "use client";
+  signOut({ callbackUrl: window.location.hostname + "/login", redirect: true});
 }

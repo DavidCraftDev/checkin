@@ -42,9 +42,9 @@ export async function seedLdapData(prisma: PrismaClient) {
     if (createData.length > 0) await prisma.user.createMany({ data: createData })
     if (process.env.LDAP_CREATE_LOCAL_ADMIN == "true") {
         if (!process.env.DEFAULT_ADMIN_USERNAME) throw new Error("LDAP_LOCAL_ADMIN_USERNAME is required");
-        if (!process.env.DEFAULT_ADMIN_USERNAME) throw new Error("LDAP_LOCAL_ADMIN_PASSWORD is required");
+        if (!process.env.DEFAULT_ADMIN_PASSWORD) throw new Error("LDAP_LOCAL_ADMIN_PASSWORD is required");
         const username = process.env.DEFAULT_ADMIN_USERNAME
-        const password = process.env.DEFAULT_ADMIN_USERNAME
+        const password = process.env.DEFAULT_ADMIN_PASSWORD
         const passwordHash = await hash(password, 12);
         const count = await prisma.user.count({ where: { username: username } })
         if (count == 0) {
