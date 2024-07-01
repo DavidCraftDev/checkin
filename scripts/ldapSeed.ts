@@ -43,7 +43,6 @@ export async function seedLdapData(prisma: PrismaClient) {
             }
         })
         exist.push(user.id)
-        console.log("User data updated from LDAP data:" + user.displayname);
     }));
     const createData: any[] = []
     await Promise.all(ldapData.map(async (entry) => {
@@ -57,7 +56,6 @@ export async function seedLdapData(prisma: PrismaClient) {
                 needs: ["Ja"] as Prisma.JsonArray,
                 competence: ["Ja"] as Prisma.JsonArray,
             })
-            console.log("User created from LDAP data:" + entry.displayName);
         }
     }));
     if (createData.length > 0) await prisma.user.createMany({ data: createData })
