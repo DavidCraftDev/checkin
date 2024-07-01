@@ -65,8 +65,8 @@ export const authOptions: NextAuthOptions = {
           console.log(userData)
           return {
             id: userid,
-            username: user.sAMAccountName,
-            name: user.displayName,
+            username: String(user.sAMAccountName),
+            name: String(user.displayName),
             permission: 0,
             group: "Test",
             needs: ["Ja"],
