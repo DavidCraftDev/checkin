@@ -8,6 +8,25 @@ export async function seedLdapData(prisma: PrismaClient) {
     const exist: Array<string> = []
     await Promise.all(ldapUser.map(async (entry) => {
         const ldapUserData = ldapData.find(e => e.objectGUID === entry.id)
+        let permission = {}
+        if (process.env.LDAP_AUTO_PERMISSIONS === "true") {
+            if (ldapUserData.memberOf.includes(process.env.LDAP_AUTO_ADMIN_GROUP)) permission = { permission: 2 }
+            else if (ldapUserData.memberOf.includes(process.env.LDAP_AUTO_TEACHER_GROUP)) permission = { permission: 1 }
+            else permission = { permission: 0 }
+        } else {
+            permission = { permission: 0 }
+        }
+        let group = {}
+        if(process.env.LDAP_AUTO_GROUPS === "true") {
+            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
+                let data = groupData.split(",")
+                if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_GROUP_OU) {
+                    group = { group: String(data[0].replace("CN=", "")) }
+                }
+            }))
+        }
+        let needs = { needs: ["Ja"] as Prisma.JsonArray }
+        let competence = { competence: ["Ja"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
                 id: entry.id
@@ -15,10 +34,10 @@ export async function seedLdapData(prisma: PrismaClient) {
             data: {
                 username: String(ldapUserData.sAMAccountName).toLowerCase(),
                 displayname: String(ldapUserData.displayName),
-                permission: 0,
-                group: "Test",
-                needs: ["Ja"] as Prisma.JsonArray,
-                competence: ["Ja"] as Prisma.JsonArray,
+                ...permission,
+                ...group,
+                ...needs,
+                ...competence
             }
         })
         exist.push(user.id)
