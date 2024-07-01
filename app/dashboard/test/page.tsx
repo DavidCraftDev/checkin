@@ -12,7 +12,13 @@ export default async function TestPage() {
     if (!process.env.LDAP_SEARCH_BASE || !process.env.LDAP_SEARCH_BASE) throw new Error("LDAP search filter and base are required");
     let data: any[] = await getAllUsers();
     data.forEach(async (entry) => {
-        console.log(entry)
+        if (entry.sAMAccountName === "sascha.meyer") {
+            console.log(entry);
+        }
+        entry.memberOf.map(async (group: string) => {
+            let data = group.split(",")
+            console.log(data[1].replace("OU=", "") + ": " + data[0].replace("CN=", ""))
+        });
     });
     let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.LDAP_SEARCH_BASE);
     return (
@@ -27,10 +33,16 @@ export default async function TestPage() {
             {data.map(async (entry) => {
                 return (
                     <div key={entry.objectGUID}>
-                        <p>{await convertGUIDToString(entry.objectGUID)}</p>
+                        <p>{entry.objectGUID}</p>
                         <p>{entry.sAMAccountName}</p>
                         <p>{entry.displayName}</p>
                         <p>{entry.pwdLastSet}</p>
+                        {entry.memberOf.map((group: string) => {
+                            return (
+                                <p key={group}>{group}</p>
+                            );
+                        }
+                        )}
                         <p>----</p>
                     </div>
                 );

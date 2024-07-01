@@ -2,7 +2,6 @@ import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { convertGUIDToString, getAllUsers, search } from "./ldap";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -23,58 +22,27 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
-        if (!process.env.USE_LDAP && credentials.username.startsWith("local/")) {
-          const user = await db.user.findUnique({
-            where: {
-              username: credentials.username.toLowerCase(),
-            },
-          });
+        const user = await db.user.findUnique({
+          where: {
+            username: credentials.username.toLowerCase(),
+          },
+        });
 
-          if (!user || !user.password || !(await compare(credentials.password, user.password))) {
-            return null;
-          }
-
-          return {
-            id: user.id,
-            username: user.username,
-            name: user.displayname,
-            permission: user.permission,
-            group: user.group,
-            needs: user.needs,
-            competence: user.competence,
-            loginVersion: user.loginVersion,
-          };
-        } else {
-          if(!process.env.LDAP_SEARCH_BASE) throw new Error("LDAP_SEARCH_BASE is required");
-          const userLDAPData = await search(`(&(sAMAccountName=${credentials.username})(objectClass=user))`, process.env.LDAP_SEARCH_BASE);
-          if (userLDAPData.length < 1) {
-            return null;
-          }
-          const user = userLDAPData[0];
-          const userid = await convertGUIDToString(user.objectGUID as Buffer)
-          console.log(user);
-          const userData = await db.user.update({
-            where: {
-              id: userid
-            },
-            data: {
-              username: String(user.sAMAccountName),
-              displayname: String(user.displayName)
-            }
-          })
-          console.log(userData)
-          return {
-            id: userid,
-            username: String(user.sAMAccountName),
-            name: String(user.displayName),
-            permission: 0,
-            group: "Test",
-            needs: ["Ja"],
-            competence: ["Ja"],
-            loginVersion: 0,
-          };
+        if (!user || !user.password || !(await compare(credentials.password, user.password))) {
+          return null;
         }
-      }
+
+        return {
+          id: user.id,
+          username: user.username,
+          name: user.displayname,
+          permission: user.permission,
+          group: user.group,
+          needs: user.needs,
+          competence: user.competence,
+          loginVersion: user.loginVersion,
+        };
+      },
     }),
   ],
   callbacks: {
