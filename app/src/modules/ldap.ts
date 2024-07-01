@@ -70,7 +70,3 @@ export async function convertGUIDToString(guidRaw: Buffer) {
         `${hex.substring(20)}`
     return formattedGUID;
 }
-
-process.on('exit', async () => {
-    await unbind();
-});
