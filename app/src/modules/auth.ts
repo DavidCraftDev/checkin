@@ -2,7 +2,7 @@ import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getAllUsers, search } from "./ldap";
+import { convertGUIDToString, getAllUsers, search } from "./ldap";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -51,9 +51,20 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
           const user = userLDAPData[0];
+          const userid = await convertGUIDToString(user.objectGUID as Buffer)
           console.log(user);
+          const userData = await db.user.update({
+            where: {
+              id: userid
+            },
+            data: {
+              username: String(user.sAMAccountName),
+              displayname: String(user.displayName)
+            }
+          })
+          console.log(userData)
           return {
-            id: user.objectGUID,
+            id: userid,
             username: user.sAMAccountName,
             name: user.displayName,
             permission: 0,
