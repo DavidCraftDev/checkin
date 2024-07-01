@@ -29,6 +29,7 @@ export default async function TestPage() {
             <p>{newData[0].sAMAccountName}</p>
             <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
             <p>{(newData[0].objectGUID as Buffer).toString("hex")}</p>
+            <p>{newData[0].memberOf}</p>
             <p>----</p>
             {data.map(async (entry) => {
                 return (
