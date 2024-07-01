@@ -20,8 +20,10 @@ export async function seedLdapData(prisma: PrismaClient) {
         if (process.env.LDAP_AUTO_GROUPS === "true") {
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let data = groupData.split(",")
+                console.log(data[1].replace("OU=", "") + ": " + data[0].replace("CN=", ""))
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_GROUP_OU) {
                     group = { group: String(data[0].replace("CN=", "")) }
+                    console.log("Group: " + data[0].replace("CN=", ""))
                 }
             }))
         }
