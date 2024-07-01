@@ -23,4 +23,8 @@ main()
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);
+  })
+  .finally(() => {
+    console.info('Exiting seeding...');
+    process.exit(0);
   });
