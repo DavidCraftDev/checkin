@@ -17,8 +17,10 @@ export async function seedLdapData(prisma: PrismaClient) {
             permission = { permission: 0 }
         }
         let group = {}
+        console.log(process.env.LDAP_AUTO_GROUPS)
         if (process.env.LDAP_AUTO_GROUPS === "true") {
-            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
+            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => 
+                {console.log(groupData)
                 let data = groupData.split(",")
                 console.log(data[1].replace("OU=", "") + ": " + data[0].replace("CN=", ""))
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_GROUP_OU) {
@@ -80,6 +82,6 @@ export async function seedLdapData(prisma: PrismaClient) {
             console.log("Local Admin created: local/" + username)
         }
     }
-    console.log("DONE LDAP")
-    return "LDAP data seeded"
+    console.log("LDAP data seeded successfully!")
+    return
 }
