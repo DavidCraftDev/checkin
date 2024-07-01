@@ -20,17 +20,12 @@ export default async function TestPage() {
             console.log(data[1].replace("OU=", "") + ": " + data[0].replace("CN=", ""))
         });
     });
-    let newData: any[] = await search("(|(sAMAccountName=ntadmin)(mail=ntadmin))", process.env.LDAP_SEARCH_BASE);
+    let newData: any[] = await search("(cn=Team Oberstufe)", process.env.LDAP_SEARCH_BASE);
+    console.log(newData);
     return (
         <div>
             <h1>Test Page</h1>
             <p>State: {process.env.USE_LDAP}</p>
-            <p>{newData[0].displayName}</p>
-            <p>{newData[0].sAMAccountName}</p>
-            <p>{await convertGUIDToString(newData[0].objectGUID)}</p>
-            <p>{(newData[0].objectGUID as Buffer).toString("hex")}</p>
-            <p>{newData[0].memberOf}</p>
-            <p>----</p>
             {data.map(async (entry) => {
                 return (
                     <div key={entry.objectGUID}>
