@@ -46,7 +46,7 @@ export async function seedLdapData(prisma: PrismaClient) {
         const username = process.env.DEFAULT_ADMIN_USERNAME
         const password = process.env.DEFAULT_ADMIN_PASSWORD
         const passwordHash = await hash(password, 12);
-        const count = await prisma.user.count({ where: { username: username } })
+        const count = await prisma.user.count({ where: { username: "local/" + username } })
         if (count == 0) {
             await prisma.user.create({
                 data: {
