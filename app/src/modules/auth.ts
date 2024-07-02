@@ -56,15 +56,11 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
           return new Promise(async (resolve, reject) => {
-            try {
               console.log(ldapUser.dn)
-              client.bind(ldapUser.dn, credentials.password)
-              client.unbind()
-            } catch (error) {
-              console.log("LDAP bind failed: " + error)
-              reject(error)
-              return null
-            } finally {
+              await client.bind(ldapUser.dn, credentials.password).catch((error) => {
+                console.log(error)
+                reject()
+              })
               const dbUser = await db.user.findUnique({
                 where: {
                   id: ldapUser.objectGUID as string,
@@ -85,8 +81,6 @@ export const authOptions: NextAuthOptions = {
                 loginVersion: dbUser?.loginVersion
               
               })
-              return
-            }
           });
         } else {
           const user = await db.user.findUnique({
