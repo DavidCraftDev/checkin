@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
               console.log(ldapUser.dn)
               await client.bind(ldapUser.dn, credentials.password).catch((error) => {
                 console.log(error)
-                reject()
+                resolve(null)
               })
               const dbUser = await db.user.findUnique({
                 where: {
