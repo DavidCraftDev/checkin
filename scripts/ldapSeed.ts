@@ -19,8 +19,7 @@ export async function seedLdapData(prisma: PrismaClient) {
         }
         let group = {}
         if (process.env.LDAP_AUTO_GROUPS === "true") {
-            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => 
-                {
+            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let data = groupData.split(",")
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_GROUP_OU) {
                     group = { group: String(data[0].replace("CN=", "")) }
@@ -28,19 +27,18 @@ export async function seedLdapData(prisma: PrismaClient) {
             }))
         }
         let needs = {}
-        if(process.env.LDAP_AUTO_STUDYTIME === "true") {
+        if (process.env.LDAP_AUTO_STUDYTIME === "true") {
             let needsData = new Array()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 console.log("GD" + groupData)
                 let data = groupData.split(",")
                 console.log("DS" + data)
-                console.log("Test" + data[0].split(" "))
-                if(data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
-                    data[0].replace("CN=", "").split(" ").map((entry: string) => { 
-                        if(entry[0].startsWith("EF") || entry.startsWith("Q1") || entry.startsWith("Q2")) {
-                            if(courses[entry]) needsData.push(courses[entry] as string)
-                        }
-                    })
+                console.log("Test" + data[0].replace("CN=", "").split(" "))
+                if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
+                    const splitedName = data[0].split(" ")
+                    if (splitedName[0].startsWith("CN=EF") || splitedName[0].startsWith("CN=Q1") || splitedName[0].startsWith("CN=Q2")) {
+                        if (courses[splitedName[1]]) needsData.push(courses[splitedName[1]] as string)
+                    }
                 }
             })).then(() => {
                 needs = { needs: needsData as Prisma.JsonArray }
