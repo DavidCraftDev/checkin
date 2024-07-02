@@ -20,12 +20,12 @@ if (process.env.USE_LDAP == "true") {
   console.log("Connect to LDAP Server for auth " + process.env.LDAP_URI + "...")
   const tlsOptions = { rejectUnauthorized: false }; // Future: Add support for custom CA certificates
   try {
-      client = new Client({
-          url: process.env.LDAP_URI,
-          tlsOptions: tlsOptions
-      });
+    client = new Client({
+      url: process.env.LDAP_URI,
+      tlsOptions: tlsOptions
+    });
   } catch (error) {
-      throw new Error("Failed to create LDAP auth client: " + error);
+    throw new Error("Failed to create LDAP auth client: " + error);
   }
   console.log("LDAP client for auth created successfully!")
 }
@@ -56,31 +56,30 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
           return new Promise(async (resolve, reject) => {
-              console.log(ldapUser.dn)
-              await client.bind(ldapUser.dn, credentials.password).catch((error) => {
-                console.log(error)
-                resolve(null)
-              })
-              const dbUser = await db.user.findUnique({
-                where: {
-                  id: ldapUser.objectGUID as string,
-                }
-              }) as User | null
-              if(!dbUser) {
-                reject("User not found in database")
-                return null
+            console.log(ldapUser.dn)
+            await client.bind(ldapUser.dn, credentials.password).catch((error) => {
+              resolve(null)
+            })
+            const dbUser = await db.user.findUnique({
+              where: {
+                id: ldapUser.objectGUID as string,
               }
-              resolve({
-                id: dbUser?.id as string,
-                username: dbUser?.username,
-                name: dbUser?.displayname,
-                permission: dbUser?.permission,
-                group: dbUser?.group,
-                needs: dbUser?.needs,
-                competence: dbUser?.competence,
-                loginVersion: dbUser?.loginVersion
-              
-              })
+            }) as User | null
+            if (!dbUser) {
+              reject("User not found in database")
+              return null
+            }
+            resolve({
+              id: dbUser?.id as string,
+              username: dbUser?.username,
+              name: dbUser?.displayname,
+              permission: dbUser?.permission,
+              group: dbUser?.group,
+              needs: dbUser?.needs,
+              competence: dbUser?.competence,
+              loginVersion: dbUser?.loginVersion
+
+            })
           });
         } else {
           const user = await db.user.findUnique({
