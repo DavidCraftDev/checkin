@@ -16,7 +16,7 @@
     "autoprefixer": "10.4.19",
     "bcryptjs": "2.4.3",
     "clsx": "2.1.1",
-    "eslint": "8",
+    "eslint": "9",
     "eslint-config-next": "14.2.4",
     "ldapts": "^7.0.12",
     "moment": "2.30.1",
