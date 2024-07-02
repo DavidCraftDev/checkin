@@ -17,7 +17,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             permission = { permission: 0 }
         }
         let group = {}
-        console.log(process.env.LDAP_AUTO_GROUPS)
+        console.log("Env:" + process.env.LDAP_AUTO_GROUPS as string)
         if (process.env.LDAP_AUTO_GROUPS === "true") {
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => 
                 {
