@@ -26,7 +26,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 }
             }))
         }
-        let needs: any = {}
+        let needs = { needs: ["Ja", "Nein"] as Prisma.JsonArray }
         if (process.env.LDAP_AUTO_STUDYTIME === "true") {
             let needsData = new Array()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
@@ -38,11 +38,10 @@ export async function seedLdapData(prisma: PrismaClient) {
                     }
                 }
             })).then(() => {
-                needs = { needs: ["Ja", "Nein"] as Prisma.JsonArray }
+                //needs = { needs: ["Ja", "Nein"] as Prisma.JsonArray }
             })
         }
-        console.log("ND" + needs[0])
-        let competence = { competence: ["Ja", "Nein"] as Prisma.JsonArray }
+        let competence = { competence: ["Ja", "Nein", "Vieleicht"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
                 id: entry.id
