@@ -37,9 +37,8 @@ export async function seedLdapData(prisma: PrismaClient) {
                         if (courses[splitedName[1]]) needsData.push(courses[splitedName[1]] as string)
                     }
                 }
-            })).then(() => {
-                needs = { needs: ["Ja", "Nein", "Vieleicht"] as Prisma.JsonArray }
-            })
+            }))
+            needs = { needs: needsData as Prisma.JsonArray }
         }
         console.log("ND", needs)
         let competence = { competence: ["Ja", "Nein", "Vieleicht"] as Prisma.JsonArray }
