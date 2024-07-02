@@ -39,6 +39,7 @@ services:
       - LDAP_AUTO_GROUPS_OU=Classes
       # Experimental feature: Automatically detect users needed studyTimes from LDAP groups (true/false)
       - LDAP_AUTO_STUDYTIME=false
+      - LDAP_AUTO_STUDYTIME_OU=Courses
     ports:
       - "3030:3000"
   db:

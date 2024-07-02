@@ -1,3 +1,4 @@
+import courses from "@/app/src/modules/courses";
 import { getAllUsers } from "../app/src/modules/ldap";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
@@ -26,7 +27,22 @@ export async function seedLdapData(prisma: PrismaClient) {
                 }
             }))
         }
-        let needs = { needs: ["Ja"] as Prisma.JsonArray }
+        let needs = {}
+        if(process.env.LDAP_AUTO_STUDYTIME === "true") {
+            let needsData = new Array()
+            Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
+                let data = groupData.split(",")
+                if(data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
+                    data[0].replace("CN=", "").split(" ").map((entry: string) => { 
+                        if(entry[0].startsWith("EF") || entry.startsWith("Q1") || entry.startsWith("Q2")) {
+                            if(courses[entry]) needsData.push(courses[entry] as string)
+                        }
+                    })
+                }
+            })).then(() => {
+                needs = { needs: needsData as Prisma.JsonArray }
+            })
+        }
         let competence = { competence: ["Ja"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
