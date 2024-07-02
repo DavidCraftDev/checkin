@@ -1,7 +1,34 @@
+// @ts-nocheck
+
 import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { getAllUsers } from "./ldap";
+import { Client } from "ldapts";
+import { User } from "@prisma/client";
+
+let client: Client
+
+if (process.env.USE_LDAP == "true") {
+  if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
+  if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
+  if (!process.env.LDAP_BIND_PASSWORD) throw new Error("LDAP_BIND_PASSWORD is required");
+  if (!process.env.LDAP_URI.startsWith('ldap://') && !process.env.LDAP_URI.startsWith('ldaps://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
+  if (!process.env.LDAP_SEARCH_BASE) throw new Error("LDAP_SEARCH_BASE is required");
+  if (!process.env.LDAP_SEARCH_FILTER) throw new Error("LDAP_SEARCH_FILTER is required");
+  console.log("Connect to LDAP Server for auth " + process.env.LDAP_URI + "...")
+  const tlsOptions = { rejectUnauthorized: false }; // Future: Add support for custom CA certificates
+  try {
+      client = new Client({
+          url: process.env.LDAP_URI,
+          tlsOptions: tlsOptions
+      });
+  } catch (error) {
+      throw new Error("Failed to create LDAP auth client: " + error);
+  }
+  console.log("LDAP client for auth created successfully!")
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -22,26 +49,60 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
-        const user = await db.user.findUnique({
-          where: {
-            username: credentials.username.toLowerCase(),
-          },
-        });
+        if (process.env.USE_LDAP === "true" && !credentials.username.startsWith("local/")) {
+          const ldapUserData = await getAllUsers();
+          const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username);
+          if (!ldapUser) {
+            return null;
+          }
+          return new Promise(async (resolve, reject) => {
+            try {
+              client.bind(ldapUser.dn, credentials.password)
+              client.unbind()
+            } catch (error) {
+              reject(error)
+            } finally {
+              const dbUser = await db.user.findUnique({
+                where: {
+                  id: ldapUser.objectGUID as string,
+                }
+              }) as User | null
+              if(!dbUser) reject("User not found in database")
+              resolve({
+                id: dbUser?.id as string,
+                username: dbUser?.username,
+                name: dbUser?.displayname,
+                permission: dbUser?.permission,
+                group: dbUser?.group,
+                needs: dbUser?.needs,
+                competence: dbUser?.competence,
+                loginVersion: dbUser?.loginVersion
+              
+              })
+            }
+          });
+        } else {
+          const user = await db.user.findUnique({
+            where: {
+              username: credentials.username.toLowerCase(),
+            },
+          });
 
-        if (!user || !user.password || !(await compare(credentials.password, user.password))) {
-          return null;
+          if (!user || !user.password || !(await compare(credentials.password, user.password))) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            username: user.username,
+            name: user.displayname,
+            permission: user.permission,
+            group: user.group,
+            needs: user.needs,
+            competence: user.competence,
+            loginVersion: user.loginVersion,
+          };
         }
-
-        return {
-          id: user.id,
-          username: user.username,
-          name: user.displayname,
-          permission: user.permission,
-          group: user.group,
-          needs: user.needs,
-          competence: user.competence,
-          loginVersion: user.loginVersion,
-        };
       },
     }),
   ],
