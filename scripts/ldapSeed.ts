@@ -30,14 +30,14 @@ export async function seedLdapData(prisma: PrismaClient) {
         if (process.env.LDAP_AUTO_STUDYTIME === "true") {
             let needsData = new Array()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
-                console.log("GD" + groupData)
                 let data = groupData.split(",")
-                console.log("DS" + data)
-                console.log("Test" + data[0].replace("CN=", "").split(" "))
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
-                    const splitedName = data[0].split(" ")
-                    if (splitedName[0].startsWith("CN=EF") || splitedName[0].startsWith("CN=Q1") || splitedName[0].startsWith("CN=Q2")) {
+                    const splitedName = data[0].replace("CN=", "").split(" ")
+                    console.log("SN" + splitedName)
+                    if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
+                        console.log("YES")
                         if (courses[splitedName[1]]) needsData.push(courses[splitedName[1]] as string)
+                        if(courses[splitedName[1]]) console.log(courses[splitedName[1]])
                     }
                 }
             })).then(() => {
