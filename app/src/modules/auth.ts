@@ -57,9 +57,11 @@ export const authOptions: NextAuthOptions = {
           }
           return new Promise(async (resolve, reject) => {
             try {
+              console.log(ldapUser.dn)
               client.bind(ldapUser.dn, credentials.password)
               client.unbind()
             } catch (error) {
+              console.log("LDAP bind failed: " + error)
               reject(error)
               return null
             } finally {
