@@ -41,8 +41,8 @@ export async function seedLdapData(prisma: PrismaClient) {
             }))
             needs = { needs: needsData }
             let competenceData: Prisma.JsonArray = new Array()
-            if (ldapUserData.managerOf) {
-                Promise.all(ldapUserData.managerOf.map(async (groupData: string) => {
+            if (ldapUserData.managedObjects) {
+                Promise.all(ldapUserData.managedObjects.map(async (groupData: string) => {
                     let data = groupData.split(",")
                     if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                         const splitedName = data[0].replace("CN=", "").split(" ")
