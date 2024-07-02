@@ -61,13 +61,17 @@ export const authOptions: NextAuthOptions = {
               client.unbind()
             } catch (error) {
               reject(error)
+              return null
             } finally {
               const dbUser = await db.user.findUnique({
                 where: {
                   id: ldapUser.objectGUID as string,
                 }
               }) as User | null
-              if(!dbUser) reject("User not found in database")
+              if(!dbUser) {
+                reject("User not found in database")
+                return null
+              }
               resolve({
                 id: dbUser?.id as string,
                 username: dbUser?.username,
@@ -79,6 +83,7 @@ export const authOptions: NextAuthOptions = {
                 loginVersion: dbUser?.loginVersion
               
               })
+              return
             }
           });
         } else {
