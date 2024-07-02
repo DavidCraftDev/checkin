@@ -1,4 +1,4 @@
-import courses from "@/app/src/modules/courses";
+import courses from "../app/src/modules/courses";
 import { getAllUsers } from "../app/src/modules/ldap";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
