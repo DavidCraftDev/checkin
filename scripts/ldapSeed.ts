@@ -27,21 +27,34 @@ export async function seedLdapData(prisma: PrismaClient) {
             }))
         }
         let needs = {}
+        let competence = {}
         if (process.env.LDAP_AUTO_STUDYTIME === "true") {
             let needsData: Prisma.JsonArray = new Array()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let data = groupData.split(",")
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     const splitedName = data[0].replace("CN=", "").split(" ")
-                    if(splitedName[1].toUpperCase() == "BI") console.log("YES")
+                    if (splitedName[1].toUpperCase() == "BI") console.log("YES")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
                         if (courses[splitedName[1].toUpperCase()]) needsData.push(courses[splitedName[1].toUpperCase()] as string)
                     }
                 }
             }))
             needs = { needs: needsData }
+            let competenceData: Prisma.JsonArray = new Array()
+            if (ldapUserData.managerOf) { }
+            Promise.all(ldapUserData.managerOf.map(async (groupData: string) => {
+                let data = groupData.split(",")
+                if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
+                    const splitedName = data[0].replace("CN=", "").split(" ")
+                    if (splitedName[1].toUpperCase() == "BI") console.log("YES")
+                    if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
+                        if (courses[splitedName[1].toUpperCase()]) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                    }
+                }
+            }))
+            competence = { competence: competenceData }
         }
-        let competence = { competence: ["Ja", "Nein", "Vieleicht"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
                 id: entry.id
@@ -55,6 +68,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 ...competence
             }
         })
+        console.log(ldapUserData)
         exist.push(user.id)
     }));
     const createData: any[] = []
