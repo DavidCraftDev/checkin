@@ -33,14 +33,14 @@ export async function seedLdapData(prisma: PrismaClient) {
                 let data = groupData.split(",")
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     const splitedName = data[0].replace("CN=", "").split(" ")
+                    if(splitedName[1].toUpperCase() == "BI") console.log("YES")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                        if (courses[splitedName[1]]) needsData.push(courses[splitedName[1]] as string)
+                        if (courses[splitedName[1].toUpperCase()]) needsData.push(courses[splitedName[1].toUpperCase()] as string)
                     }
                 }
             }))
             needs = { needs: needsData }
         }
-        console.log("ND", needs)
         let competence = { competence: ["Ja", "Nein", "Vieleicht"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
@@ -55,7 +55,6 @@ export async function seedLdapData(prisma: PrismaClient) {
                 ...competence
             }
         })
-        console.log(user)
         exist.push(user.id)
     }));
     const createData: any[] = []
