@@ -34,6 +34,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 let data = groupData.split(",")
                 if(data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     data[0].replace("CN=", "").split(" ").map((entry: string) => { 
+                        console.log(entry[0] + " " + entry)
                         if(entry[0].startsWith("EF") || entry.startsWith("Q1") || entry.startsWith("Q2")) {
                             if(courses[entry]) needsData.push(courses[entry] as string)
                         }
