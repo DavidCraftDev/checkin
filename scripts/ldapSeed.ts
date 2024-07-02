@@ -67,7 +67,6 @@ export async function seedLdapData(prisma: PrismaClient) {
                 ...competence
             }
         })
-        console.log(ldapUserData)
         exist.push(user.id)
     }));
     const createData: any[] = []
