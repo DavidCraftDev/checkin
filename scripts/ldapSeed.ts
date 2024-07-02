@@ -38,10 +38,10 @@ export async function seedLdapData(prisma: PrismaClient) {
                     }
                 }
             })).then(() => {
-                console.log("ND" + needsData)
                 needs = { needs: needsData as Prisma.JsonArray }
             })
         }
+        console.log("ND" + needs)
         let competence = { competence: ["Ja"] as Prisma.JsonArray }
         const user = await prisma.user.update({
             where: {
