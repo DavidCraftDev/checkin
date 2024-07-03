@@ -1,6 +1,6 @@
 import courses from "../app/src/modules/courses";
 import { getAllUsers } from "../app/src/modules/ldap";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
 export async function seedLdapData(prisma: PrismaClient) {
@@ -39,7 +39,6 @@ export async function seedLdapData(prisma: PrismaClient) {
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     const splitedName = data[0].replace("CN=", "").split(" ")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                        if(splitedName[1] === "BI") console.log("JAAA")
                         if (courses[splitedName[1].toUpperCase()]) needsData.add(courses[splitedName[1].toUpperCase()] as string)
                     }
                 }

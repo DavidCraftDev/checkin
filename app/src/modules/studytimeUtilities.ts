@@ -154,7 +154,6 @@ export async function getMissingStudyTimes(userID: string) {
 }
 
 export async function saveNeededStudyTimes(user: any) {
-  if (user.needsStatus == String(moment().week() + "/" + moment().week())) return "exist";
   const count = await db.studyTimeData.count({
     where: {
       userID: user.id,
@@ -162,20 +161,31 @@ export async function saveNeededStudyTimes(user: any) {
       year: moment().year()
     }
   });
-  if (count > 0) return "exist";
   if (!user.needs) return "noNeeds";
-  const data = await db.studyTimeData.create({
-    data: {
-      userID: user.id,
-      cw: moment().week(),
-      year: moment().year(),
-      needs: user.needs as Prisma.JsonArray
-    }
-  });
-  await db.user.update({
-    where: { id: user.id },
-    data: { needsStatus: String(moment().week()) }
-  });
+  let data
+  if (count > 0) {
+    data = await db.studyTimeData.updateMany({
+      where: {
+        AND: [
+          { userID: user.id },
+          { cw: moment().week() },
+          { year: moment().year() }
+        ]
+      },
+      data: {
+        needs: user.needs
+      }
+    });
+  } else {
+    data = await db.studyTimeData.create({
+      data: {
+        userID: user.id,
+        cw: moment().week(),
+        year: moment().year(),
+        needs: user.needs as Prisma.JsonArray
+      }
+    });
+  }
   return data;
 }
 
