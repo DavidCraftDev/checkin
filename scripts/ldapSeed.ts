@@ -33,31 +33,31 @@ export async function seedLdapData(prisma: PrismaClient) {
         let needs = {}
         let competence = {}
         if (process.env.LDAP_AUTO_STUDYTIME === "true") {
-            let needsData: Prisma.JsonArray = new Array()
-            console.log(courses["BI"])
+            let needsData = new Set()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let data = groupData.split(",")
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     const splitedName = data[0].replace("CN=", "").split(" ")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                        if (courses[splitedName[1].toUpperCase()] && !needsData.includes(splitedName[1].toUpperCase())) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                        if(splitedName[1] === "BI") console.log("JAAA")
+                        if (courses[splitedName[1].toUpperCase()]) needsData.add(courses[splitedName[1].toUpperCase()] as string)
                     }
                 }
             }))
-            needs = { needs: needsData }
-            let competenceData: Prisma.JsonArray = new Array()
+            needs = { needs: Array.from(needsData) }
+            let competenceData = new Set()
             if (Array.isArray(ldapUserData.managedObjects)) {
                 Promise.all(ldapUserData.managedObjects.map(async (groupData: string) => {
                     let data = groupData.split(",")
                     if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                         const splitedName = data[0].replace("CN=", "").split(" ")
                         if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                            if (courses[splitedName[1].toUpperCase()] && !competenceData.includes(splitedName[1].toUpperCase())) competenceData.push(courses[splitedName[1].toUpperCase()] as string)
+                            if (courses[splitedName[1].toUpperCase()]) competenceData.add(courses[splitedName[1].toUpperCase()] as string)
                         }
                     }
                 }))
             }
-            competence = { competence: competenceData }
+            competence = { competence: Array.from(competenceData) }
         }
         const user = await prisma.user.update({
             where: {
@@ -97,30 +97,30 @@ export async function seedLdapData(prisma: PrismaClient) {
             let needs = {}
             let competence = {}
             if (process.env.LDAP_AUTO_STUDYTIME === "true") {
-                let needsData: Prisma.JsonArray = new Array()
+                let needsData = new Set()
                 Promise.all(entry.memberOf.map(async (groupData: string) => {
                     let data = groupData.split(",")
                     if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                         const splitedName = data[0].replace("CN=", "").split(" ")
                         if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                            if (courses[splitedName[1].toUpperCase()] && !needsData.includes(splitedName[1].toUpperCase())) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                            if (courses[splitedName[1].toUpperCase()]) needsData.add(courses[splitedName[1].toUpperCase()] as string)
                         }
                     }
                 }))
-                needs = { needs: needsData }
-                let competenceData: Prisma.JsonArray = new Array()
+                needs = { needs: Array.from(needsData) }
+                let competenceData = new Set()
                 if (Array.isArray(entry.managedObjects)) {
                     Promise.all(entry.managedObjects.map(async (groupData: string) => {
                         let data = groupData.split(",")
                         if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                             const splitedName = data[0].replace("CN=", "").split(" ")
                             if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                                if (courses[splitedName[1].toUpperCase()] && !competenceData.includes(splitedName[1].toUpperCase())) competenceData.push(courses[splitedName[1].toUpperCase()] as string)
+                                if (courses[splitedName[1].toUpperCase()]) competenceData.add(courses[splitedName[1].toUpperCase()] as string)
                             }
                         }
                     }))
                 }
-                competence = { competence: competenceData }
+                competence = { competence: Array.from(competenceData) }
             }
             createData.push({
                 id: entry.objectGUID,
