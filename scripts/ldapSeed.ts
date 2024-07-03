@@ -9,6 +9,10 @@ export async function seedLdapData(prisma: PrismaClient) {
     const exist: Array<string> = []
     await Promise.all(ldapUser.map(async (entry) => {
         const ldapUserData = ldapData.find(e => e.objectGUID === entry.id)
+        if(!ldapUserData) {
+            await prisma.user.delete({ where: { id: entry.id } })
+            return
+        }
         let permission = {}
         if (process.env.LDAP_AUTO_PERMISSIONS === "true") {
             if (ldapUserData.memberOf.includes(process.env.LDAP_AUTO_ADMIN_GROUP)) permission = { permission: 2 }
@@ -30,6 +34,7 @@ export async function seedLdapData(prisma: PrismaClient) {
         let competence = {}
         if (process.env.LDAP_AUTO_STUDYTIME === "true") {
             let needsData: Prisma.JsonArray = new Array()
+            console.log(courses["BI"])
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let data = groupData.split(",")
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
@@ -41,9 +46,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             }))
             needs = { needs: needsData }
             let competenceData: Prisma.JsonArray = new Array()
-            if (ldapUserData.managedObjects) {
-                console.log(ldapUserData.managedObjects)
-                console.log(ldapUserData.managedObjects)
+            if (Array.isArray(ldapUserData.managedObjects)) {
                 Promise.all(ldapUserData.managedObjects.map(async (groupData: string) => {
                     let data = groupData.split(",")
                     if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
@@ -74,14 +77,59 @@ export async function seedLdapData(prisma: PrismaClient) {
     const createData: any[] = []
     await Promise.all(ldapData.map(async (entry) => {
         if (!exist.includes(entry.objectGUID)) {
+            let permission = {}
+            if (process.env.LDAP_AUTO_PERMISSIONS === "true") {
+                if (entry.memberOf.includes(process.env.LDAP_AUTO_ADMIN_GROUP)) permission = { permission: 2 }
+                else if (entry.memberOf.includes(process.env.LDAP_AUTO_TEACHER_GROUP)) permission = { permission: 1 }
+                else permission = { permission: 0 }
+            } else {
+                permission = { permission: 0 }
+            }
+            let group = {}
+            if (process.env.LDAP_AUTO_GROUPS === "true") {
+                Promise.all(entry.memberOf.map(async (groupData: string) => {
+                    let data = groupData.split(",")
+                    if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_GROUP_OU) {
+                        group = { group: String(data[0].replace("CN=", "")) }
+                    }
+                }))
+            }
+            let needs = {}
+            let competence = {}
+            if (process.env.LDAP_AUTO_STUDYTIME === "true") {
+                let needsData: Prisma.JsonArray = new Array()
+                Promise.all(entry.memberOf.map(async (groupData: string) => {
+                    let data = groupData.split(",")
+                    if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
+                        const splitedName = data[0].replace("CN=", "").split(" ")
+                        if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
+                            if (courses[splitedName[1].toUpperCase()] && !needsData.includes(splitedName[1].toUpperCase())) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                        }
+                    }
+                }))
+                needs = { needs: needsData }
+                let competenceData: Prisma.JsonArray = new Array()
+                if (Array.isArray(entry.managedObjects)) {
+                    Promise.all(entry.managedObjects.map(async (groupData: string) => {
+                        let data = groupData.split(",")
+                        if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
+                            const splitedName = data[0].replace("CN=", "").split(" ")
+                            if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
+                                if (courses[splitedName[1].toUpperCase()] && !competenceData.includes(splitedName[1].toUpperCase())) competenceData.push(courses[splitedName[1].toUpperCase()] as string)
+                            }
+                        }
+                    }))
+                }
+                competence = { competence: competenceData }
+            }
             createData.push({
                 id: entry.objectGUID,
                 username: String(entry.sAMAccountName).toLowerCase(),
                 displayname: String(entry.displayName),
-                permission: 0,
-                group: "Test",
-                needs: ["Ja"] as Prisma.JsonArray,
-                competence: ["Ja"] as Prisma.JsonArray,
+                ...permission,
+                ...group,
+                ...needs,
+                ...competence
             })
         }
     }));
