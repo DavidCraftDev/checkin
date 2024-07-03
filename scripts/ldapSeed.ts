@@ -35,7 +35,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                     const splitedName = data[0].replace("CN=", "").split(" ")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                        if (courses[splitedName[1].toUpperCase()]) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                        if (courses[splitedName[1].toUpperCase()] && !needsData.includes(splitedName[1].toUpperCase())) needsData.push(courses[splitedName[1].toUpperCase()] as string)
                     }
                 }
             }))
@@ -43,12 +43,13 @@ export async function seedLdapData(prisma: PrismaClient) {
             let competenceData: Prisma.JsonArray = new Array()
             if (ldapUserData.managedObjects) {
                 console.log(ldapUserData.managedObjects)
+                console.log(ldapUserData.managedObjects)
                 Promise.all(ldapUserData.managedObjects.map(async (groupData: string) => {
                     let data = groupData.split(",")
                     if (data[1].replace("OU=", "") == process.env.LDAP_AUTO_STUDYTIME_OU) {
                         const splitedName = data[0].replace("CN=", "").split(" ")
                         if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                            if (courses[splitedName[1].toUpperCase()]) needsData.push(courses[splitedName[1].toUpperCase()] as string)
+                            if (courses[splitedName[1].toUpperCase()] && !competenceData.includes(splitedName[1].toUpperCase())) competenceData.push(courses[splitedName[1].toUpperCase()] as string)
                         }
                     }
                 }))
