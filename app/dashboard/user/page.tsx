@@ -2,6 +2,7 @@ import { getSessionUser } from "@/app/src/modules/authUtilities";
 import db from "@/app/src/modules/db"
 import UserTable from "./userTable.component";
 import CreateUserButton from "./createUserButton.component";
+import { use_ldap } from "@/app/src/modules/config";
 
 export default async function user() {
     const user = await getSessionUser(2);
@@ -13,7 +14,7 @@ export default async function user() {
                     <h1>Nutzer</h1>
                     <p>{users.length} Nutzer</p>
                 </div>
-                <CreateUserButton />
+                {!use_ldap ? <CreateUserButton /> : null}
             </div>
             <UserTable users={users} />
             <p>Exportieren als:
