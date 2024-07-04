@@ -63,13 +63,15 @@ if (process.env.LDAP_URI) {
 if (!ldap_uri && use_ldap) throw new Error("LDAP_URI is not set")
 if (use_ldap && (!ldap_uri.startsWith("ldap://") || !ldap_uri.startsWith("ldapjs://"))) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
 
+
 let ldap_tls_options: {}
+/*
 if (process.env.LDAP_TLS_OPTIONS) {
     ldap_tls_options = JSON.parse(process.env.LDAP_TLS_OPTIONS)
 } else {
     ldap_tls_options = config_file.LDAP.TLS_OPTIONS
 }
-if (!ldap_tls_options) ldap_tls_options = {}
+if (!ldap_tls_options) ldap_tls_options = {}*/
 
 let ldap_bind_dn: string
 if (process.env.LDAP_BIND_DN) {
