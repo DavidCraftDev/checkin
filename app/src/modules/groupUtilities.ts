@@ -1,5 +1,6 @@
 import db from "./db";
 import { getAttendanceCountPerUser, getAttendancesPerUser } from "./eventUtilities";
+import { saveNeededStudyTimes } from "./studytimeUtilities";
 
 export async function getGroupMembers(groupID: string, cw?: number, year?: number) {
     const userData = await db.user.findMany({
@@ -7,6 +8,9 @@ export async function getGroupMembers(groupID: string, cw?: number, year?: numbe
             group: groupID
         }
     });
+    Promise.all(userData.map(async (user: any) => {
+        saveNeededStudyTimes(user.id);
+    }));
     const data = new Array();
     if (!cw || !year) {
         for (let i = 0; i < userData.length; i++) {
