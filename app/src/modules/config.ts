@@ -61,7 +61,6 @@ if (process.env.LDAP_URI) {
     ldap_uri = config_file.LDAP.URI
 }
 if (!ldap_uri && use_ldap) throw new Error("LDAP_URI is not set")
-    console.log(ldap_uri)
 if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
 
 
@@ -137,7 +136,7 @@ if (process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP) {
     ldap_auto_permission_teacher_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_teacher_group) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("OU=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
+//if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("OU=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
 
 let ldap_auto_permission_admin_group: string
 if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
@@ -146,7 +145,7 @@ if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
     ldap_auto_permission_admin_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_admin_group) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("OU=") || !ldap_auto_permission_admin_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
+//if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("OU=") || !ldap_auto_permission_admin_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
 
 let ldap_auto_groups: boolean
 if (process.env.LDAP_AUTO_GROUPS === "true") {
