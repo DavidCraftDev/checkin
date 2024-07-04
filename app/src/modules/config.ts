@@ -62,7 +62,7 @@ if (process.env.LDAP_URI) {
 }
 if (!ldap_uri && use_ldap) throw new Error("LDAP_URI is not set")
     console.log(ldap_uri)
-if (use_ldap && (!ldap_uri.startsWith("ldap://") && !ldap_uri.startsWith("ldapjs://"))) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
+if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
 
 
 let ldap_tls_options: {}
