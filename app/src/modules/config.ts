@@ -78,7 +78,7 @@ if (process.env.LDAP_BIND_DN) {
     ldap_bind_dn = config_file.LDAP.BIND_CREADENTIALS.DN
 }
 if (!ldap_bind_dn && use_ldap) throw new Error("LDAP_BIND_DN is not set")
-if (use_ldap && (!ldap_bind_dn.includes("dc=") || !ldap_bind_dn.includes("cn="))) throw new Error("LDAP_BIND_DN is not a valid DN")
+if (use_ldap && (!ldap_bind_dn.toLowerCase().includes("dc=") || !ldap_bind_dn.toLowerCase().includes("cn="))) throw new Error("LDAP_BIND_DN is not a valid DN")
 
 let ldap_bind_password: string
 if (process.env.LDAP_BIND_PASSWORD) {
@@ -95,7 +95,7 @@ if (process.env.LDAP_SEARCH_BASE) {
     ldap_search_base = config_file.LDAP.SEARCH_BASE
 }
 if (!ldap_search_base && use_ldap) throw new Error("LDAP_SEARCH_BASE is not set")
-if (use_ldap && !ldap_search_base.includes("dc=")) throw new Error("LDAP_SEARCH_BASE is not a valid Search Base")
+if (use_ldap && !ldap_search_base.toLowerCase().includes("dc=")) throw new Error("LDAP_SEARCH_BASE is not a valid Search Base")
 
 let ldap_user_search_filter: string
 if (process.env.LDAP_USER_SEARCH_FILTER) {
@@ -134,7 +134,7 @@ if (process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP) {
     ldap_auto_permission_teacher_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_teacher_group) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.includes("CN=") || !ldap_auto_permission_teacher_group.includes("OU=") || !ldap_auto_permission_teacher_group.includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("OU=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
 
 let ldap_auto_permission_admin_group: string
 if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
@@ -143,7 +143,7 @@ if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
     ldap_auto_permission_admin_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_admin_group) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.includes("CN=") || !ldap_auto_permission_admin_group.includes("OU=") || !ldap_auto_permission_admin_group.includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("OU=") || !ldap_auto_permission_admin_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
 
 let ldap_auto_groups: boolean
 if (process.env.LDAP_AUTO_GROUPS === "true") {
