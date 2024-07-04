@@ -13,10 +13,13 @@ let client: Client
 
 if (use_ldap) {
   console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
+  const tlsOptions = {
+    rejectUnauthorized: false
+}
   try {
     client = new Client({
       url: ldap_uri,
-      tlsOptions: ldap_tls_options
+      tlsOptions: tlsOptions
     });
   } catch (error) {
     throw new Error("Failed to create LDAP auth client: " + error);
