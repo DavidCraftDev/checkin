@@ -9,7 +9,7 @@ export async function getGroupMembers(groupID: string, cw?: number, year?: numbe
         }
     });
     Promise.all(userData.map(async (user: any) => {
-        saveNeededStudyTimes(user.id);
+        saveNeededStudyTimes(user);
     }));
     const data = new Array();
     if (!cw || !year) {
