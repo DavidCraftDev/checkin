@@ -1,4 +1,4 @@
-import { default_password, default_username, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_permission_admin_group, ldap_auto_permission_teacher_group, ldap_auto_studytime_data, ldap_auto_studytime_data_ou, ldap_create_local_admin, studytime } from "@/app/src/modules/config";
+import { default_password, default_username, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_permission_admin_group, ldap_auto_permission_teacher_group, ldap_auto_studytime_data, ldap_auto_studytime_data_ou, ldap_create_local_admin, studytime } from "../app/src/modules/config";
 import courses from "../app/src/modules/courses";
 import { getAllUsers } from "../app/src/modules/ldap";
 import { PrismaClient } from "@prisma/client";

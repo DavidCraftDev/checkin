@@ -1,4 +1,4 @@
-import { default_password, default_username } from "@/app/src/modules/config";
+import { default_password, default_username } from "../app/src/modules/config";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
