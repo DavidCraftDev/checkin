@@ -5,7 +5,6 @@ import moment from "moment";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import EventTable from "./eventTable.component";
 import CheckinForm from "./checkinForm.component";
-import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
 
 export default async function event({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSessionUser(1);

@@ -1,0 +1,36 @@
+{
+    "MAINTANCE": false,
+    "AUTH_SECRET": "YOUR_SECRET",
+    "DEFAULT_LOGIN": {
+        "USERNAME": "Own.Username",
+        "PASSWORD": "OwnPassword"
+    },
+    "STUDYTIME": false,
+    "LDAP": {
+        "ENABLE": false,
+        "URI": "ldap://ldap.example.com",
+        "TLS_OPTIONS": {},
+        "BIND_CREADENTIALS": {
+            "DN": "cn=admin,dc=example,dc=com",
+            "PASSWORD": "example"
+        },
+        "SEARCH_BASE": "dc=example,dc=com",
+        "USER_SEARCH_FILTER": "(cn=*)",
+        "CREATE_LOCAL_ADMIN": true,
+        "AUTOMATIC_DATA_DETECTION": {
+            "PERMISSION": {
+                "ENABLE": false,
+                "TEACHER_GROUP": "CN=Teacher,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de",
+                "ADMIN_GROUP": "CN=Admin,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de"
+            },
+            "GROUPS": {
+                "ENABLE": false,
+                "GROUP_OU": "Classes"
+            },
+            "STUDYTIME_DATA": {
+                "ENABLE": false,
+                "STUDYTIME_OU": "Courses"
+            }
+        }
+    }
+}

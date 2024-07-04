@@ -1,14 +1,17 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities";
 import UserCreateForm from "./userCreateForm.component";
-import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { redirect } from "next/navigation";
+import { studytime, use_ldap } from "../../../src/modules/config";
 
 export default async function userCreate() {
+    if (use_ldap) {
+        redirect("/dashboard/user");
+    }
     await getSessionUser(2);
-    const studyTime: boolean = await isStudyTimeEnabled();
     return (
         <div>
             <h1>Nutzer erstellen</h1>
-            <UserCreateForm studyTime={studyTime} />
+            <UserCreateForm studyTime={studytime} />
         </div>
     );
 }

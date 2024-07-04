@@ -1,6 +1,7 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
+import { studytime } from "@/app/src/modules/config";
 import { getGroupMembersWithAttendances } from "@/app/src/modules/groupUtilities";
-import { getAttendedStudyTimes, getSavedMissingStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getAttendedStudyTimes, getSavedMissingStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import moment from "moment";
 import { NextRequest } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
@@ -149,7 +150,7 @@ export async function GET(request: NextRequest) {
             "value": calendarWeek + "/" + year
         }])
         userData.push([{}])
-        if (await isStudyTimeEnabled()) {
+        if (studytime) {
             const studyTimes = await getAttendedStudyTimes(userGroup.user.id, calendarWeek, year)
             const missing = await getSavedMissingStudyTimes(userGroup.user.id, calendarWeek, year)
             userData.push([{

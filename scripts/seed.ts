@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
+import { use_ldap } from "@/app/src/modules/config";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  if (process.env.USE_LDAP == "true") {
+  if (use_ldap) {
     console.log("Use LDAP Auth...")
     await seedLdapData(prisma);
     return

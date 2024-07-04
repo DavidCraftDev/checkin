@@ -6,7 +6,7 @@ import CalendarWeek from "@/app/src/ui/calendarweek";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import CreatedEventTable from "./createdEventsTable.component";
 import CreateEventForm from "./createEventForm.component";
-import { isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { studytime } from "@/app/src/modules/config";
 
 export default async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
@@ -19,7 +19,6 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
   if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/createEvents");
   if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/createEvents");
   const data = await getCreatedEventsPerUser(sessionUser.id, cw, year);
-  const studyTime: boolean = await isStudyTimeEnabled();
   return (
     <div>
       <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
@@ -29,8 +28,8 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
         </div>
         <CalendarWeek searchParams={searchParams} />
       </div>
-      <CreateEventForm studyTime={studyTime} user={sessionUser} />
-      <CreatedEventTable events={data} studyTime={studyTime} />
+      <CreateEventForm studyTime={studytime} user={sessionUser} />
+      <CreatedEventTable events={data} studyTime={studytime} />
       <p>Exportieren als:
         <a href={"/export/events/created/json?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
         <a href={"/export/events/created/xlsx?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".xlsx"} className="hover:underline mx-1">XLSX</a>

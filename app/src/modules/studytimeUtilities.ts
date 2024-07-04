@@ -6,14 +6,6 @@ import { getUserPerID } from "./userUtilities";
 import { Prisma } from "@prisma/client";
 import db from "./db";
 
-export async function isStudyTimeEnabled() {
-  let result: boolean = false;
-  if (process.env.STUDYTIME === "true") {
-    result = true;
-  }
-  return result;
-}
-
 export async function getNeededStudyTimesSelect(userID: string, teacherID: string) {
   const userData = await getUserPerID(userID);
   const teacherData = await getUserPerID(teacherID);

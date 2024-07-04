@@ -6,8 +6,9 @@ import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getMissingStudyTimes, getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedMissingStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getMissingStudyTimes, getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedMissingStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import CreateStudyTimeNote from "./createStudyTimeNote.component";
+import { studytime } from "@/app/src/modules/config";
 
 export default async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
     const sessionUser = await getSessionUser();
@@ -30,12 +31,11 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
     let addable: boolean = false;
     if ((cw == currentWeek) && (year == currentYear)) addable = true;
     if ((searchParams.userID) && (searchParams.userID !== sessionUser.id)) addable = false;
-    const studyTime: boolean = await isStudyTimeEnabled();
     const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then((result) => result.length);
     const needsStudyTimes = await getNeededStudyTimes(userData.id).then((result) => result.length);
     let missingStudyTimes: Array<String> = [];
     const studyTimeTypes: any = {};
-    if (studyTime) {
+    if (studytime) {
         for (let i = 0; i < data.length; i++) {
             if (data[i].event.studyTime) {
                 if (data[i].event.id !== "NOTE") {
@@ -59,13 +59,13 @@ export default async function attendedEvents({ searchParams }: { searchParams: S
                 <div>
                     <h1>Teilgenommene Veranstaltungen</h1>
                     <p>von {userData.displayname}</p>
-                    {studyTime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
-                    {studyTime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.toString().replaceAll(",", ", ")} ({missingStudyTimes.length})</p> : null}
-                    {studyTime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
+                    {studytime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {studytime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.toString().replaceAll(",", ", ")} ({missingStudyTimes.length})</p> : null}
+                    {studytime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
                 <CalendarWeek searchParams={searchParams} />
             </div>
-            <AttendedEventTable attendances={data} addable={addable} studyTime={studyTime} studyTimeTypes={studyTimeTypes} />
+            <AttendedEventTable attendances={data} addable={addable} studyTime={studytime} studyTimeTypes={studyTimeTypes} />
             <p>Exportieren als:
                 <a href={"/export/events/attended/json?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".json"} className="hover:underline mx-1">JSON</a>
                 <a href={"/export/events/attended/xlsx?cw=" + cw + "&year=" + year + "&userID=" + userData.id} download={"attended_events" + cw + "_" + year + userData.id + ".xlsx"} className="hover:underline mx-1">XLSX</a>

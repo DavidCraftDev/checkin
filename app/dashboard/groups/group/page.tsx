@@ -5,7 +5,8 @@ import { getGroupMembers } from "@/app/src/modules/groupUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import GroupTable from "./groupTable.component";
-import { getAttendedStudyTimesCount, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getAttendedStudyTimesCount } from "@/app/src/modules/studytimeUtilities";
+import { studytime } from "@/app/src/modules/config";
 
 export default async function group({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
@@ -22,7 +23,6 @@ export default async function group({ searchParams }: { searchParams: SearchPara
 
   let groupData = await getGroupMembers(groupID, cw, year);
   const gruppenMitglieder = groupData.length;
-  const studyTime = await isStudyTimeEnabled();
   const data: any = {};
   for (const user of groupData) {
     data[user.user.id] = await getAttendedStudyTimesCount(user.user.id, cw, year);
@@ -36,7 +36,7 @@ export default async function group({ searchParams }: { searchParams: SearchPara
         </div>
         <CalendarWeek searchParams={searchParams} />
       </div>
-      <GroupTable user={groupData} cw={cw} year={year} studyTime={studyTime} studyTimeData={data} />
+      <GroupTable user={groupData} cw={cw} year={year} studyTime={studytime} studyTimeData={data} />
       <p>Exportieren als:
         <a href={"/export/groups/group/json?groupID=" + groupID + "&cw=" + cw + "&year=" + year} download={"group" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
         <a href={"/export/groups/group/xlsx?groupID=" + groupID + "&cw=" + cw + "&year=" + year} download={"group" + cw + "_" + year + ".xlsx"} className="hover:underline mx-1">XLSX</a>

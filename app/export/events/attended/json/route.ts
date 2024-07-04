@@ -1,6 +1,7 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
+import { studytime } from "@/app/src/modules/config";
 import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
-import { getAttendedStudyTimes, getSavedMissingStudyTimes, isStudyTimeEnabled } from "@/app/src/modules/studytimeUtilities";
+import { getAttendedStudyTimes, getSavedMissingStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
 
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
             time: new Date()
         }
     })
-    if (await isStudyTimeEnabled) {
+    if (studytime) {
         const studyTimes = await getAttendedStudyTimes(userID, cw, year)
         const missing = await getSavedMissingStudyTimes(userID, cw, year)
         data.push({

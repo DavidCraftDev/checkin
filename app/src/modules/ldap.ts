@@ -1,20 +1,14 @@
 import { Client } from 'ldapts';
+import { ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_tls_options, ldap_uri, ldap_user_search_filter, use_ldap } from './config';
 
 let client: Client
 
-if (process.env.USE_LDAP == "true") {
-    if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
-    if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
-    if (!process.env.LDAP_BIND_PASSWORD) throw new Error("LDAP_BIND_PASSWORD is required");
-    if (!process.env.LDAP_URI.startsWith('ldap://') && !process.env.LDAP_URI.startsWith('ldaps://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
-    if (!process.env.LDAP_SEARCH_BASE) throw new Error("LDAP_SEARCH_BASE is required");
-    if (!process.env.LDAP_SEARCH_FILTER) throw new Error("LDAP_SEARCH_FILTER is required");
-    console.log("Connect to LDAP Server " + process.env.LDAP_URI + "...")
-    const tlsOptions = { rejectUnauthorized: false }; // Future: Add support for custom CA certificates
+if (use_ldap) {
+    console.log("Connect to LDAP Server " + ldap_uri + "...")
     try {
         client = new Client({
-            url: process.env.LDAP_URI,
-            tlsOptions: tlsOptions
+            url: ldap_uri,
+            tlsOptions: ldap_tls_options
         });
     } catch (error) {
         throw new Error("Failed to create LDAP client: " + error);
@@ -24,9 +18,8 @@ if (process.env.USE_LDAP == "true") {
 
 async function bind() {
     console.log("Bind to LDAP Server...")
-    if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
     try {
-        await client.bind(process.env.LDAP_BIND_DN, process.env.LDAP_BIND_PASSWORD);
+        await client.bind(ldap_bind_dn, ldap_bind_password);
         console.log("LDAP bind successful")
     } catch (error) {
         throw new Error("LDAP bind failed: " + error);
@@ -52,9 +45,7 @@ export async function search(filter: string, base: string) {
 }
 
 export async function getAllUsers() {
-    if (!process.env.LDAP_SEARCH_BASE) throw new Error("LDAP_SEARCH_BASE is required");
-    if (!process.env.LDAP_SEARCH_FILTER) throw new Error("LDAP_SEARCH_FILTER is required");
-    const data = await search(process.env.LDAP_SEARCH_FILTER, process.env.LDAP_SEARCH_BASE)
+    const data = await search(ldap_user_search_filter, ldap_search_base)
     await Promise.all(data.map(async (entry) => {
         entry.objectGUID = await convertGUIDToString(entry.objectGUID as Buffer);
     }));

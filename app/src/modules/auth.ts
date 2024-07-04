@@ -7,22 +7,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getAllUsers } from "./ldap";
 import { Client } from "ldapts";
 import { User } from "@prisma/client";
+import { use_ldap, ldap_uri, ldap_tls_options, auth_secret } from "./config";
 
 let client: Client
 
-if (process.env.USE_LDAP == "true") {
-  if (!process.env.LDAP_URI) throw new Error("LDAP_URI is required");
-  if (!process.env.LDAP_BIND_DN) throw new Error("LDAP_BIND_DN is required");
-  if (!process.env.LDAP_BIND_PASSWORD) throw new Error("LDAP_BIND_PASSWORD is required");
-  if (!process.env.LDAP_URI.startsWith('ldap://') && !process.env.LDAP_URI.startsWith('ldaps://')) throw new Error("LDAP_URI must start with ldap:// or ldaps://");
-  if (!process.env.LDAP_SEARCH_BASE) throw new Error("LDAP_SEARCH_BASE is required");
-  if (!process.env.LDAP_SEARCH_FILTER) throw new Error("LDAP_SEARCH_FILTER is required");
-  console.log("Connect to LDAP Server for auth " + process.env.LDAP_URI + "...")
-  const tlsOptions = { rejectUnauthorized: false }; // Future: Add support for custom CA certificates
+if (use_ldap) {
+  console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
   try {
     client = new Client({
-      url: process.env.LDAP_URI,
-      tlsOptions: tlsOptions
+      url: ldap_uri,
+      tlsOptions: ldap_tls_options
     });
   } catch (error) {
     throw new Error("Failed to create LDAP auth client: " + error);
@@ -31,6 +25,7 @@ if (process.env.USE_LDAP == "true") {
 }
 
 export const authOptions: NextAuthOptions = {
+  secret: auth_secret,
   session: {
     strategy: "jwt",
   },
@@ -49,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials.password) {
           return null;
         }
-        if (process.env.USE_LDAP === "true" && !credentials.username.startsWith("local/")) {
+        if (use_ldap && !credentials.username.startsWith("local/")) {
           const ldapUserData = await getAllUsers();
           const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username);
           if (!ldapUser) {
@@ -140,6 +135,6 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       return baseUrl
-    }
+    },
   },
 };

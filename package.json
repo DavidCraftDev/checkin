@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "standalone": "node .next/standalone/server.js"
+    "standalone": "next build && prisma generate && prisma migrate deploy && prisma db seed && next start"
   },
   "dependencies": {
     "@heroicons/react": "2.1.4",
