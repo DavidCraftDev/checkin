@@ -64,14 +64,16 @@ if (!ldap_uri && use_ldap) throw new Error("LDAP_URI is not set")
 if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
 
 
-let ldap_tls_options: {}
-/*
-if (process.env.LDAP_TLS_OPTIONS) {
-    ldap_tls_options = JSON.parse(process.env.LDAP_TLS_OPTIONS)
+let ldap_tls_reject_unauthorized: boolean
+
+if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "true") {
+    ldap_tls_reject_unauthorized = true
+} else if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "false") {
+    ldap_tls_reject_unauthorized = false
 } else {
-    ldap_tls_options = config_file.LDAP.TLS_OPTIONS
+    ldap_tls_reject_unauthorized = config_file.LDAP.TLS_REJECT_UNAUTHORIZED
 }
-if (!ldap_tls_options) ldap_tls_options = {}*/
+if (!ldap_tls_reject_unauthorized) ldap_tls_reject_unauthorized = true
 
 let ldap_bind_dn: string
 if (process.env.LDAP_BIND_DN) {
@@ -186,4 +188,4 @@ if (use_ldap && ldap_auto_studytime_data && !ldap_auto_studytime_data_ou) throw 
 if (use_ldap && ldap_auto_studytime_data && (!ldap_auto_studytime_data_ou.toLowerCase().includes("ou=") || !ldap_auto_studytime_data_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not a valid OU")
 
 
-export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_options, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }
+export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_reject_unauthorized, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }

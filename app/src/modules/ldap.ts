@@ -1,12 +1,12 @@
 import { Client } from 'ldapts';
-import { ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_tls_options, ldap_uri, ldap_user_search_filter, use_ldap } from './config';
+import { ldap_bind_dn, ldap_bind_password, ldap_tls_reject_unauthorized, ldap_search_base, ldap_uri, ldap_user_search_filter, use_ldap } from './config';
 
 let client: Client
 
 if (use_ldap) {
     console.log("Connect to LDAP Server " + ldap_uri + "...")
     const tlsOptions = {
-        rejectUnauthorized: false
+        rejectUnauthorized: ldap_tls_reject_unauthorized
     }
     try {
         client = new Client({

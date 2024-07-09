@@ -7,14 +7,14 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getAllUsers } from "./ldap";
 import { Client } from "ldapts";
 import { User } from "@prisma/client";
-import { use_ldap, ldap_uri, ldap_tls_options, auth_secret } from "./config";
+import { use_ldap, ldap_uri, ldap_tls_reject_unauthorized, auth_secret } from "./config";
 
 let client: Client
 
 if (use_ldap) {
   console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
   const tlsOptions = {
-    rejectUnauthorized: false
+    rejectUnauthorized: ldap_tls_reject_unauthorized
 }
   try {
     client = new Client({

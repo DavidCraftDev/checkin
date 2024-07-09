@@ -9,7 +9,7 @@
     "LDAP": {
         "ENABLE": false,
         "URI": "ldap://ldap.example.com",
-        "TLS_OPTIONS": {},
+        "TLS_REJECT_UNAUTHORIZED": true,
         "BIND_CREADENTIALS": {
             "DN": "cn=admin,dc=example,dc=com",
             "PASSWORD": "example"
