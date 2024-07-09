@@ -37,3 +37,7 @@ next-env.d.ts
 
 .vercel
 .env
+
+# Ignore self singed ca certs 
+*.crt
+*.pem
