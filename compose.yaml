@@ -40,10 +40,10 @@ services:
       - LDAP_AUTO_PERMISSION_ADMIN_GROUP=CN=Teacher,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de
       # Experimental feature: Automatically detect users group from LDAP groups (true/false), set the OU where the groups are stored
       - LDAP_AUTO_GROUPS=false
-      - LDAP_AUTO_GROUPS_OU=Classes
+      - LDAP_AUTO_GROUPS_OU=OU=Classes,OU=Groups,OU=Example-School,DC=example,DC=de
       # Experimental feature: Automatically detect users needed studyTimes from LDAP groups (true/false), set the OU where the courses like english, german or math are stored
       - LDAP_AUTO_STUDYTIME_DATA=false
-      - LDAP_AUTO_STUDYTIME_DATA_OU=Courses
+      - LDAP_AUTO_STUDYTIME_DATA_OU=OU=Courses,OU=Groups,OU=Example-School,DC=example,DC=de
     ports:
       - "3030:3000"
   db:

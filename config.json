@@ -25,11 +25,11 @@
             },
             "GROUPS": {
                 "ENABLE": false,
-                "GROUP_OU": "Classes"
+                "GROUP_OU": "OU=Classes,OU=Groups,OU=Example-School,DC=example,DC=de"
             },
             "STUDYTIME_DATA": {
                 "ENABLE": false,
-                "STUDYTIME_OU": "Courses"
+                "STUDYTIME_OU": "OU=Courses,OU=Groups,OU=Example-School,DC=example,DC=de"
             }
         }
     }

@@ -136,7 +136,7 @@ if (process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP) {
     ldap_auto_permission_teacher_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_teacher_group) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not set")
-//if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("OU=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("ou=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
 
 let ldap_auto_permission_admin_group: string
 if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
@@ -145,7 +145,7 @@ if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
     ldap_auto_permission_admin_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP
 }
 if (use_ldap && ldap_auto_permission && !ldap_auto_permission_admin_group) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not set")
-//if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("OU=") || !ldap_auto_permission_admin_group.toLowerCase().includes("DC="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("ou=") || !ldap_auto_permission_admin_group.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
 
 let ldap_auto_groups: boolean
 if (process.env.LDAP_AUTO_GROUPS === "true") {
@@ -164,6 +164,7 @@ if (process.env.LDAP_AUTO_GROUPS_OU) {
     ldap_auto_groups_ou = config_file.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.GROUP_OU
 }
 if (use_ldap && ldap_auto_groups && !ldap_auto_groups_ou) throw new Error("LDAP_AUTO_GROUPS_OU is not set")
+if (use_ldap && ldap_auto_groups && (!ldap_auto_groups_ou.toLowerCase().includes("ou=") || !ldap_auto_groups_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_GROUPS_OU is not a valid OU")
 
 let ldap_auto_studytime_data: boolean
 if (process.env.LDAP_AUTO_STUDYTIME_DATA === "true") {
@@ -182,6 +183,7 @@ if (process.env.LDAP_AUTO_STUDYTIME_DATA_OU) {
     ldap_auto_studytime_data_ou = config_file.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.STUDYTIME_OU
 }
 if (use_ldap && ldap_auto_studytime_data && !ldap_auto_studytime_data_ou) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not set")
+if (use_ldap && ldap_auto_studytime_data && (!ldap_auto_studytime_data_ou.toLowerCase().includes("ou=") || !ldap_auto_studytime_data_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not a valid OU")
 
 
 export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_options, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }

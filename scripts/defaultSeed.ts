@@ -1,6 +1,7 @@
 import { default_password, default_username } from "../app/src/modules/config";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+import moment from "moment";
 
 export async function seedDefaultData(prisma: PrismaClient) {
     const adminCount = await prisma.user.count({
@@ -30,7 +31,8 @@ export async function seedDefaultData(prisma: PrismaClient) {
                 username: default_username.toLowerCase(),
                 displayname: "Default Admin",
                 password: passwordHash,
-                permission: 2
+                permission: 2,
+                loginVersion: 0
             }
         })
         console.log("New default admin created because no admins were found in the database.");
