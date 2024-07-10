@@ -72,7 +72,7 @@ if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "true") {
 } else {
     ldap_tls_reject_unauthorized = config_file.LDAP.TLS_REJECT_UNAUTHORIZED
 }
-if (!ldap_tls_reject_unauthorized) ldap_tls_reject_unauthorized = false
+if (ldap_tls_reject_unauthorized == null) ldap_tls_reject_unauthorized = true
 
 let ldap_bind_dn: string
 if (process.env.LDAP_BIND_DN) {

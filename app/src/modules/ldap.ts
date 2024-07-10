@@ -4,7 +4,6 @@ import { ldap_bind_dn, ldap_bind_password, ldap_tls_reject_unauthorized, ldap_se
 let client: Client
 
 if (use_ldap) {
-    console.log("CERT:" + ldap_tls_reject_unauthorized)
     console.log("Connect to LDAP Server " + ldap_uri + "...")
     const tlsOptions = {
         rejectUnauthorized: ldap_tls_reject_unauthorized
