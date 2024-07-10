@@ -9,6 +9,7 @@ export async function seedLdapData(prisma: PrismaClient) {
     const ldapUser: any[] = await prisma.user.findMany({ where: { password: null } })
     const exist: Array<string> = []
     await Promise.all(ldapUser.map(async (entry) => {
+        console.log(entry)
         const ldapUserData = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUserData) {
             await prisma.user.delete({ where: { id: entry.id } })
