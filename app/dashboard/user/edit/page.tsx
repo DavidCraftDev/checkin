@@ -3,16 +3,22 @@ import UserEditForm from "./userEditForm.component";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import { notFound } from "next/navigation";
-import { studytime } from "@/app/src/modules/config";
+import { ldap_auto_groups, ldap_auto_permission, ldap_auto_studytime_data, studytime, use_ldap } from "@/app/src/modules/config";
 
 export default async function userEdit(searchParams: { searchParams: SearchParams }) {
     await getSessionUser(2);
     const userData = await getUserPerID(searchParams.searchParams.userID);
     if (!userData.id) notFound();
+    const config = new Array();
+    config.push(studytime)
+    config.push(use_ldap)
+    config.push(ldap_auto_studytime_data)
+    config.push(ldap_auto_groups)
+    config.push(ldap_auto_permission)
     return (
         <div>
             <h1>Nutzer bearbeiten</h1>
-            <UserEditForm userData={userData} studyTime={studytime} />
+            <UserEditForm userData={userData} config={config}/>
         </div>
     );
 }

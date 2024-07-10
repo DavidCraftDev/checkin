@@ -19,7 +19,7 @@ if (use_ldap) {
   if (certExists) {
     tlsOptions = {
       rejectUnauthorized: ldap_tls_reject_unauthorized,
-      ca: [readFileSync("../../../cert.crt")]
+      ca: [readFileSync("../../../cert.crt").toString()]
     }
   } else {
     tlsOptions = {
