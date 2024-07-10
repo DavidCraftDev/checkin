@@ -9,8 +9,8 @@ export async function seedLdapData(prisma: PrismaClient) {
     const ldapUser: any[] = await prisma.user.findMany({ where: { password: null } })
     const exist: Array<string> = []
     await Promise.all(ldapUser.map(async (entry) => {
-        console.log(entry)
         const ldapUserData = ldapData.find(e => e.objectGUID === entry.id)
+        console.log(ldapUserData)
         if (!ldapUserData) {
             await prisma.user.delete({ where: { id: entry.id } })
             return
@@ -40,6 +40,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let string = groupData.replace(",", "!°SPLIT°!")
                 let data = string.split(",")
+                console.log(data)
                 if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                     const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                     if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
