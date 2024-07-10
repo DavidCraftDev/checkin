@@ -8,14 +8,24 @@ import { getAllUsers } from "./ldap";
 import { Client } from "ldapts";
 import { User } from "@prisma/client";
 import { use_ldap, ldap_uri, ldap_tls_reject_unauthorized, auth_secret } from "./config";
+import { existsSync, readFileSync } from 'fs';
 
 let client: Client
 
 if (use_ldap) {
   console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
-  const tlsOptions = {
-    rejectUnauthorized: ldap_tls_reject_unauthorized
-}
+  let certExists = existsSync("../../../cert.crt")
+  let tlsOptions
+  if (certExists) {
+    tlsOptions = {
+      rejectUnauthorized: ldap_tls_reject_unauthorized,
+      ca: [readFileSync("../../../cert.crt")]
+    }
+  } else {
+    tlsOptions = {
+      rejectUnauthorized: ldap_tls_reject_unauthorized
+    }
+  }
   try {
     client = new Client({
       url: ldap_uri,

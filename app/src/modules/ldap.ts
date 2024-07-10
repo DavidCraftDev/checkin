@@ -1,12 +1,22 @@
 import { Client } from 'ldapts';
 import { ldap_bind_dn, ldap_bind_password, ldap_tls_reject_unauthorized, ldap_search_base, ldap_uri, ldap_user_search_filter, use_ldap } from './config';
+import { existsSync, readFileSync } from 'fs';
 
 let client: Client
 
 if (use_ldap) {
     console.log("Connect to LDAP Server " + ldap_uri + "...")
-    const tlsOptions = {
-        rejectUnauthorized: ldap_tls_reject_unauthorized
+    let certExists = existsSync("../../../cert.crt")
+    let tlsOptions
+    if (certExists) {
+        tlsOptions = {
+            rejectUnauthorized: ldap_tls_reject_unauthorized,
+            ca: [readFileSync("../../../cert.crt")]
+        }
+    } else {
+        tlsOptions = {
+            rejectUnauthorized: ldap_tls_reject_unauthorized
+        }
     }
     try {
         client = new Client({
