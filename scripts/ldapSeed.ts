@@ -39,7 +39,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             let needsData = new Set()
             Promise.all(ldapUserData.memberOf.map(async (groupData: string) => {
                 let string = groupData.replace(",", "!°SPLIT°!")
-                let data = string.split(",")
+                let data = string.split("!°SPLIT°!")
                 console.log(data)
                 if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                     const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
@@ -53,7 +53,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             if (Array.isArray(ldapUserData.managedObjects)) {
                 Promise.all(ldapUserData.managedObjects.map(async (groupData: string) => {
                     let string = groupData.replace(",", "!°SPLIT°!")
-                    let data = string.split(",")
+                    let data = string.split("!°SPLIT°!")
                     if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                         const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                         if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
@@ -93,20 +93,21 @@ export async function seedLdapData(prisma: PrismaClient) {
             }
             let group = {}
             if (ldap_auto_groups) {
-                Promise.all(entry.memberOf.map(async (groupData: string) => {
-                    let data = groupData.split(",")
-                    if (data[1].replace("OU=", "") == ldap_auto_groups_ou) {
-                        group = { group: String(data[0].replace("CN=", "")) }
-                    }
-                }))
-            }
+            Promise.all(entry.memberOf.map(async (groupData: string) => {
+                let string = groupData.replace(",", "!°SPLIT°!")
+                let data = string.split("!°SPLIT°!")
+                if (data[1].toLowerCase() == ldap_auto_groups_ou.toLowerCase()) {
+                    group = { group: String(data[0].replace("CN=", "").replace("cn=", "")) }
+                }
+            }))
+        }
             let needs = {}
             let competence = {}
             if (ldap_auto_studytime_data && studytime) {
                 let needsData = new Set()
                 Promise.all(entry.memberOf.map(async (groupData: string) => {
                     let string = groupData.replace(",", "!°SPLIT°!")
-                    let data = string.split(",")
+                    let data = string.split("!°SPLIT°!")
                     if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                         const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                         if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
@@ -119,7 +120,7 @@ export async function seedLdapData(prisma: PrismaClient) {
                 if (Array.isArray(entry.managedObjects)) {
                     Promise.all(entry.managedObjects.map(async (groupData: string) => {
                         let string = groupData.replace(",", "!°SPLIT°!")
-                        let data = string.split(",")
+                        let data = string.split("!°SPLIT°!")
                         if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                             const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                             if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
