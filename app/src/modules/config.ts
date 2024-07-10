@@ -65,7 +65,6 @@ if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("LDAP_URI must sta
 
 
 let ldap_tls_reject_unauthorized: boolean
-
 if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "true") {
     ldap_tls_reject_unauthorized = true
 } else if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "false") {
@@ -73,7 +72,7 @@ if (process.env.LDAP_TLS_REJECT_UNAUTHORIZED === "true") {
 } else {
     ldap_tls_reject_unauthorized = config_file.LDAP.TLS_REJECT_UNAUTHORIZED
 }
-if (!ldap_tls_reject_unauthorized) ldap_tls_reject_unauthorized = true
+if (!ldap_tls_reject_unauthorized) ldap_tls_reject_unauthorized = false
 
 let ldap_bind_dn: string
 if (process.env.LDAP_BIND_DN) {
