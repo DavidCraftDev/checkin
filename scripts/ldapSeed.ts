@@ -63,6 +63,7 @@ export async function seedLdapData(prisma: PrismaClient) {
             }
             competence = { competence: Array.from(competenceData) }
         }
+        console.log(needs, competence)
         const user = await prisma.user.update({
             where: {
                 id: entry.id
