@@ -10,7 +10,7 @@ RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs-current npm file && \
     npm install --global clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npm clean-install && \
+      npm_config_arch=x64 npm_config_target_arch=x64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
 #      npm_config_target_platform=linux npm_config_target_arch=x64 npm install --force @next/swc-linux-x64-musl && \
 #      rm -rvf /app/node_modules/@next/swc-linux-arm64-* && \
@@ -18,11 +18,11 @@ RUN apk upgrade --no-cache -a && \
       rm -v /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       rm -v /app/node_modules/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node && \
       rm -v /app/node_modules/.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node && \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npx prisma generate && \
-      npm_config_target_platform=linux npm_config_target_arch=x64 npx next build && \
+      npm_config_arch=x64 npm_config_target_arch=x64 npx prisma generate && \
+      npm_config_arch=x64 npm_config_target_arch=x64 npx next build && \
       for file in $(find /app/node_modules -name "*.node" -type f -exec file {} \; | grep -v "x86-64\|x86_64" | grep "aarch64\|arm64" | sed "s|\([^:]\):.*|\1|g"); do rm -v "$file"; done; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
-      npm_config_target_platform=linux npm_config_target_arch=arm64 npm clean-install && \
+      npm_config_arch=arm64 npm_config_target_arch=arm64 npm clean-install && \
       rm -rv /app/node_modules/@next/swc-linux-* && \
 #      npm_config_target_platform=linux npm_config_target_arch=arm64 npm install --force @next/swc-linux-arm64-musl && \
 #      rm -rv /app/node_modules/@next/swc-linux-x64-* && \
@@ -30,8 +30,8 @@ RUN apk upgrade --no-cache -a && \
       rm -rv /app/node_modules/@prisma/engines/schema-engine-linux-musl-openssl-3.0.x && \
       rm -v /app/node_modules/prisma/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
       rm -v /app/node_modules/.prisma/client/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node && \
-      npm_config_target_platform=linux npm_config_target_arch=arm64 npx prisma generate && \
-      npm_config_target_platform=linux npm_config_target_arch=arm64 npx next build && \
+      npm_config_arch=arm64 npm_config_target_arch=arm64 npx prisma generate && \
+      npm_config_arch=arm64 npm_config_target_arch=arm64 npx next build && \
       for file in $(find /app/node_modules -name "*.node" -type f -exec file {} \; | grep -v "aarch64\|arm64" | grep "x86-64\|x86_64" | sed "s|\([^:]\):.*|\1|g"); do rm -v "$file"; done; \
     fi && \
     npm cache clean --force && \
