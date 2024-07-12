@@ -8,11 +8,13 @@ if (use_ldap) {
     console.log("Connect to LDAP Server " + ldap_uri + "...")
     let certExists = existsSync("../../../cert.crt")
     let tlsOptions
+    console.log(certExists)
     if (certExists) {
         tlsOptions = {
             rejectUnauthorized: ldap_tls_reject_unauthorized,
             ca: [readFileSync("../../../cert.crt").toString()]
         }
+        console.log(readFileSync("../../../cert.crt").toString())
     } else {
         tlsOptions = {
             rejectUnauthorized: ldap_tls_reject_unauthorized
