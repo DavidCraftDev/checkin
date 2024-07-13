@@ -88,7 +88,10 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |AUTH_SECRET|Der Wert womit die Nutzerdaten die im Cookie beim Nutzer gespeichert werden, verschlüsselt werden. **Unbedingt einen eigenen Geheimen Wert setzen!**|
 |DEFAULT_LOGIN -> Username|Der Nutzername des Adminnutzers der Standardmäßig erstellt wird, wenn kein Nutzer mit Admin Rechten existiert. Dieser Wert sollte nicht der Standard Wert sein.|
 |DEFAULT_LOGIN -> Password|Passwort des Standard Adminnutzers. Dieser Wert sollte nicht der Standard Wert sein.|
-|STUDYTIME|Aktiviert wenn dieser Wert auf `true`ist die Studienzeit-Funktion. Standardmäßig ist dieser Wert auf `false`.|
+|STUDYTIME|Aktiviert wenn dieser Wert auf `true`ist die Studienzeit-Funktion. Standardmäßig ist dieser Wert auf `false`. Einmal aktiviert, sollte diese Funktion nicht mehr deaktiviert werden. Mehr zur Funktion [hier](#studienzeit-funktion)|
+|LDAP -> Enabled|**Dieser Wert darf nur vor dem ersten Nutzen des Systems verändert werden!** Wenn dieser Wert auf `true` ist wird LDAP statt dem eigenen Auth System verwendet. Der Wer ist standardmäßig auf `false`. Kann unter umständen nicht Problemlos laufen, mehr dazu [hier](#ldap-funktion).|
+|LDAP -> URI|Die URI des LDAP-Servers, beginend mit `ldap://` oder `ldaps://`.|
+|LDAP -> LDAP_TLS_REJECT_UNAUTHORIZED|Wenn ein eigenes CA-Zertifikat verwendet wird und nicht wie im Absatz [unten](#ldap-funktion) beschrieben ein eigenes hinterlegt wird, sollte dieser Wert auf `true` gesetzt werden. Standardmäßig ist er auf `false`.|
 |More Soon...|Moor Soon...|
 
 ## Studienzeit Funktion
