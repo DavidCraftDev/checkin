@@ -34,8 +34,8 @@ services:
       - USE_LDAP=false
       # LDAP server URL starting with ldap:// or ldaps://
       - LDAP_URI=ldap://ldap.example.com
-      # TLS Options for the LDAP connection, in JSON format, as example rejectUnauthorized or a custom CA certificate. For more information see https://nodejs.org/api/tls.html#tls_tls_connect_options_callback
-      - TLS_OPTIONS={}
+      # Reject unauthorized TLS certificates when connect to the LDAP server (true/false)
+      - LDAP_TLS_REJECT_UNAUTHORIZED=true
       # LDAP bind DN credentials
       - LDAP_BIND_DN=cn=admin,dc=example,dc=com
       - LDAP_BIND_PASSWORD=example
@@ -51,12 +51,15 @@ services:
       - LDAP_AUTO_PERMISSION_ADMIN_GROUP=CN=Teacher,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de
       # Experimental feature: Automatically detect users group from LDAP groups (true/false), set the OU where the groups are stored
       - LDAP_AUTO_GROUPS=false
-      - LDAP_AUTO_GROUPS_OU=Classes
+      - LDAP_AUTO_GROUPS_OU=OU=Classes,OU=Groups,OU=Example-School,DC=example,DC=de
       # Experimental feature: Automatically detect users needed studyTimes from LDAP groups (true/false), set the OU where the courses like english, german or math are stored
       - LDAP_AUTO_STUDYTIME_DATA=false
-      - LDAP_AUTO_STUDYTIME_DATA_OU=Courses
+      - LDAP_AUTO_STUDYTIME_DATA_OU=OU=Courses,OU=Groups,OU=Example-School,DC=example,DC=de
     ports:
       - "3030:3000"
+    # Uncomment the following lines to use a custom ca certificate, you need to replace the path with your own certificate path
+    #volumes:
+    #  - "/opt/checkin/cert.crt:/app/certificate.crt:ro"
   db:
     container_name: checkin-db
     image: postgres:16-alpine

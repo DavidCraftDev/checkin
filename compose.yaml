@@ -46,6 +46,9 @@ services:
       - LDAP_AUTO_STUDYTIME_DATA_OU=OU=Courses,OU=Groups,OU=Example-School,DC=example,DC=de
     ports:
       - "3030:3000"
+    # Uncomment the following lines to use a custom ca certificate, you need to replace the path with your own certificate path
+    #volumes:
+    #  - "/opt/checkin/cert.crt:/app/certificate.crt:ro"
   db:
     container_name: checkin-db
     image: postgres:16-alpine
