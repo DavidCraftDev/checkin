@@ -93,4 +93,4 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 ## LDAP Funktion
 
 Die LDAP-Funktion ist um die LDAP-Umgebung einer bestimmten Schule drum herum gebaut, ich habe versucht, es möglichst variable zu halten, kann aber nicht versprechen, das es auch in anderen Umgebungen zu funktioniert. Sollte es nicht wie erwartet funktionieren, kann ich auf Anfrage nachbessern.
-Vor allem die Funktionen für das automatische Erkennen der Gruppen und Studienzeit Daten wie benötigte Studienzeiten und welche Fächer ein Lehrer unterrichtet, dürfte nicht auf Anhieb in anderen Systemen funktionieren.
+Vor allem die Funktionen für das automatische Erkennen der Gruppen und Studienzeit Daten wie benötigte Studienzeiten und welche Fächer ein Lehrer unterrichtet, dürfte nicht auf Anhieb in anderen Systemen funktionieren. Um ein eigenes CA Zertifikat zu verwenden, muss einfach das Zertifikat mit dem Dateinamen cert.crt im Grundverzeichnis des Programmes abgelegt werden.
