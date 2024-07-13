@@ -9,7 +9,7 @@
     "standalone": "next build && prisma generate && prisma migrate deploy && prisma db seed && next start"
   },
   "dependencies": {
-    "@heroicons/react": "2.1.4",
+    "@heroicons/react": "2.1.5",
     "@prisma/client": "5.16.2",
     "@types/bcryptjs": "2.4.6",
     "@types/react": "18",
