@@ -11,7 +11,7 @@ services:
       - MAINTANCE:false
       # Replace the following environment variables with your own values, you need to set the same values in the db service
       - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
-      # Replace the following environment variables with your own random secret
+      # Replace the following environment variables with your own random secret to encrypt the login JWT tokens
       - AUTH_SECRET=YOUR_SECRET
       # Set own default admin credentials
       - DEFAULT_LOGIN_USERNAME=OwnUsername

@@ -84,11 +84,12 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 
 |Attribute|Beschreibung|
 |---------|------------|
-|MAINTANCE|Wenn dieser Wert auf true ist, ist der Wartungsmodus aktiviert, beim Aufrufen egal welcher Seite des CheckIN Systems wird eine Wartungsseite angezeigt, ein Login ist nicht möglich. Der Wert ist standardmäßig auf false.
+|MAINTANCE|Wenn dieser Wert auf `true` ist, ist der Wartungsmodus aktiviert, beim Aufrufen egal welcher Seite des CheckIN Systems wird eine Wartungsseite angezeigt, ein Login ist nicht möglich. Der Wert ist standardmäßig auf `false`.|
+|AUTH_SECRET|Der Wert womit die Nutzerdaten die im Cookie beim Nutzer gespeichert werden, verschlüsselt werden. **Unbedingt einen eigenen Geheimen Wert setzen!**|
+|DEFAULT_LOGIN -> Username|Der Nutzername des Adminnutzers der Standardmäßig erstellt wird, wenn kein Nutzer mit Admin Rechten existiert. Dieser Wert sollte nicht der Standard Wert sein.|
+|DEFAULT_LOGIN -> Password|Passwort des Standard Adminnutzers. Dieser Wert sollte nicht der Standard Wert sein.|
+|STUDYTIME|Aktiviert wenn dieser Wert auf `true`ist die Studienzeit-Funktion. Standardmäßig ist dieser Wert auf `false`.|
 |More Soon...|Moor Soon...|
-|
-|
-|
 
 ## LDAP Funktion
 
