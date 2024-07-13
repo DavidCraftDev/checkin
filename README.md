@@ -91,6 +91,10 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |STUDYTIME|Aktiviert wenn dieser Wert auf `true`ist die Studienzeit-Funktion. Standardmäßig ist dieser Wert auf `false`.|
 |More Soon...|Moor Soon...|
 
+## Studienzeit Funktion
+
+Hier wird in Zukunft die Studienzeit-Funktion erklärt.
+
 ## LDAP Funktion
 
 Die LDAP-Funktion ist um die LDAP-Umgebung einer bestimmten Schule drum herum gebaut, ich habe versucht, es möglichst variable zu halten, kann aber nicht versprechen, das es auch in anderen Umgebungen zu funktioniert. Sollte es nicht wie erwartet funktionieren, kann ich auf Anfrage nachbessern.
