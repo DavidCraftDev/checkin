@@ -7,6 +7,7 @@ let client: Client
 if (use_ldap) {
     console.log("Connect to LDAP Server " + ldap_uri + "...")
     let certExists = existsSync("../../../cert.crt")
+    console.log(process.cwd())
     let tlsOptions
     console.log(certExists)
     if (certExists) {
