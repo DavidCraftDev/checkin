@@ -136,7 +136,7 @@ export async function getNeededStudyTimesForNotes(userID: string) {
 export async function getMissingStudyTimes(userID: string) {
   const neededStudyTimes = await getNeededStudyTimes(userID);
   const attendedStudyTimes = await getAttendedStudyTimes(userID, moment().week(), moment().year());
-  let missingStudyTimes: Array<String> = [];
+  let missingStudyTimes: Array<string> = [];
   neededStudyTimes.forEach((neededStudyTime: any) => {
     if (!attendedStudyTimes.find((attendedStudyTime: any) => attendedStudyTime.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
       missingStudyTimes.push(neededStudyTime);

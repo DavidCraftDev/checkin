@@ -1,6 +1,12 @@
 "use client";
 
-function CompletedStudyTimes(props: any) {
+import { Attendance } from "@prisma/client";
+
+interface CompletedStudyTimesProps {
+    hasStudyTimes: Attendance[];
+}
+
+function CompletedStudyTimes(props: CompletedStudyTimesProps) {
     function getStudyTimeName(type: string) {
         if (type.startsWith("note:")) {
             return type.replace("note:", "") + " (Notiz)"
@@ -20,10 +26,10 @@ function CompletedStudyTimes(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.hasStudyTimes.map((studyTime: any) => {
+                        {props.hasStudyTimes.map((studyTime: Attendance) => {
                             return (
                                 <tr key={studyTime.id}>
-                                    <td>{getStudyTimeName(studyTime.type)}</td>
+                                    <td>{getStudyTimeName(studyTime.type || "")}</td>
                                 </tr>
                             )
                         })}

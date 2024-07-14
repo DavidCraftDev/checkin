@@ -1,6 +1,10 @@
 "use client";
 
-function MissingStudyTimes(props: any) {
+interface MissingStudyTimesProps {
+    missingStudyTimes: string[];
+}
+
+function MissingStudyTimes(props: MissingStudyTimesProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -11,7 +15,7 @@ function MissingStudyTimes(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.missingStudyTimes.map((studyTime: any) => {
+                        {props.missingStudyTimes.map((studyTime: string) => {
                             return (
                                 <tr key={studyTime}>
                                     <td>{studyTime}</td>

@@ -1,7 +1,9 @@
 "use client";
 
+import { Events } from "@prisma/client";
+
 interface AttendedEventsMinimalProps {
-    normalEvents: any;
+    normalEvents: Events[];
 }
 
 function AttendedEventsMinimal(props: AttendedEventsMinimalProps) {
@@ -15,7 +17,7 @@ function AttendedEventsMinimal(props: AttendedEventsMinimalProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.normalEvents.map((event: any) => {
+                    {props.normalEvents.map((event: Events) => {
                             return (
                                 <tr key={event.id}>
                                     <td>{event.name}</td>
