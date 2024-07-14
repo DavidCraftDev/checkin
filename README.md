@@ -92,11 +92,11 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |LDAP -> Enabled|**Dieser Wert darf nur vor dem ersten Nutzen des Systems verändert werden!** Wenn dieser Wert auf `true` ist wird LDAP statt dem eigenen Auth System verwendet. Der Wer ist standardmäßig auf `false`. Kann unter umständen nicht Problemlos laufen, mehr dazu [hier](#ldap-funktion).|
 |LDAP -> URI|Die URI des LDAP-Servers, beginend mit `ldap://` oder `ldaps://`.|
 |LDAP -> LDAP_TLS_REJECT_UNAUTHORIZED|Wenn ein eigenes CA-Zertifikat verwendet wird und nicht wie im Absatz [unten](#ldap-funktion) beschrieben ein eigenes hinterlegt wird, sollte dieser Wert auf `true` gesetzt werden. Standardmäßig ist er auf `false`.|
-|LDAP -> BIND_CREADENTIALS -> DN||
-|LDAP -> BIND_CREADENTIALS -> Password||
-|LDAP -> SEARCH_BASE||
-|LDAP -> USER_SEARCH_FILTER||
-|LDAP -> CREATE_LOCAL_ADMIN||
+|LDAP -> BIND_CREADENTIALS -> DN|DN des Nutzers mit Leserechten im LDAP|
+|LDAP -> BIND_CREADENTIALS -> Password|Passwort des Nutzers mit Leserechten im LDAP|
+|LDAP -> SEARCH_BASE|LDAP Search Base|
+|LDAP -> USER_SEARCH_FILTER|LDAP Filter, womit Nutzerdaten abgefragt, und überprüft wird ob der Nutzer zugriff auf das System hat. Mehr zu Filtern [hier](https://ldap.com/ldap-filters/).|
+|LDAP -> CREATE_LOCAL_ADMIN|Wenn dieser Wert auf `false` ist und LDAP aktiviert ist, wird kein Lokaler Admin Nutzeraccount erstellt. Standardmäßig ist der Wert auf `true`.|
 |LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ENABLE||
 |LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> TEACHER_GROUP||
 |LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ADMIN_GROUP||
