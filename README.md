@@ -97,13 +97,13 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |LDAP -> SEARCH_BASE|LDAP Search Base|
 |LDAP -> USER_SEARCH_FILTER|LDAP Filter, womit Nutzerdaten abgefragt, und überprüft wird ob der Nutzer zugriff auf das System hat. Mehr zu Filtern [hier](https://ldap.com/ldap-filters/).|
 |LDAP -> CREATE_LOCAL_ADMIN|Wenn dieser Wert auf `false` ist und LDAP aktiviert ist, wird kein Lokaler Admin Nutzeraccount erstellt. Standardmäßig ist der Wert auf `true`.|
-|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ENABLE||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> TEACHER_GROUP||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ADMIN_GROUP||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> GROUPS -> ENABLE||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> GROUPS -> GROUP_OU||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> STUDYTIME_DATA -> ENABLE||
-|LDAP -> AUTOMATIC_DATA_DETECTION -> STUDYTIME_DATA -> STUDYTIME_OU||
+|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ENABLE|Wenn dieser Wert auf `true` ist werden die Rechte der Nutzer die aus den LDAP-Daten erstellt werden Automatisch durch die unten angegebenen DNs Automatisch zugeordnet. Standardmäßig ist dieser Wert auf `false`.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> TEACHER_GROUP|DN der Lehrer-Gruppe.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ADMIN_GROUP|DN der Admin-Gruppe.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> GROUPS -> ENABLE|Wenn dieser Wert auf `true` ist, werden den LDAP-Nutzern, die Gruppen Automatisch zugeordnet. Dafür muss unten noch die DN angegeben werden, aus welcher Organizational Unit die Gruppen bezogen werden sollen. Diese Funktion kann unter Umständen wie [unten](#ldap-funktion) beschrieben nicht auf anhieb funktionieren.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> GROUPS -> GROUP_OU|DN, aus welcher Organizational Unit die Gruppen bezogen werden sollen.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> STUDYTIME_DATA -> ENABLE|Wenn dieser Wert auf `true` ist und die Studienzeit-Funktion aktiviert ist, werden den LDAP-Nutzern, Automatisch die Benötigten Studienzeiten bzw. die Fächer die der Lehrer unterrichtet zugeordnet. Dafür muss unten noch die DN angegeben werden, aus welcher Organizational Unit die Kursdaten bezogen werden sollen. Diese Funktion kann unter Umständen wie [unten](#ldap-funktion) beschrieben nicht auf anhieb funktionieren.|
+|LDAP -> AUTOMATIC_DATA_DETECTION -> STUDYTIME_DATA -> STUDYTIME_OU|DN, aus welcher Organizational Unit die Kurse bezogen werden sollen.|
 
 ## Studienzeit Funktion
 
