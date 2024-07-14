@@ -1,6 +1,15 @@
 "use client";
 
 function CompletedStudyTimes(props: any) {
+    function getStudyTimeName(type: string) {
+        if (type.startsWith("note:")) {
+            return type.replace("note:", "") + " (Notiz)"
+        } else if (type.startsWith("parallel:")) {
+            return type.replace("parallel:", "") + " (Vertretung)"
+        } else {
+            return type
+        }
+    }
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -12,17 +21,9 @@ function CompletedStudyTimes(props: any) {
                     </thead>
                     <tbody>
                         {props.hasStudyTimes.map((studyTime: any) => {
-                            let studyTimeName: string;
-                            if (studyTime.type.startsWith("note:")) {
-                                studyTimeName = studyTime.type.replace("note:", "") + " (Notiz)"
-                            } else if (studyTime.type.startsWith("parallel:")) {
-                                studyTimeName = studyTime.type.replace("parallel:", "") + " (Vertretung)"
-                            } else {
-                                studyTimeName = studyTime.type
-                            }
                             return (
                                 <tr key={studyTime.id}>
-                                    <td>{studyTimeName}</td>
+                                    <td>{getStudyTimeName(studyTime.type)}</td>
                                 </tr>
                             )
                         })}
