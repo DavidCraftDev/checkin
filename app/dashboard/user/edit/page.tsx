@@ -9,14 +9,13 @@ export default async function userEdit(searchParams: { searchParams: SearchParam
     await getSessionUser(2);
     const userData = await getUserPerID(searchParams.searchParams.userID);
     if (!userData.id) notFound();
-    const config = new Array();
-    config.push({
+    const config ={
         "studyTime": studytime,
         "use_ldap": use_ldap,
         "ldap_auto_studytime_data": ldap_auto_studytime_data,
         "ldap_auto_groups": ldap_auto_groups,
         "ldap_auto_permission": ldap_auto_permission
-    })
+    }
     return (
         <div>
             <h1>Nutzer bearbeiten</h1>
