@@ -1,6 +1,10 @@
 "use client";
 
-function AttendedEventsMinimal(props: any) {
+interface AttendedEventsMinimalProps {
+    normalEvents: any;
+}
+
+function AttendedEventsMinimal(props: AttendedEventsMinimalProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
