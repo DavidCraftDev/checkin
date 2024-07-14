@@ -38,6 +38,7 @@ function UserEditForm(props: any) {
         toast.success("Nutzer bearbeitet")
     }
     const userData = props.userData
+    console.log(config)
     return (
         <div>
             <form action={handleSubmit} className="p-2">
@@ -59,16 +60,16 @@ function UserEditForm(props: any) {
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" defaultValue={userData.group} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br className={config.studyTime ? "" : "hidden"} />
                     <label htmlFor="needs" className={config.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={config.studyTime ? "" : "hidden"} />
-                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.needs} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime })} />
+                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.needs} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime }, { "hidden": config.ldap_auto_permission})} />
                     <br className={config.studyTime ? "" : "hidden"} />
                     <label htmlFor="competence" className={config.studyTime ? "" : "hidden"} >Kompetenzen (Durch Komma getrennt)</label><br className={config.studyTime ? "" : "hidden"} />
-                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime })} />
-                    <br className={!config.use_ldap ? "" : "hidden"} />
-                    <label htmlFor="password" className={!config.use_ldap ? "" : "hidden"} >Neues Passwort setzen</label><br />
-                    <input type="text" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": !config.use_ldap })} />
-                    <br className={!config.use_ldap ? "" : "hidden"} />
-                    <label htmlFor="passwordAgain" className={!config.use_ldap ? "" : "hidden"} >Neues Passwort wiederholen</label><br />
-                    <input type="text" name="passwordAgain" id="passwordAgain" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": !config.use_ldap })} />
+                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime }, { "hidden": config.ldap_auto_permission})} />
+                    <br className={config.use_ldap ? "hidden" : ""} />
+                    <label htmlFor="password" className={config.use_ldap ? "hidden" : "" } >Neues Passwort setzen</label><br />
+                    <input type="text" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": config.use_ldap })} />
+                    <br className={config.use_ldap ? "hidden" : ""} />
+                    <label htmlFor="passwordAgain" className={config.use_ldap ? "hidden" : ""} >Neues Passwort wiederholen</label><br />
+                    <input type="text" name="passwordAgain" id="passwordAgain" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": config.use_ldap })} />
                 </div>
                 <button type="submit" className="btn">Nutzer bearbeiten</button>
             </form>
