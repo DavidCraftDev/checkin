@@ -17,14 +17,11 @@ function AttendedEventsMinimal(props: AttendedEventsMinimalProps) {
                         </tr>
                     </thead>
                     <tbody>
-                    {props.normalEvents.map((event: Events) => {
-                            return (
-                                <tr key={event.id}>
-                                    <td>{event.name}</td>
-                                </tr>
-                            );
-                        })}
-                        {props.normalEvents.length === 0 ? <tr><td className="italic">Keine Veranstaltungen besucht</td></tr> : null}
+                        {props.normalEvents.length > 0 ? (props.normalEvents.map((event: Events) => (
+                            <tr key={event.id}>
+                                <td>{event.name}</td>
+                            </tr>
+                        ))) : (<tr><td className="italic">Keine Veranstaltungen besucht</td></tr>)}
                     </tbody>
                 </table>
             </div>

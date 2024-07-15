@@ -26,14 +26,11 @@ function CompletedStudyTimes(props: CompletedStudyTimesProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.hasStudyTimes.map((studyTime: Attendance) => {
-                            return (
-                                <tr key={studyTime.id}>
-                                    <td>{getStudyTimeName(studyTime.type || "")}</td>
-                                </tr>
-                            )
-                        })}
-                        {props.hasStudyTimes.length === 0 ? <tr><td className="italic">Keine Studienzeiten erledigt</td></tr> : null}
+                        {props.hasStudyTimes.length > 0 ? (props.hasStudyTimes.map((studyTime: Attendance) => (
+                            <tr key={studyTime.id}>
+                                <td>{getStudyTimeName(studyTime.type || "")}</td>
+                            </tr>
+                        ))) : (<tr><td className="italic">Keine Studienzeiten erledigt</td></tr>)}
                     </tbody>
                 </table>
             </div>
