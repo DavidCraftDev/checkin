@@ -8,7 +8,7 @@ import CreatedEventTable from "./createdEventsTable.component";
 import CreateEventForm from "./createEventForm.component";
 import { studytime } from "@/app/src/modules/config";
 
-export default async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
+async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
   if (sessionUser.permission < 1) redirect("/dashboard");
 
@@ -31,9 +31,11 @@ export default async function createdEvents({ searchParams }: { searchParams: Se
       <CreateEventForm studyTime={studytime} user={sessionUser} />
       <CreatedEventTable events={data} studyTime={studytime} />
       <p>Exportieren als:
-        <a href={"/export/events/created/json?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".json"} className="hover:underline mx-1">JSON</a>
-        <a href={"/export/events/created/xlsx?cw=" + cw + "&year=" + year} download={"created_events" + cw + "_" + year + ".xlsx"} className="hover:underline mx-1">XLSX</a>
+        <a href={`/export/events/created/json?cw=${cw}&year=${year}`} download={`created_events${cw}_${year}.json`} className="hover:underline mx-1">JSON</a>
+        <a href={`/export/events/created/xlsx?cw=${cw}&year=${year}`} download={`created_events${cw}_${year}.xlsx`} className="hover:underline mx-1">XLSX</a>
       </p>
     </div>
   );
 }
+
+export default createdEvents;

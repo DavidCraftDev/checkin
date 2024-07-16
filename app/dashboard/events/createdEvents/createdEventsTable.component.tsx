@@ -1,8 +1,19 @@
 "use client";
 
+import { Events } from "@prisma/client";
 import moment from "moment";
 
-function CreatedEventTable(props: any) {
+interface EventProps {
+    event: Events,
+    user: number
+}
+
+interface CreatedEventTableProps {
+    studyTime: boolean,
+    events: EventProps[]
+}
+
+function CreatedEventTable(props: CreatedEventTableProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -17,11 +28,11 @@ function CreatedEventTable(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.events.map((event: any) => (
+                        {props.events.map((event: EventProps) => (
                             <tr key={event.event.id}>
                                 <td>{event.event.name}</td>
                                 <td>{event.user}</td>
-                                <td>{moment(Date.parse(event.event.created_at)).format("DD.MM.YYYY HH:mm")}</td>
+                                <td>{moment(event.event.created_at).format("DD.MM.YYYY HH:mm")}</td>
                                 {props.studyTime ? <td>{event.event.studyTime ? "✔️" : "❌"} </td> : null}
                                 <td><a href={`/dashboard/events/event?id=${event.event.id}`} className="hover:underline">Anzeigen</a></td>
                             </tr>
