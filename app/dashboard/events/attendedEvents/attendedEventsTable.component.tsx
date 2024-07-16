@@ -4,8 +4,23 @@ import moment from "moment";
 import { GetSortOrderByCreatedAt } from "@/app/src/modules/sortUtilities";
 import StudentNote from "./studentNote.component";
 import StudyTimeSelect from "./studyTimeSelect.component";
+import { Attendance, Events, User } from "@prisma/client";
 
-function AttendedEventTable(props: any) {
+interface Attendances {
+    attendance: Attendance;
+    event: Events;
+    eventUser: User;
+
+}
+
+interface AttendedEventTableProps {
+    attendances: Attendances[];
+    studyTime: boolean;
+    addable: boolean;
+    studyTimeTypes: Record<string, string[]>;
+}
+
+function AttendedEventTable(props: AttendedEventTableProps) {
     props.attendances.sort(GetSortOrderByCreatedAt("event"))
     return (
         <div className="overflow-x-auto">
@@ -22,14 +37,14 @@ function AttendedEventTable(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.attendances.map((attendance: any) => (
-                            <tr key={attendance.attendance.id}>
-                                <td>{attendance.event.name}</td>
-                                <td>{attendance.eventUser.displayname}</td>
-                                {props.studyTime ? attendance.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendance.attendance} studyTimeTypes={props.studyTimeTypes[attendance.attendance.id]} /> : attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
-                                {props.addable ? <StudentNote attendance={attendance.attendance} /> : <td>{attendance.attendance.studentNote}</td>}
-                                <td>{attendance.attendance.teacherNote}</td>
-                                <td>{moment(Date.parse(attendance.attendance.created_at)).format("DD.MM.YYYY HH:mm")}</td>
+                        {props.attendances.map((attendances: Attendances) => (
+                            <tr key={attendances.attendance.id}>
+                                <td>{attendances.event.name}</td>
+                                <td>{attendances.eventUser.displayname}</td>
+                                {props.studyTime ? attendances.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
+                                {props.addable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
+                                <td>{attendances.attendance.teacherNote}</td>
+                                <td>{moment(attendances.attendance.created_at).format("DD.MM.YYYY HH:mm")}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -11,11 +11,11 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
   const teacherData = await getUserPerID(teacherID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
   if (!userData.needs) return [];
-  let neededStudyTimes: Array<String> = [];
-  let vertretung: Array<String> = [];
+  let neededStudyTimes: Array<string> = [];
+  let vertretung: Array<string> = [];
 
   function addVertretung() {
-    vertretung.forEach((vertretung: any) => {
+    vertretung.forEach((vertretung: string) => {
       neededStudyTimes.push("parallel:" + vertretung);
     });
   }
@@ -117,7 +117,7 @@ export async function createUserStudyTimeNote(userID: string, cw: number) {
 export async function getNeededStudyTimesForNotes(userID: string) {
   const user = await getUserPerID(userID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
-  let neededStudyTimes: Array<String> = [];
+  let neededStudyTimes: Array<string> = [];
   if (!user.needs) return [];
   user.needs.forEach((need: any) => {
     let found = false;
@@ -194,16 +194,15 @@ export async function getSavedNeededStudyTimes(userID: string, cw: number, year:
 
 export async function getSavedMissingStudyTimes(userID: string, cw: number, year: number) {
   const savedData = await getSavedNeededStudyTimes(userID, cw, year);
+  let missingStudyTimes: Array<string> = [];
   if (savedData && savedData.needs) {
     const attendances = await getAttendancesPerUser(userID, cw, year);
-    let missingStudyTimes: Array<String> = [];
-    const needs = savedData.needs as Array<String>;
+    const needs = savedData.needs as Array<string>;
     needs.forEach((neededStudyTime: any) => {
       if (!attendances.find((attendance: any) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
         missingStudyTimes.push(neededStudyTime);
       }
     });
-    return missingStudyTimes;
   }
-  return [];
+  return missingStudyTimes;
 }

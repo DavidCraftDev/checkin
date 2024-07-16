@@ -1,18 +1,31 @@
 "use client"
 
 import { saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
+import { Attendance } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-function StudyTimeSelect(props: any) {
-    let defaultValue = "default";
-    if (props.attendance.type) defaultValue = props.attendance.type;
+interface StudyTimeSelectProps {
+    attendance: Attendance;
+    studyTimeTypes: string[];
+}
+
+function StudyTimeSelect(props: StudyTimeSelectProps) {
+    let defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function saveType(type: string) {
-        let data = await saveStudyTimeType(props.attendance.id, type);
-        if (data === "success") toast.success("Studienzeit erfolgreich gespeichert")
-        else toast.error("Fehler beim speichern der Studienzeit")
-        router.refresh()
+        try {
+            const data = await saveStudyTimeType(props.attendance.id, type);
+            if (data === "success") {
+                toast.success("Studienzeit erfolgreich gespeichert");
+            } else {
+                toast.error("Fehler beim Speichern der Studienzeit");
+            }
+        } catch (error) {
+            toast.error("Fehler beim Speichern der Studienzeit");
+        } finally {
+            router.refresh();
+        }
     }
     return (
         <td>
@@ -24,7 +37,7 @@ function StudyTimeSelect(props: any) {
                 ))}
             </select>
         </td>
-    )
+    );
 }
 
 export default StudyTimeSelect;
