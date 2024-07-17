@@ -7,12 +7,19 @@ import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.compo
 import AttendedEventsMinimal from "./dashboardComponents/attendedEventsMinimal.component";
 import { studytime } from "../src/modules/config";
 
-export default async function dashboard() {
+async function dashboard() {
     const session = await getSession();
-    const hasStudyTimes = await getStudyTimes(session.user.id, moment().week(), moment().year());
-    const neededStudyTimes = await getNeededStudyTimes(session.user.id);
-    const missingStudyTimes = await getMissingStudyTimes(session.user.id);
-    const normalEvents = await getNormalEventsAttendances(session.user.id, moment().week(), moment().year());
+    const [
+        hasStudyTimes,
+        neededStudyTimes,
+        missingStudyTimes,
+        normalEvents
+    ] = await Promise.all([
+        getStudyTimes(session.user.id, moment().week(), moment().year()),
+        getNeededStudyTimes(session.user.id),
+        getMissingStudyTimes(session.user.id),
+        getNormalEventsAttendances(session.user.id, moment().week(), moment().year())
+    ]);
     return (
         <div>
             <h1>Dashboard</h1>
@@ -26,3 +33,5 @@ export default async function dashboard() {
         </div>
     );
 }
+
+export default dashboard;
