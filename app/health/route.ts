@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
+import { maintance } from "../src/modules/config";
 import db from "../src/modules/db";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     let dbConnected: Boolean
     try {
         await db.$connect()
@@ -11,11 +11,11 @@ export async function GET(request: NextRequest) {
         dbConnected = false
     }
     let status = "ok"
-    if(!dbConnected ) {
+    if (!dbConnected) {
         status = "error"
     }
     const data = {
-        maintance: false,
+        maintance: maintance,
         status: status,
         databaseConnected: dbConnected
     }
