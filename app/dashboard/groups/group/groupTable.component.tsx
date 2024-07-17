@@ -1,8 +1,29 @@
 "use client";
 
+import { User } from "@prisma/client";
 import AttendedStudyTimes from "./attenedStudyTimes.component";
 
-function GroupTable(props: any) {
+interface groupDataTypes {
+    user: User,
+    attendances: number
+}
+
+interface attendaceCount {
+    normal: number,
+    parallel: number,
+    noted: number
+    needed: number
+}
+
+interface GroupTableProps {
+    studyTime: boolean,
+    user: groupDataTypes[],
+    studyTimeData: Record<string, attendaceCount>,
+    cw: number,
+    year: number
+}
+
+function GroupTable(props: GroupTableProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
