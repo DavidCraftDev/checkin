@@ -13,17 +13,10 @@ export async function submitCreateHandler(formdata: FormData) {
     const needsArray = needsData.split(",") as Prisma.JsonArray;
     const competenceData = formdata.get('competence') as string || "";
     const competenceArray = competenceData.split(",") as Prisma.JsonArray;
-    //Displayname only letters, numbers, commen special character and spaces
-    if (!/^[a-zA-Z0-9 .\-_@#$%&*!]*$/.test(displayname)) {
-        return "displayname"
-    }
+    if (!displayname) return "displayname"
     //Username only letters, numbers and dots
-    if (!/^[a-zA-Z0-9.]*$/.test(username)) {
-        return "username"
-    }
-    if (!password) {
-        return "password"
-    }
+    if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
+    if (!password) return "password"
     const data = await createUser(username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
     if (data === "exist") return "exist"
     return "success"

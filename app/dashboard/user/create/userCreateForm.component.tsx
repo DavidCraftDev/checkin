@@ -3,42 +3,43 @@
 import toast from "react-hot-toast";
 import { submitCreateHandler } from "./submitCreateHandler";
 import clsx from "clsx";
+import { FormEvent } from "react";
+
+interface UserCreateFormProps {
+    studyTime: boolean
+}
 
 let displaynameError = false
 let usernameError = false
 let passwordError = false
 
-function UserCreateForm(props: any) {
-    async function handleSubmit(formdata: FormData) {
+function UserCreateForm(props: UserCreateFormProps) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         displaynameError = false
         usernameError = false
         passwordError = false
-        const data = await submitCreateHandler(formdata)
+        const formData = new FormData(event.currentTarget);
+        const data = await submitCreateHandler(formData)
         if (data === "displayname") {
             displaynameError = true
             toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
-            return
-        }
-        if (data === "username") {
+        } else if (data === "username") {
             usernameError = true
             toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
-            return
-        }
-        if (data === "password") {
+        } else if (data === "password") {
             passwordError = true
             toast.error("Bitte ein Passwort eingeben")
-            return
-        }
-        if (data === "exist") {
+        } else if (data === "exist") {
             usernameError = true
             toast.error("Der Nutzername ist bereits belegt")
-            return
+        } else {
+            toast.success("Nutzer erstellt")
         }
-        toast.success("Nutzer erstellt")
     }
     return (
         <div>
-            <form action={handleSubmit} className="p-2">
+            <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
                     <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} />
@@ -63,7 +64,7 @@ function UserCreateForm(props: any) {
                     <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
                     <br className={props.studyTime ? "" : "hidden"} />
                     <label htmlFor="password">Passwort*</label><br />
-                    <input type="text" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
+                    <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
                 </div>
                 <button type="submit" className="btn">Nutzer erstellen</button>
             </form>
