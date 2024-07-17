@@ -3,10 +3,10 @@
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { submitEditHandler } from "./submitEditHandler";
+import { FormEvent } from "react";
 
 let displaynameError = false
 let usernameError = false
-let passwordError = false
 
 function UserEditForm(props: any) {
     let config = props.config
@@ -16,39 +16,32 @@ function UserEditForm(props: any) {
         config.ldap_auto_permission = false
         config.ldap_auto_studytime_data = false
     }
-    async function handleSubmit(formdata: FormData) {
-        if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return;
+        event.preventDefault();
         displaynameError = false
         usernameError = false
-        passwordError = false
-        const data = await submitEditHandler(formdata, props.userData.id)
+        const formData = new FormData(event.currentTarget);
+        const data = await submitEditHandler(formData, props.userData.id)
         if (data === "displayname") {
             displaynameError = true
             toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
-            return
-        }
-        if (data === "username") {
+        } else if (data === "username") {
             usernameError = true
             toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
             return
-        }
-        if (data === "passwordAgain") {
-            passwordError = true
-            toast.error("Bitte ein Passwort eingeben")
-            return
-        }
-        if (data === "exist") {
+        } else if (data === "exist") {
             usernameError = true
             toast.error("Der Nutzername ist bereits belegt")
             return
+        } else {
+            toast.success("Nutzer bearbeitet")
         }
-        toast.success("Nutzer bearbeitet")
     }
     const userData = props.userData
-    console.log(config)
     return (
         <div>
-            <form action={handleSubmit} className="p-2">
+            <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
                     <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} />
@@ -73,10 +66,7 @@ function UserEditForm(props: any) {
                     <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence} disabled={config.ldap_auto_studytime_data} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime })} />
                     <br className={config.use_ldap ? "hidden" : ""} />
                     <label htmlFor="password" className={config.use_ldap ? "hidden" : ""} >Neues Passwort setzen</label><br />
-                    <input type="text" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": config.use_ldap })} />
-                    <br className={config.use_ldap ? "hidden" : ""} />
-                    <label htmlFor="passwordAgain" className={config.use_ldap ? "hidden" : ""} >Neues Passwort wiederholen</label><br />
-                    <input type="text" name="passwordAgain" id="passwordAgain" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError }, { "hidden": config.use_ldap })} />
+                    <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": config.use_ldap })} />
                 </div>
                 <button type="submit" className="btn">Nutzer bearbeiten</button>
             </form>
