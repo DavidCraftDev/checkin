@@ -1,6 +1,15 @@
 "use client";
 
-function GroupsTable(props: any) {
+interface groupData {
+    group: string,
+    members: number
+}
+
+interface GroupsTableProps {
+    groups: groupData[]
+}
+
+function GroupsTable(props: GroupsTableProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
