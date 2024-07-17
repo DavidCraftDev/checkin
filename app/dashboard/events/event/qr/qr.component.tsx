@@ -11,8 +11,6 @@ let lastResult: string
 
 function QRScannerComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const id = useSearchParams().get('id');
-  if (!id) return notFound();
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
@@ -23,6 +21,11 @@ function QRScannerComponent() {
         return
       }
       const userID = result.data.replace("checkin://", "")
+      const searchParams = useSearchParams();
+      const id = searchParams.get('id');
+      if (!id) {
+        notFound()
+      }
       const data: string | User = await submitHandler(userID, id as string)
       console.log(data)
       if (typeof data === "string") {
@@ -58,7 +61,7 @@ function QRScannerComponent() {
         qrScanner.stop();
       };
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     startScanner();
