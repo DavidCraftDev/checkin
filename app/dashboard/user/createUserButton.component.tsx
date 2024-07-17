@@ -1,15 +1,17 @@
 'use client'
 
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { FormEvent } from "react";
 
-const checkin = () => {
-  redirect("/dashboard/user/create")
-}
-
-const CreateUserButton = () => {
+function CreateUserButton() {
+  const router = useRouter();
+  function createUserRedirect(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    router.push("/dashboard/user/create")
+  }
   return (
-    <form action={checkin} className="place-self-center">
-      <button className="btn">
+    <form onSubmit={createUserRedirect} className="place-self-center">
+      <button type="submit" className="btn">
         Nutzer erstellen
       </button>
     </form>

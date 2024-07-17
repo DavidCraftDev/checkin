@@ -4,9 +4,9 @@ import UserTable from "./userTable.component";
 import CreateUserButton from "./createUserButton.component";
 import { use_ldap } from "@/app/src/modules/config";
 
-export default async function user() {
-    const user = await getSessionUser(2);
-    const users = await db.user.findMany()
+async function user() {
+    await getSessionUser(2);
+    const users = await db.user.findMany() || [];
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-2">
@@ -24,3 +24,5 @@ export default async function user() {
         </div>
     );
 }
+
+export default user;

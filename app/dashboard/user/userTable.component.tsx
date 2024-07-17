@@ -1,6 +1,12 @@
 "use client";
 
-function UserTable(props: any) {
+import { User } from "@prisma/client";
+
+interface UserTableProps {
+    users: User[];
+}
+
+function UserTable(props: UserTableProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -15,7 +21,7 @@ function UserTable(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.users.map((user: any) => (
+                        {props.users.map((user: User) => (
                             <tr key={user.id}>
                                 <td>{user.displayname}</td>
                                 <td>{user.username}</td>
