@@ -14,34 +14,34 @@ function QRScannerComponent() {
   const id = useSearchParams().get('id');
   if (!id) return notFound();
 
-  async function handleScanResult(result: QrScanner.ScanResult) {
-    if (result.data === lastResult) return;
-    lastResult = result.data
-    if (!result.data.startsWith("checkin://")) {
-      toast.error("Kein Nutzer QR-Code")
-      return
-    }
-    const userID = result.data.replace("checkin://", "")
-    const data: string | User = await submitHandler(userID, id as string)
-    console.log(data)
-    if (typeof data === "string") {
-      if (data === "ErrorNotFound") {
-        toast.error("Nutzer nicht gefunden")
-      } else if (data === "ErrorAlreadyCheckedIn") {
-        toast.error("Nutzer bereits hinzugefügt")
-      } else {
-        toast.error("Unbekannter Fehler")
-      }
-    } else {
-      if (data.id === userID) {
-        toast.success(`${data.displayname} erfolgreich hinzugefügt`)
-      } else {
-        toast.error("Unbekannter Fehler")
-      }
-    }
-  }
-
   const startScanner = useCallback(async () => {
+    async function handleScanResult(result: QrScanner.ScanResult) {
+      if (result.data === lastResult) return;
+      lastResult = result.data
+      if (!result.data.startsWith("checkin://")) {
+        toast.error("Kein Nutzer QR-Code")
+        return
+      }
+      const userID = result.data.replace("checkin://", "")
+      const data: string | User = await submitHandler(userID, id as string)
+      console.log(data)
+      if (typeof data === "string") {
+        if (data === "ErrorNotFound") {
+          toast.error("Nutzer nicht gefunden")
+        } else if (data === "ErrorAlreadyCheckedIn") {
+          toast.error("Nutzer bereits hinzugefügt")
+        } else {
+          toast.error("Unbekannter Fehler")
+        }
+      } else {
+        if (data.id === userID) {
+          toast.success(`${data.displayname} erfolgreich hinzugefügt`)
+        } else {
+          toast.error("Unbekannter Fehler")
+        }
+      }
+    }
+
     if (videoRef.current) {
       const qrScanner = new QrScanner(
         videoRef.current,
@@ -58,7 +58,7 @@ function QRScannerComponent() {
         qrScanner.stop();
       };
     }
-  }, [handleScanResult]);
+  }, [id, lastResult, submitHandler, toast]);
 
   useEffect(() => {
     startScanner();
