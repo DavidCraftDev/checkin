@@ -58,7 +58,7 @@ function QRScannerComponent() {
         qrScanner.stop();
       };
     }
-  }, [id, lastResult, submitHandler, toast]);
+  }, [id]);
 
   useEffect(() => {
     startScanner();
