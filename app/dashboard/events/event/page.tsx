@@ -9,30 +9,28 @@ import CheckinForm from "./checkinForm.component";
 export default async function event({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSessionUser(1);
     const userID = user.id;
-    const EventID = searchParams.id
-    if (!EventID) notFound();
-    const event = await getEventPerID(EventID);
+    const eventID = searchParams.id
+    if (!eventID) notFound();
+    const event = await getEventPerID(eventID);
     if (!event.id) notFound();
     if (event.user !== userID) redirect("/dashboard/");
-    const attendances = await getAttendancesPerEvent(EventID);
-    const attendanceCount = attendances.length;
-    let addable: boolean = false;
-    if ((event.cw === moment().week()) && (moment(event.created_at).year() === moment().year())) addable = true;
-    const studyTime: boolean = event.studyTime
+    const attendances = await getAttendancesPerEvent(eventID);
+    console.log(attendances);
+    const addable = event.cw === moment().week() && moment(event.created_at).year() === moment().year();
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>{studyTime ? null : "Veranstaltung: "}{event.name}</h1>
+                    <h1>{event.studyTime ? null : "Veranstaltung: "}{event.name}</h1>
                     <p>erstellt am {moment(Date.parse(event.created_at)).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
-                    <p>{attendanceCount} Teilnehmer</p>
+                    <p>{attendances.length} Teilnehmer</p>
                 </div>
-                {addable ? <CheckinForm eventID={EventID} /> : null}
+                {addable ? <CheckinForm eventID={eventID} /> : null}
             </div>
-            <EventTable attendances={attendances} addable={addable} studyTime={studyTime} />
+            <EventTable attendances={attendances} addable={addable} studyTime={event.studyTime} />
             <p>Exportieren als:
-                <a href={"/export/events/event/json?eventID=" + EventID} download={"event" + EventID + ".json"} className="hover:underline mx-1">JSON</a>
-                <a href={"/export/events/event/xlsx?eventID=" + EventID} download={"event" + EventID + ".xlsx"} className="hover:underline mx-1">XLSX</a>
+                <a href={`/export/events/event/json?eventID=${eventID}`} download={`event${eventID}.json`} className="hover:underline mx-1">JSON</a>
+                <a href={`/export/events/event/xlsx?eventID=${eventID}`} download={`event${eventID}.xlsx`} className="hover:underline mx-1">XLSX</a>
             </p>
         </div>
     );

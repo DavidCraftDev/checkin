@@ -11,7 +11,7 @@ interface StudentNoteProps {
 
 function StudentNote(props: StudentNoteProps) {
     const cooldown = useRef<number>(0);
-    const currentNote = useRef<string>("");
+    const currentNote = useRef<string>(props.attendance.studentNote || "");
     const handleStudentNoteChange = useCallback((studentNote: string, attendanceID: string) => {
         currentNote.current = studentNote;
         if (cooldown.current > 0) {
@@ -23,12 +23,12 @@ function StudentNote(props: StudentNoteProps) {
                 cooldown.current--;
                 if (cooldown.current <= 0) {
                     clearInterval(interval);
-                    const data = await setStudentNote(currentNote.current, attendanceID)
+                    const data = await setStudentNote(currentNote.current, attendanceID);
                     if (data === "success") {
-                        toast.success("Notiz erfolgreich gespeichert")
-                        return
+                        toast.success("Notiz erfolgreich gespeichert");
+                    } else {
+                        toast.error("Fehler beim speichern der Notiz");
                     }
-                    toast.error("Fehler beim speichern der Notiz")
                 }
             }, 1);
         }

@@ -1,39 +1,41 @@
 "use client"
 
+import { Attendance } from "@prisma/client";
 import setTeacherNote from "./teacherNoteHandler";
 import toast from "react-hot-toast";
+import { useCallback, useRef } from "react";
 
-function TeacherNote(props: any) {
-    let cooldown: number = 0;
-    let currentNote: string = ""
-    async function setTeacherNoteHandler(teacherNote: string, attendanceID: any) {
-        const data = await setTeacherNote(teacherNote, attendanceID)
-        if (data === "success") {
-            toast.success("Notiz erfolgreich gespeichert")
-            return
-        }
-        toast.error("Fehler beim speichern der Notiz")
-    }
-    async function handleTeacherNoteChange(teacherNote: string, attendanceID: any) {
-        if (cooldown > 0) {
-            cooldown = 75
-            currentNote = teacherNote
-            return
+interface TeacherNoteProps {
+    attendance: Attendance;
+}
+
+function TeacherNote(props: TeacherNoteProps) {
+    const cooldown = useRef<number>(0);
+    const currentNote = useRef<string>(props.attendance.teacherNote || "");
+    const handleTeacherNoteChange = useCallback((teacherNote: string, attendanceID: string) => {
+        currentNote.current = teacherNote;
+        if (cooldown.current > 0) {
+            cooldown.current = 75;
+            return;
         } else {
-            cooldown = 75
-            currentNote = teacherNote
-            while (cooldown > 0) {
-                cooldown--;
-                await new Promise(r => setTimeout(r, 1));
-                if (cooldown === 0) {
-                    setTeacherNoteHandler(currentNote, attendanceID)
+            cooldown.current = 75;
+            const interval = setInterval(async () => {
+                cooldown.current--;
+                if (cooldown.current <= 0) {
+                    clearInterval(interval);
+                    const data = await setTeacherNote(currentNote.current, attendanceID);
+                    if (data === "success") {
+                        toast.success("Notiz erfolgreich gespeichert");
+                    } else {
+                        toast.error("Fehler beim speichern der Notiz");
+                    }
                 }
-            }
+            }, 1);
         }
-    }
+    }, []);
     return (
         <td>
-            <textarea defaultValue={props.attendance.teacherNote} onChange={(e) => handleTeacherNoteChange(e.target.value, props.attendance.id)} placeholder="Lehrer Notiz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
+            <textarea defaultValue={props.attendance.teacherNote || ""} onChange={(e) => handleTeacherNoteChange(e.target.value, props.attendance.id)} placeholder="Lehrer Notiz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
         </td>
     )
 }

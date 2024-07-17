@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import db from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
 import moment from "moment";
@@ -82,8 +83,7 @@ export async function attendanceExists(eventID: string, userID: string) {
             userID: userID
         }
     });
-    if (!data) return 0 as number;
-    return data;
+    return data > 0;
 }
 
 export async function getEventsPerUser(userID: string) {
@@ -153,24 +153,23 @@ export async function eventExists(eventID: string) {
             id: eventID
         }
     });
-    if (!data) return 0 as number;
-    return data;
+    return data > 0;
 }
 
 export async function checkINHandler(eventID: string, userID: string) {
-    if (await existUserPerID(userID) === 0) return "ErrorNotFound"
-    if (await attendanceExists(eventID, userID) > 0) return "ErrorAlreadyCheckedIn"
-    if (await eventExists(eventID) === 0) return "ErrorEventNotFound"
-    let data = await db.attendance.create({
+    if (!await existUserPerID(userID)) return "ErrorNotFound"
+    if (await attendanceExists(eventID, userID)) return "ErrorAlreadyCheckedIn"
+    if (!await eventExists(eventID)) return "ErrorEventNotFound"
+    await db.attendance.create({
         data: {
             eventID: eventID,
             userID: userID,
             cw: moment().week(),
         }
     });
-    let userData = await getUserPerID(userID);
-    userData.password = undefined
-    userData.loginVersion = undefined
+    let userData: User = await getUserPerID(userID);
+    userData.password = null
+    userData.loginVersion = 0
     return userData;
 }
 

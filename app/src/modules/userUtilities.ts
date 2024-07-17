@@ -24,8 +24,7 @@ export async function existUserPerID(id: string) {
       id: id
     }
   });
-  if (!user) return 0 as Number;
-  return user
+  return user > 0;
 }
 
 export async function getUserID(name: string) {

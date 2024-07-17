@@ -3,37 +3,45 @@
 import { submitHandler } from "./submitHandler";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { User } from "@prisma/client";
 
-function CheckinForm(data: any) {
-    const eventID = data.eventID
+interface CheckinFormProps {
+    eventID: string
+}
+
+function CheckinForm(props: CheckinFormProps) {
     const router = useRouter()
-    async function eventHandler(formData: FormData) {
+    async function eventHandler(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
         if (!formData.get("name")) return;
-        const data: any = await submitHandler(formData, eventID)
-        if (data === "ErrorNotFound") {
-            toast.error("Nutzer nicht gefunden")
-            return
-        } else if (data === "ErrorAlreadyCheckedIn") {
-            toast.error("Nutzer bereits hinzugefügt")
-            return
-        } else if (data.username == formData.get("name")) {
-            toast.success(data.displayname + " erfolgreich hinzugefügt")
-            router.refresh()
-            return
+        const data: string | User = await submitHandler(formData.get("name") as string, props.eventID)
+        if (typeof data === "string") {
+            if (data === "ErrorNotFound") {
+                toast.error("Nutzer nicht gefunden");
+            } else if (data === "ErrorAlreadyCheckedIn") {
+                toast.error("Nutzer bereits hinzugefügt");
+            } else {
+                toast.error("Unbekannter Fehler");
+            }
         } else {
-            toast.error("Unbekannter Fehler")
-            return
+            if (data.username === formData.get("name")) {
+                toast.success(`${data.displayname} erfolgreich hinzugefügt`);
+                router.refresh();
+            } else {
+                toast.error("Unbekannter Fehler");
+            }
         }
     }
     return (
-        <form action={eventHandler} className="flex flex-col items-center flex-auto justify-center">
+        <form onSubmit={eventHandler} className="flex flex-col items-center flex-auto justify-center">
             <div>
                 <label htmlFor="username">Nutzername</label><br />
                 <input type="text" name="name" id="username" placeholder="max.musterschueler" className="rounded-full p-2 m-4 border-2 border-black-600" />
             </div>
             <div>
                 <button type="submit" className="btn m-1">Hinzufügen</button>
-                <a className="btn m-1" href={"/dashboard/events/event/qr?id=" + eventID}>QR-Scanner</a>
+                <a className="btn m-1" href={`/dashboard/events/event/qr?id=${props.eventID}`}>QR-Scanner</a>
             </div>
         </form>
     )

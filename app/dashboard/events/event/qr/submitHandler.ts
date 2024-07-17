@@ -2,14 +2,12 @@
 
 import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
-import { existUserPerID } from "@/app/src/modules/userUtilities"
+import { Events, User } from "@prisma/client";
 
-export async function submitHandler(userID: any, eventID: any) {
-    const sessionUser = await getSessionUser(1);
-    const event = await getEventPerID(eventID);
-    if (event.user !== sessionUser.id) return;
-    const userExist = await existUserPerID(userID)
-    if (!userExist) return "UserNotFound"
-    const data = await checkINHandler(eventID, userID)
+export async function submitHandler(userID: string, eventID: string) {
+    const sessionUser: User = await getSessionUser(1);
+    const event: Events = await getEventPerID(eventID);
+    if (event.user !== sessionUser.id) return "NoPermission";
+    const data: User | string = await checkINHandler(eventID, userID)
     return data;
 };
