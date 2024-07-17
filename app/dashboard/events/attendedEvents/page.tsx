@@ -25,12 +25,19 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
     if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
-    const data = await getAttendancesPerUser(userID, cw, year);
+    const [
+        data,
+        hasStudyTimes,
+        needsStudyTimes
+    ] = await Promise.all([
+        getAttendancesPerUser(userID, cw, year),
+        getStudyTimes(userData.id, cw, year).then(result => result.length),
+        getNeededStudyTimes(userData.id).then(result => result.length)
+    ]);
+
     let addable = (cw === currentWeek && year === currentYear);
     if (searchParams.userID && searchParams.userID !== sessionUser.id) addable = false;
 
-    const hasStudyTimes = await getStudyTimes(userData.id, cw, year).then(result => result.length);
-    const needsStudyTimes = await getNeededStudyTimes(userData.id).then(result => result.length);
     let missingStudyTimes: string[] = [];
     const studyTimeTypes: Record<string, string[]> = {};
 
