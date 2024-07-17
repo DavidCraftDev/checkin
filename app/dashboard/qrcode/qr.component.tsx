@@ -2,18 +2,14 @@
 
 import { useQRCode } from 'next-qrcode';
 
-type QRCodeProps = {
+interface QRCodeProps {
   data: string;
 };
 
 const QRCode = ({ data }: QRCodeProps) => {
   const { SVG } = useQRCode();
 
-  return (
-    <SVG
-      text={data}
-    />
-  );
+  return <SVG text={data} />
 };
 
 export default QRCode;
