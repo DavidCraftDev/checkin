@@ -224,7 +224,10 @@ export async function getNormalEventsAttendances(userID: string, cw: number, yea
                 gte: new Date(String(year) + "-01-01"),
                 lte: new Date(String(year) + "-12-31"),
             },
-            type: null
+            type: null,
+            NOT: {
+                eventID: "NOTE"
+            }
         }
     });
     // Get Event Data from dataAttendances
