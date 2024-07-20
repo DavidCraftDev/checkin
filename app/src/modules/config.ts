@@ -1,3 +1,5 @@
+import "server-only";
+
 import config_file from "../../../config.json";
 
 let maintance: boolean
