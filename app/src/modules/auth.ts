@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
@@ -15,17 +13,14 @@ let client: Client
 
 if (use_ldap) {
   console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
-  let certExists = existsSync(process.cwd() + "/cert.crt")
   let tlsOptions
-  if (certExists) {
+  if (existsSync(process.cwd() + "/cert.crt")) {
     tlsOptions = {
       rejectUnauthorized: ldap_tls_reject_unauthorized,
       ca: [readFileSync(process.cwd() + "/cert.crt").toString()]
     }
   } else {
-    tlsOptions = {
-      rejectUnauthorized: ldap_tls_reject_unauthorized
-    }
+    tlsOptions = { rejectUnauthorized: ldap_tls_reject_unauthorized }
   }
   try {
     client = new Client({
@@ -47,76 +42,53 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Sign in",
       credentials: {
-        username: {
-          label: "Nutzername",
-          type: "text",
-          placeholder: "muster.user",
-        },
+        username: { label: "Nutzername", type: "text", placeholder: "muster.user" },
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials, request) {
-        if (await rateLimit(request.headers["x-forwarded-for"])) return null;
-        if (!credentials?.username || !credentials.password) return null;
+        if (!request.headers || await rateLimit(request.headers["x-forwarded-for"])) return null;
+        if (!credentials || !credentials.username || !credentials.password) return null;
+        let user: User;
         if (use_ldap && !credentials.username.startsWith("local/")) {
           const ldapUserData = await getAllUsers();
-          const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username);
-          if (!ldapUser) {
-            return null;
-          }
-          return new Promise(async (resolve, reject) => {
-            console.log(ldapUser.dn)
-            await client.bind(ldapUser.dn, credentials.password).catch((error) => {
-              resolve(null)
-            })
+          const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username.toLowerCase());
+          if (!ldapUser) return null;
+          try {
+            await client.bind(ldapUser.dn, credentials.password);
             const dbUser = await db.user.findUnique({
               where: {
                 id: ldapUser.objectGUID as string,
               }
-            }) as User | null
-            if (!dbUser) {
-              reject("User not found in database")
-              return null
-            }
-            resolve({
-              id: dbUser?.id as string,
-              username: dbUser?.username,
-              name: dbUser?.displayname,
-              permission: dbUser?.permission,
-              group: dbUser?.group,
-              needs: dbUser?.needs,
-              competence: dbUser?.competence,
-              loginVersion: dbUser?.loginVersion
-
-            })
-          });
+            }) as User
+            if (!dbUser) return null;
+            user = dbUser;
+          } catch (error) {
+            return null;
+          }
         } else {
-          const user = await db.user.findUnique({
+          const dbUser = await db.user.findUnique({
             where: {
               username: credentials.username.toLowerCase(),
             },
           });
-
-          if (!user || !user.password || !(await compare(credentials.password, user.password))) {
-            return null;
-          }
-
-          return {
-            id: user.id,
-            username: user.username,
-            name: user.displayname,
-            permission: user.permission,
-            group: user.group,
-            needs: user.needs,
-            competence: user.competence,
-            loginVersion: user.loginVersion,
-          };
+          if (!dbUser || !dbUser.password || !(await compare(credentials.password, dbUser.password))) return null;
+          user = dbUser
         }
-      },
-    }),
+        return {
+          id: user.id,
+          username: user.username,
+          name: user.displayname,
+          permission: user.permission,
+          group: user.group,
+          needs: user.needs,
+          competence: user.competence,
+          loginVersion: user.loginVersion
+        };
+      }
+    })
   ],
   callbacks: {
     session: ({ session, token }) => {
-      //console.log("Session Callback", { session, token });
       return {
         ...session,
         user: {
@@ -128,13 +100,12 @@ export const authOptions: NextAuthOptions = {
           needs: token.needs,
           competence: token.competence,
           loginVersion: token.loginVersion,
-        },
+        }
       };
     },
     jwt: ({ token, user }) => {
-      //console.log("JWT Callback", { token, user });
       if (user) {
-        const u = user as unknown as any;
+        const u = user as User;
         return {
           ...token,
           id: u.id,
@@ -146,8 +117,8 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ baseUrl }) {
       return baseUrl
-    },
-  },
+    }
+  }
 };

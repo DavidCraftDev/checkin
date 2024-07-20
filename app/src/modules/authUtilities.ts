@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/src/modules/auth";
 import { redirect } from "next/navigation";
@@ -11,22 +13,16 @@ export async function getSession() {
     return session;
 }
 
-export async function getSessionUser(permission?: Number) {
+export async function getSessionUser(permission?: number) {
     const session = await getSession();
-    if (permission) {
-        if (session.user.permission < permission) {
-            redirect("/dashboard");
-        }
+    if (permission && session.user.permission < permission) {
+        redirect("/dashboard");
     }
     const user = await getUserPerID(session.user.id);
-    if (!user.id) {
+    if (!user.id || user.loginVersion !== session.user.loginVersion) {
         redirect("/logout");
-    } else if (user.loginVersion != session.user.loginVersion) {
-        redirect("/logout");
-    } else if (permission) {
-        if (user.permission < permission) {
-            redirect("/dashboard");
-        }
+    } else if (permission && user.loginVersion != session.user.loginVersion) {
+        redirect("/dashboard");
     }
     return user;
 }
