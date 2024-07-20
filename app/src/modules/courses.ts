@@ -1,4 +1,4 @@
-let data: any = {
+let data: Record<string, string> = {
     "E5": "Englisch",
     "E": "Englisch",
     "D": "Deutsch",
