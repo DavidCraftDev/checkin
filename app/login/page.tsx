@@ -4,30 +4,33 @@ import { signIn } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
+import { FormEvent, useState } from "react";
 
-export default function Login() {
+function Login() {
   const router = useRouter();
-  let usernameError = false;
-  let passwordError = false;
-  let errorCount = 0;
-  let disabled = false;
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
 
-  async function handleSubmit(data: any) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (disabled) return;
-    disabled = true;
-    const username = data.get("username") as string;
-    const password = data.get("password") as string;
-    usernameError = false;
-    passwordError = false;
+    setDisabled(true);
+    const formData = new FormData(event.currentTarget);
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+    setUsernameError(false);
+    setPasswordError(false);
     if (!username) {
-      usernameError = true
+      setUsernameError(true);
       toast.error("Bitte einen Nutzernamen eingeben")
-      disabled = false;
+      setDisabled(false);
       return
     } else if (!password) {
-      passwordError = true
+      setPasswordError(true);
       toast.error("Bitte ein Passwort eingeben")
-      disabled = false;
+      setDisabled(false);
       return
     }
     const result = await signIn("credentials", {
@@ -39,33 +42,35 @@ export default function Login() {
       router.push("/dashboard");
     } else {
       toast.error("Falscher Nutzername oder Passwort");
-      errorCount++;
-      disabled = false;
+      setErrorCount(errorCount + 1);
+      setDisabled(false);
       if (errorCount >= 10) {
-        router.push("https://youtu.be/GHMjD0Lp5DY");
+        router.push("/login/limit");
       }
     }
   }
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
-      <form action={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
         <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
           <div className="w-32 text-white md:w-40">
             CheckIN
           </div>
         </div>
         <div className="flex flex-col space-y-4">
-          <h1>Einloggen</h1>
+          <h1>Anmelden</h1>
           <label htmlFor="username" className="font-bold text-gray-600">Nutzername</label>
           <input type="text" name="username" id="username" placeholder="vorname.nachname" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
 
           <label htmlFor="password" className="font-bold text-gray-600">Passwort</label>
           <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
 
-          <button type="submit" className="btn">Einloggen</button>
+          <button type="submit" className="btn">Anmelden</button>
         </div>
       </form>
       <Toaster position="bottom-center" />
     </div>
   );
 }
+
+export default Login;

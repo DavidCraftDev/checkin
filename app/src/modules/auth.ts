@@ -9,6 +9,7 @@ import { Client } from "ldapts";
 import { User } from "@prisma/client";
 import { use_ldap, ldap_uri, ldap_tls_reject_unauthorized, auth_secret } from "./config";
 import { existsSync, readFileSync } from 'fs';
+import rateLimit from "./rateLimit";
 
 let client: Client
 
@@ -53,10 +54,9 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Passwort", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.username || !credentials.password) {
-          return null;
-        }
+      async authorize(credentials, request) {
+        if (await rateLimit(request.headers["x-forwarded-for"])) return null;
+        if (!credentials?.username || !credentials.password) return null;
         if (use_ldap && !credentials.username.startsWith("local/")) {
           const ldapUserData = await getAllUsers();
           const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username);
