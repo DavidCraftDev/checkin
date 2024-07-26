@@ -2,16 +2,11 @@
 
 import moment from "moment";
 import TeacherNote from "./teacherNote.component";
-import { Attendance, User } from "@prisma/client";
-
-interface Attendances {
-    user: User,
-    attendance: Attendance
-}
+import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
 
 interface EventTableProps {
     studyTime: boolean,
-    attendances: Attendances[],
+    attendances: AttendancePerEventPerUser[],
     addable: boolean
 }
 
@@ -30,7 +25,7 @@ function EventTable(props: EventTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.attendances.map((attendance: Attendances) => (
+                        {props.attendances.map((attendance: AttendancePerEventPerUser) => (
                             <tr key={attendance.attendance.id}>
                                 <td>{attendance.user.displayname}</td>
                                 {props.studyTime ? attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <td>❌</td> : null}

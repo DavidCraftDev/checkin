@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const eventID = request.nextUrl.searchParams.get("eventID")
     if (!eventID) return Response.json({ error: "No eventID provided" })
     const event = await getEventPerID(eventID)
-    if (!event.id) return Response.json({ error: "Event not found" })
+    if (!event) return Response.json({ error: "Event not found" })
     if ((event.user !== user.id) && (user.permission < 2)) return Response.json({ error: "User not authorized" })
     const eventUser = await getUserPerID(event.user)
     const attendances = await getAttendancesPerEvent(eventID)
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     },
     {
         "type": Boolean,
-        "value": event.event.studyTime,
+        "value": event.studyTime,
     },
     {
         "type": String,

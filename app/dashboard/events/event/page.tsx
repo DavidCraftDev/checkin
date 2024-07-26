@@ -12,7 +12,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
     const eventID = searchParams.id
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);
-    if (!event.id) notFound();
+    if (!event) notFound();
     if (event.user !== userID) redirect("/dashboard/");
     const attendances = await getAttendancesPerEvent(eventID);
     const addable = event.cw === moment().week() && moment(event.created_at).year() === moment().year();
@@ -21,7 +21,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>{event.studyTime ? null : "Veranstaltung: "}{event.name}</h1>
-                    <p>erstellt am {moment(Date.parse(event.created_at)).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
+                    <p>erstellt am {moment(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
                     <p>{attendances.length} Teilnehmer</p>
                 </div>
                 {addable ? <CheckinForm eventID={eventID} /> : null}

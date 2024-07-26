@@ -52,7 +52,7 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
                 <div>
                     <h1>Teilgenommene Veranstaltungen</h1>
                     <p>von {userData.displayname}</p>
-                    {studytime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == "1" ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {studytime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {studytime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {studytime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>

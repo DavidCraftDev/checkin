@@ -1,16 +1,11 @@
 "use client";
 
-import { Events } from "@prisma/client";
+import { CreatedEventPerUser } from "@/app/src/interfaces/events";
 import moment from "moment";
-
-interface EventProps {
-    event: Events,
-    user: number
-}
 
 interface CreatedEventTableProps {
     studyTime: boolean,
-    events: EventProps[]
+    events: CreatedEventPerUser[]
 }
 
 function CreatedEventTable(props: CreatedEventTableProps) {
@@ -28,7 +23,7 @@ function CreatedEventTable(props: CreatedEventTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.events.map((event: EventProps) => (
+                        {props.events.map((event: CreatedEventPerUser) => (
                             <tr key={event.event.id}>
                                 <td>{event.event.name}</td>
                                 <td>{event.user}</td>

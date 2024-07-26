@@ -4,17 +4,10 @@ import moment from "moment";
 import { GetSortOrderByCreatedAt } from "@/app/src/modules/sortUtilities";
 import StudentNote from "./studentNote.component";
 import StudyTimeSelect from "./studyTimeSelect.component";
-import { Attendance, Events, User } from "@prisma/client";
-
-interface Attendances {
-    attendance: Attendance;
-    event: Events;
-    eventUser: User;
-
-}
+import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
 interface AttendedEventTableProps {
-    attendances: Attendances[];
+    attendances: AttendancePerUserPerEvent[];
     studyTime: boolean;
     addable: boolean;
     studyTimeTypes: Record<string, string[]>;
@@ -37,7 +30,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.attendances.map((attendances: Attendances) => (
+                        {props.attendances.map((attendances: AttendancePerUserPerEvent) => (
                             <tr key={attendances.attendance.id}>
                                 <td>{attendances.event.name}</td>
                                 <td>{attendances.eventUser.displayname}</td>

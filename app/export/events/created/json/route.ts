@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
         let eventData = event.event
         const attendances = await getAttendancesPerEvent(eventData.id)
         for (const attendance of attendances) {
-            attendance.user.password = undefined
-            attendance.user.loginVersion = undefined
+            attendance.user.password = null
+            attendance.user.loginVersion = 0
         }
         eventsData.push({
             eventData,
