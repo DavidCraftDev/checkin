@@ -2,15 +2,10 @@ import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { getGroups } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./groupsTable.component";
 
-interface groupData {
-  group: string,
-  members: number
-}
-
 export default async function groups() {
   await getSessionUser(2);
 
-  let groups: groupData[] = await getGroups();
+  let groups = await getGroups();
   const groupCount = groups.length;
   return (
     <div>

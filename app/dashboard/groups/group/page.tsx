@@ -7,12 +7,7 @@ import { SearchParams } from "@/app/src/interfaces/searchParams";
 import GroupTable from "./groupTable.component";
 import { getAttendedStudyTimesCount } from "@/app/src/modules/studytimeUtilities";
 import { studytime } from "@/app/src/modules/config";
-import { User } from "@prisma/client";
-
-interface groupDataTypes {
-  user: User,
-  attendances: number
-}
+import { GroupMember } from "@/app/src/interfaces/groups";
 
 interface attendaceCount {
   normal: number,
@@ -35,7 +30,7 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
     redirect("/dashboard")
   }
 
-  let groupData: groupDataTypes[] = await getGroupMembers(groupID, cw, year);
+  let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, attendaceCount> = {};
   for (const user of groupData) {
     studyTimeData[user.user.id] = await getAttendedStudyTimesCount(user.user.id, cw, year);

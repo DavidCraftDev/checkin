@@ -1,12 +1,7 @@
 "use client";
 
-import { User } from "@prisma/client";
 import AttendedStudyTimes from "./attenedStudyTimes.component";
-
-interface groupDataTypes {
-    user: User,
-    attendances: number
-}
+import { GroupMember } from "@/app/src/interfaces/groups";
 
 interface attendaceCount {
     normal: number,
@@ -17,7 +12,7 @@ interface attendaceCount {
 
 interface GroupTableProps {
     studyTime: boolean,
-    user: groupDataTypes[],
+    user: GroupMember[],
     studyTimeData: Record<string, attendaceCount>,
     cw: number,
     year: number

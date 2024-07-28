@@ -1,12 +1,12 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
-import { getAllGroups } from "@/app/src/modules/groupUtilities";
+import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
 
 export async function GET() {
     const user = await getSessionUser(2);
     user.password = undefined
     user.loginVersion = undefined
 
-    const groups = await getAllGroups()
+    const groups = await getGroupsWithUserData()
     const data = new Array()
     data.push({
         meta: {

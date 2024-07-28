@@ -1,11 +1,11 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
-import { getAllGroups } from "@/app/src/modules/groupUtilities";
+import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET() {
     const user = await getSessionUser(2);
 
-    const groups = await getAllGroups()
+    const groups = await getGroupsWithUserData()
     const data = new Array()
     const sheetData = new Array()
     const columeData = new Array()

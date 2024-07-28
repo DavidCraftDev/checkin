@@ -1,12 +1,9 @@
 "use client";
 
-interface groupData {
-    group: string,
-    members: number
-}
+import { Groups } from "@/app/src/interfaces/groups";
 
 interface GroupsTableProps {
-    groups: groupData[]
+    groups: Groups[];
 }
 
 function GroupsTable(props: GroupsTableProps) {

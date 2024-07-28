@@ -1,5 +1,5 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
-import { getGroupMembersWithAttendances } from "@/app/src/modules/groupUtilities";
+import { getGroupMembersWithAttendanceData } from "@/app/src/modules/groupUtilities";
 import moment from "moment";
 import { NextRequest } from "next/server";
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const groupID: string = String(request.nextUrl.searchParams.get("groupID")) || user.group
     if (groupID !== user.group && user.permission < 2) return Response.json({ error: "User not authorized" })
 
-    const group = await getGroupMembersWithAttendances(groupID, calendarWeek, year)
+    const group = await getGroupMembersWithAttendanceData(groupID, calendarWeek, year)
     const data = new Array()
     data.push({
         meta: {

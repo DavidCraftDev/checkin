@@ -1,53 +1,43 @@
+import { User } from "@prisma/client";
 import db from "./db";
 import { getAttendanceCountPerUser, getAttendancesPerUser } from "./eventUtilities";
 import { saveNeededStudyTimes } from "./studytimeUtilities";
+import moment from "moment";
+import { GroupMember, GroupMemberWithAttendanceData, Groups, GroupsWithUserData } from "../interfaces/groups";
 
-export async function getGroupMembers(groupID: string, cw?: number, year?: number) {
+export async function getGroupMembers(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({
         where: {
             group: groupID
         }
     });
-    Promise.all(userData.map(async (user: any) => {
-        saveNeededStudyTimes(user);
+    Promise.all(userData.map(async (user: User) => saveNeededStudyTimes(user)));
+    const data: GroupMember[] = new Array();
+    await Promise.all(userData.map(async (user: User) => {
+        const dataAttendance = await getAttendanceCountPerUser(user.id, cw, year);
+        data.push({
+            user: user,
+            attendances: dataAttendance
+        });
     }));
-    const data = new Array();
-    if (!cw || !year) {
-        for (let i = 0; i < userData.length; i++) {
-            data.push(userData[i]);
-        }
-        if (!data) return [] as any;
-        return data;
-    } else {
-        for (let i = 0; i < userData.length; i++) {
-            const dataAttendance = await getAttendanceCountPerUser(userData[i].id, cw, year);
-            data.push({
-                user: userData[i],
-                attendances: dataAttendance
-            });
-        }
-    }
-    if (!data) return [] as any;
     return data;
 }
 
-export async function getGroupMembersWithAttendances(groupID: string, cw: number, year: number) {
+export async function getGroupMembersWithAttendanceData(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({
         where: {
             group: groupID
         }
     });
-    const data = new Array();
-    for (let i = 0; i < userData.length; i++) {
-        const dataAttendance = await getAttendancesPerUser(userData[i].id, cw, year);
-        userData[i].password = ""
-        userData[i].loginVersion = 0
+    Promise.all(userData.map(async (user: User) => saveNeededStudyTimes(user)));
+    const data: GroupMemberWithAttendanceData[] = new Array();
+    await Promise.all(userData.map(async (user: User) => {
+        const dataAttendance = await getAttendancesPerUser(user.id, cw, year);
         data.push({
-            user: userData[i],
+            user: user,
             attendances: dataAttendance
         });
-    }
-    if (!data) return [] as any;
+    }));
     return data;
 }
 
@@ -57,41 +47,38 @@ export async function getGroupMemberCount(groupID: string) {
             group: groupID
         }
     });
-    if (!data) return 0 as number;
     return data;
 }
 
 export async function getGroups() {
-    const user = await db.user.findMany();
-    let groups = new Set<string>();
-    user.forEach((user: any) => {
-        if (!user.group) return;
-        groups.add(String(user.group));
+    const users = await db.user.findMany();
+    const groups = new Set<string>();
+    users.forEach((user: User) => {
+        if (user.group) groups.add(String(user.group));
     });
     const groupArray = Array.from(groups);
-    let data = new Array();
-    for (let i = 0; i < groupArray.length; i++) {
-
-        const dataMembers = await getGroupMemberCount(groupArray[i]);
+    const data: Groups[] = new Array();
+    await Promise.all(groupArray.map(async (group: string) => {
+        const dataMembers = await getGroupMemberCount(group);
         data.push({
-            group: groupArray[i] || "Keine Gruppe",
+            group: group || "Keine Gruppe",
             members: dataMembers
         });
     }
-    if (!data) return [] as any;
+    ));
     return data;
 }
 
-export async function getAllGroups() {
+export async function getGroupsWithUserData() {
     const groups = await getGroups();
-    for (let i = 0; i < groups.length; i++) {
-        const dataMembers = await getGroupMembers(groups[i].group);
-        groups[i].members = dataMembers;
-        for (let j = 0; j < dataMembers.length; j++) {
-            groups[i].members[j].password = undefined;
-            groups[i].members[j].loginVersion = undefined;
-        }
+    const data: GroupsWithUserData[] = new Array();
+    await Promise.all(groups.map(async (group: Groups) => {
+        const dataMembers = await getGroupMembers(group.group, moment().week(), moment().year());
+        data.push({
+            group: group.group,
+            members: dataMembers.map((member: GroupMember) => member.user)
+        });
     }
-    if (!groups) return [] as any;
-    return groups;
+    ));
+    return data;
 }
