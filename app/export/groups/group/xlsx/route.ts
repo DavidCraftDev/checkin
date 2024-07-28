@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": Number,
-            "value": userGroup.attendances
+            "value": userGroup.attendances.length
         },
         {
             "type": String,
