@@ -1,9 +1,9 @@
 "use client"
 
-import { saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
 import { Attendance } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import studyTimeSelectHandler from "./studyTimeSelectHandler";
 
 interface StudyTimeSelectProps {
     attendance: Attendance;
@@ -14,7 +14,7 @@ function StudyTimeSelect(props: StudyTimeSelectProps) {
     let defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function saveType(type: string) {
-        const data = await saveStudyTimeType(props.attendance.id, type);
+        const data = await studyTimeSelectHandler(props.attendance.id, type);
         if (data) {
             toast.success("Studienzeit erfolgreich gespeichert");
             router.refresh();
