@@ -94,15 +94,11 @@ export async function getNeededStudyTimesForNotes(userID: string) {
   let neededStudyTimes: Array<string> = new Array();
   if (!userNeeds) return neededStudyTimes;
   userNeeds.forEach((need) => {
-    let found = false;
     attendances.forEach((attendance: any) => {
-      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need) {
-        found = true;
+      if (!attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") !== need) {
+        neededStudyTimes.push("note:" + need);
       }
     });
-    if (!found) {
-      neededStudyTimes.push("note:" + need);
-    }
   });
   return neededStudyTimes;
 }
