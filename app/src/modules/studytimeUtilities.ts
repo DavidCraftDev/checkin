@@ -1,84 +1,60 @@
-"use server"
+import "server-only";
 
 import moment from "moment";
 import { getAttendancesPerUser } from "./eventUtilities";
 import { getUserPerID } from "./userUtilities";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import db from "./db";
 
 export async function getNeededStudyTimesSelect(userID: string, teacherID: string) {
-  const userData = await getUserPerID(userID);
+  const userNeeds = await getNeededStudyTimes(userID);
   const teacherData = await getUserPerID(teacherID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
-  if (!userData.needs) return [];
-  let neededStudyTimes: Array<string> = [];
-  let vertretung: Array<string> = [];
+  let neededStudyTimes: Array<string> = new Array();
+  let parallel: Array<string> = new Array();
+  if (!userNeeds) return neededStudyTimes;
 
-  function addVertretung() {
-    vertretung.forEach((vertretung: string) => {
-      neededStudyTimes.push("parallel:" + vertretung);
-    });
-  }
-
-  userData.needs.forEach((need: any) => {
-    let found = attendances.find((attendance: any) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)
+  userNeeds.forEach((need: string) => {
+    let found = attendances.find((attendance) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)
     if (!found) {
-      if (teacherData.competence.includes(need)) {
-        neededStudyTimes.push(need);
-      } else {
-        vertretung.push(need);
-      }
+      if (teacherData.competence.includes(need)) neededStudyTimes.push(need);
+      else parallel.push(need);
     }
   })
 
-  addVertretung();
+  parallel.forEach((vertretung: string) => neededStudyTimes.push("parallel:" + vertretung))
+
   return neededStudyTimes;
 }
 
 export async function getNeededStudyTimes(userID: string) {
   const user = await getUserPerID(userID);
-  if (!user.id) return [] as Prisma.JsonArray;
-  if (!user.needs) return [] as Prisma.JsonArray;
-  return user.needs as Prisma.JsonArray;
+  if (!user.id) return [] as Array<string>;
+  if (!user.needs) return [] as Array<string>;
+  return user.needs as Array<string>;
 }
 
 export async function getAttendedStudyTimes(userID: string, cw: number, year: number) {
   const attendances = await getAttendancesPerUser(userID, cw, year);
-  let attendedStudyTimes: Array<String> = [];
-  attendances.forEach((attendance: any) => {
-    if (attendance.event.studyTime) {
-      if (attendance.attendance.type) {
-        attendedStudyTimes.push(attendance.attendance.type);
-      }
-    }
-  });
+  let attendedStudyTimes: Array<string> = [];
+  attendances.forEach((attendance) => { if (attendance.event.studyTime && attendance.attendance.type) attendedStudyTimes.push(attendance.attendance.type) });
   return attendedStudyTimes;
 }
 
-export async function getAttendedStudyTimesCount(userID: any, cw: number, year: number) {
-  let attendedStudyTimesCount = new Array();
-  let normalStudyTimes: number = 0;
-  let parallelStudyTimes: number = 0;
-  let notedStudyTimes: number = 0;
+export async function getAttendedStudyTimesCount(userID: string, cw: number, year: number) {
+  let normalStudyTimes = 0;
+  let parallelStudyTimes = 0;
+  let notedStudyTimes = 0;
   await getAttendedStudyTimes(userID, cw, year).then((result) => {
-    result.forEach((studyTime: String) => {
-      if (studyTime.startsWith("parallel:")) {
-        parallelStudyTimes++;
-      } else if (studyTime.startsWith("note:")) {
-        notedStudyTimes++;
-      } else {
-        normalStudyTimes++;
-      }
+    result.forEach((studyTime: string) => {
+      if (studyTime.startsWith("parallel:")) parallelStudyTimes++;
+      else if (studyTime.startsWith("note:")) notedStudyTimes++;
+      else normalStudyTimes++;
     });
   });
-  let neededStudyTimes = await getSavedNeededStudyTimes(userID, cw, year).then((result) => result.needs) as Array<String> || [];
-  attendedStudyTimesCount.push({
-    normal: normalStudyTimes,
-    parallel: parallelStudyTimes,
-    noted: notedStudyTimes,
-    needed: neededStudyTimes.length || 0
-  })
-  return attendedStudyTimesCount[0];
+  const savedStudyTimes = await getSavedNeededStudyTimes(userID, cw, year).then((result) => result.needs) as Array<string>;
+  const neededStudyTimes = savedStudyTimes.length || 0;
+  return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
 }
 
 export async function saveStudyTimeType(attendanceID: string, type: string) {
@@ -92,13 +68,12 @@ export async function saveStudyTimeType(attendanceID: string, type: string) {
       }
     }
   });
-  if (check.length > 0) return "error";
+  if (check.length > 0) return false;
   let data = await db.attendance.update({
     where: { id: attendanceID },
     data: { type: type }
   });
-  if (data.type === type) return "success";
-  return "error";
+  return data.type === type;
 }
 
 export async function createUserStudyTimeNote(userID: string, cw: number) {
@@ -110,42 +85,27 @@ export async function createUserStudyTimeNote(userID: string, cw: number) {
       teacherNote: "- Studienzeit Notiz -"
     }
   });
-  if (note.eventID === "NOTE") return "success";
-  return "error";
+  return note.eventID === "NOTE";
 }
 
 export async function getNeededStudyTimesForNotes(userID: string) {
-  const user = await getUserPerID(userID);
+  const userNeeds = await getNeededStudyTimes(userID);
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
-  let neededStudyTimes: Array<string> = [];
-  if (!user.needs) return [];
-  user.needs.forEach((need: any) => {
-    let found = false;
-    attendances.forEach((attendance: any) => {
-      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need) {
-        found = true;
-      }
-    });
-    if (!found) {
-      neededStudyTimes.push("note:" + need);
-    }
-  });
+  let neededStudyTimes: Array<string> = new Array();
+  if (!userNeeds) return neededStudyTimes;
+  userNeeds.forEach((need: string) => attendances.forEach((attendance) => { if (!(attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)) neededStudyTimes.push("note:" + need) }));
   return neededStudyTimes;
 }
 
 export async function getMissingStudyTimes(userID: string) {
   const neededStudyTimes = await getNeededStudyTimes(userID);
   const attendedStudyTimes = await getAttendedStudyTimes(userID, moment().week(), moment().year());
-  let missingStudyTimes: Array<string> = [];
-  neededStudyTimes.forEach((neededStudyTime: any) => {
-    if (!attendedStudyTimes.find((attendedStudyTime: any) => attendedStudyTime.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
-      missingStudyTimes.push(neededStudyTime);
-    }
-  });
+  let missingStudyTimes: Array<string> = new Array();
+  neededStudyTimes.forEach((neededStudyTime) => { if (!attendedStudyTimes.find((attendedStudyTime) => attendedStudyTime.replace("parallel:", "").replace("note:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
   return missingStudyTimes;
 }
 
-export async function saveNeededStudyTimes(user: any) {
+export async function saveNeededStudyTimes(user: User) {
   const count = await db.studyTimeData.count({
     where: {
       userID: user.id,
@@ -153,32 +113,27 @@ export async function saveNeededStudyTimes(user: any) {
       year: moment().year()
     }
   });
-  if (!user.needs) return "noNeeds";
-  let data
-  if (count > 0) {
-    data = await db.studyTimeData.updateMany({
-      where: {
-        AND: [
-          { userID: user.id },
-          { cw: moment().week() },
-          { year: moment().year() }
-        ]
-      },
-      data: {
-        needs: user.needs
-      }
-    });
-  } else {
-    data = await db.studyTimeData.create({
-      data: {
-        userID: user.id,
-        cw: moment().week(),
-        year: moment().year(),
-        needs: user.needs as Prisma.JsonArray
-      }
-    });
-  }
-  return data;
+  if (!user.needs) return
+  if (count > 0) await db.studyTimeData.updateMany({
+    where: {
+      AND: [
+        { userID: user.id },
+        { cw: moment().week() },
+        { year: moment().year() }
+      ]
+    },
+    data: {
+      needs: user.needs
+    }
+  });
+  else await db.studyTimeData.create({
+    data: {
+      userID: user.id,
+      cw: moment().week(),
+      year: moment().year(),
+      needs: user.needs as Prisma.JsonArray
+    }
+  });
 }
 
 export async function getSavedNeededStudyTimes(userID: string, cw: number, year: number) {
@@ -189,20 +144,16 @@ export async function getSavedNeededStudyTimes(userID: string, cw: number, year:
       year: Number(year)
     }
   });
-  return data[0] || [] as any;
+  return data[0];
 }
 
 export async function getSavedMissingStudyTimes(userID: string, cw: number, year: number) {
   const savedData = await getSavedNeededStudyTimes(userID, cw, year);
-  let missingStudyTimes: Array<string> = [];
+  let missingStudyTimes: Array<string> = new Array();
   if (savedData && savedData.needs) {
     const attendances = await getAttendancesPerUser(userID, cw, year);
     const needs = savedData.needs as Array<string>;
-    needs.forEach((neededStudyTime: any) => {
-      if (!attendances.find((attendance: any) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === neededStudyTime)) {
-        missingStudyTimes.push(neededStudyTime);
-      }
-    });
+    needs.forEach((neededStudyTime) => { if (!attendances.find((attendance) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
   }
   return missingStudyTimes;
 }

@@ -14,16 +14,12 @@ function StudyTimeSelect(props: StudyTimeSelectProps) {
     let defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function saveType(type: string) {
-        try {
-            const data = await saveStudyTimeType(props.attendance.id, type);
-            if (data === "success") {
-                toast.success("Studienzeit erfolgreich gespeichert");
-            } else {
-                toast.error("Fehler beim Speichern der Studienzeit");
-            }
-        } catch (error) {
+        const data = await saveStudyTimeType(props.attendance.id, type);
+        if (data) {
+            toast.success("Studienzeit erfolgreich gespeichert");
+            router.refresh();
+        } else {
             toast.error("Fehler beim Speichern der Studienzeit");
-        } finally {
             router.refresh();
         }
     }

@@ -33,7 +33,8 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, attendaceCount> = {};
   for (const user of groupData) {
-    studyTimeData[user.user.id] = await getAttendedStudyTimesCount(user.user.id, cw, year);
+    const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes } = await getAttendedStudyTimesCount(user.user.id, cw, year);
+    studyTimeData[user.user.id] = { normal: normalStudyTimes, parallel: parallelStudyTimes, noted: notedStudyTimes, needed: neededStudyTimes };
   }
   return (
     <div>
