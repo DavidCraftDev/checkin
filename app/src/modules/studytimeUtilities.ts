@@ -93,7 +93,17 @@ export async function getNeededStudyTimesForNotes(userID: string) {
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
   let neededStudyTimes: Array<string> = new Array();
   if (!userNeeds) return neededStudyTimes;
-  userNeeds.forEach((need: string) => attendances.forEach((attendance) => { if (!(attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)) neededStudyTimes.push("note:" + need) }));
+  userNeeds.forEach((need) => {
+    let found = false;
+    attendances.forEach((attendance: any) => {
+      if (attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need) {
+        found = true;
+      }
+    });
+    if (!found) {
+      neededStudyTimes.push("note:" + need);
+    }
+  });
   return neededStudyTimes;
 }
 
