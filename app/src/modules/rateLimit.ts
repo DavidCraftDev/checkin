@@ -1,5 +1,3 @@
-import "server-only";
-
 interface rateLimtsType {
     [key: string]: {
         requests: number;
@@ -7,30 +5,32 @@ interface rateLimtsType {
     }
 }
 
-const rateLimits: rateLimtsType = {};
+class RateLimit {
+    private rateLimits: rateLimtsType = {};
 
-async function rateLimit(ip: string) {
-    if (!rateLimits[ip]) {
-        rateLimits[ip] = {
-            requests: 1,
-            lastRequest: new Date(),
-        }
-        return false;
-    } else {
-        if (new Date().getTime() - rateLimits[ip].lastRequest.getTime() > 60000) {
-            rateLimits[ip].requests = 1;
-            rateLimits[ip].lastRequest = new Date();
+    public rateLimit(ip: string): Boolean {
+        if (!this.rateLimits[ip]) {
+            this.rateLimits[ip] = {
+                requests: 1,
+                lastRequest: new Date(),
+            }
             return false;
-        } else if (rateLimits[ip].requests >= 10) {
-            rateLimits[ip].requests++;
-            rateLimits[ip].lastRequest = new Date();
-            return true;
         } else {
-            rateLimits[ip].requests++;
-            rateLimits[ip].lastRequest = new Date();
-            return false;
+            if (new Date().getTime() - this.rateLimits[ip].lastRequest.getTime() > 60000) {
+                this.rateLimits[ip].requests = 1;
+                this.rateLimits[ip].lastRequest = new Date();
+                return false;
+            } else if (this.rateLimits[ip].requests >= 10) {
+                this.rateLimits[ip].requests++;
+                this.rateLimits[ip].lastRequest = new Date();
+                return true;
+            } else {
+                this.rateLimits[ip].requests++;
+                this.rateLimits[ip].lastRequest = new Date();
+                return false;
+            }
         }
     }
 }
 
-export default rateLimit;
+export default RateLimit;

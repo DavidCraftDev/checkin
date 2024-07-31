@@ -2,36 +2,17 @@ import db from "@/app/src/modules/db";
 import { compare } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getAllUsers } from "./ldap";
-import { Client } from "ldapts";
+import { getAllUsers } from "./ldapUtilities";
 import { User } from "@prisma/client";
-import { use_ldap, ldap_uri, ldap_tls_reject_unauthorized, auth_secret } from "./config";
-import { existsSync, readFileSync } from 'fs';
-import rateLimit from "./rateLimit";
+import { use_ldap, auth_secret } from "./config";
+import RateLimit from "./rateLimit";
+import LDAP from "./ldap";
 
-let client: Client
+let rateLimit = new RateLimit().rateLimit;
 
-if (use_ldap) {
-  console.log("Connect to LDAP Server for auth " + ldap_uri + "...")
-  let tlsOptions
-  if (existsSync(process.cwd() + "/cert.crt")) {
-    tlsOptions = {
-      rejectUnauthorized: ldap_tls_reject_unauthorized,
-      ca: [readFileSync(process.cwd() + "/cert.crt").toString()]
-    }
-  } else {
-    tlsOptions = { rejectUnauthorized: ldap_tls_reject_unauthorized }
-  }
-  try {
-    client = new Client({
-      url: ldap_uri,
-      tlsOptions: tlsOptions
-    });
-  } catch (error) {
-    throw new Error("Failed to create LDAP auth client: " + error);
-  }
-  console.log("LDAP client for auth created successfully!")
-}
+let client: LDAP;
+
+if (use_ldap) client = new LDAP();
 
 export const authOptions: NextAuthOptions = {
   secret: auth_secret,
@@ -46,15 +27,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials, request) {
-        if (!request.headers || await rateLimit(request.headers["x-forwarded-for"])) return null;
+        if (!request.headers || rateLimit(request.headers["x-forwarded-for"])) return null;
         if (!credentials || !credentials.username || !credentials.password) return null;
         let user: User;
         if (use_ldap && !credentials.username.startsWith("local/")) {
           const ldapUserData = await getAllUsers();
-          const ldapUser = ldapUserData.find((e) => e.sAMAccountName === credentials.username.toLowerCase());
+          const ldapUser = ldapUserData.find((e) => e.sAMAccountName.toString().toLowerCase() === credentials.username.toLowerCase());
           if (!ldapUser) return null;
-          try {
-            await client.bind(ldapUser.dn, credentials.password);
+          if (await client.bind(ldapUser.dn, credentials.password)) {
             const dbUser = await db.user.findUnique({
               where: {
                 id: ldapUser.objectGUID as string,
@@ -62,7 +42,9 @@ export const authOptions: NextAuthOptions = {
             }) as User
             if (!dbUser) return null;
             user = dbUser;
-          } catch (error) {
+            client.unbind();
+          } else {
+            client.unbind();
             return null;
           }
         } else {
