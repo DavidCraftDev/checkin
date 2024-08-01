@@ -37,7 +37,7 @@ async function updateUserData(ldapData: Entry[]) {
                 ...group,
                 ...needs,
                 ...competence,
-                loginVersion: Math.ceil(Number(ldapUser.pwdLastSet) / 1000)
+                loginVersion: Math.ceil(Number(ldapUser.pwdLastSet) / 10000000000)
             }
         })
         existUser.push(user.id)
@@ -54,7 +54,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...group,
             ...needs,
             ...competence,
-            loginVersion: Math.ceil(Number(entry.pwdLastSet) / 1000)
+            loginVersion: Math.ceil(Number(entry.pwdLastSet) / 10000000000)
         })
     })
     await db.user.createMany({ data: createData })
