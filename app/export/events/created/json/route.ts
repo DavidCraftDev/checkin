@@ -6,13 +6,9 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
-    user.password = undefined
-    user.loginVersion = undefined
 
-    const currentWeek: number = Number(moment().week())
-    const currentYear: number = Number(moment().year())
-    const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
-    const year: number = Number(request.nextUrl.searchParams.get("year")) || currentYear
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
     const data = new Array()
@@ -39,6 +35,6 @@ export async function GET(request: NextRequest) {
             attendances: attendances
         })
     }
-    data.push(eventsData, user)
+    data.push(eventsData)
     return Response.json(data)
 }

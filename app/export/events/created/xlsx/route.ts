@@ -6,20 +6,17 @@ import writeXlsxFile from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
-    user.password = undefined
-    user.loginVersion = undefined
+    user.password = null
+    user.loginVersion = 0
 
-    const currentWeek: number = Number(moment().week())
-    const currentYear: number = Number(moment().year())
-    const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
-    const year: number = Number(request.nextUrl.searchParams.get("year")) || currentYear
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
     const data = new Array()
     const sheetData = new Array()
     const columeData = new Array()
 
-    //Push Meta Data to a own sheet
     const meta = new Array()
     meta.push([{
         "type": String,
@@ -109,7 +106,6 @@ export async function GET(request: NextRequest) {
         width: 20
     }])
 
-    //Add for each event a new sheet
     for (const event of events) {
         const attendances = await getAttendancesPerEvent(event.event.id)
         const eventData = new Array()
