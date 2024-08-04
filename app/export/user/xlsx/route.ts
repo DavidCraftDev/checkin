@@ -1,16 +1,11 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import db from "@/app/src/modules/db";
+import { NextResponse } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET() {
     const user = await getSessionUser(2);
     const users = await db.user.findMany()
-    users.forEach((user: any) => {
-        user.password = undefined
-        user.loginVersion = undefined
-    })
-    user.password = undefined
-    user.loginVersion = undefined
     const data = new Array()
     data.push([{
         "type": String,
@@ -115,7 +110,7 @@ export async function GET() {
         { width: 24 }
     ];
     const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
-    return new Response(bufferData, {
+    return new NextResponse(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="users.xlsx"`,
