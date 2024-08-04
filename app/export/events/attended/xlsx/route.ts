@@ -23,8 +23,8 @@ export async function GET(request: NextRequest) {
     }
     if (userID && (user.permission < 2 && user.group !== userData.group)) return Response.json({ error: "Not authorzied" })
     if (!userID) return Response.json({ error: "System not found UserID" })
-    const cw: number = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
-    const year: number = Number(request.nextUrl.searchParams.get("year")) || moment().year()
+    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const { sheetData, columnData, sheetName } = await getAttendedEventsXLSX(userData, cw, year)
     const bufferData: any = await writeXlsxFile(sheetData, { buffer: true, sheet: sheetName, columns: columnData })
     return new Response(bufferData, {
