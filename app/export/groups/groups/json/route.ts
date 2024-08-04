@@ -1,12 +1,16 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
+import { NextResponse } from "next/server";
 
 export async function GET() {
     const user = await getSessionUser(2);
-    user.password = undefined
-    user.loginVersion = undefined
-
     const groups = await getGroupsWithUserData()
+    groups.map(group => {
+        group.members.map(member => {
+            member.password = null
+            member.loginVersion = 0
+        })
+    })
     const data = new Array()
     data.push({
         meta: {
@@ -16,6 +20,6 @@ export async function GET() {
             time: new Date()
         }
     })
-    data.push(groups, user)
-    return Response.json(data)
+    data.push(groups)
+    return NextResponse.json(data)
 }

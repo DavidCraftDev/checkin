@@ -1,8 +1,8 @@
 import db from "./db";
-import { getAttendanceCountPerUser, getAttendancesPerUser } from "./eventUtilities";
+import { getAttendanceCountPerUser } from "./eventUtilities";
 import { saveNeededStudyTimes } from "./studytimeUtilities";
 import moment from "moment";
-import { GroupMember, GroupMemberWithAttendanceData, Groups, GroupsWithUserData } from "../interfaces/groups";
+import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
 
 export async function getGroupMembers(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({

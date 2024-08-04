@@ -17,6 +17,5 @@ export async function GET(request: NextRequest) {
     if (!userData.id) return NextResponse.json({ error: "System not found UserID" })
     const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
-    const data = await getAttendedEventsJSON(user, userData, cw, year, studytime)
-    return NextResponse.json({ data })
+    return NextResponse.json(await getAttendedEventsJSON(user, userData, cw, year, studytime))
 }

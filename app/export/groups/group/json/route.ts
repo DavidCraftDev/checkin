@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const groupMember = await getGroupMembers(groupID, calendarWeek, year)
     const groupMemberData: any[] = new Array()
-    Promise.all(groupMember.map(async (member) => groupMemberData.push(await getAttendedEventsJSON(user, member.user, calendarWeek, year, studytime))))
+    await Promise.all(groupMember.map(async (member) => groupMemberData.push(await getAttendedEventsJSON(user, member.user, calendarWeek, year, studytime))))
     const data = new Array()
     data.push({
         meta: {

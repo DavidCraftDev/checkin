@@ -1,7 +1,7 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
-import { getAttendancesPerEvent, getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
+import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
+import getEventDataJSON from "@/app/src/modules/export/event/json";
 import moment from "moment";
-
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -23,18 +23,7 @@ export async function GET(request: NextRequest) {
         }
     })
     const eventsData = new Array()
-    for (const event of events) {
-        let eventData = event.event
-        const attendances = await getAttendancesPerEvent(eventData.id)
-        for (const attendance of attendances) {
-            attendance.user.password = null
-            attendance.user.loginVersion = 0
-        }
-        eventsData.push({
-            eventData,
-            attendances: attendances
-        })
-    }
+    await Promise.all(events.map(async (event) => eventsData.push(await getEventDataJSON(event.event, user))))
     data.push(eventsData)
     return Response.json(data)
 }
