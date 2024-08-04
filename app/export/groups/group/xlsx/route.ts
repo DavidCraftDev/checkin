@@ -7,6 +7,7 @@ import { NextRequest } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
+    return Response.json({ error: "No groupID provided" })
     /*const user = await getSessionUser(1);
 
     const currentWeek: number = Number(moment().week())
