@@ -25,12 +25,12 @@ export async function GET(request: NextRequest) {
     const cw: number = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year: number = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const attendances = await getAttendancesPerUser(userID, cw, year)
-    attendances.forEach((attendance: any) => {
-        attendance.eventUser.password = undefined
-        attendance.eventUser.loginVersion = undefined
+    attendances.forEach((attendance) => {
+        attendance.eventUser.password = null
+        attendance.eventUser.loginVersion = 0
     })
-    user.password = undefined
-    user.loginVersion = undefined
+    user.password = null
+    user.loginVersion = 0
     const data = new Array()
     data.push({
         meta: {

@@ -10,7 +10,7 @@ let currentWeek = moment().week();
 let currentYear = moment().year();
 
 export function addWeek(pathname: string, year: number, cw: number, router: AppRouterInstance, userID?: string, groupID?: string) {
-    if (String(year) === String(currentYear) && String(cw) === String(currentWeek)) return;
+    if (year === currentYear && cw === currentWeek) return;
     let newYear = year;
     let newCW = cw;
     newCW++;
