@@ -1,6 +1,6 @@
 import { hash } from "bcryptjs";
 import db from "./db";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { randomInt } from "crypto";
 import { saveNeededStudyTimes } from "./studytimeUtilities";
 import { studytime } from "./config";
@@ -11,10 +11,8 @@ export async function getUserPerID(id: string) {
       id: id
     }
   });
-  if (!user) return {} as any;
-  if (studytime) {
-    saveNeededStudyTimes(user);
-  }
+  if (!user) return {} as User;
+  if (studytime) saveNeededStudyTimes(user);
   return user;
 }
 
@@ -27,14 +25,13 @@ export async function existUserPerID(id: string) {
   return user > 0;
 }
 
-export async function getUserID(name: string) {
+export async function getUserPerUsername(name: string) {
   const user = await db.user.findUnique({
     where: {
       username: name.toLowerCase()
     }
   });
-  if (!user) return "" as string;
-  return user.id;
+  return user;
 }
 
 export async function createUser(name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password: string) {
@@ -44,7 +41,7 @@ export async function createUser(name: string, displayname: string, permission: 
       username: name.toLowerCase()
     }
   });
-  if (username > 0) return "exist";
+  if (username > 0) return {} as User;
   const user = await db.user.create({
     data: {
       username: name.toLowerCase(),
@@ -60,10 +57,8 @@ export async function createUser(name: string, displayname: string, permission: 
 }
 
 export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password?: string) {
-  let passwordHash
-  if (password) {
-    passwordHash = await hash(password, 12);
-  }
+  let passwordHash = "";
+  if (password) passwordHash = await hash(password, 12)
   const userData = await getUserPerID(id);
   if (userData.username !== name) {
     const username = await db.user.count({
@@ -73,29 +68,22 @@ export async function updateUser(id: string, name: string, displayname: string, 
     });
     if (username > 0) return "exist";
   }
-  const data = new Array();
-  if (password) {
-    data.push({
-      password: passwordHash
-    });
-  }
-  let loginVersion: number = randomInt(1000000);
-  data.push({
+
+  let data: any = {
     username: name.toLowerCase(),
     displayname: displayname,
     permission: permission,
     group: group,
     needs: needs,
     competence: competence,
-    loginVersion: loginVersion
-  });
+    loginVersion: randomInt(1000000)
+  }
+  if (password) data.password = passwordHash;
   const user = await db.user.update({
     where: {
       id: id
     },
-    data: {
-      ...data[0]
-    }
+    data: data
   });
   return user;
 }

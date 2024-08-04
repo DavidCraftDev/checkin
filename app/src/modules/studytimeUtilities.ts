@@ -12,11 +12,12 @@ export async function getNeededStudyTimesSelect(userID: string, teacherID: strin
   const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
   let neededStudyTimes: Array<string> = new Array();
   let parallel: Array<string> = new Array();
-  if (!userNeeds) return neededStudyTimes;
+  if (!userNeeds || !teacherData.competence) return neededStudyTimes;
 
   userNeeds.forEach((need: string) => {
     let found = attendances.find((attendance) => attendance.attendance.type && attendance.attendance.type.replace("parallel:", "").replace("note:", "") === need)
     if (!found) {
+      teacherData.competence = teacherData.competence as Array<string>;
       if (teacherData.competence.includes(need)) neededStudyTimes.push(need);
       else parallel.push(need);
     }

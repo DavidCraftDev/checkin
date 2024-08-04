@@ -18,6 +18,6 @@ export async function submitCreateHandler(formdata: FormData) {
     if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
     if (!password) return "password"
     const data = await createUser(username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
-    if (data === "exist") return "exist"
+    if (!data.id) return "exist"
     return "success"
 }
