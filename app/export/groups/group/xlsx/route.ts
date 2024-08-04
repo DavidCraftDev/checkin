@@ -1,22 +1,21 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { studytime } from "@/app/src/modules/config";
-import { getGroupMembersWithAttendanceData } from "@/app/src/modules/groupUtilities";
+import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
 import { getAttendedStudyTimes, getSavedMissingStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import moment from "moment";
 import { NextRequest } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
-    const user = await getSessionUser(1);
-    user.password = undefined
-    user.loginVersion = undefined
+    /*const user = await getSessionUser(1);
 
     const currentWeek: number = Number(moment().week())
     const currentYear: number = Number(moment().year())
     const calendarWeek: number = Number(request.nextUrl.searchParams.get("cw")) || currentWeek
     const year: number = Number(request.nextUrl.searchParams.get("year")) || currentYear
 
-    const groupID: string = String(request.nextUrl.searchParams.get("groupID")) || user.group
+    const groupID = String(request.nextUrl.searchParams.get("groupID")) || user.group
+    if (!groupID) return Response.json({ error: "No groupID provided" })
     if (groupID !== user.group && user.permission < 2) return Response.json({ error: "User not authorized" })
 
     const group = await getGroupMembersWithAttendanceData(groupID, calendarWeek, year)
@@ -292,5 +291,5 @@ export async function GET(request: NextRequest) {
             'Content-Disposition': `attachment; filename="group${calendarWeek + "_" + year + groupID}.xlsx"`,
             'Content-Type': 'application/vnd.ms-excel',
         }
-    })
+    })*/
 }
