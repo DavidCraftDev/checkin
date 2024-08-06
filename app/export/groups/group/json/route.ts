@@ -7,8 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
-    user.password = null
-    user.loginVersion = 0
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()

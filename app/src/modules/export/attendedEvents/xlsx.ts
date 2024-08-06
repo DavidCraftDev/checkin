@@ -2,11 +2,12 @@ import { User } from "@prisma/client";
 import { getAttendancesPerUser } from "../../eventUtilities";
 import { getSavedMissingStudyTimes } from "../../studytimeUtilities";
 import { studytime } from "../../config";
+import { Columns, SheetData } from "write-excel-file";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
-    let sheetData: any = new Array()
-    let columnData: any = []
-    const sheetName: String = user.displayname.substring(0, 31)
+    let sheetData: SheetData = new Array()
+    let columnData: Columns = []
+    const sheetName: string = user.displayname.substring(0, 31)
     const attendances = await getAttendancesPerUser(user.id, cw, year)
     sheetData.push([{
         "type": String,
@@ -52,8 +53,8 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     }])
     sheetData.push([{}])
     if (studytime) {
-        let studyTimes: Array<String> = [];
-        attendances.forEach((attendance: any) => {
+        let studyTimes: Array<string> = [];
+        attendances.forEach((attendance) => {
             if (attendance.event.studyTime) {
                 if (attendance.attendance.type) {
                     studyTimes.push(attendance.attendance.type);
@@ -88,11 +89,11 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
         },
         {
             "type": Number,
-            "value": studyTimes.filter((studyTime: any) => studyTime.includes("parallel:")).length,
+            "value": studyTimes.filter((studyTime) => studyTime.includes("parallel:")).length,
         },
         {
             "type": Number,
-            "value": studyTimes.filter((studyTime: any) => studyTime.includes("note:")).length,
+            "value": studyTimes.filter((studyTime) => studyTime.includes("note:")).length,
         },
         {
             "type": String,
@@ -136,8 +137,8 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
         "value": "Wann hinzugefügt",
         "fontWeight": "bold"
     }])
-    attendances.forEach((attendance: any) => {
-        let type: String
+    attendances.forEach((attendance) => {
+        let type: string
         if (!attendance.event.studyTime) type = "❌"
         else if (!attendance.attendance.type) type = "Keine Ausgewählt"
         else type = attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")
@@ -157,12 +158,12 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
         },
         {
             "type": String,
-            "value": attendance.attendance.studentNote,
+            "value": attendance.attendance.studentNote || "",
             "wrap": true
         },
         {
             "type": String,
-            "value": attendance.attendance.teacherNote,
+            "value": attendance.attendance.teacherNote || "",
             "wrap": true
         },
         {
