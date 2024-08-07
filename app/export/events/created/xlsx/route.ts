@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
             "format": "DD.MM.YYYY HH:mm"
         },
         {
-            "type": Boolean,
+            "type": String,
             "value": studyTime
         }])
     }
