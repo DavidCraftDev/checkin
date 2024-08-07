@@ -24,6 +24,7 @@ export async function submitHandlerStudyTime(studyTimeType: string) {
     const sessionUser = await getSessionUser(1);
     const userID: string = sessionUser.id || "";
     const data = await createEvent("Studienzeit " + studyTimeType.replace("parallel", "Vertretung") + " " + sessionUser.displayname, userID, true);
+    disabled = false;
     if (data.id) {
         redirect(`/dashboard/events/event?id=${data.id}`);
     }
