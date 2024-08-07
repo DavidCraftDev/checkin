@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
         { width: 20 },
         { width: 20 }
     ];
-    const bufferData = await writeXlsxFile(data, { buffer: true, sheet: event.name.replace("Studienzeit", "SZ"), columns: columns })
+    const bufferData = await writeXlsxFile(data, { buffer: true, sheet: event.name.replace("Studienzeit", "SZ").substring(0, 31), columns: columns })
     return new NextResponse(bufferData, {
         status: 200,
         headers: {

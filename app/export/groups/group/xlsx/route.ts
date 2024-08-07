@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
     sheetName.push("Meta")
     columeData.push([
         { width: 20 },
-        { width: 24 },
+        { width: 28 },
         { width: 20 },
         { width: 20 }
     ]);

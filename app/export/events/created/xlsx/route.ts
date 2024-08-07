@@ -72,6 +72,7 @@ export async function GET(request: NextRequest) {
         "fontWeight": "bold"
     }])
     for (const event of events) {
+        let studyTime = event.event.studyTime ? "✔️" : "❌"
         meta.push([{
             "type": String,
             "value": event.event.name
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": Boolean,
-            "value": event.event.studyTime,
+            "value": studyTime
         }])
     }
     data.push(meta)
@@ -222,15 +223,15 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(eventData)
-        if (sheetName.includes(event.event.name.replace("Studienzeit", "SZ"))) {
+        if (sheetName.includes(event.event.name.replace("Studienzeit", "SZ").substring(0, 31))) {
             for (let i = 1; i < 999; i++) {
-                if (!sheetName.includes(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")) {
-                    sheetName.push(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")
+                if (!sheetName.includes(event.event.name.replace("Studienzeit", "SZ").substring(0, 27) + " (" + i + ")")) {
+                    sheetName.push(event.event.name.replace("Studienzeit", "SZ").substring(0, 27) + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetName.push(event.event.name.replace("Studienzeit", "SZ"))
+            sheetName.push(event.event.name.replace("Studienzeit", "SZ").substring(0, 31))
         }
         columeData.push([{
             width: 20

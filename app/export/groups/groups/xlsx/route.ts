@@ -131,15 +131,15 @@ export async function GET() {
             }])
         })
         sheetData.push(groupData)
-        if (sheetName.includes(group.group)) {
+        if (sheetName.includes(group.group.substring(0, 31))) {
             for (let i = 1; i < 9999; i++) {
-                if (!sheetName.includes(group.group + " (" + i + ")")) {
-                    sheetName.push(group.group + " (" + i + ")")
+                if (!sheetName.includes(group.group.substring(0, 27) + " (" + i + ")")) {
+                    sheetName.push(group.group.substring(0, 27) + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetName.push(group.group)
+            sheetName.push(group.group.substring(0, 31))
         }
         columeData.push([
             { width: 20 },

@@ -57,7 +57,7 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
         attendances.forEach((attendance) => {
             if (attendance.event.studyTime) {
                 if (attendance.attendance.type) {
-                    studyTimes.push(attendance.attendance.type);
+                    studyTimes.push(attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:"));
                 }
             }
         });
