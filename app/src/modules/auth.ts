@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials, request) {
-        //if (!request.headers || rateLimit(request.headers["x-forwarded-for"])) return null;
+        if (!request.headers || rateLimit(request.headers["x-forwarded-for"])) return null;
         if (!credentials || !credentials.username || !credentials.password) return null;
         let user: User;
         if (use_ldap && !credentials.username.startsWith("local/")) {
