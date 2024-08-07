@@ -2,7 +2,7 @@ import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import getEventDataJSON from "@/app/src/modules/export/event/json";
 import moment from "moment";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
@@ -25,5 +25,5 @@ export async function GET(request: NextRequest) {
     const eventsData = new Array()
     await Promise.all(events.map(async (event) => eventsData.push(await getEventDataJSON(event.event, user))))
     data.push(eventsData)
-    return Response.json(data)
+    return NextResponse.json(data)
 }

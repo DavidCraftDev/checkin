@@ -1,14 +1,16 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
+import { NextResponse } from "next/server";
+import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET() {
     const user = await getSessionUser(2);
 
     const groups = await getGroupsWithUserData()
-    const data = new Array()
-    const sheetData = new Array()
-    const columeData = new Array()
+    const sheetData: SheetData[] = new Array()
+    const sheetName: Array<string> = new Array()
+    const columeData: Columns[] = new Array()
     const meta = new Array()
     meta.push([{
         "type": String,
@@ -54,7 +56,7 @@ export async function GET() {
         "value": "Teilnehmer",
         "fontWeight": "bold"
     }])
-    groups.forEach((group: any) => {
+    groups.forEach((group) => {
         meta.push([{
             "type": String,
             "value": group.group,
@@ -65,8 +67,8 @@ export async function GET() {
             "value": group.members.length,
         }])
     })
-    data.push(meta)
-    sheetData.push("Meta")
+    sheetData.push(meta)
+    sheetName.push("Meta")
     columeData.push([
         { width: 20 },
         { width: 20 },
@@ -118,7 +120,7 @@ export async function GET() {
             "value": "Nutzername",
             "fontWeight": "bold"
         }])
-        group.members.forEach((member: any) => {
+        group.members.forEach((member) => {
             groupData.push([{
                 "type": String,
                 "value": member.displayname
@@ -128,16 +130,16 @@ export async function GET() {
                 "value": member.username
             }])
         })
-        data.push(groupData)
-        if (sheetData.includes(group.group)) {
+        sheetData.push(groupData)
+        if (sheetName.includes(group.group)) {
             for (let i = 1; i < 9999; i++) {
-                if (!sheetData.includes(group.group + " (" + i + ")")) {
-                    sheetData.push(group.group + " (" + i + ")")
+                if (!sheetName.includes(group.group + " (" + i + ")")) {
+                    sheetName.push(group.group + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetData.push(group.group)
+            sheetName.push(group.group)
         }
         columeData.push([
             { width: 20 },
@@ -145,8 +147,8 @@ export async function GET() {
             { width: 20 }
         ]);
     }
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData })
-    return new Response(bufferData, {
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    return new NextResponse(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="groups.xlsx"`,

@@ -1,12 +1,13 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import db from "@/app/src/modules/db";
 import { NextResponse } from "next/server";
+import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET() {
     const user = await getSessionUser(2);
     const users = await db.user.findMany()
-    const data = new Array()
+    const data: SheetData = new Array()
     data.push([{
         "type": String,
         "value": "Alle Nutzer",
@@ -71,7 +72,7 @@ export async function GET() {
         "value": "Kompetenzen",
         "fontWeight": "bold"
     }])
-    users.forEach((userData: any) => {
+    users.forEach((userData) => {
         data.push([{
             "type": String,
             "value": userData.displayname,
@@ -87,21 +88,21 @@ export async function GET() {
         },
         {
             "type": String,
-            "value": userData.group,
+            "value": userData.group || "",
             "wrap": true
         },
         {
             "type": String,
-            "value": userData.needs.toString().replaceAll(",", ", "),
+            "value": userData.needs?.toString().replaceAll(",", ", ") || "",
             "wrap": true
         },
         {
             "type": String,
-            "value": userData.competence.toString().replaceAll(",", ", "),
+            "value": userData.competence?.toString().replaceAll(",", ", ") || "",
             "wrap": true
         }])
     })
-    const columns = [
+    const columns: Columns = [
         { width: 20 },
         { width: 20 },
         { width: 20 },
@@ -109,7 +110,7 @@ export async function GET() {
         { width: 24 },
         { width: 24 }
     ];
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
+    const bufferData = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
     return new NextResponse(bufferData, {
         status: 200,
         headers: {

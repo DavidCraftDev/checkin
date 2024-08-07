@@ -1,21 +1,20 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerEvent, getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import moment from "moment";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
-    user.password = null
-    user.loginVersion = 0
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
-    const data = new Array()
-    const sheetData = new Array()
-    const columeData = new Array()
+    const data: SheetData[] = new Array()
+    const sheetName: Array<string> = new Array()
+    const columeData: Columns[] = new Array()
 
     const meta = new Array()
     meta.push([{
@@ -92,7 +91,7 @@ export async function GET(request: NextRequest) {
         }])
     }
     data.push(meta)
-    sheetData.push("Meta")
+    sheetName.push("Meta")
     columeData.push([{
         width: 20
     },
@@ -196,7 +195,7 @@ export async function GET(request: NextRequest) {
             "value": "Wann hinzugefügt",
             "fontWeight": "bold"
         }])
-        attendances.forEach((attendance: any) => {
+        attendances.forEach((attendance) => {
             eventData.push([{
                 "type": String,
                 "value": attendance.user.displayname
@@ -223,15 +222,15 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(eventData)
-        if (sheetData.includes(event.event.name.replace("Studienzeit", "SZ"))) {
+        if (sheetName.includes(event.event.name.replace("Studienzeit", "SZ"))) {
             for (let i = 1; i < 999; i++) {
-                if (!sheetData.includes(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")) {
-                    sheetData.push(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")
+                if (!sheetName.includes(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")) {
+                    sheetName.push(event.event.name.replace("Studienzeit", "SZ") + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetData.push(event.event.name.replace("Studienzeit", "SZ"))
+            sheetName.push(event.event.name.replace("Studienzeit", "SZ"))
         }
         columeData.push([{
             width: 20
@@ -253,8 +252,8 @@ export async function GET(request: NextRequest) {
         }])
     }
 
-    const bufferData: any = await writeXlsxFile(data, { buffer: true, sheets: sheetData, columns: columeData })
-    return new Response(bufferData, {
+    const bufferData = await writeXlsxFile(data, { buffer: true, sheets: sheetName, columns: columeData })
+    return new NextResponse(bufferData, {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="created_events${calendarWeek + "_" + year + user.id}.xlsx"`,

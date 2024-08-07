@@ -10,10 +10,10 @@ export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
-    const year: number = Number(request.nextUrl.searchParams.get("year")) || moment().year()
+    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const groupID = request.nextUrl.searchParams.get("groupID") || user.group
-    if (!groupID) return Response.json({ error: "No groupID provided" })
+    if (!groupID) return NextResponse.json({ error: "No groupID provided" })
     if (groupID !== user.group && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
 
     const groupMember = await getGroupMembers(groupID, calendarWeek, year)
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
         sheetName.push(userData.sheetName)
         columeData.push(userData.columnData)
     }))
-    const bufferData: any = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
     return new NextResponse(bufferData, {
         status: 200,
         headers: {

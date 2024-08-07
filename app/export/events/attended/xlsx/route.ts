@@ -1,6 +1,3 @@
-// @ts-nocheck
-// Error with Buffer in the writeXlsxFile function
-
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import moment from "moment";
@@ -21,7 +18,7 @@ export async function GET(request: NextRequest) {
     const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const { sheetData, columnData, sheetName } = await getAttendedEventsXLSX(userData, cw, year)
-    const bufferData: any = await writeXlsxFile(sheetData, { buffer: true, sheet: sheetName, columns: columnData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheet: sheetName, columns: columnData })
     return new NextResponse(bufferData, {
         status: 200,
         headers: {
