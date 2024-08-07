@@ -3,10 +3,6 @@ import { getAttendancesPerEvent } from "../../eventUtilities"
 
 async function getEventDataJSON(event: Events, user: User) {
     const attendances = await getAttendancesPerEvent(event.id)
-    attendances.forEach((attendance) => {
-        attendance.user.password = null
-        attendance.user.loginVersion = 0
-    })
     const data = new Array()
     data.push({
         meta: {

@@ -4,12 +4,6 @@ import { getAttendedStudyTimes, getSavedMissingStudyTimes } from "../../studytim
 
 async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number, studytime: boolean) {
     const attendances = await getAttendancesPerUser(userData.id, cw, year)
-    attendances.forEach((attendance) => {
-        attendance.eventUser.password = null
-        attendance.eventUser.loginVersion = 0
-    })
-    user.password = null
-    user.loginVersion = 0
     const data = new Array()
     data.push({
         meta: {

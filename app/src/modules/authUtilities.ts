@@ -18,7 +18,7 @@ export async function getSessionUser(permission?: number) {
     if (permission && session.user.permission < permission) {
         redirect("/dashboard");
     }
-    const user = await getUserPerID(session.user.id);
+    const user = await getUserPerID(session.user.id, true);
     if (!user.id || user.loginVersion !== session.user.loginVersion) {
         redirect("/logout");
     } else if (permission && user.loginVersion != session.user.loginVersion) {

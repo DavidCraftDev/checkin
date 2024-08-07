@@ -5,13 +5,17 @@ import { randomInt } from "crypto";
 import { saveNeededStudyTimes } from "./studytimeUtilities";
 import { studytime } from "./config";
 
-export async function getUserPerID(id: string) {
+export async function getUserPerID(id: string, auth?: boolean) {
   const user = await db.user.findUnique({
     where: {
       id: id
     }
   });
   if (!user) return {} as User;
+  if (!auth) {
+    user.password = "";
+    user.loginVersion = 0;
+  }
   if (studytime) saveNeededStudyTimes(user);
   return user;
 }
