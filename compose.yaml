@@ -1,7 +1,7 @@
 services:
   web:
     container_name: checkin
-    image: ghcr.io/davidcraftdev/checkin:stable
+    image: ghcr.io/davidcraftdev/checkin:main
     restart: always
     depends_on:
       - db

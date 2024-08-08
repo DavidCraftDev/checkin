@@ -1,7 +1,6 @@
 import { default_password, default_username } from "../app/src/modules/config";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
-import moment from "moment";
 
 export async function seedDefaultData(prisma: PrismaClient) {
     const adminCount = await prisma.user.count({
