@@ -8,7 +8,7 @@ import { use_ldap, auth_secret } from "./config";
 import RateLimit from "./rateLimit";
 import LDAP from "./ldap";
 
-let rateLimit = new RateLimit().rateLimit;
+let rateLimiter = new RateLimit();
 
 let client: LDAP;
 
@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Passwort", type: "password" },
       },
       async authorize(credentials, request) {
-        if (!request.headers || rateLimit(request.headers["x-forwarded-for"])) return null;
+        if (!request.headers || rateLimiter.rateLimit(request.headers["x-forwarded-for"])) return null;
         if (!credentials || !credentials.username || !credentials.password) return null;
         let user: User;
         if (use_ldap && !credentials.username.startsWith("local/")) {
