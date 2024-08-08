@@ -36,8 +36,6 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             if (!dataEvent) return;
             dataUserEvent = await getUserPerID(dataEvent.user);
         }
-        dataUserEvent.password = null
-        dataUserEvent.loginVersion = 0
         data.push({
             attendance: attendance,
             event: dataEvent,
@@ -155,8 +153,6 @@ export async function checkINHandler(eventID: string, userID: string) {
         }
     });
     let userData: User = await getUserPerID(userID);
-    userData.password = null
-    userData.loginVersion = 0
     return userData;
 }
 

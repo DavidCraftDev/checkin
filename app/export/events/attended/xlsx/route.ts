@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
     if (requestUserID && (requestUserID !== user.id) && (user.permission < 1)) return NextResponse.json({ error: "Not authorzied" })
     else if (!requestUserID || (requestUserID === user.id)) userData = user
     else userData = await getUserPerID(requestUserID)
-    if (userData.id && (user.permission < 2 && user.group !== userData.group)) return NextResponse.json({ error: "Not authorzied" })
     if (!userData.id) return NextResponse.json({ error: "System not found UserID" })
+    if (user.permission < 2 && user.group !== userData.group) return NextResponse.json({ error: "Not authorzied" })
     const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const { sheetData, columnData, sheetName } = await getAttendedEventsXLSX(userData, cw, year)
