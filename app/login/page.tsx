@@ -70,7 +70,7 @@ function Login() {
         <div className="flex flex-col space-y-4">
           <h1>Anmelden</h1>
           <label htmlFor="username" className="font-bold text-gray-600">Nutzername</label>
-          <input type="text" name="username" id="username" placeholder="vorname.nachname" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
+          <input type="text" name="username" id="username" placeholder="Nutzername" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
 
           <label htmlFor="password" className="font-bold text-gray-600">Passwort</label>
           <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
