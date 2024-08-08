@@ -4,7 +4,9 @@ import { signIn } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import getPasswordResetURL from "./passwordReset";
+import React from "react";
 
 function Login() {
   const router = useRouter();
@@ -49,6 +51,14 @@ function Login() {
       }
     }
   }
+
+  const [passwordResetURL, setPasswordResetURL] = useState("");
+  useEffect(() => {
+    async function fetchPasswordResetURL() {
+      setPasswordResetURL(await getPasswordResetURL());
+    }
+    fetchPasswordResetURL();
+  }, []);
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
       <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
@@ -64,6 +74,8 @@ function Login() {
 
           <label htmlFor="password" className="font-bold text-gray-600">Passwort</label>
           <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
+
+          {passwordResetURL ? <a href={passwordResetURL} className="text-gray-400 text-xs ml-5 hover:underline" style={{ marginTop: "-3.5px" }}>Passwort vergessen?</a> : null}
 
           <button type="submit" className="btn">Anmelden</button>
         </div>

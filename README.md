@@ -22,7 +22,7 @@ services:
       - MAINTANCE:false
       # Replace the following environment variables with your own values, you need to set the same values in the db service
       - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
-      # Replace the following environment variables with your own random secret
+      # Replace the following environment variables with your own random secret to encrypt the login JWT tokens
       - AUTH_SECRET=YOUR_SECRET
       # Set own default admin credentials
       - DEFAULT_LOGIN_USERNAME=OwnUsername
@@ -43,6 +43,8 @@ services:
       - LDAP_SEARCH_BASE=dc=example,dc=com
       # LDAP user search filter
       - LDAP_USER_SEARCH_FILTER=(cn=*)
+      # LDAP URL to the password reset page, leave empty to disable the password reset link on the login page
+      - LDAP_PASSWORD_RESET_URL=https://example.com/password-reset
       # Create local admin user if LDAP auth is enabled (true/false) The user will be created with the default admin credentials, the username will start with "local/". This only run once, when you change the login data, please save it.
       - LDAP_CREATE_LOCAL_ADMIN=true
       # Automaticlly set user permission from ldap groups (true/false)
@@ -96,6 +98,7 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |LDAP -> BIND_CREADENTIALS -> Password|Passwort des Nutzers mit Leserechten im LDAP|
 |LDAP -> SEARCH_BASE|LDAP Search Base|
 |LDAP -> USER_SEARCH_FILTER|LDAP Filter, womit Nutzerdaten abgefragt, und überprüft wird ob der Nutzer zugriff auf das System hat. Mehr zu Filtern [hier](https://ldap.com/ldap-filters/).|
+|LDAP -> PASSWORD_RESET_URL|Link zur Passwort Zurücksetzen Seite. Wenn es keine gibt, kann das Feld einfach leer gelassen werden.|
 |LDAP -> CREATE_LOCAL_ADMIN|Wenn dieser Wert auf `false` ist und LDAP aktiviert ist, wird kein Lokaler Admin Nutzeraccount erstellt. Standardmäßig ist der Wert auf `true`.|
 |LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> ENABLE|Wenn dieser Wert auf `true` ist werden die Rechte der Nutzer die aus den LDAP-Daten erstellt werden Automatisch durch die unten angegebenen DNs Automatisch zugeordnet. Standardmäßig ist dieser Wert auf `false`.|
 |LDAP -> AUTOMATIC_DATA_DETECTION -> PERMISSION -> TEACHER_GROUP|DN der Lehrer-Gruppe.|

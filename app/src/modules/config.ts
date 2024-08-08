@@ -111,6 +111,13 @@ if (process.env.LDAP_USER_SEARCH_FILTER) {
 }
 if (!ldap_user_search_filter && use_ldap) throw new Error("LDAP_USER_SEARCH_FILTER is not set")
 
+let ldap_password_reset_url: string
+if (process.env.LDAP_PASSWORD_RESET_URL) {
+    ldap_password_reset_url = process.env.LDAP_PASSWORD_RESET_URL
+} else {
+    ldap_password_reset_url = config_file.LDAP.PASSWORD_RESET_URL
+}
+
 let ldap_create_local_admin: boolean
 if (process.env.LDAP_CREATE_LOCAL_ADMIN === "true") {
     ldap_create_local_admin = true
@@ -190,4 +197,4 @@ if (use_ldap && ldap_auto_studytime_data && !ldap_auto_studytime_data_ou) throw 
 if (use_ldap && ldap_auto_studytime_data && (!ldap_auto_studytime_data_ou.toLowerCase().includes("ou=") || !ldap_auto_studytime_data_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not a valid OU")
 
 
-export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_reject_unauthorized, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }
+export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_reject_unauthorized, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_password_reset_url, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }

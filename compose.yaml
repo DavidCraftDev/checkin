@@ -32,6 +32,8 @@ services:
       - LDAP_SEARCH_BASE=dc=example,dc=com
       # LDAP user search filter
       - LDAP_USER_SEARCH_FILTER=(cn=*)
+      # LDAP URL to the password reset page, leave empty to disable the password reset link on the login page
+      - LDAP_PASSWORD_RESET_URL=https://example.com/password-reset
       # Create local admin user if LDAP auth is enabled (true/false) The user will be created with the default admin credentials, the username will start with "local/". This only run once, when you change the login data, please save it.
       - LDAP_CREATE_LOCAL_ADMIN=true
       # Automaticlly set user permission from ldap groups (true/false)

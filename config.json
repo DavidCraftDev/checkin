@@ -16,6 +16,7 @@
         },
         "SEARCH_BASE": "dc=example,dc=com",
         "USER_SEARCH_FILTER": "(cn=*)",
+        "PASSWORD_RESET_URL": "https://example.com/passwordreset",
         "CREATE_LOCAL_ADMIN": true,
         "AUTOMATIC_DATA_DETECTION": {
             "PERMISSION": {
