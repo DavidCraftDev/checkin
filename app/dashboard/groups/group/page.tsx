@@ -24,8 +24,8 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
 
   const currentWeek = moment().week();
   const currentYear = moment().year();
-  const cw = searchParams.cw || currentWeek;
-  const year = searchParams.year || currentYear;
+  const cw = Number(searchParams.cw) || currentWeek;
+  const year = Number(searchParams.year) || currentYear;
   if (cw > 53 || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) {
     redirect("/dashboard")
   }

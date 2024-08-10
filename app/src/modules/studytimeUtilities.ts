@@ -53,7 +53,8 @@ export async function getAttendedStudyTimesCount(userID: string, cw: number, yea
       else normalStudyTimes++;
     });
   });
-  const savedStudyTimes = await getSavedNeededStudyTimes(userID, cw, year).then((result) => result.needs) as Array<string>;
+  const savedStudyTimesData = await getSavedNeededStudyTimes(userID, cw, year);
+  const savedStudyTimes = savedStudyTimesData && savedStudyTimesData.needs ? savedStudyTimesData.needs as Array<string> : [] as Array<string>;
   const neededStudyTimes = savedStudyTimes.length || 0;
   return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
 }
