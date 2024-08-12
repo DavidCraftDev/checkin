@@ -17,8 +17,8 @@ function UserEditForm(props: any) {
         config.ldap_auto_studytime_data = false
     }
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return;
         event.preventDefault();
+        if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return;
         displaynameError = false
         usernameError = false
         const formData = new FormData(event.currentTarget);
