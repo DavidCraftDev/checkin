@@ -94,8 +94,13 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
                 }
             }
         })
-        if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) competence = { competence: Array.from(memberData) }
-        else needs = { needs: Array.from(memberData) }
+        if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) {
+            competence = { competence: Array.from(memberData) }
+            needs = { needs: [] }
+        } else {
+            needs = { needs: Array.from(memberData) }
+            competence = { competence: [] }
+        }
     }
     return { permission, group, needs, competence }
 }
