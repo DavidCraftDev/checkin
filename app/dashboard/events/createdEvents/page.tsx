@@ -26,7 +26,7 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
           <h1>Erstellte Veranstaltungen</h1>
           <p>von {sessionUser.displayname}</p>
         </div>
-        <CalendarWeek searchParams={searchParams} />
+        <CalendarWeek />
       </div>
       <CreateEventForm studyTime={studytime} user={sessionUser} />
       <CreatedEventTable events={data} studyTime={studytime} />
