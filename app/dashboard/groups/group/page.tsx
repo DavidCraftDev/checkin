@@ -43,7 +43,7 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
           <h1>Gruppe {groupID}</h1>
           <p>{groupData.length} Mitglieder</p>
         </div>
-        <CalendarWeek />
+        <CalendarWeek searchParams={searchParams} />
       </div>
       <GroupTable user={groupData} cw={cw} year={year} studyTime={studytime} studyTimeData={studyTimeData} />
       <p>Exportieren als:

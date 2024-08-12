@@ -56,7 +56,7 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
                     {studytime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {studytime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
-                <CalendarWeek />
+                <CalendarWeek searchParams={searchParams} />
             </div>
             <AttendedEventTable attendances={data} addable={addable} studyTime={studytime} studyTimeTypes={studyTimeTypes} />
             <p>Exportieren als:
