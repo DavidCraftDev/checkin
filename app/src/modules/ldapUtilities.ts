@@ -3,6 +3,7 @@ import { ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_
 import courses from './courses';
 import db from './db';
 import LDAP from './ldap';
+import { User } from '@prisma/client';
 
 let client: LDAP
 
@@ -25,7 +26,7 @@ async function updateUserData(ldapData: Entry[]) {
             await db.user.delete({ where: { id: entry.id } })
             return
         }
-        const { permission, group, needs, competence } = readLDAPUserData(ldapUser)
+        const { permission, group, needs, competence } = readLDAPUserData(ldapUser, entry)
         const user = await db.user.update({
             where: {
                 id: entry.id
@@ -60,15 +61,16 @@ async function updateUserData(ldapData: Entry[]) {
     await db.user.createMany({ data: createData })
 }
 
-function readLDAPUserData(ldapUser: Entry) {
+function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
     ldapUser.memberOf = ldapUser.memberOf as string[]
-    let permission = {}
+    let permission
     if (ldap_auto_permission) {
+        permission = { permission: 0 }
         if (ldapUser.memberOf.toString().includes(ldap_auto_permission_admin_group)) permission = { permission: 2 }
         else if (ldapUser.memberOf.toString().includes(ldap_auto_permission_teacher_group)) permission = { permission: 1 }
         else permission = { permission: 0 }
     } else permission = {}
-    
+
     let group = {}
     if (ldap_auto_groups) {
         ldapUser.memberOf.map((groupData: string) => {
@@ -81,34 +83,19 @@ function readLDAPUserData(ldapUser: Entry) {
     let needs = {}
     let competence = {}
     if (ldap_auto_studytime_data && studytime) {
-        let needsData = new Set()
+        let memberData = new Set()
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")
             if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
                 const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                 if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                    if (courses[splitedName[1].toUpperCase()]) needsData.add(courses[splitedName[1].toUpperCase()] as string)
+                    if (courses[splitedName[1].toUpperCase()]) memberData.add(courses[splitedName[1].toUpperCase()] as string)
                 }
             }
         })
-        needs = { needs: Array.from(needsData) }
-
-        const competenceData = new Set()
-        ldapUser.managedObjects = ldapUser.managedObjects as string[]
-        if (Array.isArray(ldapUser.managedObjects)) {
-            ldapUser.managedObjects.map((groupData: string) => {
-                let string = groupData.replace(",", "!°SPLIT°!")
-                let data = string.split("!°SPLIT°!")
-                if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
-                    const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
-                    if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
-                        if (courses[splitedName[1].toUpperCase()]) competenceData.add(courses[splitedName[1].toUpperCase()] as string)
-                    }
-                }
-            })
-        }
-        competence = { competence: Array.from(competenceData) }
+        if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) competence = { competence: Array.from(memberData) }
+        else needs = { needs: Array.from(memberData) }
     }
     return { permission, group, needs, competence }
 }
