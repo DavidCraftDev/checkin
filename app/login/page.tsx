@@ -63,7 +63,7 @@ function Login() {
     <div className="flex items-center justify-center h-screen bg-gray-200">
       <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
         <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
-          <div className="w-32 text-white md:w-40">
+          <div className="text-xl font-semibold text-white md:text-2xl">
             CheckIN
           </div>
         </div>
