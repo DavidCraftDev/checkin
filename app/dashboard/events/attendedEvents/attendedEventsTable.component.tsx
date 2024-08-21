@@ -32,7 +32,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                     <tbody>
                         {props.attendances.map((attendances: AttendancePerUserPerEvent) => (
                             <tr key={attendances.attendance.id}>
-                                <td>{attendances.event.name}</td>
+                                <td>{attendances.event.name.replace(attendances.eventUser.displayname, "")}</td>
                                 <td>{attendances.eventUser.displayname}</td>
                                 {props.studyTime ? attendances.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
                                 {props.addable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
