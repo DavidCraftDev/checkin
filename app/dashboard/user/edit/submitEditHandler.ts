@@ -13,8 +13,9 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     const needsData = formdata.get('needs') as string;
     let needsArray = [] as Prisma.JsonArray;
     if(needsData) needsArray = needsData.split(",") as Prisma.JsonArray;
-    const competenceData = formdata.get('competence') as string || "";
-    const competenceArray = competenceData.split(",") as Prisma.JsonArray;
+    const competenceData = formdata.get('competence') as string;
+    let competenceArray = [] as Prisma.JsonArray;
+    if(competenceData) competenceArray = competenceData.split(",") as Prisma.JsonArray;
     if (!displayname) return "displayname"
     //Username only letters, numbers and dots
     if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
