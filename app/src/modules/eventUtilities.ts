@@ -22,6 +22,14 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataEvent: Events | null;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
+            if((!attendance.type || !attendance.studentNote) && moment().diff(moment(attendance.created_at), "minutes") > 1) {
+                await db.attendance.delete({
+                    where: {
+                        id: attendance.id
+                    }
+                });
+                return;
+            }
             dataEvent = {
                 id: "NOTE",
                 name: "Notiz",
