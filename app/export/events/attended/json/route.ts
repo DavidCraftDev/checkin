@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     else userData = await getUserPerID(requestUserID)
     if (!userData.id) return NextResponse.json({ error: "System not found UserID" })
     if (user.permission < 2 && user.group !== userData.group) return NextResponse.json({ error: "Not authorzied" })
-    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeekYear()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     return NextResponse.json(await getAttendedEventsJSON(user, userData, cw, year, studytime))
 }

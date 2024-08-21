@@ -11,7 +11,7 @@ async function QRScanner({ searchParams }: { searchParams: SearchParams }) {
     if (!searchParams.id) redirect("/dashboard/");
     const event = await getEventPerID(searchParams.id);
     if (!event?.id || event.user !== user.id) redirect("/dashboard/");
-    if (event.cw !== moment().week() || moment(event.created_at).year() !== moment().year()) redirect("/dashboard/");
+    if (event.cw !== moment().isoWeekYear() || moment(event.created_at).year() !== moment().year()) redirect("/dashboard/");
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2 mb-4">

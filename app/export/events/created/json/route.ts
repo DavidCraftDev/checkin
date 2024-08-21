@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
-    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeekYear()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
