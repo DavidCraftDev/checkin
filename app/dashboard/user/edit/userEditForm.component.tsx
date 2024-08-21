@@ -47,7 +47,7 @@ function UserEditForm(props: any) {
                     <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} />
                     <br />
                     <label htmlFor="username">Nutzername*</label><br />
-                    <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
+                    <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username.replace("local/", "")} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
                     <br />
                     <label htmlFor="permission">Rechte*</label><br />
                     <select name="permission" id="permission" defaultValue={userData.permission} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 bg-white border-black-600">

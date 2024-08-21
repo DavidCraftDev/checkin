@@ -1,11 +1,13 @@
 'use server'
 
+import { use_ldap } from "@/app/src/modules/config";
 import { updateUser } from "@/app/src/modules/userUtilities";
 import { Prisma } from "@prisma/client";
+import user from "../page";
 
 export async function submitEditHandler(formdata: FormData, id: string) {
     const displayname = formdata.get('displayname') as string;
-    const username = formdata.get('username') as string;
+    let username = formdata.get('username') as string;
     const permission = formdata.get('permission') as string;
     const group = formdata.get('group') as string;
     const password = formdata.get('password') as string;
@@ -16,6 +18,7 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     if (!displayname) return "displayname"
     //Username only letters, numbers and dots
     if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
+    if(use_ldap) username = "local/" + username
     const data = await updateUser(id, username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
     if (data === "exist") return "exist"
     return "success"
