@@ -23,7 +23,7 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     const currentYear = moment().year();
     const cw = Number(searchParams.cw) || currentWeek;
     const year = Number(searchParams.year) || currentYear;
-    if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
+    if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
     if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
     const [
