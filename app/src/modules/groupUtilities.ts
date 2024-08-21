@@ -54,7 +54,7 @@ export async function getGroupsWithUserData() {
     const groups = await getGroups();
     const data: GroupsWithUserData[] = new Array();
     await Promise.all(groups.map(async (group) => {
-        const dataMembers = await getGroupMembers(group.group, moment().isoWeekYear(), moment().year());
+        const dataMembers = await getGroupMembers(group.group, moment().isoWeek(), moment().year());
         data.push({
             group: group.group,
             members: dataMembers.map((member) => member.user)

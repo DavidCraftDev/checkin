@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     else userData = await getUserPerID(requestUserID)
     if (!userData.id) return NextResponse.json({ error: "System not found UserID" })
     if (user.permission < 2 && user.group !== userData.group) return NextResponse.json({ error: "Not authorzied" })
-    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeekYear()
+    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
     const { sheetData, columnData, sheetName } = await getAttendedEventsXLSX(userData, cw, year)
     const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheet: sheetName, columns: columnData })

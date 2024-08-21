@@ -22,7 +22,7 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   const groupID = searchParams.groupID || sessionUser.group;
   if (!groupID) notFound();
 
-  const currentWeek = moment().isoWeekYear();
+  const currentWeek = moment().isoWeek();
   const currentYear = moment().year();
   const cw = Number(searchParams.cw) || currentWeek;
   const year = Number(searchParams.year) || currentYear;

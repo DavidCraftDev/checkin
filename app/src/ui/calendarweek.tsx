@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
-let currentWeek = moment().isoWeekYear();
+let currentWeek = moment().isoWeek();
 let currentYear = moment().year();
 
 export function addWeek(pathname: string, year: number, cw: number, router: AppRouterInstance, searchParams: URLSearchParams) {

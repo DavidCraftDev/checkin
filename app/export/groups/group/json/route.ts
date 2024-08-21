@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
-    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeekYear()
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const groupID = String(request.nextUrl.searchParams.get("groupID")) || user.group

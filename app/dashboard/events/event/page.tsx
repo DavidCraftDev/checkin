@@ -15,7 +15,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
     if (!event) notFound();
     if (event.user !== userID) redirect("/dashboard/");
     const attendances = await getAttendancesPerEvent(eventID);
-    const addable = event.cw === moment().isoWeekYear() && moment(event.created_at).year() === moment().year();
+    const addable = event.cw === moment().isoWeek() && moment(event.created_at).year() === moment().year();
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">

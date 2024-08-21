@@ -12,7 +12,7 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
   if (sessionUser.permission < 1) redirect("/dashboard");
 
-  const currentWeek = moment().isoWeekYear();
+  const currentWeek = moment().isoWeek();
   const currentYear = moment().year();
   const cw = Number(searchParams.cw) || currentWeek;
   const year = Number(searchParams.year) || currentYear;
