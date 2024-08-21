@@ -3,7 +3,6 @@
 import { use_ldap } from "@/app/src/modules/config";
 import { updateUser } from "@/app/src/modules/userUtilities";
 import { Prisma } from "@prisma/client";
-import user from "../page";
 
 export async function submitEditHandler(formdata: FormData, id: string) {
     const displayname = formdata.get('displayname') as string;
