@@ -22,13 +22,11 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   const groupID = searchParams.groupID || sessionUser.group;
   if (!groupID) notFound();
 
-  const currentWeek = moment().week();
+  const currentWeek = moment().isoWeek();
   const currentYear = moment().year();
   const cw = Number(searchParams.cw) || currentWeek;
   const year = Number(searchParams.year) || currentYear;
-  if (cw > 53 || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) {
-    redirect("/dashboard")
-  }
+  if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
 
   let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, attendaceCount> = {};
@@ -43,7 +41,7 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
           <h1>Gruppe {groupID}</h1>
           <p>{groupData.length} Mitglieder</p>
         </div>
-        <CalendarWeek searchParams={searchParams} />
+        <CalendarWeek />
       </div>
       <GroupTable user={groupData} cw={cw} year={year} studyTime={studytime} studyTimeData={studyTimeData} />
       <p>Exportieren als:

@@ -9,7 +9,7 @@ import db from "./db";
 export async function getNeededStudyTimesSelect(userID: string, teacherID: string) {
   const userNeeds = await getNeededStudyTimes(userID);
   const teacherData = await getUserPerID(teacherID);
-  const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
+  const attendances = await getAttendancesPerUser(userID, moment().isoWeek(), moment().year());
   let neededStudyTimes: Array<string> = new Array();
   let parallel: Array<string> = new Array();
   if (!userNeeds || !teacherData.competence) return neededStudyTimes;
@@ -63,7 +63,7 @@ export async function saveStudyTimeType(attendanceID: string, type: string) {
   let check = await db.attendance.findMany({
     where: {
       type: type,
-      cw: moment().week(),
+      cw: moment().isoWeek(),
       created_at: {
         gte: moment().startOf("week").toISOString(),
         lte: moment().endOf("week").toISOString()
@@ -92,7 +92,7 @@ export async function createUserStudyTimeNote(userID: string, cw: number) {
 
 export async function getNeededStudyTimesForNotes(userID: string) {
   const userNeeds = await getNeededStudyTimes(userID);
-  const attendances = await getAttendancesPerUser(userID, moment().week(), moment().year());
+  const attendances = await getAttendancesPerUser(userID, moment().isoWeek(), moment().year());
   let neededStudyTimes: Array<string> = new Array();
   userNeeds.forEach((need) => {
     let found = false;
@@ -106,7 +106,7 @@ export async function getNeededStudyTimesForNotes(userID: string) {
 
 export async function getMissingStudyTimes(userID: string) {
   const neededStudyTimes = await getNeededStudyTimes(userID);
-  const attendedStudyTimes = await getAttendedStudyTimes(userID, moment().week(), moment().year());
+  const attendedStudyTimes = await getAttendedStudyTimes(userID, moment().isoWeek(), moment().year());
   let missingStudyTimes: Array<string> = new Array();
   neededStudyTimes.forEach((neededStudyTime) => { if (!attendedStudyTimes.find((attendedStudyTime) => attendedStudyTime.replace("parallel:", "").replace("note:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
   return missingStudyTimes;
@@ -116,7 +116,7 @@ export async function saveNeededStudyTimes(user: User) {
   const count = await db.studyTimeData.count({
     where: {
       userID: user.id,
-      cw: moment().week(),
+      cw: moment().isoWeek(),
       year: moment().year()
     }
   });
@@ -125,7 +125,7 @@ export async function saveNeededStudyTimes(user: User) {
     where: {
       AND: [
         { userID: user.id },
-        { cw: moment().week() },
+        { cw: moment().isoWeek() },
         { year: moment().year() }
       ]
     },
@@ -136,7 +136,7 @@ export async function saveNeededStudyTimes(user: User) {
   else await db.studyTimeData.create({
     data: {
       userID: user.id,
-      cw: moment().week(),
+      cw: moment().isoWeek(),
       year: moment().year(),
       needs: user.needs as Prisma.JsonArray
     }

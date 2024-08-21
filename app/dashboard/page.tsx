@@ -15,10 +15,10 @@ async function dashboard() {
         missingStudyTimes,
         normalEvents
     ] = await Promise.all([
-        getStudyTimes(session.user.id, moment().week(), moment().year()),
+        getStudyTimes(session.user.id, moment().isoWeek(), moment().year()),
         getNeededStudyTimes(session.user.id),
         getMissingStudyTimes(session.user.id),
-        getNormalEventsAttendances(session.user.id, moment().week(), moment().year())
+        getNormalEventsAttendances(session.user.id, moment().isoWeek(), moment().year())
     ]);
     return (
         <div>

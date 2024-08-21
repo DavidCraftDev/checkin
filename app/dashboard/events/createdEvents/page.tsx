@@ -12,11 +12,11 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
   if (sessionUser.permission < 1) redirect("/dashboard");
 
-  const currentWeek = moment().week();
+  const currentWeek = moment().isoWeek();
   const currentYear = moment().year();
   const cw = Number(searchParams.cw) || currentWeek;
   const year = Number(searchParams.year) || currentYear;
-  if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/createEvents");
+  if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear) redirect("/dashboard/events/createEvents");
   if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/createEvents");
   const data = await getCreatedEventsPerUser(sessionUser.id, cw, year);
   return (
@@ -26,7 +26,7 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
           <h1>Erstellte Veranstaltungen</h1>
           <p>von {sessionUser.displayname}</p>
         </div>
-        <CalendarWeek searchParams={searchParams} />
+        <CalendarWeek />
       </div>
       <CreateEventForm studyTime={studytime} user={sessionUser} />
       <CreatedEventTable events={data} studyTime={studytime} />

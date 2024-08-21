@@ -9,7 +9,7 @@ import writeXlsxFile from "write-excel-file/node";
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
-    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().week()
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
     const groupID = request.nextUrl.searchParams.get("groupID") || user.group

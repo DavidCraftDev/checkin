@@ -126,7 +126,7 @@ export async function createEvent(name: string, userID: string, studyTime: boole
         data: {
             name: name,
             user: userID,
-            cw: moment().week(),
+            cw: moment().isoWeek(),
             studyTime: studyTime
         }
     });
@@ -149,7 +149,7 @@ export async function checkINHandler(eventID: string, userID: string) {
         data: {
             eventID: eventID,
             userID: userID,
-            cw: moment().week(),
+            cw: moment().isoWeek(),
         }
     });
     let userData: User = await getUserPerID(userID);

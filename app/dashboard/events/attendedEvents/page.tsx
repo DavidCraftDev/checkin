@@ -18,11 +18,12 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     if (!userData.id) notFound();
     if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
 
-    const currentWeek = moment().week();
+    const currentWeek = moment().isoWeek();
+    console.log(currentWeek);
     const currentYear = moment().year();
     const cw = Number(searchParams.cw) || currentWeek;
     const year = Number(searchParams.year) || currentYear;
-    if (cw > 53 || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
+    if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
     if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
     const [
@@ -56,7 +57,7 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
                     {studytime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {studytime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
-                <CalendarWeek searchParams={searchParams} />
+                <CalendarWeek />
             </div>
             <AttendedEventTable attendances={data} addable={addable} studyTime={studytime} studyTimeTypes={studyTimeTypes} />
             <p>Exportieren als:

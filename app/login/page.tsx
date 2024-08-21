@@ -63,17 +63,17 @@ function Login() {
     <div className="flex items-center justify-center h-screen bg-gray-200">
       <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
         <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
-          <div className="w-32 text-white md:w-40">
+          <div className="text-xl font-semibold text-white md:text-2xl">
             CheckIN
           </div>
         </div>
         <div className="flex flex-col space-y-4">
           <h1>Anmelden</h1>
           <label htmlFor="username" className="font-bold text-gray-600">Nutzername</label>
-          <input type="text" name="username" id="username" placeholder="Nutzername" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} />
+          <input type="text" name="username" id="username" placeholder="Nutzername" className={clsx("rounded-full p-2 m-4 border-2 ring-0 ring-black focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required/>
 
           <label htmlFor="password" className="font-bold text-gray-600">Passwort</label>
-          <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} />
+          <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border border-black ring-0 ring-black focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} required/>
 
           {passwordResetURL ? <a href={passwordResetURL} className="text-gray-400 text-xs ml-5 hover:underline" style={{ marginTop: "-3.5px" }}>Passwort vergessen?</a> : null}
 

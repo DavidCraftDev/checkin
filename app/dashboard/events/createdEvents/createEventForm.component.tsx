@@ -27,7 +27,7 @@ function CreateEventForm(props: CreatedEventFormProps) {
                 <form onSubmit={handlerStudyTime}>
                     <div>
                         <label htmlFor="studyTime">Studienzeit</label><br />
-                        <select defaultValue="default" id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1">
+                        <select defaultValue="default" id="studyTime" name="studyTime" className="rounded-full p-2 my-2 border-2 ring-0 ring-black focus:outline-none focus:ring-1">
                             <option disabled value="default">Studienzeit wählen</option>
                             {competences.map((competence: string) => (
                                 <option key={competence} value={competence}>{competence}</option>
@@ -40,7 +40,7 @@ function CreateEventForm(props: CreatedEventFormProps) {
             <form onSubmit={handlerEvent}>
                 <div>
                     <label htmlFor="eventName">Veranstaltungsname</label><br />
-                    <input type="text" name="eventName" id="eventName" className="rounded-full p-2 my-2 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                    <input type="text" name="eventName" id="eventName" className="rounded-full p-2 my-2 border-2 ring-0 ring-black focus:outline-none focus:ring-1" required/>
                 </div>
                 <button type="submit" className="btn">Veranstaltung Erstellen</button>
             </form>
