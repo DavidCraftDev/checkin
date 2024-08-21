@@ -10,7 +10,7 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     const permission = formdata.get('permission') as string;
     const group = formdata.get('group') as string;
     const password = formdata.get('password') as string;
-    const needsData = formdata.get('needs') as string || "";
+    const needsData = formdata.get('needs') as string;
     let needsArray = [] as Prisma.JsonArray;
     if(needsData) needsArray = needsData.split(",") as Prisma.JsonArray;
     const competenceData = formdata.get('competence') as string || "";
