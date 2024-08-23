@@ -22,7 +22,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataEvent: Events | null;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
-            if((!attendance.type || !attendance.studentNote) && moment().diff(moment(attendance.created_at), "minutes") > 1) {
+            if ((!attendance.type || !attendance.studentNote) && moment().diff(moment(attendance.created_at), "minutes") > 1) {
                 await db.attendance.delete({
                     where: {
                         id: attendance.id
@@ -121,6 +121,14 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
                 eventID: event.id
             }
         });
+        if(attendedUser === 0 && moment().diff(moment(event.created_at), "hours") > 1) {
+            await db.events.delete({
+                where: {
+                    id: event.id
+                }
+            });
+            return;
+        }
         data.push({
             event: event,
             user: attendedUser
@@ -225,4 +233,15 @@ export async function getNormalEventsAttendances(userID: string, cw: number, yea
         data.push(dataEvent);
     }));
     return data;
+}
+
+export async function deleteEmptyEvent(eventID: string) {
+    const data = await getAttendancesPerEvent(eventID);
+    if (data.length === 0) {
+        await db.events.delete({
+            where: {
+                id: eventID
+            }
+        });
+    }
 }
