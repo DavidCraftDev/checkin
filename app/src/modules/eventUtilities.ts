@@ -121,7 +121,7 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
                 eventID: event.id
             }
         });
-        if(attendedUser === 0 && moment().diff(moment(event.created_at), "hours") > 1) {
+        if (attendedUser === 0 && moment().diff(moment(event.created_at), "hours") > 1) {
             await db.events.delete({
                 where: {
                     id: event.id
@@ -243,5 +243,7 @@ export async function deleteEmptyEvent(eventID: string) {
                 id: eventID
             }
         });
+        return true;
     }
+    return false;
 }
