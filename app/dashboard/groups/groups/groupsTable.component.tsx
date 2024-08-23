@@ -28,6 +28,7 @@ function GroupsTable(props: GroupsTableProps) {
                         ))}
                     </tbody>
                 </table>
+                {props.groups.length === 0 ? <p className="text-center italic m-2">Keine Gruppen vorhanden</p> : null}
             </div>
         </div>
     )

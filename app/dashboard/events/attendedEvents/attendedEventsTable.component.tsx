@@ -42,6 +42,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                         ))}
                     </tbody>
                 </table>
+                {props.attendances.length === 0 ? <p className="text-center italic m-2">An keiner Veranstaltungen teilgenommen</p> : null}
             </div>
         </div>
     )
