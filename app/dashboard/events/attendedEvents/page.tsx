@@ -19,7 +19,6 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
 
     const currentWeek = moment().isoWeek();
-    console.log(currentWeek);
     const currentYear = moment().year();
     const cw = Number(searchParams.cw) || currentWeek;
     const year = Number(searchParams.year) || currentYear;
