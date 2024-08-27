@@ -101,6 +101,7 @@ export async function getNeededStudyTimesForNotes(userID: string) {
     });
     if (!found) neededStudyTimes.push("note:" + need);
   });
+  neededStudyTimes.push("note:delete")
   return neededStudyTimes;
 }
 
