@@ -2,7 +2,7 @@
 
 import { getSessionUser } from "@/app/src/modules/authUtilities";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
-import { getUserPerUsername } from "@/app/src/modules/userUtilities";
+import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
 
 export async function submitHandler(username: string, eventID: string) {
     const sessionUser = await getSessionUser(1);
@@ -13,4 +13,9 @@ export async function submitHandler(username: string, eventID: string) {
     if (!user) return "UserNotFound";
     const data = await checkINHandler(eventID, user.id)
     return data;
+}
+
+export async function searchHandler(search: string) {
+    const user = await searchUser(search);
+    return user;
 }

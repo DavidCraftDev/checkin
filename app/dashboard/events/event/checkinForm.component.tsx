@@ -1,9 +1,10 @@
 'use client'
 
-import { submitHandler } from "./submitHandler";
+import { submitHandler } from "./checkinHandler";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
+import SearchBar from "./search.component";
 
 interface CheckinFormProps {
     eventID: string
@@ -36,8 +37,8 @@ function CheckinForm(props: CheckinFormProps) {
     return (
         <form onSubmit={eventHandler} className="flex flex-col items-center flex-auto justify-center">
             <div>
-                <label htmlFor="username">Nutzername</label><br />
-                <input type="text" name="name" id="username" placeholder="max.musterschueler" className="rounded-full p-2 m-4 border-2 border-black-600" required/>
+                <label htmlFor="username" className="ml-4">Nutzername</label><br />
+                <SearchBar />
             </div>
             <div className="flex">
                 <button type="submit" className="btn m-1">Hinzufügen</button>

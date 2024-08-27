@@ -91,3 +91,31 @@ export async function updateUser(id: string, name: string, displayname: string, 
   });
   return user;
 }
+
+export async function searchUser(search: string) {
+  const user = await db.user.findMany({
+    where: {
+      OR: [
+        {
+          username: {
+            contains: search,
+            mode: "insensitive"
+          }
+        },
+        {
+          displayname: {
+            contains: search,
+            mode: "insensitive"
+          }
+        },
+        {
+          group: {
+            contains: search,
+            mode: "insensitive"
+          }
+        }
+      ]
+    }
+  });
+  return user;
+}
