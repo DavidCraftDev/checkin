@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "fs";
+import Papa from "papaparse";
+
 let data: Record<string, string> = {
     "E5": "Englisch",
     "E": "Englisch",
@@ -47,5 +50,30 @@ let data: Record<string, string> = {
     "LI": "Literatur",
     "EK": "Erdkunde"
 }
+
+async function parseCSV() {
+    new Promise((resolve, reject) => {
+        const fileContent = readFileSync(process.cwd() + "/Faecher.csv", "utf8");
+
+        Papa.parse(fileContent, {
+            header: true,
+            dynamicTyping: true,
+            complete: (results) => {
+                results.data.forEach((row) => {
+                    if (!row["InternKrz"] || !row["BezeichnungZeugnis"]) return;
+                    data[row["InternKrz"]] = row["BezeichnungZeugnis"].split(" ")[0];
+                });
+                resolve(true);
+            },
+            error: (error: Papa.ParseError) => {
+                console.error("Failed to parse CSV: " + error);
+                reject(false);
+            }
+
+        } as Papa.ParseConfig);
+    });
+}
+
+if (existsSync(process.cwd() + "/Faecher.csv")) parseCSV();
 
 export default data;
