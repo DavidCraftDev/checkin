@@ -7,6 +7,7 @@ import { use_ldap } from "@/app/src/modules/config";
 async function user() {
     await getSessionUser(2);
     const users = await db.user.findMany() || [];
+    users.sort((a, b) => a.username.localeCompare(b.username));
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-2">

@@ -19,6 +19,7 @@ export async function getGroupMembers(groupID: string, cw: number, year: number)
             attendances: dataAttendance
         });
     }));
+    data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
     return data;
 }
 
@@ -47,6 +48,7 @@ export async function getGroups() {
         });
     }
     ));
+    data.sort((a, b) => a.group.localeCompare(b.group));
     return data;
 }
 

@@ -1,7 +1,6 @@
 "use client"
 
 import moment from "moment";
-import { GetSortOrderByCreatedAt } from "@/app/src/modules/sortUtilities";
 import StudentNote from "./studentNote.component";
 import StudyTimeSelect from "./studyTimeSelect.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
@@ -14,7 +13,6 @@ interface AttendedEventTableProps {
 }
 
 function AttendedEventTable(props: AttendedEventTableProps) {
-    props.attendances.sort(GetSortOrderByCreatedAt("event"))
     return (
         <div className="overflow-x-auto">
             <div className="table">

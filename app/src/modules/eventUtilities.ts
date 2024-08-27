@@ -50,6 +50,11 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             eventUser: dataUserEvent
         });
     }));
+    data.sort((a, b) => {
+        if (a.attendance.created_at > b.attendance.created_at) return -1;
+        if (a.attendance.created_at < b.attendance.created_at) return 1;
+        return 0;
+    });
     return data;
 }
 
@@ -67,6 +72,7 @@ export async function getAttendancesPerEvent(eventID: string) {
             user: dataUser
         });
     }));
+    data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
     return data;
 }
 
@@ -134,6 +140,11 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             user: attendedUser
         });
     }));
+    data.sort((a, b) => {
+        if (a.event.created_at > b.event.created_at) return -1;
+        if (a.event.created_at < b.event.created_at) return 1;
+        return 0;
+    });
     return data;
 }
 
