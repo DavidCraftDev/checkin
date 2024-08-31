@@ -9,6 +9,13 @@ let client: LDAP
 
 if (use_ldap) client = new LDAP()
 
+export async function search(searchFilter: string) {
+    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("Could not bind to LDAP")
+    const ldapData = await client.search(searchFilter, ldap_search_base)
+    ldapData.map((entry) => entry.objectGUID = convertGUIDToString(entry.objectGUID as Buffer));
+    return ldapData;
+}
+
 export async function getAllUsers() {
     if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("Could not bind to LDAP")
     const ldapData = await client.search(ldap_user_search_filter, ldap_search_base)
