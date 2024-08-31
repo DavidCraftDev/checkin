@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 export default async function debugPage() {
     if(!use_ldap) return notFound();
-    const data = await search("(OU=Classes)");
+    const data = await search("(cn=Class Q1)");
     return (
         <div>
             <h1>Debug</h1>
