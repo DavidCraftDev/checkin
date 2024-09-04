@@ -1,5 +1,3 @@
-import exp from "constants"
-
 async function notFound() {
     return (
         <div>

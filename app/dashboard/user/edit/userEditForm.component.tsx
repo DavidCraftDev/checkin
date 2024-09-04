@@ -56,10 +56,10 @@ function UserEditForm(props: UserEditFormProps) {
             <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
-                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required/>
+                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
                     <br />
                     <label htmlFor="username">Nutzername*</label><br />
-                    <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username.replace("local/", "")} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required/>
+                    <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username.replace("local/", "")} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required />
                     <br />
                     <label htmlFor="permission">Rechte*</label><br />
                     <select name="permission" id="permission" defaultValue={userData.permission} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 bg-white border-black-600">
@@ -68,7 +68,7 @@ function UserEditForm(props: UserEditFormProps) {
                         <option value="2">Admin</option>
                     </select>
                     <br />
-                    <label htmlFor="group">Gruppe</label><br />
+                    <label htmlFor="group">Gruppen (Durch Komma getrennt)</label><br />
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" defaultValue={userData.group || ""} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br className={config.studyTime ? "" : "hidden"} />
                     <label htmlFor="needs" className={config.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={config.studyTime ? "" : "hidden"} />

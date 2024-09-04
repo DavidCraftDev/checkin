@@ -7,7 +7,9 @@ import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
 export async function getGroupMembers(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({
         where: {
-            group: groupID
+            group: {
+                has: groupID
+            }
         }
     });
     Promise.all(userData.map(async (user) => saveNeededStudyTimes(user)));
@@ -26,7 +28,9 @@ export async function getGroupMembers(groupID: string, cw: number, year: number)
 export async function getGroupMemberCount(groupID: string) {
     const data = await db.user.count({
         where: {
-            group: groupID
+            group: {
+                has: groupID
+            }
         }
     });
     return data;
@@ -35,9 +39,7 @@ export async function getGroupMemberCount(groupID: string) {
 export async function getGroups() {
     const users = await db.user.findMany();
     const groups = new Set<string>();
-    users.forEach((user) => {
-        if (user.group) groups.add(user.group);
-    });
+    users.forEach((user) => user.group.forEach((group) => groups.add(group)));
     const groupArray = Array.from(groups);
     const data: Groups[] = new Array();
     await Promise.all(groupArray.map(async (group) => {

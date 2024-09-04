@@ -31,7 +31,7 @@ model Events {
 model StudyTimeData {
   id        String   @default(cuid()) @id @unique
   userID    String
-  needs     Json
+  needs     String[] @default([])
   cw        Int
   year      Int
 }
@@ -42,8 +42,8 @@ model User {
   displayname String 
   permission  Int     @default(0)
   password    String?  
-  group       String? 
-  needs       Json?
-  competence  Json?
+  group       String[] @default([])
+  needs       String[] @default([])
+  competence  String[] @default([])
   loginVersion Int    @default(0)
 }

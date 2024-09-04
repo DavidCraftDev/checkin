@@ -42,10 +42,10 @@ function UserCreateForm(props: UserCreateFormProps) {
             <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
-                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required/>
+                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
                     <br />
                     <label htmlFor="username">Nutzername*</label><br />
-                    <input type="text" name="username" id="username" placeholder="max.mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required/>
+                    <input type="text" name="username" id="username" placeholder="max.mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required />
                     <br />
                     <label htmlFor="permission">Rechte*</label><br />
                     <select name="permission" id="permission" className="rounded-full p-2 m-4 border-2 bg-white border-black-600">
@@ -54,7 +54,7 @@ function UserCreateForm(props: UserCreateFormProps) {
                         <option value="2">Admin</option>
                     </select>
                     <br />
-                    <label htmlFor="group">Gruppe</label><br />
+                    <label htmlFor="group">Gruppen (Durch Komma getrennt)</label><br />
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br />
                     <label htmlFor="needs" className={props.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={props.studyTime ? "" : "hidden"} />
@@ -64,7 +64,7 @@ function UserCreateForm(props: UserCreateFormProps) {
                     <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
                     <br className={props.studyTime ? "" : "hidden"} />
                     <label htmlFor="password">Passwort*</label><br />
-                    <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} required/>
+                    <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} required />
                 </div>
                 <button type="submit" className="btn">Nutzer erstellen</button>
             </form>
