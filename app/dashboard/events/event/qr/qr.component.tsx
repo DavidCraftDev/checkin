@@ -23,7 +23,6 @@ function QRScannerComponent() {
       }
       const userID = result.data.replace("checkin://", "")
       const data: string | User = await submitHandler(userID, id as string)
-      console.log(data)
       if (typeof data === "string") {
         if (data === "ErrorNotFound") {
           toast.error("Nutzer nicht gefunden")

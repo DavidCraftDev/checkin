@@ -59,7 +59,7 @@ export async function GET() {
     },
     {
         "type": String,
-        "value": "Gruppe",
+        "value": "Gruppen",
         "fontWeight": "bold"
     },
     {
@@ -88,7 +88,7 @@ export async function GET() {
         },
         {
             "type": String,
-            "value": userData.group || "",
+            "value": userData.group.toString() || "",
             "wrap": true
         },
         {

@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
 
-    const groupID = request.nextUrl.searchParams.get("groupID") || user.group
+    const groupID = request.nextUrl.searchParams.get("groupID") || user.group[0]
     if (!groupID) return NextResponse.json({ error: "No groupID provided" })
-    if (groupID !== user.group && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
+    if (!user.group.includes(groupID) && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
 
     const groupMember = await getGroupMembers(groupID, calendarWeek, year)
 

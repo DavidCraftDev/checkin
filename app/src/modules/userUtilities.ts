@@ -38,7 +38,7 @@ export async function getUserPerUsername(name: string) {
   return user;
 }
 
-export async function createUser(name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password: string) {
+export async function createUser(name: string, displayname: string, permission: number, group: string[], needs: string[], competence: string[], password: string) {
   const passwordHash = await hash(password, 12);
   const username = await db.user.count({
     where: {
@@ -60,7 +60,7 @@ export async function createUser(name: string, displayname: string, permission: 
   return user;
 }
 
-export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string, needs: Prisma.JsonArray, competence: Prisma.JsonArray, password?: string) {
+export async function updateUser(id: string, name: string, displayname: string, permission: number, group: string[], needs: string[], competence: string[], password?: string) {
   let passwordHash = "";
   if (password) passwordHash = await hash(password, 12)
   const userData = await getUserPerID(id);
@@ -88,6 +88,33 @@ export async function updateUser(id: string, name: string, displayname: string, 
       id: id
     },
     data: data
+  });
+  return user;
+}
+
+export async function searchUser(search: string) {
+  const user = await db.user.findMany({
+    where: {
+      OR: [
+        {
+          username: {
+            contains: search,
+            mode: "insensitive"
+          }
+        },
+        {
+          displayname: {
+            contains: search,
+            mode: "insensitive"
+          }
+        },
+        {
+          group: {
+            has: search
+          }
+        }
+      ]
+    }
   });
   return user;
 }

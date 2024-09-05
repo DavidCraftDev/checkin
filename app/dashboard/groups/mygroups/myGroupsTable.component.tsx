@@ -6,7 +6,7 @@ interface GroupsTableProps {
     groups: Groups[];
 }
 
-function GroupsTable(props: GroupsTableProps) {
+function MyGroupsTable(props: GroupsTableProps) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -19,7 +19,7 @@ function GroupsTable(props: GroupsTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.groups.map((group) => (
+                        {props.groups.map((group: any) => (
                             <tr key={group.group}>
                                 <td>{group.group}</td>
                                 <td>{group.members} Teilnehmer</td>
@@ -34,4 +34,4 @@ function GroupsTable(props: GroupsTableProps) {
     )
 }
 
-export default GroupsTable;
+export default MyGroupsTable;

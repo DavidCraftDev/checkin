@@ -11,9 +11,9 @@ declare module "next-auth" {
       username: string
       name: string
       permission: int
-      group: string
-      needs: string
-      competence: string
+      group: Array<string>
+      needs: Array<string>
+      competence: Array<string>
       loginVersion: number
     }
   }

@@ -10,7 +10,6 @@ interface SideNavProps {
 }
 
 export default function SideNav(props: SideNavProps) {
-  const group: boolean = props.user.group ? true : false
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 text-black">
       <Link
@@ -22,7 +21,7 @@ export default function SideNav(props: SideNavProps) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks permission={props.user.permission} group={group} />
+        <NavLinks permission={props.user.permission} group={props.user.group} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
           <a href={"/logout"} className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4">

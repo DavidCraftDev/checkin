@@ -29,7 +29,7 @@ function StudyTimeSelect(props: StudyTimeSelectProps) {
                 <option disabled value="default">Studienzeit wählen</option>
                 {props.attendance.type ? <option value={props.attendance.type}>{props.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</option> : null}
                 {props.studyTimeTypes.map((type: string) => (
-                    <option key={type} value={type}>{type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</option>
+                    <option key={type} value={type}>{type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:").replace("Notiz:delete", "Notiz löschen")}</option>
                 ))}
             </select>
         </td>

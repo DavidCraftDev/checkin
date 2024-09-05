@@ -1,7 +1,6 @@
 "use client"
 
 import moment from "moment";
-import { GetSortOrderByCreatedAt } from "@/app/src/modules/sortUtilities";
 import StudentNote from "./studentNote.component";
 import StudyTimeSelect from "./studyTimeSelect.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
@@ -14,7 +13,6 @@ interface AttendedEventTableProps {
 }
 
 function AttendedEventTable(props: AttendedEventTableProps) {
-    props.attendances.sort(GetSortOrderByCreatedAt("event"))
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -32,7 +30,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                     <tbody>
                         {props.attendances.map((attendances: AttendancePerUserPerEvent) => (
                             <tr key={attendances.attendance.id}>
-                                <td>{attendances.event.name}</td>
+                                <td>{attendances.event.name.replace(attendances.eventUser.displayname, "")}</td>
                                 <td>{attendances.eventUser.displayname}</td>
                                 {props.studyTime ? attendances.event.studyTime ? props.addable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span> : <td>❌</td> : null}
                                 {props.addable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
@@ -42,6 +40,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                         ))}
                     </tbody>
                 </table>
+                {props.attendances.length === 0 ? <p className="text-center italic m-2">An keiner Veranstaltungen teilgenommen</p> : null}
             </div>
         </div>
     )

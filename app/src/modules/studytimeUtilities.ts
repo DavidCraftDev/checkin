@@ -101,6 +101,7 @@ export async function getNeededStudyTimesForNotes(userID: string) {
     });
     if (!found) neededStudyTimes.push("note:" + need);
   });
+  neededStudyTimes.push("note:delete")
   return neededStudyTimes;
 }
 
@@ -138,7 +139,7 @@ export async function saveNeededStudyTimes(user: User) {
       userID: user.id,
       cw: moment().isoWeek(),
       year: moment().year(),
-      needs: user.needs as Prisma.JsonArray
+      needs: user.needs as string[]
     }
   });
 }

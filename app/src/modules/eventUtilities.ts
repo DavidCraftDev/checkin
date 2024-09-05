@@ -22,6 +22,14 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataEvent: Events | null;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
+            if (((!attendance.type || !attendance.studentNote) && moment().diff(moment(attendance.created_at), "minutes") > 1) || attendance.type === "note:delete") {
+                await db.attendance.delete({
+                    where: {
+                        id: attendance.id
+                    }
+                });
+                return;
+            }
             dataEvent = {
                 id: "NOTE",
                 name: "Notiz",
@@ -42,6 +50,11 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             eventUser: dataUserEvent
         });
     }));
+    data.sort((a, b) => {
+        if (a.attendance.created_at > b.attendance.created_at) return -1;
+        if (a.attendance.created_at < b.attendance.created_at) return 1;
+        return 0;
+    });
     return data;
 }
 
@@ -59,6 +72,7 @@ export async function getAttendancesPerEvent(eventID: string) {
             user: dataUser
         });
     }));
+    data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
     return data;
 }
 
@@ -113,11 +127,24 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
                 eventID: event.id
             }
         });
+        if (attendedUser === 0 && moment().diff(moment(event.created_at), "hours") > 1) {
+            await db.events.delete({
+                where: {
+                    id: event.id
+                }
+            });
+            return;
+        }
         data.push({
             event: event,
             user: attendedUser
         });
     }));
+    data.sort((a, b) => {
+        if (a.event.created_at > b.event.created_at) return -1;
+        if (a.event.created_at < b.event.created_at) return 1;
+        return 0;
+    });
     return data;
 }
 
@@ -217,4 +244,17 @@ export async function getNormalEventsAttendances(userID: string, cw: number, yea
         data.push(dataEvent);
     }));
     return data;
+}
+
+export async function deleteEmptyEvent(eventID: string) {
+    const data = await getAttendancesPerEvent(eventID);
+    if (data.length === 0) {
+        await db.events.delete({
+            where: {
+                id: eventID
+            }
+        });
+        return true;
+    }
+    return false;
 }

@@ -34,6 +34,7 @@ function CreatedEventTable(props: CreatedEventTableProps) {
                         ))}
                     </tbody>
                 </table>
+                {props.events.length === 0 ? <p className="text-center italic m-2">Keine Veranstaltungen vorhanden</p> : null}
             </div>
         </div>
     )
