@@ -15,7 +15,7 @@ import Link from 'next/link';
 
 interface NavLinkProps {
   permission: number;
-  group: boolean;
+  group: string[];
 }
 
 const links = [
@@ -35,7 +35,11 @@ export default function NavLinks(props: NavLinkProps) {
       {links.map((link) => {
         const LinkIcon = link.icon;
         if (props.permission < link.permission) return;
-        if (link.name === "Meine Gruppe" && !props.group) return;
+        if (link.name === "Meine Gruppe" && props.group.length < 1) return;
+        if (link.name === "Meine Gruppe" && props.group.length > 1) {
+          link.name = "Meine Gruppen"
+          link.href = "/dashboard/groups/mygroups"
+        }
         return (
           <Link
             key={link.name}

@@ -3,6 +3,7 @@ import { getAttendanceCountPerUser } from "./eventUtilities";
 import { saveNeededStudyTimes } from "./studytimeUtilities";
 import moment from "moment";
 import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
+import { User } from "@prisma/client";
 
 export async function getGroupMembers(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({
@@ -65,5 +66,19 @@ export async function getGroupsWithUserData() {
         });
     }
     ));
+    return data;
+}
+
+export async function getGroupsFromUser(user: User) {
+    const data: Groups[] = new Array();
+    await Promise.all(user.group.map(async (group) => {
+        const dataMembers = await getGroupMemberCount(group);
+        data.push({
+            group: group || "Keine Gruppe",
+            members: dataMembers
+        });
+    }
+    ));
+    data.sort((a, b) => a.group.localeCompare(b.group));
     return data;
 }

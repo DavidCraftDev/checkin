@@ -33,7 +33,7 @@ async function updateUserData(ldapData: Entry[]) {
             await db.user.delete({ where: { id: entry.id } })
             return
         }
-        const { permission, group, needs, competence } = readLDAPUserData(ldapUser, entry)
+        const { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
         const user = await db.user.update({
             where: {
                 id: entry.id
@@ -42,7 +42,7 @@ async function updateUserData(ldapData: Entry[]) {
                 username: String(ldapUser.sAMAccountName).toLowerCase(),
                 displayname: String(ldapUser.displayName),
                 ...permission,
-                ...group,
+                ...groups,
                 ...needs,
                 ...competence,
                 loginVersion: Math.ceil(Number(ldapUser.pwdLastSet) / 10000000000)
@@ -53,13 +53,13 @@ async function updateUserData(ldapData: Entry[]) {
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
     const createData: any[] = new Array();
     newUser.map((entry) => {
-        const { permission, group, needs, competence } = readLDAPUserData(entry)
+        const { permission, groups, needs, competence } = readLDAPUserData(entry)
         createData.push({
             id: String(entry.objectGUID),
             username: String(entry.sAMAccountName).toLowerCase(),
             displayname: String(entry.displayName),
             ...permission,
-            ...group,
+            ...groups,
             ...needs,
             ...competence,
             loginVersion: Math.ceil(Number(entry.pwdLastSet) / 10000000000)
@@ -78,12 +78,12 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
         else permission = { permission: 0 }
     } else permission = {}
 
-    let group = {}
+    let groups: Array<string> = new Array<string>
     if (ldap_auto_groups) {
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")
-            if (data[1].toLowerCase() == ldap_auto_groups_ou.toLowerCase()) group = { group: String(data[0].replace("CN=", "").replace("cn=", "")) }
+            if (data[1].toLowerCase() == ldap_auto_groups_ou.toLowerCase()) groups.push(String(data[0].replace("CN=", "").replace("cn=", "")))
         })
     }
 
@@ -109,7 +109,8 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
             competence = { competence: [] }
         }
     }
-    return { permission, group, needs, competence }
+    const groupData = { group: groups }
+    return { permission, groups: groupData, needs, competence }
 }
 
 function convertGUIDToString(guidRaw: Buffer) {
