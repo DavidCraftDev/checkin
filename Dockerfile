@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.2 AS build
+FROM --platform="$BUILDPLATFORM" alpine:3.20.3 AS build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
@@ -36,14 +36,14 @@ RUN apk upgrade --no-cache -a && \
     fi && \
     npm cache clean --force && \
     clean-modules --yes
-FROM alpine:3.20.2 AS strip
+FROM alpine:3.20.3 AS strip
 COPY --from=build /app /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates binutils file && \
     find /app/node_modules -name "*.node" -type f -exec strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
-FROM alpine:3.20.2
+FROM alpine:3.20.3
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --from=strip --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
