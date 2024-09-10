@@ -19,7 +19,7 @@ if (process.env.AUTH_SECRET) {
 } else {
     auth_secret = config_file.AUTH_SECRET
 }
-if (!auth_secret) throw new Error("AUTH_SECRET is not set")
+if (!auth_secret) throw new Error("[Config] AUTH_SECRET is not set")
 
 let default_username: string
 if (process.env.DEFAULT_LOGIN_USERNAME) {
@@ -63,8 +63,8 @@ if (process.env.LDAP_URI) {
 } else {
     ldap_uri = config_file.LDAP.URI
 }
-if (!ldap_uri && use_ldap) throw new Error("LDAP_URI is not set")
-if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("LDAP_URI must start with ldap:// or ldaps://")
+if (!ldap_uri && use_ldap) throw new Error("[Config] LDAP_URI is not set")
+if (use_ldap && !ldap_uri.startsWith("ldap")) throw new Error("[Config] LDAP_URI must start with ldap:// or ldaps://")
 
 
 let ldap_tls_reject_unauthorized: boolean
@@ -83,8 +83,8 @@ if (process.env.LDAP_BIND_DN) {
 } else {
     ldap_bind_dn = config_file.LDAP.BIND_CREADENTIALS.DN
 }
-if (!ldap_bind_dn && use_ldap) throw new Error("LDAP_BIND_DN is not set")
-if (use_ldap && (!ldap_bind_dn.toLowerCase().includes("dc=") || !ldap_bind_dn.toLowerCase().includes("cn="))) throw new Error("LDAP_BIND_DN is not a valid DN")
+if (!ldap_bind_dn && use_ldap) throw new Error("[Config] LDAP_BIND_DN is not set")
+if (use_ldap && (!ldap_bind_dn.toLowerCase().includes("dc=") || !ldap_bind_dn.toLowerCase().includes("cn="))) throw new Error("[Config] LDAP_BIND_DN is not a valid DN")
 
 let ldap_bind_password: string
 if (process.env.LDAP_BIND_PASSWORD) {
@@ -92,7 +92,7 @@ if (process.env.LDAP_BIND_PASSWORD) {
 } else {
     ldap_bind_password = config_file.LDAP.BIND_CREADENTIALS.PASSWORD
 }
-if (!ldap_bind_password && use_ldap) throw new Error("LDAP_BIND_PASSWORD is not set")
+if (!ldap_bind_password && use_ldap) throw new Error("[Config] LDAP_BIND_PASSWORD is not set")
 
 let ldap_search_base: string
 if (process.env.LDAP_SEARCH_BASE) {
@@ -100,8 +100,8 @@ if (process.env.LDAP_SEARCH_BASE) {
 } else {
     ldap_search_base = config_file.LDAP.SEARCH_BASE
 }
-if (!ldap_search_base && use_ldap) throw new Error("LDAP_SEARCH_BASE is not set")
-if (use_ldap && !ldap_search_base.toLowerCase().includes("dc=")) throw new Error("LDAP_SEARCH_BASE is not a valid Search Base")
+if (!ldap_search_base && use_ldap) throw new Error("[Config] LDAP_SEARCH_BASE is not set")
+if (use_ldap && !ldap_search_base.toLowerCase().includes("dc=")) throw new Error("[Config] LDAP_SEARCH_BASE is not a valid Search Base")
 
 let ldap_user_search_filter: string
 if (process.env.LDAP_USER_SEARCH_FILTER) {
@@ -109,7 +109,7 @@ if (process.env.LDAP_USER_SEARCH_FILTER) {
 } else {
     ldap_user_search_filter = config_file.LDAP.USER_SEARCH_FILTER
 }
-if (!ldap_user_search_filter && use_ldap) throw new Error("LDAP_USER_SEARCH_FILTER is not set")
+if (!ldap_user_search_filter && use_ldap) throw new Error("[Config] LDAP_USER_SEARCH_FILTER is not set")
 
 let ldap_password_reset_url: string
 if (process.env.LDAP_PASSWORD_RESET_URL) {
@@ -117,7 +117,7 @@ if (process.env.LDAP_PASSWORD_RESET_URL) {
 } else {
     ldap_password_reset_url = config_file.LDAP.PASSWORD_RESET_URL
 }
-if(!ldap_password_reset_url) ldap_password_reset_url = ""
+if (!ldap_password_reset_url) ldap_password_reset_url = ""
 
 let ldap_create_local_admin: boolean
 if (process.env.LDAP_CREATE_LOCAL_ADMIN === "true") {
@@ -128,8 +128,8 @@ if (process.env.LDAP_CREATE_LOCAL_ADMIN === "true") {
     ldap_create_local_admin = config_file.LDAP.CREATE_LOCAL_ADMIN
 }
 if (ldap_create_local_admin == null) ldap_create_local_admin = true
-if ((!use_ldap || (use_ldap && ldap_create_local_admin)) && (!default_username)) throw new Error("Default username is not set")
-if ((!use_ldap || (use_ldap && ldap_create_local_admin)) && (!default_password)) throw new Error("Default password is not set")
+if ((!use_ldap || (use_ldap && ldap_create_local_admin)) && (!default_username)) throw new Error("[Config] Default username is not set")
+if ((!use_ldap || (use_ldap && ldap_create_local_admin)) && (!default_password)) throw new Error("[Config] Default password is not set")
 
 let ldap_auto_permission: boolean
 if (process.env.LDAP_AUTO_PERMISSION === "true") {
@@ -147,8 +147,8 @@ if (process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP) {
 } else {
     ldap_auto_permission_teacher_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP
 }
-if (use_ldap && ldap_auto_permission && !ldap_auto_permission_teacher_group) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("ou=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && !ldap_auto_permission_teacher_group) throw new Error("[Config] LDAP_AUTO_PERMISSION_TEACHER_GROUP is not set")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_teacher_group.toLowerCase().includes("cn=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("ou=") || !ldap_auto_permission_teacher_group.toLowerCase().includes("dc="))) throw new Error("[Config] LDAP_AUTO_PERMISSION_TEACHER_GROUP is not a valid group DN")
 
 let ldap_auto_permission_admin_group: string
 if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
@@ -156,8 +156,8 @@ if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) {
 } else {
     ldap_auto_permission_admin_group = config_file.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP
 }
-if (use_ldap && ldap_auto_permission && !ldap_auto_permission_admin_group) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not set")
-if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("ou=") || !ldap_auto_permission_admin_group.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
+if (use_ldap && ldap_auto_permission && !ldap_auto_permission_admin_group) throw new Error("[Config] LDAP_AUTO_PERMISSION_ADMIN_GROUP is not set")
+if (use_ldap && ldap_auto_permission && (!ldap_auto_permission_admin_group.toLowerCase().includes("cn=") || !ldap_auto_permission_admin_group.toLowerCase().includes("ou=") || !ldap_auto_permission_admin_group.toLowerCase().includes("dc="))) throw new Error("[Config] LDAP_AUTO_PERMISSION_ADMIN_GROUP is not a valid group DN")
 
 let ldap_auto_groups: boolean
 if (process.env.LDAP_AUTO_GROUPS === "true") {
@@ -175,8 +175,8 @@ if (process.env.LDAP_AUTO_GROUPS_OU) {
 } else {
     ldap_auto_groups_ou = config_file.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.GROUP_OU
 }
-if (use_ldap && ldap_auto_groups && !ldap_auto_groups_ou) throw new Error("LDAP_AUTO_GROUPS_OU is not set")
-if (use_ldap && ldap_auto_groups && (!ldap_auto_groups_ou.toLowerCase().includes("ou=") || !ldap_auto_groups_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_GROUPS_OU is not a valid OU")
+if (use_ldap && ldap_auto_groups && !ldap_auto_groups_ou) throw new Error("[Config] LDAP_AUTO_GROUPS_OU is not set")
+if (use_ldap && ldap_auto_groups && (!ldap_auto_groups_ou.toLowerCase().includes("ou=") || !ldap_auto_groups_ou.toLowerCase().includes("dc="))) throw new Error("[Config] LDAP_AUTO_GROUPS_OU is not a valid OU")
 
 let ldap_auto_studytime_data: boolean
 if (process.env.LDAP_AUTO_STUDYTIME_DATA === "true") {
@@ -194,8 +194,8 @@ if (process.env.LDAP_AUTO_STUDYTIME_DATA_OU) {
 } else {
     ldap_auto_studytime_data_ou = config_file.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.STUDYTIME_OU
 }
-if (use_ldap && ldap_auto_studytime_data && !ldap_auto_studytime_data_ou) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not set")
-if (use_ldap && ldap_auto_studytime_data && (!ldap_auto_studytime_data_ou.toLowerCase().includes("ou=") || !ldap_auto_studytime_data_ou.toLowerCase().includes("dc="))) throw new Error("LDAP_AUTO_STUDYTIME_DATA_OU is not a valid OU")
+if (use_ldap && ldap_auto_studytime_data && !ldap_auto_studytime_data_ou) throw new Error("[Config] LDAP_AUTO_STUDYTIME_DATA_OU is not set")
+if (use_ldap && ldap_auto_studytime_data && (!ldap_auto_studytime_data_ou.toLowerCase().includes("ou=") || !ldap_auto_studytime_data_ou.toLowerCase().includes("dc="))) throw new Error("[Config] LDAP_AUTO_STUDYTIME_DATA_OU is not a valid OU")
 
 
 export { maintance, auth_secret, default_username, default_password, studytime, use_ldap, ldap_uri, ldap_tls_reject_unauthorized, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, ldap_password_reset_url, ldap_create_local_admin, ldap_auto_permission, ldap_auto_permission_teacher_group, ldap_auto_permission_admin_group, ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_studytime_data, ldap_auto_studytime_data_ou }

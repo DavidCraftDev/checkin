@@ -7,11 +7,11 @@ const prisma = new PrismaClient();
 
 async function main() {
   if (use_ldap) {
-    console.log("Use LDAP Auth...")
+    console.log("[Info] [Seed] Use LDAP Auth...")
     await seedLdapData(prisma);
     return
   } else {
-    console.log("Use Default Auth...")
+    console.log("[Info] [Seed] Use Default Auth...")
     await seedDefaultData(prisma);
     return
   }
@@ -19,11 +19,11 @@ async function main() {
 main()
   .then(() => prisma.$disconnect())
   .catch(async (e) => {
-    console.error(e);
+    console.error("[Error] [Seed] " + e);
     await prisma.$disconnect();
     process.exit(1);
   })
   .finally(() => {
-    console.info('Exiting seeding...');
+    console.info('[Info] [Seed] Exiting seeding...');
     process.exit(0);
   });

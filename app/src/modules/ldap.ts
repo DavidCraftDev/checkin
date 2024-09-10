@@ -23,17 +23,17 @@ class LDAP {
                 tlsOptions: tlsOptions
             });
         } catch (error) {
-            throw new Error("Failed to create LDAP client: " + error);
+            throw new Error("[LDAP] Failed to create LDAP client: " + error);
         }
     }
 
-    public async bind(dn: string, password: string): Promise<boolean> {
+    public async bind(dn: string, password: string, logError: boolean = true): Promise<boolean> {
         try {
             await this.client.bind(dn, password);
             this.binded = true;
             return true;
         } catch (error) {
-            console.error(new Error("LDAP bind failed: " + error))
+            if (logError) console.log("[Error] [LDAP] LDAP bind failed: " + error)
             this.binded = false;
             return false;
         }
@@ -47,7 +47,7 @@ class LDAP {
     public async search(filter: string, base: string): Promise<Entry[]> {
         if (!this.binded || !this.client.isConnected) {
             this.binded = false;
-            throw new Error("Not binded to LDAP Server");
+            throw new Error("[LDAP] Not binded to LDAP Server");
         }
         const { searchEntries } = await this.client.search(base, {
             scope: 'sub',
@@ -58,7 +58,7 @@ class LDAP {
     }
 
     public isBinded(): boolean {
-        if(this.binded && this.client.isConnected) return true;
+        if (this.binded && this.client.isConnected) return true;
         this.binded = false;
         return false;
     }

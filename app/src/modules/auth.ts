@@ -33,8 +33,11 @@ export const authOptions: NextAuthOptions = {
         if (use_ldap && !credentials.username.startsWith("local/")) {
           const ldapUserData = await getAllUsers();
           const ldapUser = ldapUserData.find((e) => e.sAMAccountName.toString().toLowerCase() === credentials.username.toLowerCase());
-          if (!ldapUser) return null;
-          if (await client.bind(ldapUser.dn, credentials.password)) {
+          if (!ldapUser) {
+            console.log("[Warn] [Auth] User " + credentials.username + " not found in Database, [" + request.headers["x-forwarded-for"] + "]");
+            return null;
+          }
+          if (await client.bind(ldapUser.dn, credentials.password, false)) {
             const dbUser = await db.user.findUnique({
               where: {
                 id: ldapUser.objectGUID as string,
@@ -44,6 +47,7 @@ export const authOptions: NextAuthOptions = {
             user = dbUser;
             client.unbind();
           } else {
+            console.log("[Warn] [Auth] Invalid login credentials for user " + credentials.username + ", [" + request.headers["x-forwarded-for"] + "]");
             client.unbind();
             return null;
           }
@@ -53,7 +57,10 @@ export const authOptions: NextAuthOptions = {
               username: credentials.username.toLowerCase(),
             },
           });
-          if (!dbUser || !dbUser.password || !(await compare(credentials.password, dbUser.password))) return null;
+          if (!dbUser || !dbUser.password || !(await compare(credentials.password, dbUser.password))) {
+            console.log("[Warn] [Auth] Invalid login credentials for user " + credentials.username + ", [" + request.headers["x-forwarded-for"] + "]");
+            return null;
+          }
           user = dbUser
         }
         return {

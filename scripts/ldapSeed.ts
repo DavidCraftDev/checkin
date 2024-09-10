@@ -19,9 +19,9 @@ export async function seedLdapData(prisma: PrismaClient) {
                     permission: 2
                 }
             })
-            console.log("Local Admin created: local/" + username)
+            console.log("[Info] [Seed] Local Admin created: local/" + username)
         }
     }
-    console.log("LDAP data seeded successfully!")
+    console.log("[Info] [Seed] LDAP data seeded successfully!")
     return
 }
