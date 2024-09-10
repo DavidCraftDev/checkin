@@ -10,14 +10,14 @@ let client: LDAP
 if (use_ldap) client = new LDAP()
 
 export async function search(searchFilter: string) {
-    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("Could not bind to LDAP")
+    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("[LDAP-Utilties] Could not bind to LDAP")
     const ldapData = await client.search(searchFilter, ldap_search_base)
     ldapData.map((entry) => entry.objectGUID = convertGUIDToString(entry.objectGUID as Buffer));
     return ldapData;
 }
 
 export async function getAllUsers() {
-    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("Could not bind to LDAP")
+    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("[LDAP-Utilties] Could not bind to LDAP")
     const ldapData = await client.search(ldap_user_search_filter, ldap_search_base)
     ldapData.map((entry) => entry.objectGUID = convertGUIDToString(entry.objectGUID as Buffer));
     await updateUserData(ldapData)
@@ -31,6 +31,7 @@ async function updateUserData(ldapData: Entry[]) {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
             await db.user.delete({ where: { id: entry.id } })
+            console.log("[Info] [LDAP-Utilities] User Deleted: " + entry.username)
             return
         }
         const { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
@@ -64,6 +65,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...competence,
             loginVersion: Math.ceil(Number(entry.pwdLastSet) / 10000000000)
         })
+        console.log("[Info] [LDAP-Utilities] User Created: " + entry.sAMAccountName)
     })
     await db.user.createMany({ data: createData })
 }

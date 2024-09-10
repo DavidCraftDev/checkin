@@ -66,7 +66,7 @@ async function parseCSV() {
                 resolve(true);
             },
             error: (error: Papa.ParseError) => {
-                console.error("Failed to parse CSV: " + error);
+                console.error("[Error] [Courses] Failed to parse CSV: " + error);
                 reject(false);
             }
 
