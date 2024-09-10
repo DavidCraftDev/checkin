@@ -15,10 +15,10 @@ function StudentNote(props: StudentNoteProps) {
     const handleStudentNoteChange = useCallback((studentNote: string, attendanceID: string) => {
         currentNote.current = studentNote;
         if (cooldown.current > 0) {
-            cooldown.current = 75;
+            cooldown.current = 100;
             return;
         } else {
-            cooldown.current = 75;
+            cooldown.current = 100;
             const interval = setInterval(async () => {
                 cooldown.current--;
                 if (cooldown.current <= 0) {
