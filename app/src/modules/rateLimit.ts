@@ -20,7 +20,7 @@ class RateLimit {
                 this.rateLimits[ip].requests = 1;
                 this.rateLimits[ip].lastRequest = new Date();
                 return false;
-            } else if (this.rateLimits[ip].requests >= 10) {
+            } else if (this.rateLimits[ip].requests >= 50) {
                 this.rateLimits[ip].requests++;
                 this.rateLimits[ip].lastRequest = new Date();
                 return true;

@@ -59,11 +59,12 @@ export async function getAttendedStudyTimesCount(userID: string, cw: number, yea
   return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
 }
 
-export async function saveStudyTimeType(attendanceID: string, type: string) {
+export async function saveStudyTimeType(attendanceID: string, userID: string, type: string) {
   let check = await db.attendance.findMany({
     where: {
       type: type,
       cw: moment().isoWeek(),
+      userID: userID,
       created_at: {
         gte: moment().startOf("week").toISOString(),
         lte: moment().endOf("week").toISOString()

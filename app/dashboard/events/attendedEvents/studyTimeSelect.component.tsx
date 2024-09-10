@@ -14,7 +14,7 @@ function StudyTimeSelect(props: StudyTimeSelectProps) {
     let defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function saveType(type: string) {
-        const data = await studyTimeSelectHandler(props.attendance.id, type);
+        const data = await studyTimeSelectHandler(props.attendance.id, props.attendance.userID, type);
         if (data) {
             toast.success("Studienzeit erfolgreich gespeichert");
             router.refresh();
