@@ -18,7 +18,7 @@ interface attendaceCount {
 
 async function group({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
-  if (searchParams.groupID && sessionUser.permission < 2) redirect("/dashboard");
+  if (searchParams.groupID && !sessionUser.group.includes(searchParams.groupID) && sessionUser.permission < 2) redirect("/dashboard");
   const groupID = searchParams.groupID || sessionUser.group[0];
   if (!groupID) notFound();
 
