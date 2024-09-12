@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.3 AS build
+FROM --platform="$BUILDPLATFORM" 22.8.0-alpine3.20 AS build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
@@ -7,7 +7,7 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
     TARGETARCH
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs-current npm file && \
+    apk add --no-cache ca-certificates file && \
     npm install --global clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_arch=x64 npm_config_target_arch=x64 npm clean-install && \
@@ -43,11 +43,11 @@ RUN apk upgrade --no-cache -a && \
     find /app/node_modules -name "*.node" -type f -exec strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
-FROM alpine:3.20.3
+FROM 22.8.0-alpine3.20
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --from=strip --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates tzdata tini nodejs-current npm
+    apk add --no-cache ca-certificates tzdata tini
 USER nobody
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
