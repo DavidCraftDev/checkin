@@ -11,15 +11,15 @@ function MissingStudyTimes(props: MissingStudyTimesProps) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Fehlende Studienzeiten</th>
+                            <th scope="col">Fehlende Studienzeiten</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {props.missingStudyTimes.length > 0 ? (props.missingStudyTimes.map((studyTime: string) => (
+                        {props.missingStudyTimes.length > 0 ? (props.missingStudyTimes.map((studyTime) => (
                             <tr key={studyTime}>
                                 <td>{studyTime}</td>
                             </tr>
-                        ))) : (<tr><td className="italic">Alle Studienzeiten erledigt!</td></tr>)}
+                        ))) : (<tr><td className="italic">Alle Studienzeiten besucht!</td></tr>)}
                     </tbody>
                 </table>
             </div>
