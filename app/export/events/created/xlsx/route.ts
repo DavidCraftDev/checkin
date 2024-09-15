@@ -1,15 +1,22 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getAttendancesPerEvent, getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
-import moment from "moment";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
-    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
-    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
+    const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
     const data: SheetData[] = new Array()
@@ -19,7 +26,7 @@ export async function GET(request: NextRequest) {
     const meta = new Array()
     meta.push([{
         "type": String,
-        "value": "Erstellte Veranstaltungen von " + user.displayname,
+        "value": "Erstellte Studienzeiten von " + user.displayname,
         "fontWeight": "bold"
     }])
     meta.push([{
@@ -53,7 +60,7 @@ export async function GET(request: NextRequest) {
     meta.push([{}])
     meta.push([{
         "type": String,
-        "value": "Veranstaltung",
+        "value": "Stammfach",
         "fontWeight": "bold"
     },
     {
@@ -65,17 +72,11 @@ export async function GET(request: NextRequest) {
         "type": String,
         "value": "Erstellt am",
         "fontWeight": "bold"
-    },
-    {
-        "type": String,
-        "value": "Studienzeit",
-        "fontWeight": "bold"
     }])
     for (const event of events) {
-        let studyTime = event.event.studyTime ? "✔️" : "❌"
         meta.push([{
             "type": String,
-            "value": event.event.name
+            "value": event.event.type
         },
         {
             "type": Number,
@@ -85,10 +86,6 @@ export async function GET(request: NextRequest) {
             "type": Date,
             "value": new Date(event.event.created_at),
             "format": "DD.MM.YYYY HH:mm"
-        },
-        {
-            "type": String,
-            "value": studyTime
         }])
     }
     data.push(meta)
@@ -111,7 +108,7 @@ export async function GET(request: NextRequest) {
         const eventData = new Array()
         eventData.push([{
             "type": String,
-            "value": event.event.name,
+            "value": "Studienzeit " + event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY"),
             "fontWeight": "bold"
         }])
         eventData.push([{
@@ -136,12 +133,7 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": String,
-            "value": "Event CW/Jahr:",
-            "fontWeight": "bold"
-        },
-        {
-            "type": String,
-            "value": "Studienzeit:",
+            "value": "CW/Jahr:",
             "fontWeight": "bold"
         }])
         eventData.push([{
@@ -165,10 +157,6 @@ export async function GET(request: NextRequest) {
         {
             "type": String,
             "value": calendarWeek + "/" + year
-        },
-        {
-            "type": Boolean,
-            "value": event.event.studyTime,
         }])
         eventData.push([{}])
         eventData.push([{
@@ -223,15 +211,15 @@ export async function GET(request: NextRequest) {
             }])
         })
         data.push(eventData)
-        if (sheetName.includes(event.event.name.replace("Studienzeit", "SZ").substring(0, 31))) {
+        if (sheetName.includes((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 31))) {
             for (let i = 1; i < 999; i++) {
-                if (!sheetName.includes(event.event.name.replace("Studienzeit", "SZ").substring(0, 27) + " (" + i + ")")) {
-                    sheetName.push(event.event.name.replace("Studienzeit", "SZ").substring(0, 27) + " (" + i + ")")
+                if (!(event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")") {
+                    sheetName.push((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetName.push(event.event.name.replace("Studienzeit", "SZ").substring(0, 31))
+            sheetName.push((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 31))
         }
         columeData.push([{
             width: 20
