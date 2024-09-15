@@ -1,13 +1,12 @@
 "use client"
 
-import moment from "moment";
 import TeacherNote from "./teacherNote.component";
 import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
 import { deleteEventHandler } from "./deleteEventHandler";
 import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 interface EventTableProps {
-    studyTime: boolean,
     attendances: AttendancePerEventPerUser[],
     eventID: string,
     addable: boolean
@@ -27,7 +26,7 @@ function EventTable(props: EventTableProps) {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            {props.studyTime ? <th>Fach</th> : null}
+                            <th>Fach</th>
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
                             <th>Wann hinzugefügt</th>
@@ -37,10 +36,10 @@ function EventTable(props: EventTableProps) {
                         {props.attendances.map((attendance: AttendancePerEventPerUser) => (
                             <tr key={attendance.attendance.id}>
                                 <td>{attendance.user.displayname}</td>
-                                {props.studyTime ? attendance.attendance.type ? <td>{attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</td> : <td>❌</td> : null}
+                                {attendance.attendance.type ? <td>{attendance.attendance.type}</td> : <td className="italic">Kein Fach ausgewählt</td>}
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
-                                <td>{moment(attendance.attendance.created_at).format("DD.MM.YYYY HH:mm")}</td>
+                                <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
                             </tr>
                         ))}
                     </tbody>
