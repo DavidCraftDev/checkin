@@ -45,7 +45,7 @@ function EventTable(props: EventTableProps) {
                     </tbody>
                 </table>
                 {props.attendances.length === 0 ? <p className="text-center italic m-2">Keine Teilnehmer</p> : null}
-                {props.attendances.length === 0 ? <p className="text-center"><button onClick={handleDelete} className="btn bg-red-700 hover:bg-red-900 m-2 mt-0 text-center">{props.studyTime ? "Studienzeit" : "Veranstaltung"} löschen</button></p> : null}
+                {props.attendances.length === 0 ? <p className="text-center"><button onClick={handleDelete} className="btn bg-red-700 hover:bg-red-900 m-2 mt-0 text-center">Studienzeit löschen</button></p> : null}
             </div>
         </div>
     )
