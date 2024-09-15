@@ -1,13 +1,19 @@
 import { notFound, redirect } from "next/navigation";
 import { getSessionUser } from "@/app/src/modules/authUtilities";
-import moment from "moment";
 import { getGroupMembers } from "@/app/src/modules/groupUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import GroupTable from "./groupTable.component";
 import { getAttendedStudyTimesCount } from "@/app/src/modules/studytimeUtilities";
-import { studytime } from "@/app/src/modules/config";
 import { GroupMember } from "@/app/src/interfaces/groups";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 interface attendaceCount {
   normal: number,
@@ -22,11 +28,11 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   const groupID = searchParams.groupID || sessionUser.group[0];
   if (!groupID) notFound();
 
-  const currentWeek = moment().isoWeek();
-  const currentYear = moment().year();
+  const currentWeek = dayjs().isoWeek();
+  const currentYear = dayjs().year();
   const cw = Number(searchParams.cw) || currentWeek;
   const year = Number(searchParams.year) || currentYear;
-  if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
+  if (cw > dayjs().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
 
   let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, attendaceCount> = {};
@@ -43,7 +49,7 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
         </div>
         <CalendarWeek />
       </div>
-      <GroupTable user={groupData} cw={cw} year={year} studyTime={studytime} studyTimeData={studyTimeData} />
+      <GroupTable user={groupData} cw={cw} year={year} studyTimeData={studyTimeData} />
       <p>Exportieren als:
         <a href={`/export/groups/group/json?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.json`} className="hover:underline mx-1">JSON</a>
         <a href={`/export/groups/group/xlsx?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.xlsx`} className="hover:underline mx-1">XLSX</a>
