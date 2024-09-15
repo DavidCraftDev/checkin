@@ -1,9 +1,10 @@
 import { User } from "@prisma/client"
 import { getAttendancesPerUser } from "../../eventUtilities"
-import { getAttendedStudyTimes, getSavedMissingStudyTimes } from "../../studytimeUtilities"
+import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
 
-async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number, studytime: boolean) {
+async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number) {
     const attendances = await getAttendancesPerUser(userData.id, cw, year)
+    const savedNeeds = await getSavedNeededStudyTimes(userData.id, cw, year);
     const data = new Array()
     data.push({
         meta: {
@@ -13,19 +14,10 @@ async function getAttendedEventsJSON(user: User, userData: User, cw: number, yea
             requestedBy: user.id,
             cw: cw,
             year: year,
-            time: new Date()
+            time: new Date(),
+            needs: savedNeeds.needs
         }
     })
-    if (studytime) {
-        const attendedStudyTimes = await getAttendedStudyTimes(userData.id, cw, year)
-        const missingStudyTimes = await getSavedMissingStudyTimes(userData.id, cw, year)
-        data.push({
-            studyTime: {
-                attendedStudyTimes: attendedStudyTimes,
-                missingStudyTimes: missingStudyTimes
-            }
-        })
-    }
     data.push(attendances)
     return data
 }
