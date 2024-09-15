@@ -3,11 +3,18 @@ import "server-only";
 import { Events, User } from "@prisma/client";
 import db from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
-import moment from "moment";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 export async function getAttendancesPerUser(userID: string, cw: number, year: number) {
-    const dataAttendances = await db.attendance.findMany({
+    const dataAttendances = await db.attendances.findMany({
         where: {
             userID: userID,
             cw: cw,
@@ -19,11 +26,11 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
     });
     const data: AttendancePerUserPerEvent[] = new Array();
     await Promise.all(dataAttendances.map(async (attendance) => {
-        let dataEvent: Events | null;
+        let dataEvent: Events;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
-            if (((!attendance.type || !attendance.studentNote) && moment().diff(moment(attendance.created_at), "minutes") > 1) || attendance.type === "note:delete") {
-                await db.attendance.delete({
+            if (((!attendance.type || !attendance.studentNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
+                await db.attendances.delete({
                     where: {
                         id: attendance.id
                     }
@@ -32,16 +39,16 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
             dataEvent = {
                 id: "NOTE",
-                name: "Notiz",
+                type: "Notiz",
                 user: userID,
                 cw: cw,
-                studyTime: true,
-                created_at: moment().year(year).week(cw).toDate()
+                created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
             dataUserEvent = await getUserPerID(attendance.userID);
         } else {
-            dataEvent = await getEventPerID(attendance.eventID);
-            if (!dataEvent) return;
+            const dataFromEvent = await getEventPerID(attendance.eventID);
+            if (!dataFromEvent) return;
+            dataEvent = dataFromEvent;
             dataUserEvent = await getUserPerID(dataEvent.user);
         }
         data.push({
@@ -59,7 +66,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
 }
 
 export async function getAttendancesPerEvent(eventID: string) {
-    const dataAttendance = await db.attendance.findMany({
+    const dataAttendance = await db.attendances.findMany({
         where: {
             eventID: eventID
         }
@@ -77,7 +84,7 @@ export async function getAttendancesPerEvent(eventID: string) {
 }
 
 export async function getAttendanceCountPerUser(userID: string, cw: number, year: number) {
-    const data = await db.attendance.count({
+    const data = await db.attendances.count({
         where: {
             userID: userID,
             cw: cw,
@@ -91,7 +98,7 @@ export async function getAttendanceCountPerUser(userID: string, cw: number, year
 }
 
 export async function attendanceExists(eventID: string, userID: string) {
-    const data = await db.attendance.count({
+    const data = await db.attendances.count({
         where: {
             eventID: eventID,
             userID: userID
@@ -122,12 +129,12 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
     });
     const data: CreatedEventPerUser[] = new Array();
     await Promise.all(dataEvents.map(async (event) => {
-        const attendedUser = await db.attendance.count({
+        const attendedUser = await db.attendances.count({
             where: {
                 eventID: event.id
             }
         });
-        if (attendedUser === 0 && moment().diff(moment(event.created_at), "hours") > 1) {
+        if (attendedUser === 0 && dayjs().diff(dayjs(event.created_at), "hours") > 1) {
             await db.events.delete({
                 where: {
                     id: event.id
@@ -148,13 +155,12 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
     return data;
 }
 
-export async function createEvent(name: string, userID: string, studyTime: boolean) {
+export async function createEvent(type: string, userID: string) {
     const data = await db.events.create({
         data: {
-            name: name,
+            type: type,
             user: userID,
-            cw: moment().isoWeek(),
-            studyTime: studyTime
+            cw: dayjs().isoWeek()
         }
     });
     return data;
@@ -172,11 +178,11 @@ export async function eventExists(eventID: string) {
 export async function checkINHandler(eventID: string, userID: string) {
     if (!await existUserPerID(userID)) return "ErrorNotFound"
     if (await attendanceExists(eventID, userID)) return "ErrorAlreadyCheckedIn"
-    await db.attendance.create({
+    await db.attendances.create({
         data: {
             eventID: eventID,
             userID: userID,
-            cw: moment().isoWeek(),
+            cw: dayjs().isoWeek(),
         }
     });
     let userData: User = await getUserPerID(userID);
@@ -184,7 +190,7 @@ export async function checkINHandler(eventID: string, userID: string) {
 }
 
 export async function createTeacherNote(id: string, note: string) {
-    const data = await db.attendance.update({
+    const data = await db.attendances.update({
         where: {
             id: id
         },
@@ -196,7 +202,7 @@ export async function createTeacherNote(id: string, note: string) {
 }
 
 export async function createStudentNote(id: string, note: string) {
-    const data = await db.attendance.update({
+    const data = await db.attendances.update({
         where: {
             id: id
         },
@@ -207,23 +213,8 @@ export async function createStudentNote(id: string, note: string) {
     return data;
 }
 
-export async function getStudyTimes(userID: string, cw: number, year: number) {
-    const data = await db.attendance.findMany({
-        where: {
-            userID: userID,
-            cw: cw,
-            created_at: {
-                gte: new Date(String(year) + "-01-01"),
-                lte: new Date(String(year) + "-12-31")
-            },
-            type: { not: null }
-        }
-    });
-    return data;
-}
-
-export async function getNormalEventsAttendances(userID: string, cw: number, year: number) {
-    const dataAttendances = await db.attendance.findMany({
+export async function getAttendancesWithoutType(userID: string, cw: number, year: number) {
+    const dataAttendances = await db.attendances.findMany({
         where: {
             userID: userID,
             cw: cw,
@@ -237,11 +228,15 @@ export async function getNormalEventsAttendances(userID: string, cw: number, yea
             }
         }
     });
-    const data: Events[] = new Array();
+    const data: AttendancePerUserPerEvent[] = new Array();
     await Promise.all(dataAttendances.map(async (attendance) => {
         const dataEvent = await getEventPerID(attendance.eventID);
         if (!dataEvent) return;
-        data.push(dataEvent);
+        data.push({
+            attendance: attendance,
+            event: dataEvent,
+            eventUser: await getUserPerID(dataEvent.user)
+        });
     }));
     return data;
 }

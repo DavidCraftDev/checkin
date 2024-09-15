@@ -1,5 +1,5 @@
 import { Entry } from 'ldapts';
-import { ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_permission_admin_group, ldap_auto_permission_teacher_group, ldap_auto_studytime_data, ldap_auto_studytime_data_ou, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, studytime, use_ldap } from './config';
+import { ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_permission_admin_group, ldap_auto_permission_teacher_group, ldap_auto_studytime_data, ldap_auto_studytime_data_ou, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, use_ldap } from './config';
 import courses from './courses';
 import db from './db';
 import LDAP from './ldap';
@@ -91,7 +91,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
 
     let needs = {}
     let competence = {}
-    if (ldap_auto_studytime_data && studytime) {
+    if (ldap_auto_studytime_data) {
         let memberData = new Set()
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
