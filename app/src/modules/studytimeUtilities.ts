@@ -1,7 +1,6 @@
 import "server-only";
 
 import { getAttendancesPerUser } from "./eventUtilities";
-import { getUserPerID } from "./userUtilities";
 import { User } from "@prisma/client";
 import db from "./db";
 import { AttendancePerUserPerEvent } from "../interfaces/events";
