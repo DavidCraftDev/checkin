@@ -97,14 +97,6 @@ export async function getNeededStudyTimesForNotes(user: User, attendances: Atten
   return neededStudyTimes;
 }
 
-export async function getMissingStudyTimes(userID: string) {
-  const neededStudyTimes = (await getUserPerID(userID)).needs;
-  const attendedStudyTimes = await getAttendedStudyTimes(userID, dayjs().isoWeek(), dayjs().year());
-  let missingStudyTimes: Array<string> = new Array();
-  neededStudyTimes.forEach((neededStudyTime) => { if (!attendedStudyTimes.find((attendedStudyTime) => attendedStudyTime.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
-  return missingStudyTimes;
-}
-
 export async function saveNeededStudyTimes(user: User) {
   const count = await db.studyTimeData.count({
     where: {
