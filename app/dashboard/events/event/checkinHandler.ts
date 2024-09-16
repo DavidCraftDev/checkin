@@ -1,7 +1,7 @@
 "use server"
 
 import { getSessionUser } from "@/app/src/modules/authUtilities";
-import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { checkINHandler } from "@/app/src/modules/eventUtilities";
 import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
 import { Events } from "@prisma/client";
 

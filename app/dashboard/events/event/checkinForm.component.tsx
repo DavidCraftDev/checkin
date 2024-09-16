@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Events, User } from "@prisma/client";
 import SearchBar from "./search.component";
+import dayjs from "dayjs";
 
 interface CheckinFormProps {
     event: Events;
@@ -15,6 +16,7 @@ function CheckinForm(props: CheckinFormProps) {
     async function eventHandler(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        if(props.event.cw !== dayjs().isoWeek()) router.refresh();
         if (!formData.get("name")) return;
         const data: string | User = await submitHandler(formData.get("name") as string, props.event)
         if (typeof data === "string") {
