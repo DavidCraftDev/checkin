@@ -18,7 +18,9 @@ function CreateEventForm(props: CreatedEventFormProps) {
             toast.error("Bitte wähle eine Studienzeit aus");
             return;
         }
-        submitHandlerStudyTime(selectedStudyTime);
+        const data = await submitHandlerStudyTime(selectedStudyTime);
+        if (data === 2) toast("Bitte warte 10 Sekunden", { icon: "❗" });
+        else if (data === 0) toast.error("Fehler beim Erstellen der Studienzeit");
     }
 
     let competences: Array<string> = props.user.competence as Array<string> || [];

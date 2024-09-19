@@ -9,11 +9,12 @@ let disabled: disabledType = {};
 
 async function createStudyTimeHandler(studyTimeType: string) {
     const sessionUser = await getSessionUser(1);
-    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 10000 > Date.now()) return;
+    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 5000 > Date.now()) return 2;
     disabled[sessionUser.id] = Date.now();
     try {
         const data = await createEvent(studyTimeType.replace("parallel", "Vertretung"), sessionUser.id);
-        if (data.id) redirect(`/dashboard/events/event?id=${data.id}`);
+        if (data.id) redirect(`/dashboard/events/event?id=${data.id}`)
+        else return 0;
     } finally {
         delete disabled[sessionUser.id];
     }
