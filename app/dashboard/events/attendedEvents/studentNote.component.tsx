@@ -13,6 +13,7 @@ function StudentNote(props: StudentNoteProps) {
     const [note, setNote] = useState<string>(props.attendance.studentNote || "");
     const [debouncedNote, setDebouncedNote] = useState<string>(note);
     const changed = useRef(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (!changed.current) return;
@@ -39,9 +40,13 @@ function StudentNote(props: StudentNoteProps) {
         }
         saveNote();
     }, [debouncedNote]);
+
+    useEffect(() => {
+        if (textareaRef.current && !props.attendance.studentNote && props.attendance.eventID === "NOTE") textareaRef.current.focus();
+    }, [props.attendance]);
     return (
         <td>
-            <textarea value={note} onChange={(e) => {setNote(e.target.value); changed.current = true}} placeholder="Schüler Noitz" name="StudentNote" className="border-gray-200 border-2 rounded-md"></textarea>
+            <textarea ref={textareaRef} value={note} onChange={(e) => { setNote(e.target.value); changed.current = true }} placeholder="Schüler Noitz" name="StudentNote" className="border-gray-200 border-2 rounded-md"></textarea>
         </td>
     )
 }
