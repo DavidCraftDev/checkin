@@ -6,10 +6,10 @@ import { createUserStudyTimeNote } from "@/app/src/modules/studytimeUtilities";
 let disabled: disabledType = {};
 
 async function createStudyTimeNote(userID: string, cw: number) {
-    if (disabled[userID] && disabled[userID] + 10000 > Date.now()) return;
+    if (disabled[userID] && disabled[userID] + 5000 > Date.now()) return 2;
     disabled[userID] = Date.now();
     try {
-        await createUserStudyTimeNote(userID, cw);
+        return + await createUserStudyTimeNote(userID, cw);
     } finally {
         delete disabled[userID]
     }
