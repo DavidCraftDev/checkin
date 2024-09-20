@@ -5,9 +5,12 @@ import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
 import { deleteEventHandler } from "./deleteEventHandler";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import RemoveUser from "./removeUser.coponent";
+import { User } from "@prisma/client";
 
 interface EventTableProps {
     attendances: AttendancePerEventPerUser[],
+    user: User,
     eventID: string,
     addable: boolean
 }
@@ -30,6 +33,7 @@ function EventTable(props: EventTableProps) {
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
                             <th>Wann hinzugefügt</th>
+                            {props.addable ? <th>Teilnehmer Entfernen</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +44,7 @@ function EventTable(props: EventTableProps) {
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
+                                {props.addable ? <RemoveUser user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
                         ))}
                     </tbody>

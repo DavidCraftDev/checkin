@@ -32,7 +32,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
             </div>
-            <EventTable attendances={attendances} eventID={eventID} addable={addable} />
+            <EventTable attendances={attendances} user={user} eventID={eventID} addable={addable} />
             <p>Exportieren als:
                 <a href={`/export/events/event/json?eventID=${eventID}`} download={`event${eventID}.json`} className="hover:underline mx-1">JSON</a>
                 <a href={`/export/events/event/xlsx?eventID=${eventID}`} download={`event${eventID}.xlsx`} className="hover:underline mx-1">XLSX</a>
