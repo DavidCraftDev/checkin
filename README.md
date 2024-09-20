@@ -1,7 +1,6 @@
 # CheckIN
 
-Ein System, um die Anwesenheit von Schülerinnen und Schülern zu überprüfen.
-Zudem ist es möglich, erfüllte Studienzeiten von Schülerinnen und Schüler zu überprüfen. 
+Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.
 Die Studienzeit ist ein Konzept über dass selbstständigen Lernen in der Oberstufe.
 
 ## Installation
@@ -27,8 +26,6 @@ services:
       # Set own default admin credentials
       - DEFAULT_LOGIN_USERNAME=OwnUsername
       - DEFAULT_LOGIN_PASSWORD=OwnPassword
-      # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
-      - STUDYTIME=false
       # The LDAP auth feature may not work with your envorinment. Please test it before using it in production, and when it not works, ask for help!
       # Use the LDAP auth feature instead of the own user management from the CheckIN (true/false). Please only enable before the first start of the CheckIN, and not disable it after the first start.
       - USE_LDAP=false
@@ -90,7 +87,6 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 |AUTH_SECRET|Der Wert womit die Nutzerdaten die im Cookie beim Nutzer gespeichert werden, verschlüsselt werden. **Unbedingt einen eigenen Geheimen Wert setzen!**|
 |DEFAULT_LOGIN -> Username|Der Nutzername des Adminnutzers der Standardmäßig erstellt wird, wenn kein Nutzer mit Admin Rechten existiert. Dieser Wert sollte nicht der Standard Wert sein.|
 |DEFAULT_LOGIN -> Password|Passwort des Standard Adminnutzers. Dieser Wert sollte nicht der Standard Wert sein.|
-|STUDYTIME|Aktiviert wenn dieser Wert auf `true`ist die Studienzeit-Funktion. Standardmäßig ist dieser Wert auf `false`. Einmal aktiviert, sollte diese Funktion nicht mehr deaktiviert werden. Mehr zur Funktion [hier](#studienzeit-funktion)|
 |LDAP -> Enabled|**Dieser Wert darf nur vor dem ersten Nutzen des Systems verändert werden!** Wenn dieser Wert auf `true` ist wird LDAP statt dem eigenen Auth System verwendet. Der Wer ist standardmäßig auf `false`. Kann unter umständen nicht Problemlos laufen, mehr dazu [hier](#ldap-funktion).|
 |LDAP -> URI|Die URI des LDAP-Servers, beginend mit `ldap://` oder `ldaps://`.|
 |LDAP -> LDAP_TLS_REJECT_UNAUTHORIZED|Wenn ein eigenes CA-Zertifikat verwendet wird und nicht wie im Absatz [unten](#ldap-funktion) beschrieben ein eigenes hinterlegt wird, sollte dieser Wert auf `true` gesetzt werden. Standardmäßig ist er auf `false`.|
