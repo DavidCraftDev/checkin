@@ -100,6 +100,7 @@ export async function getNeededStudyTimesForNotes(user: User, attendances: Atten
 }
 
 export async function saveNeededStudyTimes(user: User) {
+  if (lastSaveStudyTimeData[user.id] && lastSaveStudyTimeData[user.id] + 900000 > Date.now()) return;
   const data = await db.studyTimeData.findFirst({
     where: {
       userID: user.id,

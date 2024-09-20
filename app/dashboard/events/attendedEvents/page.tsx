@@ -5,7 +5,7 @@ import CalendarWeek from "@/app/src/ui/calendarweek";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedNeededStudyTimes, saveNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import CreateStudyTimeNote from "./createStudyTimeNote.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -34,14 +34,17 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     const attendances = await getAttendancesPerUser(userID, cw, year);
     const completedStudyTimesCount = attendances.filter((attendance) => attendance.event.type !== null).length;
 
-    let addable = ((cw === currentWeek && year === currentYear) || (sessionUser.id !== userData.id));
+    let addable = (cw === currentWeek && year === currentYear);
 
     const studyTimeTypes: Record<string, string[]> = {};
     for (const event of attendances) studyTimeTypes[event.attendance.id] = event.event.id !== "NOTE" ? await getNeededStudyTimesSelect(userData, event.eventUser, attendances) : await getNeededStudyTimesForNotes(userData, attendances);
 
     let userNeeds = addable ? userData.needs : (await (getSavedNeededStudyTimes(userData, cw, year))).needs;
+    if (addable) saveNeededStudyTimes(userData);
     let missingStudyTimes: Array<string> = new Array();
     userNeeds.forEach((neededStudyTime) => { if (!attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
+
+    if (sessionUser.id !== userData.id) addable = true;
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
