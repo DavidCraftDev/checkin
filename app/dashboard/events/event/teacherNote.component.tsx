@@ -38,10 +38,10 @@ function TeacherNote(props: TeacherNoteProps) {
             }
         }
         saveNote();
-    }, [debouncedNote]);
+    }, [debouncedNote, props.attendance.studentNote, props.attendance.id]);
     return (
         <td>
-            <textarea defaultValue={props.attendance.teacherNote || ""} onChange={(e) => {setNote(e.target.value); changed.current = true}} placeholder="Lehrer Notiz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
+            <textarea defaultValue={props.attendance.teacherNote || ""} onChange={(e) => { setNote(e.target.value); changed.current = true }} placeholder="Lehrer Notiz" name="Note" className="border-gray-200 border-2 rounded-md"></textarea>
         </td>
     )
 }
