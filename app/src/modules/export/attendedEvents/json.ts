@@ -4,7 +4,7 @@ import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
 
 async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number) {
     const attendances = await getAttendancesPerUser(userData.id, cw, year)
-    const savedNeeds = await getSavedNeededStudyTimes(userData.id, cw, year);
+    const savedNeeds = await getSavedNeededStudyTimes(userData, cw, year);
     const data = new Array()
     data.push({
         meta: {

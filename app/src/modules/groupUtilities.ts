@@ -2,7 +2,6 @@ import "server-only";
 
 import db from "./db";
 import { getAttendanceCountPerUser } from "./eventUtilities";
-import { saveNeededStudyTimes } from "./studytimeUtilities";
 import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
 import { User } from "@prisma/client";
 import dayjs from "dayjs";
@@ -22,7 +21,6 @@ export async function getGroupMembers(groupID: string, cw: number, year: number)
             }
         }
     });
-    Promise.all(userData.map(async (user) => saveNeededStudyTimes(user)));
     const data: GroupMember[] = new Array();
     await Promise.all(userData.map(async (user) => {
         const dataAttendance = await getAttendanceCountPerUser(user.id, cw, year);

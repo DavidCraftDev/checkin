@@ -48,7 +48,7 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
             studyTimes.push(attendance.attendance.type);
         }
     });
-    const missing = await getSavedNeededStudyTimes(user.id, cw, year);
+    const missing = await getSavedNeededStudyTimes(user, cw, year);
     const missingStudyTimes = missing.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
     sheetData.push([{
         "type": String,

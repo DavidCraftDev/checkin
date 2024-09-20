@@ -8,10 +8,13 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { disabledType } from "../interfaces/utilties";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
+
+const lastSaveStudyTimeData: disabledType = {};
 
 export async function getNeededStudyTimesSelect(user: User, teacher: User, attendances: AttendancePerUserPerEvent[]) {
   const userNeeds = user.needs
@@ -33,11 +36,11 @@ export async function getNeededStudyTimesSelect(user: User, teacher: User, atten
   return neededStudyTimes;
 }
 
-export async function getAttendedStudyTimesCount(userID: string, cw: number, year: number) {
+export async function getAttendedStudyTimesCount(user: User, cw: number, year: number) {
   let normalStudyTimes = 0;
   let parallelStudyTimes = 0;
   let notedStudyTimes = 0;
-  await getAttendancesPerUser(userID, cw, year).then((result) => {
+  await getAttendancesPerUser(user.id, cw, year).then((result) => {
     result.forEach((studyTime) => {
       if (studyTime.attendance.type === null) return;
       if (studyTime.attendance.type.startsWith("Vertretung:")) parallelStudyTimes++;
@@ -45,7 +48,7 @@ export async function getAttendedStudyTimesCount(userID: string, cw: number, yea
       else normalStudyTimes++;
     });
   });
-  const savedStudyTimesData = await getSavedNeededStudyTimes(userID, cw, year);
+  const savedStudyTimesData = await getSavedNeededStudyTimes(user, cw, year);
   const savedStudyTimes = savedStudyTimesData && savedStudyTimesData.needs ? savedStudyTimesData.needs as Array<string> : [] as Array<string>;
   const neededStudyTimes = savedStudyTimes.length || 0;
   return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
@@ -97,40 +100,38 @@ export async function getNeededStudyTimesForNotes(user: User, attendances: Atten
 }
 
 export async function saveNeededStudyTimes(user: User) {
-  const count = await db.studyTimeData.count({
+  const data = await db.studyTimeData.findFirst({
     where: {
       userID: user.id,
       cw: dayjs().isoWeek(),
       year: dayjs().year()
     }
   });
-  if (!user.needs) return
-  if (count > 0) await db.studyTimeData.updateMany({
-    where: {
-      AND: [
-        { userID: user.id },
-        { cw: dayjs().isoWeek() },
-        { year: dayjs().year() }
-      ]
-    },
-    data: {
-      needs: user.needs
-    }
-  });
-  else await db.studyTimeData.create({
+  if (data) {
+    if (data.needs !== user.needs) await db.studyTimeData.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        needs: user.needs as string[] || []
+      }
+    });
+  } else await db.studyTimeData.create({
     data: {
       userID: user.id,
       cw: dayjs().isoWeek(),
       year: dayjs().year(),
-      needs: user.needs as string[]
+      needs: user.needs as string[] || []
     }
   });
+  lastSaveStudyTimeData[user.id] = Date.now();
 }
 
-export async function getSavedNeededStudyTimes(userID: string, cw: number, year: number) {
+export async function getSavedNeededStudyTimes(user: User, cw: number, year: number) {
+  if (!(lastSaveStudyTimeData[user.id] && lastSaveStudyTimeData[user.id] + 900000 > Date.now())) await saveNeededStudyTimes(user);
   const data = await db.studyTimeData.findMany({
     where: {
-      userID: userID,
+      userID: user.id,
       cw: Number(cw),
       year: Number(year)
     }
