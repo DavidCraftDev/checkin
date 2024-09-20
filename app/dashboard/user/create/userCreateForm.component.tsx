@@ -5,15 +5,11 @@ import { submitCreateHandler } from "./submitCreateHandler";
 import clsx from "clsx";
 import { FormEvent } from "react";
 
-interface UserCreateFormProps {
-    studyTime: boolean
-}
-
 let displaynameError = false
 let usernameError = false
 let passwordError = false
 
-function UserCreateForm(props: UserCreateFormProps) {
+function UserCreateForm() {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         displaynameError = false
@@ -57,12 +53,12 @@ function UserCreateForm(props: UserCreateFormProps) {
                     <label htmlFor="group">Gruppen (Durch Komma getrennt)</label><br />
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br />
-                    <label htmlFor="needs" className={props.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={props.studyTime ? "" : "hidden"} />
-                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
-                    <br className={props.studyTime ? "" : "hidden"} />
-                    <label htmlFor="competence" className={props.studyTime ? "" : "hidden"} >Kompetenzen (Durch Komma getrennt)</label><br className={props.studyTime ? "" : "hidden"} />
-                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !props.studyTime })} />
-                    <br className={props.studyTime ? "" : "hidden"} />
+                    <label htmlFor="needs">Benötigte Studienzeiten (Durch Komma getrennt)</label><br />
+                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                    <br />
+                    <label htmlFor="competence">Kompetenzen (Durch Komma getrennt)</label><br />
+                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                    <br />
                     <label htmlFor="password">Passwort*</label><br />
                     <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "border-red-600 ring-red-600": passwordError })} required />
                 </div>

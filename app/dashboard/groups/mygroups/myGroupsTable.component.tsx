@@ -19,7 +19,7 @@ function MyGroupsTable(props: GroupsTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.groups.map((group: any) => (
+                        {props.groups.map((group) => (
                             <tr key={group.group}>
                                 <td>{group.group}</td>
                                 <td>{group.members} Teilnehmer</td>

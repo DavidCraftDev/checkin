@@ -1,7 +1,6 @@
 'use server'
 
 import { createUser } from "@/app/src/modules/userUtilities";
-import { Prisma } from "@prisma/client";
 
 export async function submitCreateHandler(formdata: FormData) {
     const displayname = formdata.get('displayname') as string || "_";

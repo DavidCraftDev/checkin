@@ -1,9 +1,17 @@
+import "server-only";
+
 import db from "./db";
 import { getAttendanceCountPerUser } from "./eventUtilities";
-import { saveNeededStudyTimes } from "./studytimeUtilities";
-import moment from "moment";
 import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
 import { User } from "@prisma/client";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 export async function getGroupMembers(groupID: string, cw: number, year: number) {
     const userData = await db.user.findMany({
@@ -13,7 +21,6 @@ export async function getGroupMembers(groupID: string, cw: number, year: number)
             }
         }
     });
-    Promise.all(userData.map(async (user) => saveNeededStudyTimes(user)));
     const data: GroupMember[] = new Array();
     await Promise.all(userData.map(async (user) => {
         const dataAttendance = await getAttendanceCountPerUser(user.id, cw, year);
@@ -59,7 +66,7 @@ export async function getGroupsWithUserData() {
     const groups = await getGroups();
     const data: GroupsWithUserData[] = new Array();
     await Promise.all(groups.map(async (group) => {
-        const dataMembers = await getGroupMembers(group.group, moment().isoWeek(), moment().year());
+        const dataMembers = await getGroupMembers(group.group, dayjs().isoWeek(), dayjs().year());
         data.push({
             group: group.group,
             members: dataMembers.map((member) => member.user)

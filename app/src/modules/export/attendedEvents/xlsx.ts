@@ -1,8 +1,7 @@
 import { User } from "@prisma/client";
 import { getAttendancesPerUser } from "../../eventUtilities";
-import { getSavedMissingStudyTimes } from "../../studytimeUtilities";
-import { studytime } from "../../config";
 import { Columns, SheetData } from "write-excel-file";
+import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     let sheetData: SheetData = new Array()
@@ -11,7 +10,7 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     const attendances = await getAttendancesPerUser(user.id, cw, year)
     sheetData.push([{
         "type": String,
-        "value": "Teilgenommene Veranstaltungen von " + user.displayname,
+        "value": "Teilgenommene Studienzeiten von " + user.displayname,
         "fontWeight": "bold"
     }])
     sheetData.push([{
@@ -22,11 +21,6 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     {
         "type": String,
         "value": "Exportierte Einträge:",
-        "fontWeight": "bold"
-    },
-    {
-        "type": String,
-        "value": "Exportiert von:",
         "fontWeight": "bold"
     },
     {
@@ -45,66 +39,59 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     },
     {
         "type": String,
-        "value": user.displayname
-    },
-    {
-        "type": String,
         "value": cw + "/" + year
     }])
     sheetData.push([{}])
-    if (studytime) {
-        let studyTimes: Array<string> = [];
-        attendances.forEach((attendance) => {
-            if (attendance.event.studyTime) {
-                if (attendance.attendance.type) {
-                    studyTimes.push(attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:"));
-                }
-            }
-        });
-        const missing = await getSavedMissingStudyTimes(user.id, cw, year)
-        sheetData.push([{
-            "type": String,
-            "value": "Erledigte Studienzeiten:",
-            "fontWeight": "bold"
-        },
-        {
-            "type": String,
-            "value": "Davon Vertretungen:",
-            "fontWeight": "bold"
-        },
-        {
-            "type": String,
-            "value": "Davon nur mit Notizen:",
-            "fontWeight": "bold"
-        },
-        {
-            "type": String,
-            "value": "Fehlende Studienzeiten:",
-            "fontWeight": "bold"
-        }])
-        sheetData.push([{
-            "type": String,
-            "value": studyTimes.toString().replaceAll(",", ", "),
-            "wrap": true
-        },
-        {
-            "type": Number,
-            "value": studyTimes.filter((studyTime) => studyTime.includes("parallel:")).length,
-        },
-        {
-            "type": Number,
-            "value": studyTimes.filter((studyTime) => studyTime.includes("note:")).length,
-        },
-        {
-            "type": String,
-            "value": missing.toString().replaceAll(",", ", "),
-            "wrap": true
-        }])
-        sheetData.push([{}])
-    }
+    let studyTimes: Array<string> = [];
+    attendances.forEach((attendance) => {
+        if (attendance.attendance.type) {
+            studyTimes.push(attendance.attendance.type);
+        }
+    });
+    const missing = await getSavedNeededStudyTimes(user, cw, year);
+    const missingStudyTimes = missing.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
     sheetData.push([{
         "type": String,
-        "value": "Veranstaltung",
+        "value": "Erledigte Studienzeiten:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Davon Vertretungen:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Davon nur mit Notizen:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Fehlende Studienzeiten:",
+        "fontWeight": "bold"
+    }])
+    sheetData.push([{
+        "type": String,
+        "value": studyTimes.toString().replaceAll("Notiz:", "").replaceAll("Vertretung:", "").replaceAll(",", ", "),
+        "wrap": true
+    },
+    {
+        "type": Number,
+        "value": studyTimes.filter((studyTime) => studyTime.includes("Vertretung:")).length,
+    },
+    {
+        "type": Number,
+        "value": studyTimes.filter((studyTime) => studyTime.includes("Notiz:")).length,
+    },
+    {
+        "type": String,
+        "value": missingStudyTimes.toString().replaceAll(",", ", "),
+        "wrap": true
+    }])
+    sheetData.push([{}])
+    sheetData.push([{
+        "type": String,
+        "value": "Stammfach",
         "fontWeight": "bold"
     },
     {
@@ -139,12 +126,11 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     }])
     attendances.forEach((attendance) => {
         let type: string
-        if (!attendance.event.studyTime) type = "❌"
-        else if (!attendance.attendance.type) type = "Keine Ausgewählt"
-        else type = attendance.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")
+        if (!attendance.attendance.type) type = "Keine Ausgewählt"
+        else type = attendance.attendance.type
         sheetData.push([{
             "type": String,
-            "value": attendance.event.name,
+            "value": attendance.event.type,
             "wrap": true
         },
         {

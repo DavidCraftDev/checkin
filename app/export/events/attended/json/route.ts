@@ -1,10 +1,16 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
-import { studytime } from "@/app/src/modules/config";
 import getAttendedEventsJSON from "@/app/src/modules/export/attendedEvents/json";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import { User } from "@prisma/client";
-import moment from "moment";
 import { NextRequest, NextResponse } from "next/server";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser();
@@ -14,8 +20,8 @@ export async function GET(request: NextRequest) {
     else if (!requestUserID || (requestUserID === user.id)) userData = user
     else userData = await getUserPerID(requestUserID)
     if (!userData.id) return NextResponse.json({ error: "System not found UserID" })
-    if (user.permission < 2 && user.group !== userData.group) return NextResponse.json({ error: "Not authorzied" })
-    const cw = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
-    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
-    return NextResponse.json(await getAttendedEventsJSON(user, userData, cw, year, studytime))
+    if (user.permission < 2 && !user.group.some(group => userData.group.includes(group))) return NextResponse.json({ error: "Not authorzied" })
+    const cw = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
+    const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
+    return NextResponse.json(await getAttendedEventsJSON(user, userData, cw, year))
 }

@@ -1,7 +1,7 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities";
 import UserCreateForm from "./userCreateForm.component";
 import { redirect } from "next/navigation";
-import { studytime, use_ldap } from "../../../src/modules/config";
+import { use_ldap } from "../../../src/modules/config";
 
 async function userCreate() {
     if (use_ldap) redirect("/dashboard/user");
@@ -9,7 +9,7 @@ async function userCreate() {
     return (
         <div>
             <h1>Nutzer erstellen</h1>
-            <UserCreateForm studyTime={studytime} />
+            <UserCreateForm />
         </div>
     );
 }

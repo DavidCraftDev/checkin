@@ -1,12 +1,19 @@
 "use client"
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
 
-let currentWeek = moment().isoWeek();
-let currentYear = moment().year();
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
+
+let currentWeek = dayjs().isoWeek();
+let currentYear = dayjs().year();
 
 export function addWeek(pathname: string, year: number, cw: number, router: AppRouterInstance, searchParams: URLSearchParams) {
     if (year >= currentYear && cw >= currentWeek) return;

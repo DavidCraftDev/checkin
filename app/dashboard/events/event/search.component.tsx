@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import { searchHandler } from './checkinHandler';
 import { User } from '@prisma/client';
 
@@ -9,25 +9,31 @@ function UserSearchBar() {
     const [suggestions, setSuggestions] = useState<User[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
-    async function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-        const value = event.target.value;
-        setQuery(value);
-
-        if (value.length > 0) {
-            let searchData = await searchHandler(value)
-            setSuggestions(searchData);
-            setShowSuggestions(true);
-        } else {
+    useEffect(() => {
+        if (query.length === 0) {
             setSuggestions([]);
             setShowSuggestions(false);
+            return;
         }
-    };
+
+        const timeout = setTimeout(async () => {
+            const searchData = await searchHandler(query);
+            setSuggestions(searchData);
+            setShowSuggestions(true);
+        }, 100);
+
+        return () => clearTimeout(timeout);
+    }, [query]);
+
+    function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+        setQuery(event.target.value);
+    }
 
     function handleSuggestionClick(suggestion: User) {
         setQuery(suggestion.username);
         setSuggestions([]);
         setShowSuggestions(false);
-    };
+    }
     return (
         <div className="relative w-full max-w-sm mx-auto">
             <input

@@ -1,16 +1,23 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities"
 import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
 import { getGroupMembers } from "@/app/src/modules/groupUtilities";
-import moment from "moment";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const user = await getSessionUser(1);
 
-    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || moment().isoWeek()
-    const year = Number(request.nextUrl.searchParams.get("year")) || moment().year()
+    const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
+    const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
 
     const groupID = request.nextUrl.searchParams.get("groupID") || user.group[0]
     if (!groupID) return NextResponse.json({ error: "No groupID provided" })
@@ -73,7 +80,7 @@ export async function GET(request: NextRequest) {
     },
     {
         "type": String,
-        "value": "Teilgenomme Veranstaltungen",
+        "value": "Teilgenomme Studienzeiten",
         "fontWeight": "bold"
     }])
     groupMember.forEach((user) => {

@@ -1,14 +1,20 @@
 import { getSessionUser } from "@/app/src/modules/authUtilities";
-import { getAttendancesPerUser, getStudyTimes } from "@/app/src/modules/eventUtilities";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
-import moment from "moment";
 import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getMissingStudyTimes, getNeededStudyTimes, getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedMissingStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedNeededStudyTimes, saveNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import CreateStudyTimeNote from "./createStudyTimeNote.component";
-import { studytime } from "@/app/src/modules/config";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+
+dayjs.extend(isoWeek)
+dayjs.extend(isoWeeksInYear)
+dayjs.extend(isLeapYear)
 
 async function attendedEvents({ searchParams }: { searchParams: SearchParams }) {
     const sessionUser = await getSessionUser();
@@ -16,49 +22,42 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     const userID = searchParams.userID || sessionUser.id;
     const userData = searchParams.userID ? await getUserPerID(userID) : sessionUser;
     if (!userData.id) notFound();
-    if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group !== userData.group)) redirect("/dashboard");
+    if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group.filter(value => userData.group.includes(value)).length === 0)) redirect("/dashboard");
 
-    const currentWeek = moment().isoWeek();
-    const currentYear = moment().year();
+    const currentWeek = dayjs().isoWeek();
+    const currentYear = dayjs().year();
     const cw = Number(searchParams.cw) || currentWeek;
     const year = Number(searchParams.year) || currentYear;
-    if (cw > moment().year(year).isoWeeksInYear() || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
+    if (cw > dayjs().year(year).isoWeeksInYear() || cw < 1 || year > currentYear) redirect("/dashboard/events/attendedEvents");
     if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
-    const [
-        data,
-        hasStudyTimes,
-        needsStudyTimes
-    ] = await Promise.all([
-        getAttendancesPerUser(userID, cw, year),
-        getStudyTimes(userData.id, cw, year).then(result => result.length),
-        getNeededStudyTimes(userData.id).then(result => result.length)
-    ]);
+    const attendances = await getAttendancesPerUser(userID, cw, year);
+    const completedStudyTimesCount = attendances.filter((attendance) => attendance.event.type !== null).length;
 
     let addable = (cw === currentWeek && year === currentYear);
-    if (searchParams.userID && searchParams.userID !== sessionUser.id) addable = false;
 
-    let missingStudyTimes: string[] = [];
     const studyTimeTypes: Record<string, string[]> = {};
+    for (const event of attendances) studyTimeTypes[event.attendance.id] = event.event.id !== "NOTE" ? await getNeededStudyTimesSelect(userData, event.eventUser, attendances) : await getNeededStudyTimesForNotes(userData, attendances);
 
-    if (studytime) {
-        for (const event of data) if (event.event.studyTime) studyTimeTypes[event.attendance.id] = event.event.id !== "NOTE" ? await getNeededStudyTimesSelect(userData.id, event.eventUser.id) : await getNeededStudyTimesForNotes(userData.id);
-        missingStudyTimes = addable ? await getMissingStudyTimes(userData.id) : await getSavedMissingStudyTimes(userData.id, cw, year) || [];
-    }
+    let userNeeds = addable ? userData.needs : (await (getSavedNeededStudyTimes(userData, cw, year))).needs;
+    if (addable) saveNeededStudyTimes(userData);
+    let missingStudyTimes: Array<string> = new Array();
+    userNeeds.forEach((neededStudyTime) => { if (!attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
 
+    if (sessionUser.id !== userData.id) addable = true;
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>Teilgenommene Veranstaltungen</h1>
+                    <h1>Teilgenommene Studienzeiten</h1>
                     <p>von {userData.displayname}</p>
-                    {studytime && needsStudyTimes ? <p>{hasStudyTimes} {hasStudyTimes == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
-                    {studytime && needsStudyTimes && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
-                    {studytime && addable && needsStudyTimes > hasStudyTimes ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
+                    {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
+                    {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
+                    {addable && userData.needs.length > completedStudyTimesCount ? <CreateStudyTimeNote userID={userData.id} cw={cw} /> : null}
                 </div>
                 <CalendarWeek />
             </div>
-            <AttendedEventTable attendances={data} addable={addable} studyTime={studytime} studyTimeTypes={studyTimeTypes} />
+            <AttendedEventTable attendances={attendances} addable={addable} studyTimeTypes={studyTimeTypes} />
             <p>Exportieren als:
                 <a href={`/export/events/attended/json?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.json`} className="hover:underline mx-1">JSON</a>
                 <a href={`/export/events/attended/xlsx?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.xlsx`} className="hover:underline mx-1">XLSX</a>

@@ -1,11 +1,11 @@
+import "server-only";
+
 import { hash } from "bcryptjs";
 import db from "./db";
-import { Prisma, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { randomInt } from "crypto";
-import { saveNeededStudyTimes } from "./studytimeUtilities";
-import { studytime } from "./config";
 
-export async function getUserPerID(id: string, auth?: boolean) {
+export async function getUserPerID(id: string, auth: boolean = false) {
   const user = await db.user.findUnique({
     where: {
       id: id
@@ -16,7 +16,6 @@ export async function getUserPerID(id: string, auth?: boolean) {
     user.password = "";
     user.loginVersion = 0;
   }
-  if (studytime) saveNeededStudyTimes(user);
   return user;
 }
 

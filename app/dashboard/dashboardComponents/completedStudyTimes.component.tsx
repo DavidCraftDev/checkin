@@ -1,17 +1,17 @@
 "use client";
 
-import { Attendance } from "@prisma/client";
+import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
 interface CompletedStudyTimesProps {
-    hasStudyTimes: Attendance[];
+    attendances: AttendancePerUserPerEvent[];
 }
 
 function CompletedStudyTimes(props: CompletedStudyTimesProps) {
     function getStudyTimeName(type: string) {
-        if (type.startsWith("note:")) {
-            return type.replace("note:", "") + " (Notiz)"
-        } else if (type.startsWith("parallel:")) {
-            return type.replace("parallel:", "") + " (Vertretung)"
+        if (type.startsWith("Notiz:")) {
+            return type.replace("Notiz:", "") + " (Notiz)"
+        } else if (type.startsWith("Vertretung:")) {
+            return type.replace("Vertretung:", "") + " (Vertretung)"
         } else {
             return type
         }
@@ -22,15 +22,15 @@ function CompletedStudyTimes(props: CompletedStudyTimesProps) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Erledigte Studienzeiten</th>
+                            <th scope="col">Besuchte Studienzeiten</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {props.hasStudyTimes.length > 0 ? (props.hasStudyTimes.map((studyTime: Attendance) => (
-                            <tr key={studyTime.id}>
-                                <td>{getStudyTimeName(studyTime.type || "")}</td>
+                        {props.attendances.length > 0 ? (props.attendances.map((attendanceData) => (
+                            <tr key={attendanceData.attendance.id}>
+                                <td>{getStudyTimeName(attendanceData.attendance.type || "")}</td>
                             </tr>
-                        ))) : (<tr><td className="italic">Keine Studienzeiten erledigt</td></tr>)}
+                        ))) : (<tr><td className="italic">Keine Studienzeiten besucht</td></tr>)}
                     </tbody>
                 </table>
             </div>

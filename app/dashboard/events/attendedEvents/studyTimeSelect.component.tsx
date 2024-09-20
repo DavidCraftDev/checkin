@@ -1,12 +1,12 @@
 "use client"
 
-import { Attendance } from "@prisma/client";
+import { Attendances } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import studyTimeSelectHandler from "./studyTimeSelectHandler";
 
 interface StudyTimeSelectProps {
-    attendance: Attendance;
+    attendance: Attendances;
     studyTimeTypes: string[];
 }
 
@@ -27,9 +27,9 @@ function StudyTimeSelect(props: StudyTimeSelectProps) {
         <td>
             <select className="border-gray-200 border-2 rounded-md p-2.5 bg-white" defaultValue={defaultValue} onChange={(e) => saveType(e.target.value)}>
                 <option disabled value="default">Studienzeit wählen</option>
-                {props.attendance.type ? <option value={props.attendance.type}>{props.attendance.type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:")}</option> : null}
+                {props.attendance.type ? <option value={props.attendance.type}>{props.attendance.type}</option> : null}
                 {props.studyTimeTypes.map((type: string) => (
-                    <option key={type} value={type}>{type.replace("parallel:", "Vertretung:").replace("note:", "Notiz:").replace("Notiz:delete", "Notiz löschen")}</option>
+                    <option key={type} value={type}>{type}</option>
                 ))}
             </select>
         </td>

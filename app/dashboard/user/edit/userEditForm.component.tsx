@@ -13,7 +13,6 @@ interface UserEditFormProps {
         ldap_auto_groups: boolean,
         ldap_auto_permission: boolean,
         ldap_auto_studytime_data: boolean,
-        studyTime: boolean
     }
 }
 
@@ -70,12 +69,12 @@ function UserEditForm(props: UserEditFormProps) {
                     <br />
                     <label htmlFor="group">Gruppen (Durch Komma getrennt)</label><br />
                     <input type="text" name="group" id="group" placeholder="Klasse 14.2" defaultValue={userData.group || ""} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
-                    <br className={config.studyTime ? "" : "hidden"} />
-                    <label htmlFor="needs" className={config.studyTime ? "" : "hidden"} >Benötigte Studienzeiten (Durch Komma getrennt)</label><br className={config.studyTime ? "" : "hidden"} />
-                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.needs?.toString() || ""} disabled={config.ldap_auto_studytime_data} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime })} />
-                    <br className={config.studyTime ? "" : "hidden"} />
-                    <label htmlFor="competence" className={config.studyTime ? "" : "hidden"} >Kompetenzen (Durch Komma getrennt)</label><br className={config.studyTime ? "" : "hidden"} />
-                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence?.toString() || ""} disabled={config.ldap_auto_studytime_data} className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": !config.studyTime })} />
+                    <br />
+                    <label htmlFor="needs">Benötigte Studienzeiten (Durch Komma getrennt)</label><br />
+                    <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.needs?.toString() || ""} disabled={config.ldap_auto_studytime_data} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                    <br />
+                    <label htmlFor="competence">Kompetenzen (Durch Komma getrennt)</label><br />
+                    <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence?.toString() || ""} disabled={config.ldap_auto_studytime_data} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br className={config.use_ldap ? "hidden" : ""} />
                     <label htmlFor="password" className={config.use_ldap ? "hidden" : ""} >Neues Passwort setzen</label><br />
                     <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": config.use_ldap })} />
