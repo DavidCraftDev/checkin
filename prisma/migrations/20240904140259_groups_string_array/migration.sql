@@ -8,14 +8,13 @@
 
 */
 -- AlterTable
-ALTER TABLE "StudyTimeData" DROP COLUMN "needs";
-ALTER TABLE "StudyTimeData" ADD COLUMN "needs" TEXT[] DEFAULT ARRAY[]::TEXT[];
+ALTER TABLE "StudyTimeData" DROP COLUMN "needs",
+ADD COLUMN "needs" TEXT[] DEFAULT ARRAY[]::TEXT[];
 
 -- AlterTable
 ALTER TABLE "User" DROP COLUMN "group",
+ADD COLUMN "group" TEXT[] DEFAULT ARRAY[]::TEXT[],
 DROP COLUMN "needs",
-DROP COLUMN "competence";
-ALTER TABLE "User" ADD COLUMN "group" TEXT[] DEFAULT ARRAY[]::TEXT[],
 ADD COLUMN "needs" TEXT[] DEFAULT ARRAY[]::TEXT[],
+DROP COLUMN "competence",
 ADD COLUMN "competence" TEXT[] DEFAULT ARRAY[]::TEXT[];
-
