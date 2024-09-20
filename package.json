@@ -19,7 +19,7 @@
     "clsx": "2.1.1",
     "dayjs": "^1.11.13",
     "eslint": "8",
-    "eslint-config-next": "14.2.9",
+    "eslint-config-next": "14.2.13",
     "ldapts": "^7.0.12",
     "next": "14.2.9",
     "next-auth": "4.24.7",
