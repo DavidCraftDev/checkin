@@ -41,3 +41,6 @@ next-env.d.ts
 # Ignore self singed ca certs 
 *.crt
 *.pem
+
+# Ignore log files
+*.log

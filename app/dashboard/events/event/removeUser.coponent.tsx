@@ -18,10 +18,10 @@ interface RemoveUserProps {
 function RemoveUser(props: RemoveUserProps) {
     const router = useRouter();
     async function removeUser() {
-        if(props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
-        if(!confirm("Möchtest du den Nutzer wirklich löschen?")) return;
+        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
+        if (!confirm("Möchtest du den Nutzer wirklich löschen?")) return;
         const data = await removeUserHandler(props.attendance, props.user, props.removeUser);
-        if (data.id === props.attendance.id) toast.success("Nutzer erfolgreich entfernt");
+        if (data.id && data.id === props.attendance.id) toast.success("Nutzer erfolgreich entfernt");
         else toast.error("Fehler beim entfernen des Nutzers");
         router.refresh();
     }

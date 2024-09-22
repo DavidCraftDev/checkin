@@ -7,6 +7,7 @@ import { User } from "@prisma/client";
 import { use_ldap, auth_secret } from "./config";
 import RateLimit from "./rateLimit";
 import LDAP from "./ldap";
+import logger from "./logger";
 
 let rateLimiter = new RateLimit();
 
@@ -34,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           const ldapUserData = await getAllUsers();
           const ldapUser = ldapUserData.find((e) => e.sAMAccountName.toString().toLowerCase() === credentials.username.toLowerCase());
           if (!ldapUser) {
-            console.log("[Warn] [Auth] User " + credentials.username + " not found in Database, [" + request.headers["x-forwarded-for"] + "]");
+            logger.warn("User " + credentials.username + " not found in Database, (" + request.headers["x-forwarded-for"] + ")", "Auth")
             return null;
           }
           if (await client.bind(ldapUser.dn, credentials.password, false)) {
@@ -47,7 +48,7 @@ export const authOptions: NextAuthOptions = {
             user = dbUser;
             client.unbind();
           } else {
-            console.log("[Warn] [Auth] Invalid login credentials for user " + credentials.username + ", [" + request.headers["x-forwarded-for"] + "]");
+            logger.warn("Invalid login credentials for user " + credentials.username + ", (" + request.headers["x-forwarded-for"] + ")", "Auth")
             client.unbind();
             return null;
           }
@@ -58,7 +59,7 @@ export const authOptions: NextAuthOptions = {
             },
           });
           if (!dbUser || !dbUser.password || !(await compare(credentials.password, dbUser.password))) {
-            console.log("[Warn] [Auth] Invalid login credentials for user " + credentials.username + ", [" + request.headers["x-forwarded-for"] + "]");
+            logger.warn("Invalid login credentials for user " + credentials.username + ", (" + request.headers["x-forwarded-for"] + ")", "Auth")
             return null;
           }
           user = dbUser

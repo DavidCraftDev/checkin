@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 import { ldap_tls_reject_unauthorized, ldap_uri } from './config';
 import { Client, Entry } from "ldapts";
+import logger from "./logger";
 
 class LDAP {
     public readonly client: Client;
@@ -33,7 +34,7 @@ class LDAP {
             this.binded = true;
             return true;
         } catch (error) {
-            if (logError) console.log("[Error] [LDAP] LDAP bind failed: " + error)
+            if (logError) logger.error("LDAP bind failed: " + error, "LDAP")
             this.binded = false;
             return false;
         }
