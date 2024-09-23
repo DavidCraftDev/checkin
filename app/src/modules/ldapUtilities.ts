@@ -4,6 +4,7 @@ import courses from './courses';
 import db from './db';
 import LDAP from './ldap';
 import { User } from '@prisma/client';
+import dayjs from 'dayjs';
 
 let client: LDAP
 
@@ -24,7 +25,11 @@ export async function getAllUsers() {
     return ldapData;
 }
 
+let lastUpdate: dayjs.Dayjs
+
 async function updateUserData(ldapData: Entry[]) {
+    if (lastUpdate && dayjs().diff(lastUpdate, "minute") < 1) return;
+    lastUpdate = dayjs();
     const dbData = await db.user.findMany({ where: { password: null } })
     const existUser: Array<string> = new Array()
     await Promise.all(dbData.map(async (entry) => {
