@@ -22,7 +22,7 @@
     "eslint-config-next": "14.2.13",
     "ldapts": "^7.0.12",
     "next": "14.2.13",
-    "next-auth": "4.24.7",
+    "next-auth": "4.24.8",
     "next-qrcode": "2.5.1",
     "papaparse": "^5.4.1",
     "qr-scanner": "1.4.2",
