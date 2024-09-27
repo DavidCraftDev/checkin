@@ -2,7 +2,19 @@ import fs from "fs";
 import path from "path";
 import dayjs from "dayjs";
 
+async function deleteOldLogs() {
+    const logPath = path.join(process.cwd(), "log");
+    if (!fs.existsSync(logPath)) return;
+    const files = fs.readdirSync(logPath);
+    files.forEach(file => {
+        const filePath = path.join(logPath, file);
+        const fileStats = fs.statSync(filePath);
+        if ((dayjs().diff(dayjs(fileStats.birthtime), "minute")) > 30) fs.unlinkSync(filePath);
+    });
+}
+
 async function writeLog(message: string) {
+    deleteOldLogs();
     const logPath = path.join(process.cwd(), "log");
     if (!fs.existsSync(logPath)) {
         fs.mkdirSync(logPath);
