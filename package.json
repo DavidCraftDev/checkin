@@ -1,12 +1,12 @@
 {
   "name": "checkin",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "standalone": "next build && prisma generate && prisma migrate deploy && prisma db seed && next start"
+    "update": "prisma generate && next build && prisma migrate deploy && prisma db seed && next start"
   },
   "dependencies": {
     "@heroicons/react": "2.1.5",
@@ -42,5 +42,15 @@
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/seed.ts"
-  }
+  },
+  "description": "Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.\r Die Studienzeit ist ein Konzept über dass selbstständigen Lernen in der Oberstufe.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidCraftDev/checkin.git"
+  },
+  "author": "DavidCraftDev",
+  "bugs": {
+    "url": "https://github.com/DavidCraftDev/checkin/issues"
+  },
+  "homepage": "https://github.com/DavidCraftDev/checkin#readme"
 }
