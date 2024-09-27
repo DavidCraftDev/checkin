@@ -15,6 +15,7 @@ class LDAP {
                 rejectUnauthorized: ldap_tls_reject_unauthorized,
                 ca: [readFileSync(process.cwd() + "/cert.crt").toString()]
             }
+            console.log(readFileSync(process.cwd() + "/cert.crt"))
         } else {
             tlsOptions = { rejectUnauthorized: ldap_tls_reject_unauthorized }
         }
