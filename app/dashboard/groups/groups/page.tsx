@@ -1,4 +1,4 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getGroups } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./groupsTable.component";
 

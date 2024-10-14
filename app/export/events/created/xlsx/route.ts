@@ -1,4 +1,3 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities"
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
@@ -8,13 +7,16 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import getEventXLSX from "@/app/src/modules/export/event/xlsx";
+import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
-    const user = await getSessionUser(1);
+    const { user } = await getCurrentSession();
+    if(!user) return new NextResponse(null, { status: 401 });
+    if(user.permission < 1) return new NextResponse(null, { status: 403 });
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)

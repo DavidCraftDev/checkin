@@ -1,4 +1,4 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";

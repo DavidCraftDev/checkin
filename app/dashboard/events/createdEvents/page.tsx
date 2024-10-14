@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import CalendarWeek from "@/app/src/ui/calendarweek";
 import { SearchParams } from "@/app/src/interfaces/searchParams";

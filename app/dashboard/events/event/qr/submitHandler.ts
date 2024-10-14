@@ -1,6 +1,6 @@
 "use server";
 
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { User } from "@prisma/client";
 import dayjs from "dayjs";

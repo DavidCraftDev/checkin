@@ -1,4 +1,4 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import UserEditForm from "./userEditForm.component";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getUserPerID } from "@/app/src/modules/userUtilities";

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@heroicons/react": "2.1.5",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
     "@prisma/client": "5.19.1",
     "@types/bcryptjs": "2.4.6",
     "@types/papaparse": "^5.3.14",
@@ -22,7 +24,6 @@
     "eslint-config-next": "14.2.13",
     "ldapts": "^7.0.12",
     "next": "14.2.13",
-    "next-auth": "4.24.7",
     "next-qrcode": "2.5.1",
     "papaparse": "^5.4.1",
     "qr-scanner": "1.4.2",

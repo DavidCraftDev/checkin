@@ -1,5 +1,5 @@
 import { SearchParams } from "@/app/src/interfaces/searchParams";
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getEventPerID } from "@/app/src/modules/eventUtilities";
 import { redirect } from "next/navigation";
 import QRScannerComponent from "./qr.component";

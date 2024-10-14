@@ -14,7 +14,7 @@ export async function getUserPerID(id: string, auth: boolean = false) {
   if (!user) return {} as User;
   if (!auth) {
     user.password = "";
-    user.loginVersion = 0;
+    user.pwdLastSet = new Date();
   }
   return user;
 }
@@ -79,7 +79,7 @@ export async function updateUser(id: string, name: string, displayname: string, 
     group: group,
     needs: needs,
     competence: competence,
-    loginVersion: randomInt(1000000)
+    pwdLastSet: new Date()
   }
   if (password) data.password = passwordHash;
   const user = await db.user.update({

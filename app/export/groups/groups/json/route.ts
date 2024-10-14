@@ -1,14 +1,16 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities"
+import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    const user = await getSessionUser(2);
+    const { user } = await getCurrentSession();
+    if(!user) return new NextResponse(null, { status: 401 });
+    if(user.permission < 2) return new NextResponse(null, { status: 403 });
     const groups = await getGroupsWithUserData()
     groups.map(group => {
         group.members.map(member => {
             member.password = null
-            member.loginVersion = 0
+            member.pwdLastSet = new Date();
         })
     })
     const data = new Array()

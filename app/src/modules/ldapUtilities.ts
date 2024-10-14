@@ -51,7 +51,7 @@ async function updateUserData(ldapData: Entry[]) {
                 ...groups,
                 ...needs,
                 ...competence,
-                loginVersion: Math.ceil(Number(ldapUser.pwdLastSet) / 10000000000)
+                pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
             }
         })
         existUser.push(user.id)
@@ -68,7 +68,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...groups,
             ...needs,
             ...competence,
-            loginVersion: Math.ceil(Number(entry.pwdLastSet) / 10000000000)
+            pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
         })
         console.log("[Info] [LDAP-Utilities] User Created: " + entry.sAMAccountName)
     })

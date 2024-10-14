@@ -9,12 +9,8 @@ export async function seedDefaultData(prisma: PrismaClient) {
         }
     });
     if (adminCount < 1) {
-        if (default_password) {
-            throw new Error("[Seed] No default admin password provided in environment variables. Please provide one in the .env file.");
-        }
-        if (default_username) {
-            throw new Error("[Seed] No default admin username provided in environment variables. Please provide one in the .env file.");
-        }
+        if (!default_password) throw new Error("[Seed] No default admin password provided in environment variables. Please provide one in the .env file.");
+        if (!default_username) throw new Error("[Seed] No default admin username provided in environment variables. Please provide one in the .env file.");
         const usernameCount = await prisma.user.count({
             where: {
                 username: default_username.toLowerCase()
@@ -31,7 +27,7 @@ export async function seedDefaultData(prisma: PrismaClient) {
                 displayname: "Default Admin",
                 password: passwordHash,
                 permission: 2,
-                loginVersion: 0
+                pwdLastSet: new Date()
             }
         })
         console.log("[Seed] New default admin created because no admins were found in the database.");

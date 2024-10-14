@@ -1,12 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { FormEvent, useEffect, useState } from "react";
 import getPasswordResetURL from "./passwordReset";
 import React from "react";
+import { login } from "../src/modules/auth/loginManager";
 
 function Login() {
   const router = useRouter();
@@ -35,12 +35,8 @@ function Login() {
       setDisabled(false);
       return
     }
-    const result = await signIn("credentials", {
-      username,
-      password,
-      redirect: false,
-    });
-    if (result?.ok) {
+    const result = await login(username, password);
+    if (result) {
       router.push("/dashboard");
     } else {
       toast.error("Falscher Nutzername oder Passwort");
