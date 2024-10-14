@@ -35,7 +35,7 @@ function Login() {
       setDisabled(false);
       return
     }
-    const result = await login(username, password);
+    const result = await login(username.trim(), password);
     if (result) {
       router.push("/dashboard");
     } else {
