@@ -1,4 +1,4 @@
-import { maintance } from "../src/modules/config";
+import { config_data } from "../src/modules/config/config";
 import db from "../src/modules/db";
 
 export async function GET() {
@@ -15,7 +15,7 @@ export async function GET() {
         status = "error"
     }
     const data = {
-        maintance: maintance,
+        maintance: config_data.MAINTANCE,
         status: status,
         databaseConnected: dbConnected
     }

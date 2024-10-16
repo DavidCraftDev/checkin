@@ -1,29 +1,32 @@
 import { PrismaClient } from "@prisma/client";
 import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
-import { use_ldap } from "../app/src/modules/config";
+import logger from "../app/src/modules/logger";
+import { cleanUpData } from "./cleanUp";
+import { config_data } from "@/app/src/modules/config/config";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  if (use_ldap) {
-    console.log("[Info] [Seed] Use LDAP Auth...")
-    await seedLdapData(prisma);
-    return
-  } else {
-    console.log("[Info] [Seed] Use Default Auth...")
+  if (config_data.LDAP.ENABLE) {
+    logger.info("Use LDAP Auth...", "Seed")
+    await seedLdapData();
     await seedDefaultData(prisma);
-    return
+  } else {
+    logger.info("Use Default Auth...", "Seed")
+    await seedDefaultData(prisma);
   }
+  cleanUpData(prisma);
+  return;
 }
 main()
   .then(() => prisma.$disconnect())
   .catch(async (e) => {
-    console.error("[Error] [Seed] " + e);
+    logger.error(e, "Seed")
     await prisma.$disconnect();
     process.exit(1);
   })
   .finally(() => {
-    console.info('[Info] [Seed] Exiting seeding...');
+    logger.info("Exiting seeding...", "Seed")
     process.exit(0);
   });

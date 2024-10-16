@@ -7,7 +7,11 @@ import {
   CalendarDaysIcon,
   PlusCircleIcon,
   UserCircleIcon,
-  UsersIcon
+  UsersIcon,
+  Cog8ToothIcon,
+  ArrowLeftIcon,
+  FolderArrowDownIcon,
+  ServerStackIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -16,20 +20,30 @@ import Link from 'next/link';
 interface NavLinkProps {
   permission: number;
   group: string[];
+  administration: boolean;
 }
 
-const links = [
+const linksNormal = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
-  { name: 'Gruppen', href: '/dashboard/groups/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
-  { name: 'Nutzer', href: '/dashboard/user', icon: UserCircleIcon, mobile: false, permission: 2 },
+  { name: 'Administration', href: '/administration', icon: Cog8ToothIcon, mobile: true, permission: 2 },
+];
+
+const linksAdministration = [
+  { name: 'Zurück', href: '/dashboard', icon: ArrowLeftIcon, mobile: true, permission: 2 },
+  { name: 'Allgemein', href: '/administration', icon: HomeIcon, mobile: true, permission: 2 },
+  { name: 'Daten Import', href: '/administration/import', icon: FolderArrowDownIcon, mobile: true, permission: 2 },
+  { name: 'LDAP', href: '/administration/ldap', icon: ServerStackIcon, mobile: true, permission: 2 },
+  { name: 'Gruppen', href: '/administration/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
+  { name: 'Nutzer', href: '/administration/user', icon: UserCircleIcon, mobile: false, permission: 2 },
 ];
 
 export default function NavLinks(props: NavLinkProps) {
   const pathname = usePathname();
+  const links = props.administration ? linksAdministration : linksNormal;
   return (
     <>
       {links.map((link) => {

@@ -1,7 +1,7 @@
 import db from "@/app/src/modules/db"
 import UserTable from "./userTable.component";
-import { use_ldap } from "@/app/src/modules/config";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { config_data } from "@/app/src/modules/config/config";
 
 async function user() {
     await getSessionUser(2);
@@ -14,7 +14,7 @@ async function user() {
                     <h1>Nutzer</h1>
                     <p>{users.length} Nutzer</p>
                 </div>
-                {!use_ldap ? <a className="btn place-self-center" href={`/dashboard/user/create`}>Nutzer erstellen</a> : null}
+                {!config_data.LDAP.ENABLE ? <a className="btn place-self-center" href={`/dashboard/user/create`}>Nutzer erstellen</a> : null}
             </div>
             <UserTable users={users} />
             <p>Exportieren als:

@@ -1,7 +1,6 @@
 "use server";
 
 import LDAP from "../ldap";
-import { use_ldap } from "../config";
 import { getUserPerUsername } from "../userUtilities";
 import { getAllUsers } from "../ldapUtilities";
 import logger from "../logger";
@@ -10,19 +9,20 @@ import { setSessionTokenCookie } from "./cookieManager";
 import { compare } from "bcryptjs";
 import RateLimit from "../rateLimit";
 import { headers } from "next/headers";
+import { config_data } from "../config/config";
 
 const rateLimit = new RateLimit();
 
 export async function login(username: string, password: string): Promise<boolean> {
     if (!username || !password || username === "" || password === "") return false;
     const header = headers();
-    if(rateLimit.rateLimit(header.get("x-forwarded-for") ?? "999.999.999.999")) return false;
+    if (rateLimit.rateLimit(header.get("x-forwarded-for") ?? "999.999.999.999")) return false;
     const userData = await getUserPerUsername(username);
     if (!userData) {
         logger.warn("User " + username + " not found in Database", "Auth");
         return false;
     }
-    if (use_ldap && !username.startsWith("local/")) {
+    if (config_data.LDAP.ENABLE && !username.startsWith("local/")) {
         let client: LDAP = new LDAP();
         const ldapUserData = await getAllUsers();
         const ldapUser = ldapUserData.find(entry => entry.sAMAccountName.toString().toLowerCase() === username.toLowerCase());

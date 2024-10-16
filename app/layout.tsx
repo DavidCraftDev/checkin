@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { maintance } from "./src/modules/config";
+import { config_data, readConfig } from "./src/modules/config/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +15,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (maintance) {
+  if (config_data.MAINTANCE) {
     return (
       <html lang="en">
         <body className={inter.className}>

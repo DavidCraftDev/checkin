@@ -11,46 +11,14 @@ services:
       - MAINTANCE:false
       # Replace the following environment variables with your own values, you need to set the same values in the db service
       - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
-      # Replace the following environment variables with your own random secret to encrypt the login JWT tokens
-      - AUTH_SECRET=YOUR_SECRET
       # Set own default admin credentials
       - DEFAULT_LOGIN_USERNAME=OwnUsername
       - DEFAULT_LOGIN_PASSWORD=OwnPassword
-      # Enable the study time feature (true/false). Once enabled, the feature should not be disabled.
-      - STUDYTIME=false
-      # The LDAP auth feature may not work with your envorinment. Please test it before using it in production, and when it not works, ask for help!
-      # Use the LDAP auth feature instead of the own user management from the CheckIN (true/false). Please only enable before the first start of the CheckIN, and not disable it after the first start.
-      - USE_LDAP=false
-      # LDAP server URL starting with ldap:// or ldaps://
-      - LDAP_URI=ldap://ldap.example.com
-      # Reject unauthorized TLS certificates when connect to the LDAP server (true/false)
-      - LDAP_TLS_REJECT_UNAUTHORIZED=true
-      # LDAP bind DN credentials
-      - LDAP_BIND_DN=cn=admin,dc=example,dc=com
-      - LDAP_BIND_PASSWORD=example
-      # LDAP search base
-      - LDAP_SEARCH_BASE=dc=example,dc=com
-      # LDAP user search filter
-      - LDAP_USER_SEARCH_FILTER=(cn=*)
-      # LDAP URL to the password reset page, leave empty to disable the password reset link on the login page
-      - LDAP_PASSWORD_RESET_URL=https://example.com/password-reset
-      # Create local admin user if LDAP auth is enabled (true/false) The user will be created with the default admin credentials, the username will start with "local/". This only run once, when you change the login data, please save it.
-      - LDAP_CREATE_LOCAL_ADMIN=true
-      # Automaticlly set user permission from ldap groups (true/false)
-      - LDAP_AUTO_PERMISSION=false
-      - LDAP_AUTO_PERMISSION_TEACHER_GROUP=CN=Teacher,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de
-      - LDAP_AUTO_PERMISSION_ADMIN_GROUP=CN=Teacher,OU=Maingroups,OU=Groups,OU=Example-School,DC=example,DC=de
-      # Experimental feature: Automatically detect users group from LDAP groups (true/false), set the OU where the groups are stored
-      - LDAP_AUTO_GROUPS=false
-      - LDAP_AUTO_GROUPS_OU=OU=Classes,OU=Groups,OU=Example-School,DC=example,DC=de
-      # Experimental feature: Automatically detect users needed studyTimes from LDAP groups (true/false), set the OU where the courses like english, german or math are stored
-      - LDAP_AUTO_STUDYTIME_DATA=false
-      - LDAP_AUTO_STUDYTIME_DATA_OU=OU=Courses,OU=Groups,OU=Example-School,DC=example,DC=de
     ports:
       - "3030:3000"
-    # Uncomment the following lines to use a custom ca certificate, you need to replace the path with your own certificate path
-    #volumes:
-    #  - "/opt/checkin/cert.crt:/app/certificate.crt:ro"
+    volumes:
+      - "/home/checkin/data:/app/data"
+
   db:
     container_name: checkin-db
     image: postgres:16-alpine

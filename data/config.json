@@ -1,0 +1,35 @@
+{
+    "MAINTANCE": false,
+    "SCHOOL_NAME": "Beispiel1e",
+    "DEFAULT_LOGIN": {
+        "USERNAME": "Own.Username",
+        "PASSWORD": "cdmuh6ptehpe6q3btw5yvmwjfkbif23r"
+    },
+    "LDAP": {
+        "ENABLE": false,
+        "URI": "",
+        "TLS_REJECT_UNAUTHORIZED": false,
+        "BIND_CREADENTIALS": {
+            "DN": "",
+            "PASSWORD": ""
+        },
+        "SEARCH_BASE": "",
+        "USER_SEARCH_FILTER": "",
+        "PASSWORD_RESET_URL": "",
+        "AUTOMATIC_DATA_DETECTION": {
+            "PERMISSION": {
+                "ENABLE": false,
+                "TEACHER_GROUP": "",
+                "ADMIN_GROUP": ""
+            },
+            "GROUPS": {
+                "ENABLE": false,
+                "GROUP_OU": ""
+            },
+            "STUDYTIME_DATA": {
+                "ENABLE": false,
+                "STUDYTIME_OU": ""
+            }
+        }
+    }
+}

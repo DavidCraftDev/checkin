@@ -1,6 +1,6 @@
-'use server'
+"use server";
 
-import { use_ldap } from "@/app/src/modules/config";
+import { config_data } from "@/app/src/modules/config/config";
 import { updateUser } from "@/app/src/modules/userUtilities";
 
 export async function submitEditHandler(formdata: FormData, id: string) {
@@ -19,7 +19,7 @@ export async function submitEditHandler(formdata: FormData, id: string) {
     if (!displayname) return "displayname"
     //Username only letters, numbers and dots
     if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
-    if (use_ldap) username = "local/" + username
+    if (config_data.LDAP.ENABLE) username = "local/" + username
     const data = await updateUser(id, username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
     if (data === "exist") return "exist"
     return "success"

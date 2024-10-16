@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from "fs";
-import { ldap_tls_reject_unauthorized, ldap_uri } from './config';
 import { Client, Entry } from "ldapts";
 import logger from "./logger";
+import path from "path";
+import { config_data } from "./config/config";
 
 class LDAP {
     public readonly client: Client;
@@ -10,21 +11,31 @@ class LDAP {
 
     public constructor() {
         let tlsOptions
-        if (existsSync(process.cwd() + "/cert.crt")) {
+        const certPath = path.join(process.cwd(), "data", "cert.crt");
+        const oldCertPath = path.join(process.cwd(), "cert.crt");
+        if (existsSync(certPath)) {
             tlsOptions = {
-                rejectUnauthorized: ldap_tls_reject_unauthorized,
-                ca: [readFileSync(process.cwd() + "/cert.crt")]
+                rejectUnauthorized: config_data.LDAP.TLS_REJECT_UNAUTHORIZED,
+                ca: [readFileSync(certPath)]
             }
+            logger.info("Using custom certificate for LDAP connection", "LDAP")
+        } else if (existsSync(oldCertPath)) {
+            tlsOptions = {
+                rejectUnauthorized: config_data.LDAP.TLS_REJECT_UNAUTHORIZED,
+                ca: [readFileSync(oldCertPath)]
+            }
+            logger.warn("Using custom certificate for LDAP connection. Please move the certificate to the new path in the data folder", "LDAP")
         } else {
-            tlsOptions = { rejectUnauthorized: ldap_tls_reject_unauthorized }
+            tlsOptions = { rejectUnauthorized: config_data.LDAP.TLS_REJECT_UNAUTHORIZED }
         }
         try {
             this.client = new Client({
-                url: ldap_uri,
+                url: config_data.LDAP.URI,
                 tlsOptions: tlsOptions
             });
         } catch (error) {
-            throw new Error("[LDAP] Failed to create LDAP client: " + error);
+            logger.error("Failed to create LDAP client: " + error, "LDAP")
+            throw new Error()
         }
     }
 
@@ -48,7 +59,8 @@ class LDAP {
     public async search(filter: string, base: string): Promise<Entry[]> {
         if (!this.binded || !this.client.isConnected) {
             this.binded = false;
-            throw new Error("[LDAP] Not binded to LDAP Server");
+            logger.error("Not binded to LDAP Server", "LDAP")
+            return []
         }
         const { searchEntries } = await this.client.search(base, {
             scope: 'sub',

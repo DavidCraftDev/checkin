@@ -1,5 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 import Papa from "papaparse";
+import path from "path";
+import logger from "../logger";
 
 let data: Record<string, string> = {
     "E5": "Englisch",
@@ -51,9 +53,11 @@ let data: Record<string, string> = {
     "EK": "Erdkunde"
 }
 
+const faecherCSVPath = path.join(process.cwd(), "data", "Faecher.csv");
+
 async function parseCSV() {
     new Promise((resolve, reject) => {
-        const fileContent = readFileSync(process.cwd() + "/Faecher.csv", "utf8");
+        const fileContent = readFileSync(faecherCSVPath, "utf8");
 
         Papa.parse(fileContent, {
             header: true,
@@ -66,14 +70,17 @@ async function parseCSV() {
                 resolve(true);
             },
             error: (error: Papa.ParseError) => {
-                console.error("[Error] [Courses] Failed to parse CSV: " + error);
+                logger.error("Failed to parse CSV. Error: " + error, "Courses");
                 reject(false);
             }
 
         } as Papa.ParseConfig);
+    }).then(() => {
+        logger.info("Loaded courses from CSV.", "Courses");
     });
 }
 
-if (existsSync(process.cwd() + "/Faecher.csv")) parseCSV();
+
+if (existsSync(faecherCSVPath)) parseCSV();
 
 export default data;

@@ -45,4 +45,5 @@ process.on("uncaughtException", async (errorMessage) => {
     await error(errorMessage.toString(), "UncaughtException");
 });
 
-export default { info, warn, error };
+const logger = { info, warn, error };
+export default logger;

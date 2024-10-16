@@ -1,4 +1,5 @@
-import { default_password, default_username } from "../app/src/modules/config";
+import { config_data } from "@/app/src/modules/config/config";
+import logger from "@/app/src/modules/logger";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
@@ -9,18 +10,18 @@ export async function seedDefaultData(prisma: PrismaClient) {
         }
     });
     if (adminCount < 1) {
-        if (!default_password) throw new Error("[Seed] No default admin password provided in environment variables. Please provide one in the .env file.");
-        if (!default_username) throw new Error("[Seed] No default admin username provided in environment variables. Please provide one in the .env file.");
+        let default_username = config_data.DEFAULT_LOGIN.USERNAME;
+        if(config_data.LDAP.ENABLE) default_username = "local/" + default_username;
         const usernameCount = await prisma.user.count({
             where: {
                 username: default_username.toLowerCase()
             }
         });
         if (usernameCount > 0) {
-            throw new Error("[Seed] Default admin username already exists in the database and there a no other admin user. Please provide a different username in the .env file.");
+            logger.error("Default admin username already exists in the database and there a no other admin user. Please provide a different username in the config file.", "Seed");
+            process.exit(1);
         }
-        const password: string = default_password
-        const passwordHash = await hash(password, 12);
+        const passwordHash = await hash(config_data.DEFAULT_LOGIN.PASSWORD, 12);
         const user = await prisma.user.create({
             data: {
                 username: default_username.toLowerCase(),
@@ -30,8 +31,8 @@ export async function seedDefaultData(prisma: PrismaClient) {
                 pwdLastSet: new Date()
             }
         })
-        console.log("[Seed] New default admin created because no admins were found in the database.");
-        console.log({ user });
+        logger.info("New default admin created because no admins were found in the database.", "Seed");
+        logger.info("Username: " + user.username, "Seed");
     }
     return
 }

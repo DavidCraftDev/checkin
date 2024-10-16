@@ -1,25 +1,32 @@
 import { Entry } from 'ldapts';
-import { ldap_auto_groups, ldap_auto_groups_ou, ldap_auto_permission, ldap_auto_permission_admin_group, ldap_auto_permission_teacher_group, ldap_auto_studytime_data, ldap_auto_studytime_data_ou, ldap_bind_dn, ldap_bind_password, ldap_search_base, ldap_user_search_filter, use_ldap } from './config';
-import courses from './courses';
+import courses from './config/courses';
 import db from './db';
 import LDAP from './ldap';
 import { User } from '@prisma/client';
 import dayjs from 'dayjs';
+import { config_data } from './config/config';
+import logger from './logger';
 
 let client: LDAP
 
-if (use_ldap) client = new LDAP()
+if (config_data.LDAP.ENABLE) client = new LDAP()
 
 export async function search(searchFilter: string) {
-    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("[LDAP-Utilties] Could not bind to LDAP")
-    const ldapData = await client.search(searchFilter, ldap_search_base)
+    if (!client.isBinded() && !await client.bind(config_data.LDAP.BIND_CREADENTIALS.DN, config_data.LDAP.BIND_CREADENTIALS.PASSWORD)) {
+        logger.error("Could not bind to LDAP", "LDAP-Utilities")
+        return
+    }
+    const ldapData = await client.search(searchFilter, config_data.LDAP.SEARCH_BASE)
     ldapData.map((entry) => entry.objectGUID = convertGUIDToString(entry.objectGUID as Buffer));
     return ldapData;
 }
 
 export async function getAllUsers() {
-    if (!client.isBinded() && !await client.bind(ldap_bind_dn, ldap_bind_password)) throw new Error("[LDAP-Utilties] Could not bind to LDAP")
-    const ldapData = await client.search(ldap_user_search_filter, ldap_search_base)
+    if (!client.isBinded() && !await client.bind(config_data.LDAP.BIND_CREADENTIALS.DN, config_data.LDAP.BIND_CREADENTIALS.PASSWORD)) {
+        logger.error("Could not bind to LDAP", "LDAP-Utilities")
+        return []
+    }
+    const ldapData = await client.search(config_data.LDAP.USER_SEARCH_FILTER, config_data.LDAP.SEARCH_BASE)
     ldapData.map((entry) => entry.objectGUID = convertGUIDToString(entry.objectGUID as Buffer));
     await updateUserData(ldapData)
     return ldapData;
@@ -78,30 +85,30 @@ async function updateUserData(ldapData: Entry[]) {
 function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
     ldapUser.memberOf = ldapUser.memberOf as string[]
     let permission
-    if (ldap_auto_permission) {
+    if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ENABLE) {
         permission = { permission: 0 }
-        if (ldapUser.memberOf.toString().includes(ldap_auto_permission_admin_group)) permission = { permission: 2 }
-        else if (ldapUser.memberOf.toString().includes(ldap_auto_permission_teacher_group)) permission = { permission: 1 }
+        if (ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP)) permission = { permission: 2 }
+        else if (ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP)) permission = { permission: 1 }
         else permission = { permission: 0 }
     } else permission = {}
 
     let groups: Array<string> = new Array<string>
-    if (ldap_auto_groups) {
+    if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.ENABLE) {
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")
-            if (data[1].toLowerCase() == ldap_auto_groups_ou.toLowerCase()) groups.push(String(data[0].replace("CN=", "").replace("cn=", "")))
+            if (data[1].toLowerCase() == config_data.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.GROUP_OU.toLowerCase()) groups.push(String(data[0].replace("CN=", "").replace("cn=", "")))
         })
     }
 
     let needs = {}
     let competence = {}
-    if (ldap_auto_studytime_data) {
+    if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
         let memberData = new Set()
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")
-            if (data[1].toLowerCase() == ldap_auto_studytime_data_ou.toLowerCase()) {
+            if (data[1].toLowerCase() == config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.STUDYTIME_OU.toLowerCase()) {
                 const splitedName = data[0].replace("CN=", "").replace("cn=", "").split(" ")
                 if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
                     if (courses[splitedName[1].toUpperCase()]) memberData.add(courses[splitedName[1].toUpperCase()] as string)

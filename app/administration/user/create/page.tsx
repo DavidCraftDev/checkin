@@ -1,10 +1,10 @@
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import UserCreateForm from "./userCreateForm.component";
 import { redirect } from "next/navigation";
-import { use_ldap } from "../../../src/modules/config";
+import { config_data } from "@/app/src/modules/config/config";
 
 async function userCreate() {
-    if (use_ldap) redirect("/dashboard/user");
+    if (config_data.LDAP.ENABLE) redirect("/dashboard/user");
     await getSessionUser(2);
     return (
         <div>
