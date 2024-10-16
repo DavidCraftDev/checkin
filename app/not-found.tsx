@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import { getSessionUser } from "./src/modules/authUtilities";
+import { getCurrentSession } from "./src/modules/auth/cookieManager";
 
 export default async function notFound() {
-    const user = await getSessionUser();
-    if (user && user.id) redirect('/dashboard');
+    const { session } = await getCurrentSession();
+    if (session) redirect('/dashboard');
     else redirect('/login');
 }

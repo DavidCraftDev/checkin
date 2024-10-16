@@ -44,5 +44,13 @@ model User {
   group       String[] @default([])
   needs       String[] @default([])
   competence  String[] @default([])
-  loginVersion Int    @default(0)
+  pwdLastSet  DateTime @default(now())
+  sessions    Session[]
+}
+
+model Session {
+  id        String   @id @unique
+  userID    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userID], onDelete: Cascade)
 }

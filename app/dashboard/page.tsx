@@ -1,4 +1,4 @@
-import { getSessionUser } from "../src/modules/authUtilities";
+import { getSessionUser } from "../src/modules/auth/cookieManager";
 import { getAttendancesPerUser } from "../src/modules/eventUtilities";
 import MissingStudyTimes from "./dashboardComponents/missingStudyTimes.component";
 import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.component";

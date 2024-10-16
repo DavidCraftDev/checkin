@@ -1,4 +1,4 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import UserCreateForm from "./userCreateForm.component";
 import { redirect } from "next/navigation";
 import { use_ldap } from "../../../src/modules/config";

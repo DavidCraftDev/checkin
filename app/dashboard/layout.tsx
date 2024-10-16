@@ -1,9 +1,11 @@
 import SideNav from '@/app/src/ui/sidenav';
-import { getSessionUser } from '../src/modules/authUtilities';
 import { Toaster } from "react-hot-toast";
+import { getCurrentSession } from '../src/modules/auth/cookieManager';
+import { redirect } from 'next/navigation';
 
 async function Layout({ children }: { children: React.ReactNode }) {
-  const user = await getSessionUser();
+  const { user } = await getCurrentSession();
+  if (!user) redirect("/login");
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
       <Toaster position="bottom-center" />

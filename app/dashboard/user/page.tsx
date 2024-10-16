@@ -1,7 +1,7 @@
-import { getSessionUser } from "@/app/src/modules/authUtilities";
 import db from "@/app/src/modules/db"
 import UserTable from "./userTable.component";
 import { use_ldap } from "@/app/src/modules/config";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 
 async function user() {
     await getSessionUser(2);

@@ -4,6 +4,7 @@ import courses from './courses';
 import db from './db';
 import LDAP from './ldap';
 import { User } from '@prisma/client';
+import dayjs from 'dayjs';
 
 let client: LDAP
 
@@ -24,7 +25,11 @@ export async function getAllUsers() {
     return ldapData;
 }
 
+let lastUpdate: dayjs.Dayjs
+
 async function updateUserData(ldapData: Entry[]) {
+    if (lastUpdate && dayjs().diff(lastUpdate, "minute") < 1) return;
+    lastUpdate = dayjs();
     const dbData = await db.user.findMany({ where: { password: null } })
     const existUser: Array<string> = new Array()
     await Promise.all(dbData.map(async (entry) => {
@@ -46,7 +51,7 @@ async function updateUserData(ldapData: Entry[]) {
                 ...groups,
                 ...needs,
                 ...competence,
-                loginVersion: Math.ceil(Number(ldapUser.pwdLastSet) / 10000000000)
+                pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
             }
         })
         existUser.push(user.id)
@@ -63,7 +68,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...groups,
             ...needs,
             ...competence,
-            loginVersion: Math.ceil(Number(entry.pwdLastSet) / 10000000000)
+            pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
         })
         console.log("[Info] [LDAP-Utilities] User Created: " + entry.sAMAccountName)
     })
