@@ -1,4 +1,4 @@
-import logger from "@/app/src/modules/logger";
+import logger from "../app/src/modules/logger";
 import { getAllUsers } from "../app/src/modules/ldapUtilities";
 
 export async function seedLdapData() {
