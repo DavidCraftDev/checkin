@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Ignore log files
 *.log
+
+# Ignore data files
+/data/
