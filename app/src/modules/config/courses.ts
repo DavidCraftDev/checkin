@@ -1,3 +1,5 @@
+import "server-only";
+
 import { existsSync, readFileSync } from "fs";
 import Papa from "papaparse";
 import path from "path";

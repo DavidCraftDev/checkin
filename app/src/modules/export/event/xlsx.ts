@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Events, User } from "@prisma/client";
 import dayjs from "dayjs";
 import { Columns, SheetData } from "write-excel-file";

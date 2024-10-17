@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Entry } from 'ldapts';
 import courses from './config/courses';
 import db from './db';

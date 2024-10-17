@@ -1,3 +1,5 @@
+import "server-only";
+
 interface rateLimtsType {
     [key: string]: {
         requests: number;

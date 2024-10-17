@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Events, User } from "@prisma/client"
 import { getAttendancesPerEvent } from "../../eventUtilities"
 

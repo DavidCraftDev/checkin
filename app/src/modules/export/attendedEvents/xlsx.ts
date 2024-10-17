@@ -1,3 +1,5 @@
+import "server-only";
+
 import { User } from "@prisma/client";
 import { getAttendancesPerUser } from "../../eventUtilities";
 import { Columns, SheetData } from "write-excel-file";

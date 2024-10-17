@@ -1,3 +1,5 @@
+import "server-only";
+
 import { existsSync, readFileSync } from "fs";
 import { Client, Entry } from "ldapts";
 import logger from "./logger";
