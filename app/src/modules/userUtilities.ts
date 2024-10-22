@@ -3,7 +3,6 @@ import "server-only";
 import { hash } from "bcryptjs";
 import db from "./db";
 import { User } from "@prisma/client";
-import { randomInt } from "crypto";
 
 export async function getUserPerID(id: string, auth: boolean = false) {
   const user = await db.user.findUnique({

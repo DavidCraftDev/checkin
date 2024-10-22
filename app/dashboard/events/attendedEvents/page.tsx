@@ -39,7 +39,13 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     const studyTimeTypes: Record<string, string[]> = {};
     for (const event of attendances) studyTimeTypes[event.attendance.id] = event.event.id !== "NOTE" ? await getNeededStudyTimesSelect(userData, event.eventUser, attendances) : await getNeededStudyTimesForNotes(userData, attendances);
 
-    let userNeeds = addable ? userData.needs : (await (getSavedNeededStudyTimes(userData, cw, year))).needs;
+    let userNeeds;
+    if (addable) {
+        userNeeds = userData?.needs || [];
+    } else {
+        const savedNeededStudyTimes = await getSavedNeededStudyTimes(userData, cw, year);
+        userNeeds = savedNeededStudyTimes?.needs || [];
+    }
     if (addable) saveNeededStudyTimes(userData);
     let missingStudyTimes: Array<string> = new Array();
     userNeeds.forEach((neededStudyTime) => { if (!attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });

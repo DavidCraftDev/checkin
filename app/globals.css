@@ -15,6 +15,26 @@ h1 {
     @apply bg-green-700 cursor-not-allowed;
   }
 
+  .btnWarning button {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+
+  .formLayout {
+    @apply grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-8 mt-4;
+  }
+
+  .form {
+    @apply p-4 rounded-lg shadow-md border border-gray-200 space-y-2;
+  }
+
+  .label {
+    @apply block text-gray-700 font-bold;
+  }
+
+  .input {
+    @apply flex h-9 w-full rounded-lg border border-zinc-300 outline-none focus:ring-2 ring-offset-2 transition-shadow shadow-black ring-zinc-200 disabled:cursor-not-allowed disabled:opacity-50 py-2 px-3 invalid:border-red-500 invalid:ring-red-400;
+  }
+
   .table {
     @apply w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md;
   }

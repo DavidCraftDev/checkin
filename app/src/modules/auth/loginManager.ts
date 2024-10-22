@@ -1,8 +1,8 @@
 "use server";
 
-import LDAP from "../ldap";
+import LDAP from "../ldap/ldap";
 import { getUserPerUsername } from "../userUtilities";
-import { getAllUsers } from "../ldapUtilities";
+import { getAllUsers } from "../ldap/ldapUtilities";
 import logger from "../logger";
 import { createSession, generateSessionToken, invalidateSession, SessionValidationResult } from "./sessionManager";
 import { setSessionTokenCookie } from "./cookieManager";

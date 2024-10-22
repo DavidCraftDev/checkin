@@ -2,9 +2,9 @@ import "server-only";
 
 import { existsSync, readFileSync } from "fs";
 import { Client, Entry } from "ldapts";
-import logger from "./logger";
+import logger from "../logger"
 import path from "path";
-import { config_data } from "./config/config";
+import { config_data } from "../config/config";
 
 class LDAP {
     public readonly client: Client;

@@ -1,13 +1,13 @@
 import "server-only";
 
 import { Entry } from 'ldapts';
-import courses from './config/courses';
-import db from './db';
+import courses from '../config/courses';
+import db from '../db';
 import LDAP from './ldap';
 import { User } from '@prisma/client';
 import dayjs from 'dayjs';
-import { config_data } from './config/config';
-import logger from './logger';
+import { config_data } from '../config/config';
+import logger from '../logger';
 
 let client: LDAP
 

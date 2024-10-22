@@ -1,15 +1,22 @@
-import { getSessionUser } from "../src/modules/auth/cookieManager";
-import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
+"use server";
 
-dayjs.extend(isoWeek)
+import { config_data } from "../src/modules/config/config";
+import { DefaultPasswordForm, DefaultUsernameForm, DeleteAllDataForm, DeleteAllSessionsForm, MaintanceModeForm, SchoolNameForm } from "./general/forms";
+import { GeneralNotifications } from "./general/notifications";
 
 async function general() {
-    const user = await getSessionUser();
     return (
         <div>
+            <GeneralNotifications />
             <h1>Allgemeine Einstellungen</h1>
-            <p>Hallo {user.displayname}</p>
+            <div className="formLayout">
+                <SchoolNameForm schoolName={config_data.SCHOOL_NAME} />
+                <MaintanceModeForm />
+                <DefaultUsernameForm username={config_data.DEFAULT_LOGIN.USERNAME} ldap={config_data.LDAP.ENABLE} />
+                <DefaultPasswordForm password={config_data.DEFAULT_LOGIN.PASSWORD} />
+                <DeleteAllSessionsForm />
+                <DeleteAllDataForm />
+            </div>
         </div>
     );
 }

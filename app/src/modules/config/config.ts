@@ -43,7 +43,7 @@ interface Config {
 
 const defaultConfig: Config = {
     MAINTANCE: false,
-    SCHOOL_NAME: "Beispiel Schule",
+    SCHOOL_NAME: "",
     DEFAULT_LOGIN: {
         USERNAME: "Own.Username",
         PASSWORD: ""
@@ -87,9 +87,9 @@ export async function readConfig(write: boolean = true) {
             let imported_config: Partial<Config> = JSON.parse(fs.readFileSync(configPath, "utf-8"));
             config_data = Object.assign({}, defaultConfig, imported_config);
             if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateSessionToken();
-            if(process.env.NODE_ENV === "production") logger.info("Loaded config file.", "Config");
+            if (process.env.NODE_ENV === "production") logger.info("Loaded config file.", "Config");
         } catch (error) {
-            logger.error("Error reading or parsing config file:" +  error, "Config");
+            logger.error("Error reading or parsing config file:" + error, "Config");
         }
     } else if (fs.existsSync(configPathOld)) {
         try {
@@ -98,7 +98,7 @@ export async function readConfig(write: boolean = true) {
             if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateSessionToken();
             logger.info("Found old config file. Automaticlly created a copy on the new path.", "Config");
         } catch (error) {
-            logger.error("Error reading or parsing config file:" +  error, "Config");
+            logger.error("Error reading or parsing config file:" + error, "Config");
         }
     } else {
         config_data = defaultConfig;
@@ -121,7 +121,7 @@ export async function writeConfig() {
     if (process.env.LDAP_SEARCH_BASE) config_data.LDAP.SEARCH_BASE = process.env.LDAP_SEARCH_BASE;
     if (process.env.LDAP_USER_SEARCH_FILTER) config_data.LDAP.USER_SEARCH_FILTER = process.env.LDAP_USER_SEARCH_FILTER;
     if (process.env.LDAP_PASSWORD_RESET_URL) config_data.LDAP.PASSWORD_RESET_URL = process.env.LDAP_PASSWORD_RESET_URL;
-    if (process.env.LDAP_AUTO_PERMISSION) config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ENABLE  = process.env.LDAP_AUTO_PERMISSION === "true";
+    if (process.env.LDAP_AUTO_PERMISSION) config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ENABLE = process.env.LDAP_AUTO_PERMISSION === "true";
     if (process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP) config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP = process.env.LDAP_AUTO_PERMISSION_TEACHER_GROUP;
     if (process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP) config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP = process.env.LDAP_AUTO_PERMISSION_ADMIN_GROUP;
     if (process.env.LDAP_AUTO_GROUPS_DETECTION) config_data.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.ENABLE = process.env.LDAP_AUTO_GROUPS_DETECTION === "true";
