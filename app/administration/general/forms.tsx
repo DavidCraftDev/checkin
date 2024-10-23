@@ -27,7 +27,7 @@ export function MaintanceModeForm() {
 export function DefaultUsernameForm(props: { username: string, ldap: boolean }) {
     return (
         <form action={saveDefaultUsername} className="form">
-            <label htmlFor="username" className="label">Standardbenutzername:</label>
+            <label htmlFor="username" className="label">Standardbenutzername</label>
             <div className={props.ldap ? "relative" : ""}>
                 {props.ldap && <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">local/</span>}
                 <input type="text" id="username" name="username" defaultValue={props.username} placeholder="admin" className={props.ldap ? "input pl-14" : "input"} required />
@@ -40,7 +40,7 @@ export function DefaultUsernameForm(props: { username: string, ldap: boolean }) 
 export function DefaultPasswordForm(props: { password: string }) {
     return (
         <form action={saveDefaultPassword} className="form">
-            <label htmlFor="password" className="label">Standardpasswort:</label>
+            <label htmlFor="password" className="label">Standardpasswort</label>
             <input type="password" id="password" name="password" defaultValue={props.password} placeholder="admin" className="input" required />
             <SubmitButton text="Speichern" />
         </form>
@@ -61,7 +61,7 @@ export function DeleteAllDataForm() {
     return (
         <form action={() => { if (confirm("Bist du dir sicher, das du alle Daten löschen möchtest?")) deleteData() }} className="form">
             <label htmlFor="dataWarning" className="label">Alle Daten löschen</label>
-            <p id="dataWarning" className="text-red-500">Achtung! Dies Löscht alle Studienzeiten, Anwesenheiten und Nutzersessions!</p>
+            <p id="dataWarning" className="text-red-500">Achtung! Dies löscht alle Studienzeiten, Anwesenheiten und Nutzersessions!</p>
             <div className="btnWarning"><SubmitButton text="Alle Daten löschen" /></div>
         </form>
     )
