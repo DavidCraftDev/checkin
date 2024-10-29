@@ -1,10 +1,4 @@
-"use client";
-
-interface MissingStudyTimesProps {
-    missingStudyTimes: string[];
-}
-
-function MissingStudyTimes(props: MissingStudyTimesProps) {
+function MissingStudyTimes(props: { missingStudyTimes: string[] }) {
     return (
         <div className="overflow-x-auto">
             <div className="table">

@@ -1,12 +1,6 @@
-"use client";
-
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
-interface CompletedStudyTimesProps {
-    attendances: AttendancePerUserPerEvent[];
-}
-
-function CompletedStudyTimes(props: CompletedStudyTimesProps) {
+function CompletedStudyTimes(props: { attendances: AttendancePerUserPerEvent[] }) {
     function getStudyTimeName(type: string) {
         if (type.startsWith("Notiz:")) {
             return type.replace("Notiz:", "") + " (Notiz)"
