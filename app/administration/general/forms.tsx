@@ -30,7 +30,7 @@ export function DefaultUsernameForm(props: { username: string, ldap: boolean }) 
             <label htmlFor="username" className="label">Standardbenutzername</label>
             <div className={props.ldap ? "relative" : ""}>
                 {props.ldap && <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">local/</span>}
-                <input type="text" id="username" name="username" defaultValue={props.username} placeholder="admin" className={props.ldap ? "input pl-14" : "input"} required />
+                <input type="text" id="username" name="username" defaultValue={props.username} placeholder="Nicht_Admin" className={props.ldap ? "input pl-14" : "input"} required />
             </div>
             <SubmitButton text="Speichern" />
         </form >
@@ -41,7 +41,7 @@ export function DefaultPasswordForm(props: { password: string }) {
     return (
         <form action={saveDefaultPassword} className="form">
             <label htmlFor="password" className="label">Standardpasswort</label>
-            <input type="password" id="password" name="password" defaultValue={props.password} placeholder="admin" className="input" required />
+            <input type="password" id="password" name="password" defaultValue={props.password} placeholder="Sicheres_Passwort" className="input" required />
             <SubmitButton text="Speichern" />
         </form>
     )
