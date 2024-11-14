@@ -1,3 +1,5 @@
+"use server";
+
 function MissingStudyTimes(props: { missingStudyTimes: string[] }) {
     return (
         <div className="overflow-x-auto">

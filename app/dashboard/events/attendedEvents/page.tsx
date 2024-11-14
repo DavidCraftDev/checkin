@@ -6,11 +6,12 @@ import { notFound, redirect } from "next/navigation";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
 import { getNeededStudyTimesForNotes, getNeededStudyTimesSelect, getSavedNeededStudyTimes, saveNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
-import CreateStudyTimeNote from "./createStudyTimeNote.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Notifications } from "../../../src/ui/notifications";
+import { CreateStudyTimeNote } from "./forms";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -53,6 +54,7 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
     if (sessionUser.id !== userData.id) addable = true;
     return (
         <div>
+            <Notifications url="/dashboard/events/attendedEvents" />
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Studienzeiten</h1>

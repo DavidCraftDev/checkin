@@ -27,7 +27,7 @@ function UserTable(props: UserTableProps) {
                                 <td>{user.username}</td>
                                 <td>{user.permission}</td>
                                 <td>{user.group.toString().replaceAll(",", ", ")}</td>
-                                <td><a href={`/dashboard/user/edit?userID=${user.id}`} className="hover:underline">Bearbeiten</a></td>
+                                <td><a href={`/administration/user/edit?userID=${user.id}`} className="hover:underline">Bearbeiten</a></td>
                             </tr>
                         ))}
                     </tbody>

@@ -13,12 +13,15 @@ export function GeneralNotifications() {
     useEffect(() => {
         if (successSchoolName) {
             toast.success("Schulname gespeichert!");
+            successSchoolName = null;
             router.replace("/administration");
         } else if (successUsername) {
             toast.success("Standardbenutzername gespeichert!");
+            successUsername = null;
             router.replace("/administration");
         } else if (successPassword) {
             toast.success("Passwort geändert!");
+            successPassword = null;
             router.replace("/administration");
         }
     }, [successSchoolName, successUsername, successPassword]);

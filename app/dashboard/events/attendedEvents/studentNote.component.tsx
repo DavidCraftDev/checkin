@@ -1,15 +1,11 @@
-"use client"
+"use client";
 
 import { Attendances } from "@prisma/client";
-import setStudentNote from "./studentNoteHandler";
 import toast from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
+import { setStudentNote } from "./actions";
 
-interface StudentNoteProps {
-    attendance: Attendances;
-}
-
-function StudentNote(props: StudentNoteProps) {
+function StudentNote(props: { attendance: Attendances }) {
     const [note, setNote] = useState<string>(props.attendance.studentNote || "");
     const [debouncedNote, setDebouncedNote] = useState<string>(note);
     const changed = useRef(false);

@@ -1,3 +1,5 @@
+"use server";
+
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
 function CompletedStudyTimes(props: { attendances: AttendancePerUserPerEvent[] }) {
