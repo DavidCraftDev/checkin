@@ -27,10 +27,12 @@ function StudentNote(props: { attendance: Attendances }) {
         async function saveNote() {
             if (debouncedNote !== props.attendance.studentNote) {
                 const data = await setStudentNote(debouncedNote, props.attendance.id);
-                if (data === "success") {
+                if (data.success) {
                     toast.success("Notiz erfolgreich gespeichert");
+                } else if (data.error) {
+                    toast.error(data.error);
                 } else {
-                    toast.error("Fehler beim Speichern der Notiz");
+                    toast.error("Ein unbekannter Fehler ist aufgetreten");
                 }
             }
         }
