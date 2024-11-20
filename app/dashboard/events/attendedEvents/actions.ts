@@ -1,12 +1,17 @@
 "use server";
 
 import { disabledType, functionResult } from "@/app/src/interfaces/utilties";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { createStudentNote } from "@/app/src/modules/eventUtilities";
 import { createUserStudyTimeNote, saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
+import { Attendances } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-export async function setStudentNote(studentNote: string, attendanceID: string): Promise<functionResult> {
-    const data = await createStudentNote(attendanceID, studentNote);
+export async function setStudentNote(studentNote: string, attendance: Attendances): Promise<functionResult> {
+    const user = await getSessionUser(1);
+    if(user.id !== attendance.userID) redirect("/dashboard");
+    const data = await createStudentNote(attendance.id, studentNote);
     revalidatePath("/dashboard/events/attendedEvents");
     if (data.studentNote === studentNote) return { success: true };
     return { success: false, error: "Notiz konnte nicht gespeichert werden" };
@@ -19,6 +24,8 @@ export async function createStudyTimeNote(userID: string, cw: number): Promise<f
         return { success: false, warning: "Bitte warte 10 Sekunden" };
     }
     disabled[userID] = Date.now();
+    const user = await getSessionUser(1);
+    if(user.id !== userID) redirect("/dashboard");
     const data = await createUserStudyTimeNote(userID, cw);
     const result: functionResult = { success: data };
     if (!result.success) result.error = "Notiz konnte nicht erstellt werden";
@@ -28,6 +35,8 @@ export async function createStudyTimeNote(userID: string, cw: number): Promise<f
 }
 
 export async function saveSelectedStudyTimeType(attendanceID: string, userID: string, type: string, searchParamsString: string): Promise<functionResult> {
+    const user = await getSessionUser(1);
+    if(user.id !== userID) redirect("/dashboard");
     const data = await saveStudyTimeType(attendanceID, userID, type);
     const result: functionResult = { success: data };
     if (!result.success) result.error = "Studienzeit konnte nicht gespeichert werden";
