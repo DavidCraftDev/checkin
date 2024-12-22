@@ -1,4 +1,4 @@
-import "server-only";
+"use server";
 
 import { existsSync, readFileSync } from "fs";
 import { Client, Entry } from "ldapts";

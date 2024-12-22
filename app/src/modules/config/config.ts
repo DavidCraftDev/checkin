@@ -1,8 +1,5 @@
-import "server-only";
-
 import path from "path"
 import fs from "fs"
-import { generateSessionToken } from "../auth/sessionManager"
 import logger from "../logger"
 
 interface Config {
@@ -86,7 +83,7 @@ export async function readConfig(write: boolean = true) {
         try {
             let imported_config: Partial<Config> = JSON.parse(fs.readFileSync(configPath, "utf-8"));
             config_data = Object.assign({}, defaultConfig, imported_config);
-            if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateSessionToken();
+            if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateRandomSecurePassword();
             if (process.env.NODE_ENV === "production") logger.info("Loaded config file.", "Config");
         } catch (error) {
             logger.error("Error reading or parsing config file:" + error, "Config");
@@ -95,14 +92,14 @@ export async function readConfig(write: boolean = true) {
         try {
             let imported_config: Partial<Config> = JSON.parse(fs.readFileSync(configPathOld, "utf-8"));
             config_data = Object.assign({}, defaultConfig, imported_config);
-            if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateSessionToken();
+            if (!imported_config.DEFAULT_LOGIN || !imported_config.DEFAULT_LOGIN.PASSWORD || imported_config.DEFAULT_LOGIN.PASSWORD === "") config_data.DEFAULT_LOGIN.PASSWORD = generateRandomSecurePassword();
             logger.info("Found old config file. Automaticlly created a copy on the new path.", "Config");
         } catch (error) {
             logger.error("Error reading or parsing config file:" + error, "Config");
         }
     } else {
         config_data = defaultConfig;
-        config_data.DEFAULT_LOGIN.PASSWORD = generateSessionToken();
+        config_data.DEFAULT_LOGIN.PASSWORD = generateRandomSecurePassword();
         logger.warn("No config file found. Using default config.", "Config");
     }
     if (write) writeConfig();
@@ -137,3 +134,8 @@ export async function writeConfig() {
 }
 
 readConfig();
+
+function generateRandomSecurePassword(): string {
+    const crypto = require('crypto');
+    return crypto.randomBytes(64).toString('hex');
+}

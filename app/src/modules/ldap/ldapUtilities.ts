@@ -1,4 +1,4 @@
-import "server-only";
+"use server";
 
 import { Entry } from 'ldapts';
 import courses from '../config/courses';

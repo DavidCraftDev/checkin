@@ -1,5 +1,3 @@
-import "server-only";
-
 import fs from "fs";
 import path from "path";
 import dayjs from "dayjs";
@@ -44,8 +42,9 @@ export async function error(message: string, category: string) {
 }
 
 process.on("uncaughtException", async (errorMessage) => {
-    await error(errorMessage.toString(), "UncaughtException");
+    await error(errorMessage.stack || errorMessage.message, "UncaughtException");
 });
 
 const logger = { info, warn, error };
+
 export default logger;

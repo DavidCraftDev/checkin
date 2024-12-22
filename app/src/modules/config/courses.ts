@@ -1,5 +1,3 @@
-import "server-only";
-
 import { existsSync, readFileSync } from "fs";
 import Papa from "papaparse";
 import path from "path";
@@ -45,12 +43,12 @@ let data: Record<string, string> = {
     "PL": "Philosophie",
     "ET": "Ethik",
     "PO": "Politik",
-    "VK": "Vertifungskurs",
-    "IE": "Vertifungskurs",
-    "VTK": "Vertifungskurs",
-    "VTK1": "Vertifungskurs",
-    "VTK2": "Vertifungskurs",
-    "VX": "Vertifungskurs",
+    "VK": "Vertiefungskurs",
+    "IE": "Vertiefungskurs",
+    "VTK": "Vertiefungskurs",
+    "VTK1": "Vertiefungskurs",
+    "VTK2": "Vertiefungskurs",
+    "VX": "Vertiefungskurs",
     "LI": "Literatur",
     "EK": "Erdkunde"
 }
