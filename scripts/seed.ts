@@ -3,7 +3,7 @@ import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
 import logger from "../app/src/modules/logger";
 import { cleanUpData } from "./cleanUp";
-import { config_data } from "@/app/src/modules/config/config";
+import { config_data } from "../app/src/modules/config/config";
 
 const prisma = new PrismaClient();
 
