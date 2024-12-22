@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import { Attendances } from "@prisma/client";
-import setTeacherNote from "./teacherNoteHandler";
 import toast from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
+import { setTeacherNote } from "./actions";
 
 interface TeacherNoteProps {
     attendance: Attendances;
@@ -30,10 +30,12 @@ function TeacherNote(props: TeacherNoteProps) {
         async function saveNote() {
             if (debouncedNote !== props.attendance.studentNote) {
                 const data = await setTeacherNote(debouncedNote, props.attendance.id);
-                if (data === "success") {
+                if (data.success) {
                     toast.success("Notiz erfolgreich gespeichert");
+                } else if (data.error) {
+                    toast.error(data.error);
                 } else {
-                    toast.error("Fehler beim Speichern der Notiz");
+                    toast.error("Ein unbekannter Fehler ist aufgetreten");
                 }
             }
         }

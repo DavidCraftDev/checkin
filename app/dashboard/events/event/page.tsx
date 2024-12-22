@@ -3,17 +3,18 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import EventTable from "./eventTable.component";
-import CheckinForm from "./checkinForm.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Metadata } from "next/types";
+import { CheckinForm } from "./forms";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
 
-export default async function event({ searchParams }: { searchParams: SearchParams }) {
+async function event({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSessionUser(1);
     const eventID = searchParams.id
     if (!eventID) notFound();
@@ -40,3 +41,10 @@ export default async function event({ searchParams }: { searchParams: SearchPara
         </div>
     );
 }
+
+export const metadata: Metadata = {
+    title: "Studienzeit - CheckIN-System",
+    description: "Eine Studienzeit im CheckIN-System",
+}
+
+export default event;
