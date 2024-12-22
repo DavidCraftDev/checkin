@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Events, User } from "@prisma/client";
+import { Attendances, Events, User } from "@prisma/client";
 import db from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { getSessionUser } from "./auth/cookieManager";
+import { redirect } from "next/navigation";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -201,10 +203,15 @@ export async function createTeacherNote(id: string, note: string) {
     return data;
 }
 
-export async function createStudentNote(id: string, note: string) {
+export async function createStudentNote(attendance: Attendances, note: string) {
+    const user = await getSessionUser(1);
+    if(user.id !== attendance.userID) {
+        const attendanceUser = await getUserPerID(attendance.userID);
+        if (attendanceUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
+    }
     const data = await db.attendances.update({
         where: {
-            id: id
+            id: attendance.id
         },
         data: {
             studentNote: note

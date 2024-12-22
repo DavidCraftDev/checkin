@@ -12,7 +12,7 @@ function CreatedEventTable(props: { events: CreatedEventPerUser[] }) {
                         <tr>
                             <th>Stammfach</th>
                             <th>Teilnehmer</th>
-                            <th>Zeit</th>
+                            <th>Zeitpunkt</th>
                             <th>Anzeigen</th>
                         </tr>
                     </thead>

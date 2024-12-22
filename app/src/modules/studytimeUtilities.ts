@@ -9,6 +9,8 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { disabledType } from "../interfaces/utilties";
+import { getUserPerID } from "./userUtilities";
+import { redirect } from "next/navigation";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -75,6 +77,11 @@ export async function saveStudyTimeType(attendanceID: string, userID: string, ty
 }
 
 export async function createUserStudyTimeNote(userID: string, cw: number) {
+  const user = await getUserPerID(userID);
+  const sessionUser = await getUserPerID(userID);
+  if (user.id !== sessionUser.id) {
+    if (sessionUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
+  }
   let note = await db.attendances.create({
     data: {
       userID: userID,

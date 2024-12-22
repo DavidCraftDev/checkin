@@ -44,7 +44,7 @@ function StudentNote(props: { attendance: Attendances }) {
     }, [props.attendance.studentNote, props.attendance.eventID]);
     return (
         <td>
-            <textarea ref={textareaRef} value={note} onChange={(e) => { setNote(e.target.value); changed.current = true }} placeholder="Schüler Noitz" name="StudentNote" className="border-gray-200 border-2 rounded-md"></textarea>
+            <textarea ref={textareaRef} value={note} onChange={(e) => { setNote(e.target.value); changed.current = true }} placeholder="Schüler Notiz" name="StudentNote" className="border-gray-200 border-2 rounded-md"></textarea>
         </td>
     )
 }

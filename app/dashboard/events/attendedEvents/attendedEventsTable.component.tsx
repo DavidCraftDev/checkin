@@ -23,7 +23,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                             <th>Fach</th>
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
-                            <th>Wann Teilgenommen</th>
+                            <th>Zeitpunkt</th>
                         </tr>
                     </thead>
                     <tbody>
