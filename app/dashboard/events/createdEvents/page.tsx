@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Metadata } from "next";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -45,3 +46,8 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
 }
 
 export default createdEvents;
+
+export const metadata: Metadata = {
+  title: "Erstellte Studienzeiten - CheckIN-System",
+  description: "Erstellte Studienzeiten im CheckIN-System",
+}

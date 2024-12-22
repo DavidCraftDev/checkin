@@ -5,6 +5,7 @@ import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.compo
 import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
+import { Metadata } from "next";
 
 dayjs.extend(isoWeek)
 
@@ -30,3 +31,8 @@ async function dashboard() {
 }
 
 export default dashboard;
+
+export const metadata: Metadata = {
+    title: "Dashboard - CheckIN-System",
+    description: "Das Dashboard des CheckIN-Systems",
+}

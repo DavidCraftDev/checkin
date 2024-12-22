@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Metadata } from "next";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -31,3 +32,8 @@ async function QRScanner({ searchParams }: { searchParams: SearchParams }) {
 }
 
 export default QRScanner;
+
+export const metadata: Metadata = {
+    title: "QR Code Scanner - CheckIN-System",
+    description: "QR Code Scanner für das CheckIN-System",
+} 

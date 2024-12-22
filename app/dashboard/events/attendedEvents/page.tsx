@@ -11,6 +11,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { CreateStudyTimeNote } from "./forms";
+import { Metadata } from "next";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -73,3 +74,8 @@ async function attendedEvents({ searchParams }: { searchParams: SearchParams }) 
 }
 
 export default attendedEvents;
+
+export const metadata: Metadata = {
+    title: "Teilgenomme Studienzeiten - CheckIN-System",
+    description: "Teilgenommene Studienzeiten im CheckIN-Systems",
+}

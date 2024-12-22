@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { config_data, readConfig } from "./src/modules/config/config";
+import { config_data } from "./src/modules/config/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CheckIN System",
-  description: "CheckIN System zur Anwesendheitskontrolle von Schülern",
+  title: "CheckIN-System",
+  description: "Das CheckIN-System zur Anwesendheitskontrolle von Schülern in Studienzeiten",
 };
 
 export default function RootLayout({
