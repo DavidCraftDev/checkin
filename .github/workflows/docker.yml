@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - dev
-      - design
+      - v2
   workflow_dispatch:
 jobs:
   build:
