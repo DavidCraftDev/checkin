@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Ignore data files
 /data/
+
+# Ignore .vscode folder
+.vscode/
