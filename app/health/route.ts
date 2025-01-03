@@ -15,7 +15,7 @@ export async function GET() {
         status = "error"
     }
     const data = {
-        maintance: config_data.MAINTANCE,
+        maintenance: config_data.MAINTENANCE,
         status: status,
         databaseConnected: dbConnected
     }

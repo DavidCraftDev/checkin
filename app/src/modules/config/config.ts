@@ -3,7 +3,7 @@ import fs from "fs"
 import logger from "../logger"
 
 interface Config {
-    MAINTANCE: boolean,
+    MAINTENANCE : boolean,
     SCHOOL_NAME: string,
     DEFAULT_LOGIN: {
         USERNAME: string,
@@ -39,7 +39,7 @@ interface Config {
 }
 
 const defaultConfig: Config = {
-    MAINTANCE: false,
+    MAINTENANCE : false,
     SCHOOL_NAME: "",
     DEFAULT_LOGIN: {
         USERNAME: "Own.Username",
@@ -106,7 +106,7 @@ export async function readConfig(write: boolean = true) {
 }
 
 export async function writeConfig() {
-    if (process.env.MAINTANCE) config_data.MAINTANCE = process.env.MAINTANCE === "true";
+    if (process.env.MAINTENANCE ) config_data.MAINTENANCE  = process.env.MAINTENANCE === "true";
     if (process.env.SCHOOL_NAME) config_data.SCHOOL_NAME = process.env.SCHOOL_NAME;
     if (process.env.DEFAULT_LOGIN_USERNAME) config_data.DEFAULT_LOGIN.USERNAME = process.env.DEFAULT_LOGIN_USERNAME;
     if (process.env.DEFAULT_LOGIN_PASSWORD) config_data.DEFAULT_LOGIN.PASSWORD = process.env.DEFAULT_LOGIN_PASSWORD

@@ -17,8 +17,8 @@ services:
       - db
     environment:
       - TZ=Europe/Berlin
-      # Enable Maintance Mode (true/false). When enabled, only a maintance page will be shown, the login is disabled.
-      - MAINTANCE:false
+      # Enable MAINTENANCE Mode (true/false). When enabled, only a MAINTENANCE page will be shown, the login is disabled.
+      - MAINTENANCE:false
       # Replace the following environment variables with your own values, you need to set the same values in the db service
       - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
       # Set own default admin credentials
@@ -53,7 +53,7 @@ Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe
 
 |Attribute|Beschreibung|
 |---------|------------|
-|MAINTANCE|Wenn dieser Wert auf `true` ist, ist der Wartungsmodus aktiviert, beim Aufrufen egal welcher Seite des CheckIN Systems wird eine Wartungsseite angezeigt, ein Login ist nicht möglich. Der Wert ist standardmäßig auf `false`.|
+|MAINTENANCE|Wenn dieser Wert auf `true` ist, ist der Wartungsmodus aktiviert, beim Aufrufen egal welcher Seite des CheckIN Systems wird eine Wartungsseite angezeigt, ein Login ist nicht möglich. Der Wert ist standardmäßig auf `false`.|
 |AUTH_SECRET|Der Wert womit die Nutzerdaten die im Cookie beim Nutzer gespeichert werden, verschlüsselt werden. **Unbedingt einen eigenen Geheimen Wert setzen!**|
 |DEFAULT_LOGIN -> Username|Der Nutzername des Adminnutzers der Standardmäßig erstellt wird, wenn kein Nutzer mit Admin Rechten existiert. Dieser Wert sollte nicht der Standard Wert sein.|
 |DEFAULT_LOGIN -> Password|Passwort des Standard Adminnutzers. Dieser Wert sollte nicht der Standard Wert sein.|

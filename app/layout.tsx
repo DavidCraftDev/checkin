@@ -15,7 +15,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if (config_data.MAINTANCE) {
+  if (config_data.MAINTENANCE) {
     return (
       <html lang="en">
         <body className={inter.className}>

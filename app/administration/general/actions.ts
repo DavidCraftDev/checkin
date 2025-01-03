@@ -21,8 +21,8 @@ export async function enableMaintanceMode(): Promise<void> {
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
     if (user.permission !== 2) redirect("/dashboard");
-    config_data.MAINTANCE = true;
-    await logger.info("Maintance mode enabled by " + user.username + " (" + user.id + ")", "Administration");
+    config_data.MAINTENANCE = true;
+    await logger.info("Maintenance mode enabled by " + user.username + " (" + user.id + ")", "Administration");
     await writeConfig();
     redirect("/");
 }
