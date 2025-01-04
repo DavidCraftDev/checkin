@@ -8,7 +8,7 @@ import getPasswordResetURL from "./passwordReset";
 import React from "react";
 import { login } from "../src/modules/auth/loginManager";
 
-function Login() {
+function LoginPage() {
   const router = useRouter();
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -81,4 +81,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;

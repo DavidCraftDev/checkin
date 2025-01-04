@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-function Limit() {
+function LoginLimitPage() {
     const router = useRouter();
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -20,4 +20,4 @@ function Limit() {
     )
 }
 
-export default Limit;
+export default LoginLimitPage;
