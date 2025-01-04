@@ -2,7 +2,7 @@ import { config_data } from "../src/modules/config/config";
 import db from "../src/modules/db";
 
 export async function GET() {
-    let dbConnected: Boolean
+    let dbConnected: boolean
     try {
         await db.$connect()
         await db.$queryRaw`SELECT 1`
@@ -19,5 +19,5 @@ export async function GET() {
         status: status,
         databaseConnected: dbConnected
     }
-    return Response.json({ data })
+    return Response.json({ data });
 }
