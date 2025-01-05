@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import QRCodeComponent from "./qr.component";
 import { getCurrentSession } from "../../src/modules/auth/cookieManager";
+import { Metadata } from "next";
 
 async function QRCodePage() {
   const { user } = await getCurrentSession();
@@ -18,3 +19,8 @@ async function QRCodePage() {
 }
 
 export default QRCodePage;
+
+export const metadata: Metadata = {
+  title: "QR-Code - CheckIN-System",
+  description: "Hier findest du deinen persönlichen QR-Code, den du zum Einchecken verwenden kannst."
+};

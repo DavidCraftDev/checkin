@@ -59,3 +59,8 @@ async function GroupPage({ searchParams }: { searchParams: SearchParams }) {
 }
 
 export default GroupPage;
+
+export const metadata = {
+  title: "Gruppe - CheckIN-System",
+  description: "Hier findest du alle Mitglieder einer Gruppe."
+};

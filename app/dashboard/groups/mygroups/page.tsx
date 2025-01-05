@@ -20,3 +20,8 @@ async function GroupsPage() {
 }
 
 export default GroupsPage;
+
+export const metadata = {
+  title: "Meine Gruppen - CheckIN-System",
+  description: "Hier findest du alle Gruppen, in denen du Mitglied bist."
+};

@@ -8,3 +8,8 @@ async function notFound() {
 }
 
 export default notFound;
+
+export const metadata = {
+    title: "404 - Gruppe nicht gefunden - CheckIN-System",
+    description: "Die Gruppe, die du suchst, existiert nicht."
+};
