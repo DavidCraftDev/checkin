@@ -1,5 +1,3 @@
-"use client";
-
 import Link from 'next/link';
 import NavLinks from '@/app/src/ui/nav-links';
 import { ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
