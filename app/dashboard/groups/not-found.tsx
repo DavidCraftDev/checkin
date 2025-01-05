@@ -7,4 +7,4 @@ async function notFound() {
     )
 }
 
-export default notFound
+export default notFound;
