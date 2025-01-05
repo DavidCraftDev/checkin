@@ -1,4 +1,4 @@
-async function notFound() {
+function NotFound() {
     return (
         <div>
             <h1>404 - Gruppe nicht gefunden</h1>
@@ -7,7 +7,7 @@ async function notFound() {
     )
 }
 
-export default notFound;
+export default NotFound;
 
 export const metadata = {
     title: "404 - Gruppe nicht gefunden - CheckIN-System",

@@ -1,4 +1,6 @@
-async function notFound() {
+import { Metadata } from "next";
+
+function NotFound() {
     return (
         <div>
             <h1>404 - Event nicht gefunden</h1>
@@ -7,4 +9,9 @@ async function notFound() {
     )
 }
 
-export default notFound;
+export default NotFound;
+
+export const metadata: Metadata = {
+    title: "404 - Event nicht gefunden - CheckIN-System",
+    description: "Das Event, das du suchst, existiert nicht."
+};
