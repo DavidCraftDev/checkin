@@ -15,7 +15,7 @@ function CreateEventForm(props: { user: User }) {
         const data = await submitHandlerStudyTime(selectedStudyTime);
         if (data && data.warning) toast(data.warning, { icon: "❗" });
         else if (data && data.error) toast.error(data.error);
-        else toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else if(!data || !data.success) toast.error("Ein unbekannter Fehler ist aufgetreten");
     }
 
     let competences: Array<string> = props.user.competence as Array<string> || [];
