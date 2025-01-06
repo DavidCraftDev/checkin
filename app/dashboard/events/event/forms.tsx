@@ -31,7 +31,7 @@ export function RemoveUserButton(props: { attendance: Attendances, user: User, r
     }
     return (
         <td>
-            <button onClick={removeUserManager} className="btn bg-red-700 hover:bg-red-900">Schüler entfernen</button>
+            <button onClick={removeUserManager} className="btn text-nowrap bg-red-700 hover:bg-red-900">Schüler entfernen</button>
         </td>
     );
 }
