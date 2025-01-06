@@ -18,9 +18,9 @@ export async function handleEventDelete(eventID: string): Promise<void> {
 
 export async function handleUserCheckIN(username: string, event: Events): Promise<functionResult> {
     const sessionUser = await getSessionUser(1);
-    if(event.user !== sessionUser.id) redirect("/dashboard");
+    if (!sessionUser || event.user !== sessionUser.id) redirect("/dashboard");
     const user = await getUserPerUsername(username);
-    if(!user) return { success: false, error: "Schüler nicht gefunden" };
+    if (!user) return { success: false, error: "Schüler nicht gefunden" };
     const data = await checkINHandler(event.id, user.id);
     return { success: true, data: data };
 }
@@ -42,6 +42,6 @@ export async function removeUserHandler(attendance: Attendances, user: User, rem
 export async function setTeacherNote(teacherNote: string, attendanceID: string): Promise<functionResult> {
     const data = await createTeacherNote(attendanceID, teacherNote);
     revalidatePath("/dashboard/events/attendedEvents");
-    if (data.teacherNote === teacherNote) return { success: true };
+    if (data && data.teacherNote === teacherNote) return { success: true };
     return { success: false, error: "Notiz konnte nicht gespeichert werden" };
 }

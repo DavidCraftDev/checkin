@@ -19,14 +19,19 @@ export function DeleteEventButton(props: { eventID: string }) {
     )
 }
 
-export function RemoveUserButton() {
+export function RemoveUserButton(props: { attendance: Attendances, user: User, removeUser: User }) {
     const router = useRouter();
-    function removeUser() {
-
+    async function removeUserManager() {
+        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
+        if (!confirm("Möchtest du " + props.removeUser.displayname + " wirklich entfernen?")) return;
+        const data = await removeUserHandler(props.attendance, props.user, props.removeUser);
+        if (data && data.id === props.attendance.id) toast.success(props.removeUser.displayname + " erfolgreich entfernt");
+        else toast.error("Fehler beim Entfernen von " + props.removeUser.displayname);
+        router.refresh();
     }
     return (
         <td>
-            <button onClick={() => removeUser()} className="btn bg-red-700 hover:bg-red-900">Schüler entfernen</button>
+            <button onClick={removeUserManager} className="btn bg-red-700 hover:bg-red-900">Schüler entfernen</button>
         </td>
     );
 }
@@ -34,13 +39,13 @@ export function RemoveUserButton() {
 export function CheckinForm(props: { event: Events }) {
     const router = useRouter();
     async function eventHandler(formData: FormData) {
-        if(props.event.cw !== dayjs().isoWeek() || dayjs(props.event.created_at).year() !== dayjs().year()) router.refresh();
+        if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.created_at).year() !== dayjs().year()) router.refresh();
         if (!formData.get("name")) return;
         const data = await handleUserCheckIN(formData.get("name") as string, props.event)
-        if(data.success && data.data) {
+        if (data.success && data.data) {
             toast.success(`${data.data.displayname} erfolgreich hinzugefügt`);
             router.refresh();
-        } else if(data.error) {
+        } else if (data.error) {
             toast.error(data.error);
         } else {
             toast.error("Unbekannter Fehler");
@@ -58,21 +63,4 @@ export function CheckinForm(props: { event: Events }) {
             </div>
         </form>
     )
-}
-
-export function RemoveUser(props: { user: User, removeUser: User, attendance: Attendances }) {
-    const router = useRouter();
-    async function removeUser() {
-        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
-        if (!confirm("Möchtest du den Nutzer wirklich löschen?")) return;
-        const data = await removeUserHandler(props.attendance, props.user, props.removeUser);
-        if (data.id && data.id === props.attendance.id) toast.success("Nutzer erfolgreich entfernt");
-        else toast.error("Fehler beim entfernen des Nutzers");
-        router.refresh();
-    }
-    return (
-        <td>
-            <button onClick={() => removeUser()} className="btn bg-red-700 hover:bg-red-900">Nutzer entfernen</button>
-        </td>
-    );
 }

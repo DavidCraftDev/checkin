@@ -10,6 +10,7 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { getSessionUser } from "./auth/cookieManager";
 import { redirect } from "next/navigation";
+import logger from "./logger";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -256,6 +257,7 @@ export async function deleteEmptyEvent(eventID: string) {
                 id: eventID
             }
         });
+        logger.info("Studienzeit mit der ID " + eventID + " wurde gelöscht", "Event");
         return true;
     }
     return false;

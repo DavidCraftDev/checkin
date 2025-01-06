@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 import { searchUserHandler } from './actions';
 
 function UserSearchBar() {
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<User[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -20,7 +20,7 @@ function UserSearchBar() {
             const searchData = await searchUserHandler(query);
             setSuggestions(searchData);
             setShowSuggestions(true);
-        }, 100);
+        }, 300);
 
         return () => clearTimeout(timeout);
     }, [query]);

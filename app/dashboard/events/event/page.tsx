@@ -10,13 +10,13 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next/types";
 import { CheckinForm } from "./forms";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
-async function event({ searchParams }: { searchParams: SearchParams }) {
+async function EventPage({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSessionUser(1);
-    const eventID = searchParams.id
+    const eventID = searchParams.id;
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);
     if (!event) notFound();
@@ -29,7 +29,7 @@ async function event({ searchParams }: { searchParams: SearchParams }) {
                 <div>
                     <h1>Studienzeit {event.type} {user.displayname}</h1>
                     <p>erstellt am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
-                    <p>{attendances.length} Teilnehmer</p>
+                    <p>{attendances.length} anwesende Schüler</p>
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
             </div>
@@ -42,9 +42,9 @@ async function event({ searchParams }: { searchParams: SearchParams }) {
     );
 }
 
+export default EventPage;
+
 export const metadata: Metadata = {
     title: "Studienzeit - CheckIN-System",
     description: "Eine Studienzeit im CheckIN-System",
 }
-
-export default event;

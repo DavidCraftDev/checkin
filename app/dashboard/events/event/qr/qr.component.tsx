@@ -11,18 +11,20 @@ let lastResult: string
 
 function QRScannerComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  let id = ""
+  const searchParams = useSearchParams();
+  let id: string = searchParams.get("id") || "";
+  if (!id) notFound();
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
       if (result.data === lastResult) return;
       lastResult = result.data
       if (!result.data.startsWith("checkin://")) {
-        toast.error("Kein Nutzer QR-Code")
+        toast.error("Kein CheckIN QR-Code")
         return
       }
       const userID = result.data.replace("checkin://", "")
-      const data: string | User = await submitHandler(userID, id as string)
+      const data: string | User = await submitHandler(userID, id)
       if (typeof data === "string") {
         if (data === "ErrorNotFound") {
           toast.error("Nutzer nicht gefunden")
@@ -62,9 +64,6 @@ function QRScannerComponent() {
     startScanner();
   }, [startScanner]);
 
-    const searchParams = useSearchParams();
-    id = searchParams.get("id") || ""
-    if(!id) notFound();
   return (
     <div className='w-full'>
       <video ref={videoRef}></video>
