@@ -10,9 +10,9 @@ export function CreateStudyTimeNote(props: { userID: string, cw: number }) {
     const router = useRouter();
     async function submitCreateStudyTimeNote(): Promise<void> {
         const data = await createStudyTimeNote(props.userID, props.cw);
-        if (data.success) toast.success("Notiz erstellt");
-        else if (data.warning) toast.error(data.warning);
-        else if (data.error) toast.error(data.error);
+        if (data && data.success) toast.success("Notiz erstellt");
+        else if (data && data.warning) toast.error(data.warning);
+        else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }
@@ -28,8 +28,8 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
     const router = useRouter();
     async function submitStudyTimeSelect(type: string): Promise<void> {
         const data = await saveSelectedStudyTimeType(props.attendance.id, props.attendance.userID, type, type);
-        if (data.success) toast.success("Studienzeit gespeichert");
-        else if (data.error) toast.error(data.error);
+        if (data && data.success) toast.success("Studienzeit gespeichert");
+        else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }

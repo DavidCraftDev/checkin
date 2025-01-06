@@ -13,8 +13,8 @@ function CreateEventForm(props: { user: User }) {
             return;
         }
         const data = await submitHandlerStudyTime(selectedStudyTime);
-        if (data.warning) toast(data.warning, { icon: "❗" });
-        else if (data.error) toast.error(data.error);
+        if (data && data.warning) toast(data.warning, { icon: "❗" });
+        else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
     }
 

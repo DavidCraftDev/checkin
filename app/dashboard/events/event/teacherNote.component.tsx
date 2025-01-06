@@ -26,9 +26,9 @@ function TeacherNote(props: { attendance: Attendances }) {
         async function saveNote() {
             if (debouncedNote !== props.attendance.teacherNote) {
                 const data = await setTeacherNote(debouncedNote, props.attendance.id);
-                if (data.success) {
+                if (data && data.success) {
                     toast.success("Notiz erfolgreich gespeichert");
-                } else if (data.error) {
+                } else if (data && data.error) {
                     toast.error(data.error);
                 } else {
                     toast.error("Ein unbekannter Fehler ist aufgetreten");

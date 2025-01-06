@@ -42,10 +42,10 @@ export function CheckinForm(props: { event: Events }) {
         if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.created_at).year() !== dayjs().year()) router.refresh();
         if (!formData.get("name")) return;
         const data = await handleUserCheckIN(formData.get("name") as string, props.event)
-        if (data.success && data.data) {
+        if (data && data.success && data.data) {
             toast.success(`${data.data.displayname} erfolgreich hinzugefügt`);
             router.refresh();
-        } else if (data.error) {
+        } else if (data && data.error) {
             toast.error(data.error);
         } else {
             toast.error("Unbekannter Fehler");
