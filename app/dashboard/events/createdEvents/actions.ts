@@ -1,6 +1,6 @@
 "use server";
 
-import { disabledType, functionResult } from "@/app/src/interfaces/utilties";
+import { functionResult, disabledType } from "@/app/src/interfaces/utilties";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { createEvent } from "@/app/src/modules/eventUtilities";
 import { redirect } from "next/navigation";

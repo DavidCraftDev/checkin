@@ -2,7 +2,6 @@
 
 import { User } from "@prisma/client";
 import submitHandlerStudyTime from "./actions";
-import { FormEvent } from "react";
 import toast from "react-hot-toast";
 
 function CreateEventForm(props: { user: User }) {
@@ -15,7 +14,7 @@ function CreateEventForm(props: { user: User }) {
         const data = await submitHandlerStudyTime(selectedStudyTime);
         if (data && data.warning) toast(data.warning, { icon: "❗" });
         else if (data && data.error) toast.error(data.error);
-        else if(data) toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else if (data) toast.error("Ein unbekannter Fehler ist aufgetreten");
     }
 
     let competences: Array<string> = props.user.competence as Array<string> || [];
@@ -26,7 +25,7 @@ function CreateEventForm(props: { user: User }) {
                     <div className="mb-4">
                         <label htmlFor="studyTime" className="block text-gray-700 font-bold mb-2">Studienzeit</label>
                         <select defaultValue="default" id="studyTime" name="studyTime" className="w-full rounded-lg p-2 border-2 focus:outline-none focus:ring-2 focus:ring-black">
-                            <option disabled value="default">Studienzeit wählen</option>
+                            <option disabled value="default">Stammfach auswählen</option>
                             {competences.map((competence) => (
                                 <option key={competence} value={competence}>{competence}</option>
                             ))}

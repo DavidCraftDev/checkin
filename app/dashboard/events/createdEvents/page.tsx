@@ -11,13 +11,13 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
 async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
-  if (sessionUser.permission < 1) redirect("/dashboard");
+  if (!sessionUser || sessionUser.permission < 1) redirect("/dashboard");
 
   const currentWeek = dayjs().isoWeek();
   const currentYear = dayjs().year();
