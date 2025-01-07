@@ -15,7 +15,7 @@ dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
-async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
+async function CreatedEventsPage({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
   if (!sessionUser || sessionUser.permission < 1) redirect("/dashboard");
 
@@ -45,7 +45,7 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   );
 }
 
-export default createdEvents;
+export default CreatedEventsPage;
 
 export const metadata: Metadata = {
   title: "Erstellte Studienzeiten - CheckIN-System",
