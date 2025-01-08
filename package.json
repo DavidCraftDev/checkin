@@ -21,7 +21,7 @@
     "clsx": "2.1.1",
     "dayjs": "^1.11.13",
     "eslint": "8",
-    "eslint-config-next": "14.2.13",
+    "eslint-config-next": "14.2.23",
     "ldapts": "^7.0.12",
     "next": "14.2.13",
     "next-qrcode": "2.5.1",
