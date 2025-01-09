@@ -15,6 +15,7 @@ async function DashboardPage() {
     const currentYear = dayjs().year();
     const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear);
     let missingStudyTimes: Array<string> = new Array();
+    if (!user.needs) user.needs = [];
     user.needs.forEach((neededStudyTime) => {
         const foundAttendance = attendances.find((attendanceData) => {
             const type = attendanceData.attendance.type;

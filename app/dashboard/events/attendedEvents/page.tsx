@@ -22,7 +22,7 @@ async function AttendedEventsPage({ searchParams }: { searchParams: SearchParams
     if (searchParams.userID && sessionUser.permission < 1) redirect("/dashboard");
     const userID = searchParams.userID || sessionUser.id;
     const userData = searchParams.userID ? await getUserPerID(userID) : sessionUser;
-    if (!userData.id) notFound();
+    if (!userData || !userData.id) notFound();
     if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group.filter(value => userData.group.includes(value)).length === 0)) redirect("/dashboard");
 
     const currentWeek = dayjs().isoWeek();
@@ -39,7 +39,7 @@ async function AttendedEventsPage({ searchParams }: { searchParams: SearchParams
 
     let userNeeds;
     if (addable) {
-        userNeeds = userData?.needs || [];
+        userNeeds = userData.needs || [];
     } else {
         const savedNeededStudyTimes = await getSavedNeededStudyTimes(userData, cw, year);
         userNeeds = savedNeededStudyTimes?.needs || [];
