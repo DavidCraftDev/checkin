@@ -32,8 +32,8 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataEvent: Events;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
-            if (((!attendance.type || !attendance.studentNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
-                await db.attendances.delete({
+            if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
+                await db.attendances.deleteMany({
                     where: {
                         id: attendance.id
                     }
@@ -205,8 +205,8 @@ export async function createTeacherNote(id: string, note: string) {
 }
 
 export async function createStudentNote(attendance: Attendances, note: string) {
-    const user = await getSessionUser(1);
-    if(user.id !== attendance.userID) {
+    const user = await getSessionUser();
+    if (user.id !== attendance.userID) {
         const attendanceUser = await getUserPerID(attendance.userID);
         if (attendanceUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
     }

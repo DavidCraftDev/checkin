@@ -13,23 +13,23 @@ export async function setStudentNote(studentNote: string, attendance: Attendance
     return { success: false, error: "Notiz konnte nicht gespeichert werden" };
 }
 
-let disabled: disabledType = {};
-export async function createStudyTimeNote(userID: string, cw: number): Promise<functionResult> {
-    if (disabled[userID] && disabled[userID] + 5000 > Date.now()) {
+let disabledUsers: disabledType = {};
+export async function createStudyTimeNote(userID: string, cw: number, year: number): Promise<functionResult> {
+    if (disabledUsers[userID] && disabledUsers[userID] + 5000 > Date.now()) {
         revalidatePath("/dashboard/events/attendedEvents");
         return { success: false, warning: "Bitte warte 10 Sekunden" };
     }
-    disabled[userID] = Date.now();
-    const data = await createUserStudyTimeNote(userID, cw);
+    disabledUsers[userID] = Date.now();
+    const data = await createUserStudyTimeNote(userID, cw, year);
     const result: functionResult = { success: data };
     if (!result.success) result.error = "Notiz konnte nicht erstellt werden";
-    delete disabled[userID];
+    delete disabledUsers[userID];
     revalidatePath("/dashboard/events/attendedEvents");
     return result;
 }
 
-export async function saveSelectedStudyTimeType(attendanceID: string, userID: string, type: string, searchParamsString: string): Promise<functionResult> {
-    const data = await saveStudyTimeType(attendanceID, userID, type);
+export async function saveSelectedStudyTimeType(attendance: Attendances, userID: string, type: string, searchParamsString: string): Promise<functionResult> {
+    const data = await saveStudyTimeType(attendance, userID, type);
     const result: functionResult = { success: data };
     if (!result.success) result.error = "Studienzeit konnte nicht gespeichert werden";
     revalidatePath("/dashboard/events/attendedEvents");

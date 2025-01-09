@@ -6,10 +6,10 @@ import { SubmitButton } from "@/app/src/ui/submitButton";
 import { Attendances } from '@prisma/client';
 import toast from 'react-hot-toast';
 
-export function CreateStudyTimeNote(props: { userID: string, cw: number }) {
+export function CreateStudyTimeNote(props: { userID: string, cw: number, year: number }) {
     const router = useRouter();
     async function submitCreateStudyTimeNote(): Promise<void> {
-        const data = await createStudyTimeNote(props.userID, props.cw);
+        const data = await createStudyTimeNote(props.userID, props.cw, props.year);
         if (data && data.success) toast.success("Notiz erstellt");
         else if (data && data.warning) toast.error(data.warning);
         else if (data && data.error) toast.error(data.error);
@@ -24,10 +24,10 @@ export function CreateStudyTimeNote(props: { userID: string, cw: number }) {
 }
 
 export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes: string[] }) {
-    let defaultValue = props.attendance.type || "default";
+    const defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function submitStudyTimeSelect(type: string): Promise<void> {
-        const data = await saveSelectedStudyTimeType(props.attendance.id, props.attendance.userID, type, type);
+        const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userID, type, type);
         if (data && data.success) toast.success("Studienzeit gespeichert");
         else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
