@@ -22,7 +22,9 @@ export async function handleUserCheckIN(username: string, event: Events): Promis
     const user = await getUserPerUsername(username);
     if (!user) return { success: false, error: "Schüler nicht gefunden" };
     const data = await checkINHandler(event.id, user.id);
-    return { success: true, data: data };
+    if (data && typeof data === "string") return { success: false, error: data };
+    else if (data && typeof data === "object") return { success: true, data: user };
+    return { success: false, error: "Unbekannter Fehler" };
 }
 
 export async function searchUserHandler(search: string): Promise<User[]> {
