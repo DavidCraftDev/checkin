@@ -3,7 +3,7 @@ import UserTable from "./userTable.component";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { config_data } from "@/app/src/modules/config/config";
 
-async function user() {
+async function UserPage() {
     await getSessionUser(2);
     const users = await db.user.findMany() || [];
     users.sort((a, b) => a.username.localeCompare(b.username));
@@ -14,7 +14,7 @@ async function user() {
                     <h1>Nutzer</h1>
                     <p>{users.length} Nutzer</p>
                 </div>
-                {!config_data.LDAP.ENABLE ? <a className="btn place-self-center" href={`/dashboard/user/create`}>Nutzer erstellen</a> : null}
+                {!config_data.LDAP.ENABLE ? <a className="btn place-self-center" href={`/administration/user/create`}>Nutzer erstellen</a> : null}
             </div>
             <UserTable users={users} />
             <p>Exportieren als:
@@ -25,4 +25,4 @@ async function user() {
     );
 }
 
-export default user;
+export default UserPage;

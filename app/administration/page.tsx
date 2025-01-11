@@ -4,7 +4,7 @@ import { config_data } from "../src/modules/config/config";
 import { DefaultPasswordForm, DefaultUsernameForm, DeleteAllDataForm, DeleteAllSessionsForm, MaintanceModeForm, SchoolNameForm } from "./general/forms";
 import { GeneralNotifications } from "./general/notifications";
 
-async function general() {
+async function GeneralPage() {
     return (
         <div>
             <GeneralNotifications />
@@ -21,4 +21,4 @@ async function general() {
     );
 }
 
-export default general;
+export default GeneralPage;

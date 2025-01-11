@@ -36,7 +36,7 @@ const linksAdministration = [
   { name: 'Zurück', href: '/dashboard', icon: ArrowLeftIcon, mobile: true, permission: 2 },
   { name: 'Allgemein', href: '/administration', icon: HomeIcon, mobile: true, permission: 2 },
   { name: 'Daten Import', href: '/administration/import', icon: FolderArrowDownIcon, mobile: true, permission: 2 },
-  { name: 'LDAP', href: '/administration/ldap', icon: ServerStackIcon, mobile: true, permission: 2 },
+  { name: 'LDAP', href: '/administration/ldap', icon: ServerStackIcon, mobile: true, permission: 3 },
   { name: 'Gruppen', href: '/administration/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
   { name: 'Nutzer', href: '/administration/user', icon: UserCircleIcon, mobile: false, permission: 2 },
 ];

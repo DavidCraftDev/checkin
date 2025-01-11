@@ -1,12 +1,14 @@
-"use client";
+"use server";
 
 import { User } from "@prisma/client";
 
-interface UserTableProps {
-    users: User[];
-}
+const permissionMap: { [key: number]: string } = {
+    0: "Schüler",
+    1: "Lehrer",
+    2: "Administrator"
+};
 
-function UserTable(props: UserTableProps) {
+function UserTable(props: { users: User[] }) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -15,7 +17,7 @@ function UserTable(props: UserTableProps) {
                         <tr>
                             <th>Name</th>
                             <th>Benutzername</th>
-                            <th>Rechte</th>
+                            <th>Nutzergruppe</th>
                             <th>Gruppen</th>
                             <th>Bearbeiten</th>
                         </tr>
@@ -25,7 +27,7 @@ function UserTable(props: UserTableProps) {
                             <tr key={user.id}>
                                 <td>{user.displayname}</td>
                                 <td>{user.username}</td>
-                                <td>{user.permission}</td>
+                                <td>{permissionMap[user.permission]}</td>
                                 <td>{user.group.toString().replaceAll(",", ", ")}</td>
                                 <td><a href={`/administration/user/edit?userID=${user.id}`} className="hover:underline">Bearbeiten</a></td>
                             </tr>

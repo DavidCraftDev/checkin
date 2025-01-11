@@ -3,9 +3,11 @@
 import { config_data } from "@/app/src/modules/config/config";
 import { LDAPBindCredentialsForm, LDAPTestConnection, LDAPToggleForm, LDAPURIForm } from "./forms";
 import { LDAPNotifications } from "./notifications";
+import { redirect } from "next/navigation";
 
 async function ldapConfig() {
-    return (
+    redirect("/administration");
+    /*return (
         <div>
             <LDAPNotifications />
             <h1>LDAP Einstellungen</h1>
@@ -16,7 +18,7 @@ async function ldapConfig() {
                 <LDAPTestConnection />
             </div>
         </div>
-    )
+    )*/
 }
 
 export default ldapConfig;

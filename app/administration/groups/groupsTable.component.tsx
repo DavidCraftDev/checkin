@@ -1,12 +1,8 @@
-"use client";
+"use server";
 
 import { Groups } from "@/app/src/interfaces/groups";
 
-interface GroupsTableProps {
-    groups: Groups[];
-}
-
-function GroupsTable(props: GroupsTableProps) {
+function GroupsTable(props: { groups: Groups[] }) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -14,7 +10,7 @@ function GroupsTable(props: GroupsTableProps) {
                     <thead>
                         <tr>
                             <th>Gruppenname</th>
-                            <th>Teilnehmer</th>
+                            <th>Schüler</th>
                             <th>Anzeigen</th>
                         </tr>
                     </thead>
@@ -22,7 +18,7 @@ function GroupsTable(props: GroupsTableProps) {
                         {props.groups.map((group) => (
                             <tr key={group.group}>
                                 <td>{group.group}</td>
-                                <td>{group.members} Teilnehmer</td>
+                                <td>{group.members} Schüler</td>
                                 <td><a href={`/dashboard/groups/group?groupID=${group.group}`} className="hover:underline">Anzeigen</a></td>
                             </tr>
                         ))}
