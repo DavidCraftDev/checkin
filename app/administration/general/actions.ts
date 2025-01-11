@@ -1,7 +1,7 @@
 "use server";
 
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { config_data, writeConfig } from "@/app/src/modules/config/config";
+import { config_data, writeConfig } from "@/app/src/modules/data/config";
 import db from "@/app/src/modules/db";
 import logger from "@/app/src/modules/logger";
 import { redirect } from "next/navigation";

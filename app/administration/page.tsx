@@ -1,6 +1,6 @@
 "use server";
 
-import { config_data } from "../src/modules/config/config";
+import { config_data } from "../src/modules/data/config";
 import { DefaultPasswordForm, DefaultUsernameForm, DeleteAllDataForm, DeleteAllSessionsForm, MaintanceModeForm, SchoolNameForm } from "./general/forms";
 import { GeneralNotifications } from "./general/notifications";
 

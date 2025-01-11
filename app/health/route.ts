@@ -1,4 +1,4 @@
-import { config_data } from "../src/modules/config/config";
+import { config_data } from "../src/modules/data/config";
 import db from "../src/modules/db";
 
 export async function GET() {

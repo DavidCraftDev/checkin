@@ -1,6 +1,6 @@
 "use server";
 
-import { config_data } from "@/app/src/modules/config/config";
+import { config_data } from "@/app/src/modules/data/config";
 import { updateUser } from "@/app/src/modules/userUtilities";
 
 export async function submitEditHandler(formdata: FormData, id: string) {

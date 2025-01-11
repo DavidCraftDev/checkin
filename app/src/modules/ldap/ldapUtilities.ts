@@ -1,12 +1,12 @@
 "use server";
 
 import { Entry } from 'ldapts';
-import courses from '../config/courses';
+import courses from '../data/courses';
 import db from '../db';
 import LDAP from './ldap';
 import { User } from '@prisma/client';
 import dayjs from 'dayjs';
-import { config_data } from '../config/config';
+import { config_data } from '../data/config';
 import logger from '../logger';
 
 let client: LDAP
@@ -118,6 +118,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
             }
         })
         if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) {
+            /////// 
             competence = { competence: Array.from(memberData) }
             needs = { needs: [] }
         } else {

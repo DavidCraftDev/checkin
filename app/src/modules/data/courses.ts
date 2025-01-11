@@ -80,7 +80,6 @@ async function parseCSV() {
     });
 }
 
-
 if (existsSync(faecherCSVPath)) parseCSV();
 
 export default data;

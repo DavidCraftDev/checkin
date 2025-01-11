@@ -9,7 +9,7 @@ import { setSessionTokenCookie } from "./cookieManager";
 import { compare } from "bcryptjs";
 import RateLimit from "../rateLimit";
 import { headers } from "next/headers";
-import { config_data } from "../config/config";
+import { config_data } from "../data/config";
 
 const rateLimit = new RateLimit();
 

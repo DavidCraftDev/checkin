@@ -4,7 +4,7 @@ import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import { notFound } from "next/navigation";
 import { User } from "@prisma/client";
-import { config_data } from "@/app/src/modules/config/config";
+import { config_data } from "@/app/src/modules/data/config";
 
 async function userEdit(searchParams: { searchParams: SearchParams }) {
     await getSessionUser(2);
