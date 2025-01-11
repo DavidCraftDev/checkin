@@ -2,7 +2,7 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getGroups } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./groupsTable.component";
 
-export default async function groups() {
+async function GroupsPage() {
   await getSessionUser(2);
 
   let groups = await getGroups();
@@ -19,3 +19,5 @@ export default async function groups() {
     </div>
   );
 }
+
+export default GroupsPage;
