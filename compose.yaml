@@ -21,7 +21,7 @@ services:
 
   db:
     container_name: checkin-db
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     restart: always
     environment:
       - TZ=Europe/Berlin
