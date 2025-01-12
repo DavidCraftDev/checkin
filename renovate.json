@@ -1,9 +1,11 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "baseBranches": ["dev"],
-  "includeForks": true,
+  "baseBranches": [
+    "dev"
+  ],
+  "forkProcessing": "enabled",
   "automerge": false,
   "branchPrefix": "renovate-deps-update-",
   "rangeStrategy": "pin",
