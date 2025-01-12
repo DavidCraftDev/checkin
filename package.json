@@ -12,7 +12,7 @@
     "@heroicons/react": "2.2.0",
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
-    "@prisma/client": "5.22.0",
+    "@prisma/client": "6.2.1",
     "@types/bcryptjs": "2.4.6",
     "@types/papaparse": "5.3.15",
     "@types/react": "18.3.18",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/node": "22.10.5",
     "postcss": "8.4.49",
-    "prisma": "5.22.0",
+    "prisma": "6.2.1",
     "ts-node": "10.9.2"
   },
   "prisma": {
