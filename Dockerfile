@@ -7,7 +7,7 @@ ARG NEXT_TELEMETRY_DISABLED=1 \
     TARGETARCH
 WORKDIR /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates file && \
+    apk add --no-cache ca-certificates file openssl && \
     npm install --global clean-modules && \
     if [ "$TARGETARCH" = "amd64" ]; then \
       npm_config_arch=x64 npm_config_target_arch=x64 npm clean-install && \
@@ -33,7 +33,7 @@ FROM node:22.13.0-alpine3.21
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --from=strip --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates tzdata tini
+    apk add --no-cache ca-certificates tzdata tini openssl
 USER nobody
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
