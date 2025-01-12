@@ -30,11 +30,13 @@ export async function saveTeacherCompetenceFile(file: File): Promise<functionRes
 
 export async function readTeacherCompetenceData(): Promise<boolean> {
     if (!config_data.LDAP.ENABLE || !config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
-        logger.info("Updating teacher competence data", "Import");
         const data = await getTeacherCompetenceFile();
+        logger.info("Updating teacher competence data", "Import");
         if (!data) return false;
         for (const teacher in data) {
             const competences = data[teacher];
+            const teacherExists = await db.user.count({ where: { username: teacher } });
+            if (!teacherExists) continue;
             await db.user.update({
                 where: { username: teacher },
                 data: {
@@ -75,4 +77,9 @@ export async function getTeacherCompetenceFile(): Promise<Record<string, string[
     const json = JSON.parse(text);
     const data: Record<string, string[]> = json;
     return data;
+}
+
+export async function existsTeacherCompetenceFile(): Promise<boolean> {
+    const dataPath = path.join(process.cwd(), "data", "teacher_competence.json");
+    return fs.existsSync(dataPath);
 }

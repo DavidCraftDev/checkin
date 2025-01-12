@@ -8,6 +8,7 @@ import { User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { config_data } from '../data/config';
 import logger from '../logger';
+import { existsTeacherCompetenceFile, getTeacherCompetenceFile } from '../data/competences';
 
 let client: LDAP
 
@@ -48,7 +49,14 @@ async function updateUserData(ldapData: Entry[]) {
             console.log("[Info] [LDAP-Utilities] User Deleted: " + entry.username)
             return
         }
-        const { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
+        let { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
+        if (await existsTeacherCompetenceFile()) {
+            const competences = await getTeacherCompetenceFile();
+            if (competences) {
+                const teacher = competences[entry.username]
+                if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
+            }
+        }
         const user = await db.user.update({
             where: {
                 id: entry.id
@@ -67,8 +75,15 @@ async function updateUserData(ldapData: Entry[]) {
     }))
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
     const createData: any[] = new Array();
-    newUser.map((entry) => {
-        const { permission, groups, needs, competence } = readLDAPUserData(entry)
+    newUser.map(async (entry) => {
+        let { permission, groups, needs, competence } = readLDAPUserData(entry);
+        if (await existsTeacherCompetenceFile()) {
+            const competences = await getTeacherCompetenceFile();
+            if (competences) {
+                const teacher = competences[String(entry.sAMAccountName).toLowerCase()]
+                if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
+            }
+        }
         createData.push({
             id: String(entry.objectGUID),
             username: String(entry.sAMAccountName).toLowerCase(),
@@ -103,8 +118,8 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
         })
     }
 
-    let needs = {}
-    let competence = {}
+    let needs = { needs: [] as any[] }
+    let competence = { competence: [] as any[] }
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
         let memberData = new Set()
         ldapUser.memberOf.map((groupData: string) => {
@@ -118,7 +133,6 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
             }
         })
         if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) {
-            /////// 
             competence = { competence: Array.from(memberData) }
             needs = { needs: [] }
         } else {
