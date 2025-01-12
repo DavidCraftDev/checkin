@@ -9,7 +9,7 @@
     "update": "prisma generate && next build && prisma migrate deploy && prisma db seed"
   },
   "dependencies": {
-    "@heroicons/react": "2.1.5",
+    "@heroicons/react": "2.2.0",
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
     "@prisma/client": "5.19.1",
