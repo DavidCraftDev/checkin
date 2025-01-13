@@ -84,8 +84,9 @@ async function updateUserData(ldapData: Entry[]) {
                 if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
             }
         }
-        console.log(entry.pwdLastSet)
-        console.log(new Date(Number(entry.pwdLastSet)))
+        console.log(entry.pwdLastSet) // As Example: 133746662804606760, is never null
+        const number = Number(entry.pwdLastSet) / 10000
+        console.log(new Date(Number(number))) // As Example: 1970-01-02T07:57:46.627Z
         createData.push({
             id: String(entry.objectGUID),
             username: String(entry.sAMAccountName).toLowerCase(),
