@@ -85,7 +85,7 @@ async function updateUserData(ldapData: Entry[]) {
             }
         }
         console.log(entry.pwdLastSet) // As Example: 133746662804606760, is never null
-        const number = Number(entry.pwdLastSet) / 10000
+        const number = (Number(entry.pwdLastSet) / 10000) - 11644473600000
         console.log(new Date(Number(number))) // As Example: 1970-01-02T07:57:46.627Z
         createData.push({
             id: String(entry.objectGUID),
