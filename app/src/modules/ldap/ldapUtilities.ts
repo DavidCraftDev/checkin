@@ -50,7 +50,7 @@ async function updateUserData(ldapData: Entry[]) {
             return
         }
         let { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
-        if (await existsTeacherCompetenceFile()) {
+        if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
             const competences = await getTeacherCompetenceFile();
             if (competences) {
                 const teacher = competences[entry.username]
@@ -80,7 +80,7 @@ async function updateUserData(ldapData: Entry[]) {
     const createData: any[] = new Array();
     newUser.map(async (entry) => {
         let { permission, groups, needs, competence } = readLDAPUserData(entry);
-        if (await existsTeacherCompetenceFile()) {
+        if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
             const competences = await getTeacherCompetenceFile();
             if (competences) {
                 const teacher = competences[String(entry.sAMAccountName).toLowerCase()]
