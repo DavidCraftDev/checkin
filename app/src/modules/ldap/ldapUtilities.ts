@@ -55,6 +55,8 @@ async function updateUserData(ldapData: Entry[]) {
             if (competences) {
                 const teacher = competences[entry.username]
                 if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
+                console.log(competences[entry.username])
+                console.log(competence)
             }
         }
         const pwdLastSet = (Number(entry.pwdLastSet) / 10000) - 11644473600000
