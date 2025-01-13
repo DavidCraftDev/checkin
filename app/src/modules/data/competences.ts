@@ -67,7 +67,7 @@ export async function deleteTeacherCompetenceFile(): Promise<boolean> {
 }
 
 export async function getTeacherCompetenceFile(): Promise<Record<string, string[]> | null> {
-    logger.info("Reading teacher competence file", "Import");
+    //logger.info("Reading teacher competence file", "Import");
     const dataPath = path.join(process.cwd(), "data", "teacher_competence.json");
     if (!fs.existsSync(dataPath)) {
         logger.warn("No teacher competence file found", "Import");
