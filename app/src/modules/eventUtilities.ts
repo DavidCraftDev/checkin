@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Events, User } from "@prisma/client";
+import { Attendances, Events, User } from "@prisma/client";
 import db from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
@@ -8,6 +8,9 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { getSessionUser } from "./auth/cookieManager";
+import { redirect } from "next/navigation";
+import logger from "./logger";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -29,8 +32,8 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataEvent: Events;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
-            if (((!attendance.type || !attendance.studentNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
-                await db.attendances.delete({
+            if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
+                await db.attendances.deleteMany({
                     where: {
                         id: attendance.id
                     }
@@ -176,8 +179,8 @@ export async function eventExists(eventID: string) {
 }
 
 export async function checkINHandler(eventID: string, userID: string) {
-    if (!await existUserPerID(userID)) return "ErrorNotFound"
-    if (await attendanceExists(eventID, userID)) return "ErrorAlreadyCheckedIn"
+    if (!await existUserPerID(userID)) return "Schüler nicht gefunden"
+    if (await attendanceExists(eventID, userID)) return "Schüler bereits hinzugefügt";
     await db.attendances.create({
         data: {
             eventID: eventID,
@@ -201,10 +204,15 @@ export async function createTeacherNote(id: string, note: string) {
     return data;
 }
 
-export async function createStudentNote(id: string, note: string) {
+export async function createStudentNote(attendance: Attendances, note: string) {
+    const user = await getSessionUser();
+    if (user.id !== attendance.userID) {
+        const attendanceUser = await getUserPerID(attendance.userID);
+        if (attendanceUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
+    }
     const data = await db.attendances.update({
         where: {
-            id: id
+            id: attendance.id
         },
         data: {
             studentNote: note
@@ -249,6 +257,7 @@ export async function deleteEmptyEvent(eventID: string) {
                 id: eventID
             }
         });
+        logger.info("Studienzeit mit der ID " + eventID + " wurde gelöscht", "Event");
         return true;
     }
     return false;

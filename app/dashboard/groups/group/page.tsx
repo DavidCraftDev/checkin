@@ -11,18 +11,18 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
-interface attendaceCount {
+interface AttendanceCount {
   normal: number,
   parallel: number,
-  noted: number
+  noted: number,
   needed: number
 }
 
-async function group({ searchParams }: { searchParams: SearchParams }) {
+async function GroupPage({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
   if (searchParams.groupID && !sessionUser.group.includes(searchParams.groupID) && sessionUser.permission < 2) redirect("/dashboard");
   const groupID = searchParams.groupID || sessionUser.group[0];
@@ -35,17 +35,17 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   if (cw > dayjs().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
 
   let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
-  const studyTimeData: Record<string, attendaceCount> = {};
-  for (const user of groupData) {
+  const studyTimeData: Record<string, AttendanceCount> = {};
+  await Promise.all(groupData.map(async (user) => {
     const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes } = await getAttendedStudyTimesCount(user.user, cw, year);
     studyTimeData[user.user.id] = { normal: normalStudyTimes, parallel: parallelStudyTimes, noted: notedStudyTimes, needed: neededStudyTimes };
-  }
+  }));
   return (
     <div>
       <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
         <div>
           <h1>Gruppe {groupID}</h1>
-          <p>{groupData.length} Mitglieder</p>
+          <p>{groupData.length} Schüler</p>
         </div>
         <CalendarWeek />
       </div>
@@ -58,4 +58,9 @@ async function group({ searchParams }: { searchParams: SearchParams }) {
   );
 }
 
-export default group;
+export default GroupPage;
+
+export const metadata = {
+  title: "Gruppe - CheckIN-System",
+  description: "Hier findest du alle Mitglieder einer Gruppe."
+};

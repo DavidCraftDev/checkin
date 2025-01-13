@@ -1,12 +1,10 @@
-"use server"
+"use server";
 
-import { ldap_password_reset_url, use_ldap } from "../src/modules/config"
+import { config_data } from "../src/modules/data/config";
 
-async function getPasswordResetURL() {
-    if (use_ldap) {
-        return ldap_password_reset_url
-    }
-    return ""
+async function getPasswordResetURL(): Promise<string> {
+    if (config_data.LDAP.ENABLE) return config_data.LDAP.PASSWORD_RESET_URL;
+    return "https://example.com";
 }
 
-export default getPasswordResetURL
+export default getPasswordResetURL;

@@ -1,40 +1,22 @@
 import "server-only";
 
 import { getAttendancesPerUser } from "./eventUtilities";
-import { User } from "@prisma/client";
+import { Attendances, User } from "@prisma/client";
 import db from "./db";
-import { AttendancePerUserPerEvent } from "../interfaces/events";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { disabledType } from "../interfaces/utilties";
+import { getUserPerID } from "./userUtilities";
+import { redirect } from "next/navigation";
+import { getSessionUser } from "./auth/cookieManager";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
 const lastSaveStudyTimeData: disabledType = {};
-
-export async function getNeededStudyTimesSelect(user: User, teacher: User, attendances: AttendancePerUserPerEvent[]) {
-  const userNeeds = user.needs
-  const teacherCompetence = teacher.competence
-  let neededStudyTimes: Array<string> = new Array();
-  let Vertretung: Array<string> = new Array();
-  if (!userNeeds || !teacherCompetence) return neededStudyTimes;
-
-  userNeeds.forEach((need) => {
-    let found = attendances.find((attendance) => attendance.attendance.type && attendance.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === need)
-    if (!found) {
-      if (teacherCompetence.includes(need)) neededStudyTimes.push(need);
-      else Vertretung.push(need);
-    }
-  })
-
-  Vertretung.forEach((vertretung) => neededStudyTimes.push("Vertretung:" + vertretung))
-
-  return neededStudyTimes;
-}
 
 export async function getAttendedStudyTimesCount(user: User, cw: number, year: number) {
   let normalStudyTimes = 0;
@@ -54,49 +36,53 @@ export async function getAttendedStudyTimesCount(user: User, cw: number, year: n
   return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
 }
 
-export async function saveStudyTimeType(attendanceID: string, userID: string, type: string) {
+export async function saveStudyTimeType(attendance: Attendances, userID: string, type: string) {
   let check = await db.attendances.findMany({
     where: {
       type: type,
-      cw: dayjs().isoWeek(),
+      cw: attendance.cw,
       userID: userID,
       created_at: {
-        gte: dayjs().startOf("week").toISOString(),
-        lte: dayjs().endOf("week").toISOString()
+        gte: dayjs(attendance.created_at).startOf("week").toISOString(),
+        lte: dayjs(attendance.created_at).endOf("week").toISOString()
       }
     }
   });
   if (check.length > 0) return false;
   let data = await db.attendances.update({
-    where: { id: attendanceID },
+    where: { id: attendance.id },
     data: { type: type }
   });
   return data.type === type;
 }
 
-export async function createUserStudyTimeNote(userID: string, cw: number) {
+export async function createUserStudyTimeNote(userID: string, cw: number = dayjs().isoWeek(), year: number = dayjs().year()) {
+  const user = await getUserPerID(userID);
+  const sessionUser = await getSessionUser();
+  if (user.id !== sessionUser.id) {
+    if (sessionUser.permission === 0 || sessionUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
+  }
+  if (sessionUser.permission !== 0 && (cw !== dayjs().isoWeek() || year !== dayjs().year())) {
+    let note = await db.attendances.create({
+      data: {
+        userID: userID,
+        eventID: "NOTE",
+        teacherNote: "Nachträglich erstellte Notiz von " + sessionUser.displayname,
+        cw: Number(cw),
+        created_at: dayjs().year(year).isoWeek(cw).toISOString(),
+      }
+    });
+    return note.eventID === "NOTE";
+  }
+  if (cw !== dayjs().isoWeek()) return false;
   let note = await db.attendances.create({
     data: {
       userID: userID,
       eventID: "NOTE",
-      cw: Number(cw)
+      cw: Number(cw),
     }
   });
   return note.eventID === "NOTE";
-}
-
-export async function getNeededStudyTimesForNotes(user: User, attendances: AttendancePerUserPerEvent[]) {
-  const userNeeds = user.needs;
-  let neededStudyTimes: Array<string> = new Array();
-  userNeeds.forEach((need) => {
-    let found = false;
-    attendances.forEach((attendance) => {
-      if (attendance.attendance.type && attendance.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === need) found = true;
-    });
-    if (!found) neededStudyTimes.push("Notiz:" + need);
-  });
-  neededStudyTimes.push("Notiz:Löschen")
-  return neededStudyTimes;
 }
 
 export async function saveNeededStudyTimes(user: User) {

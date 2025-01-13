@@ -1,17 +1,27 @@
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getGroupsFromUser } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./myGroupsTable.component";
+import { redirect } from "next/navigation";
 
-export default async function groups() {
+async function GroupsPage() {
   const user = await getSessionUser(1);
 
   let groups = await getGroupsFromUser(user);
   const groupCount = groups.length;
+  if(groupCount === 0) redirect("/dashboard");
+  else if(groupCount === 1) redirect("/dashboard/groups/group");
   return (
     <div>
       <h1>Meine Gruppen</h1>
-      <p>{groupCount} {groupCount == 1 ? "Gruppe" : "Gruppen"}</p>
+      <p>{groupCount} Gruppen</p>
       <GroupsTable groups={groups} />
     </div>
   );
 }
+
+export default GroupsPage;
+
+export const metadata = {
+  title: "Meine Gruppen - CheckIN-System",
+  description: "Hier findest du alle Gruppen, in denen du Mitglied bist."
+};

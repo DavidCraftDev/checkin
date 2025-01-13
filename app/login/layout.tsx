@@ -5,9 +5,9 @@ async function Layout({ children }: { children: React.ReactNode }) {
   const { session } = await getCurrentSession();
   if (session) redirect("/dashboard");
   return (
-    <div>
+    <>
       {children}
-    </div>
+    </>
   );
 }
 

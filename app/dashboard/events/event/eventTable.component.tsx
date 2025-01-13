@@ -1,12 +1,10 @@
-"use client"
+"use server";
 
 import TeacherNote from "./teacherNote.component";
 import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
-import { deleteEventHandler } from "./deleteEventHandler";
-import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import RemoveUser from "./removeUser.coponent";
 import { User } from "@prisma/client";
+import { DeleteEventButton, RemoveUserButton } from "./forms";
 
 interface EventTableProps {
     attendances: AttendancePerEventPerUser[],
@@ -16,12 +14,6 @@ interface EventTableProps {
 }
 
 function EventTable(props: EventTableProps) {
-    const router = useRouter();
-    async function handleDelete() {
-        const data = await deleteEventHandler(props.eventID);
-        if (data) router.push("/dashboard/events/createdEvents");
-        else router.refresh();
-    }
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -32,8 +24,8 @@ function EventTable(props: EventTableProps) {
                             <th>Fach</th>
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
-                            <th>Wann hinzugefügt</th>
-                            {props.addable ? <th>Teilnehmer Entfernen</th> : null}
+                            <th>Zeitpunkt</th>
+                            {props.addable ? <th>Schüler entfernen</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -44,13 +36,13 @@ function EventTable(props: EventTableProps) {
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
-                                {props.addable ? <RemoveUser user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
+                                {props.addable ? <RemoveUserButton user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {props.attendances.length === 0 ? <p className="text-center italic m-2">Keine Teilnehmer</p> : null}
-                {props.attendances.length === 0 ? <p className="text-center"><button onClick={handleDelete} className="btn bg-red-700 hover:bg-red-900 m-2 mt-0 text-center">Studienzeit löschen</button></p> : null}
+                {props.attendances.length === 0 ? <p className="text-center italic m-2">Keine Schüler anwesend</p> : null}
+                {props.attendances.length === 0 ? <DeleteEventButton eventID={props.eventID} /> : null}
             </div>
         </div>
     )

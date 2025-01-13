@@ -1,0 +1,28 @@
+import db from "@/app/src/modules/db"
+import UserTable from "./userTable.component";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { config_data } from "@/app/src/modules/data/config";
+
+async function UserPage() {
+    await getSessionUser(2);
+    const users = await db.user.findMany() || [];
+    users.sort((a, b) => a.username.localeCompare(b.username));
+    return (
+        <div>
+            <div className="grid grid-rows-1 grid-cols-2">
+                <div>
+                    <h1>Nutzer</h1>
+                    <p>{users.length} Nutzer</p>
+                </div>
+                {!config_data.LDAP.ENABLE ? <a className="btn place-self-center" href={`/administration/user/create`}>Nutzer erstellen</a> : null}
+            </div>
+            <UserTable users={users} />
+            <p>Exportieren als:
+                <a href="/export/user/json" download="users.json" className="hover:underline mx-1">JSON</a>
+                <a href="/export/user/xlsx" download="users.xlsx" className="hover:underline mx-1">XLSX</a>
+            </p>
+        </div>
+    );
+}
+
+export default UserPage;

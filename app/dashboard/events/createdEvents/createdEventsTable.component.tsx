@@ -1,13 +1,9 @@
-"use client";
+"use server";
 
 import { CreatedEventPerUser } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
 
-interface CreatedEventTableProps {
-    events: CreatedEventPerUser[]
-}
-
-function CreatedEventTable(props: CreatedEventTableProps) {
+function CreatedEventTable(props: { events: CreatedEventPerUser[] }) {
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -16,12 +12,12 @@ function CreatedEventTable(props: CreatedEventTableProps) {
                         <tr>
                             <th>Stammfach</th>
                             <th>Teilnehmer</th>
-                            <th>Zeit</th>
+                            <th>Zeitpunkt</th>
                             <th>Anzeigen</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {props.events.map((event: CreatedEventPerUser) => (
+                        {props.events.map((event) => (
                             <tr key={event.event.id}>
                                 <td>{event.event.type}</td>
                                 <td>{event.user}</td>

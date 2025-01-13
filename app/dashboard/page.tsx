@@ -5,19 +5,29 @@ import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.compo
 import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
+import { Metadata } from "next";
 
-dayjs.extend(isoWeek)
+dayjs.extend(isoWeek);
 
-async function dashboard() {
+async function DashboardPage() {
     const user = await getSessionUser();
-    const attendances = await getAttendancesPerUser(user.id, dayjs().isoWeek(), dayjs().year());
+    const currentIsoWeek = dayjs().isoWeek();
+    const currentYear = dayjs().year();
+    const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear);
     let missingStudyTimes: Array<string> = new Array();
-    user.needs.forEach((neededStudyTime) => { if (!attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime)) missingStudyTimes.push(neededStudyTime) });
-    const completedStudyTimes = attendances.filter((attendance) => attendance.attendance.type !== null)
-    const attendancesWithoutType = attendances.filter((attendance) => attendance.attendance.type === null)
+    if (!user.needs) user.needs = [];
+    user.needs.forEach((neededStudyTime) => {
+        const foundAttendance = attendances.find((attendanceData) => {
+            const type = attendanceData.attendance.type;
+            return type && type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime;
+        });
+        if (!foundAttendance) missingStudyTimes.push(neededStudyTime);
+    });
+    const completedStudyTimes = attendances.filter((attendance) => attendance.attendance.type !== null);
+    const attendancesWithoutType = attendances.filter((attendance) => attendance.attendance.type === null);
     return (
         <div>
-            <h1>Dashboard</h1>
+            <h1>Übersicht</h1>
             <p>Hallo {user.displayname}</p>
             <p>{String(completedStudyTimes.length) + "/" + String(user.needs.length)} Studienzeiten besucht</p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">
@@ -29,4 +39,9 @@ async function dashboard() {
     );
 }
 
-export default dashboard;
+export default DashboardPage;
+
+export const metadata: Metadata = {
+    title: "Übersicht - CheckIN-System",
+    description: "Die Übersicht des CheckIN-Systems",
+}

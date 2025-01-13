@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, ChangeEvent, useEffect } from 'react';
-import { searchHandler } from './checkinHandler';
 import { User } from '@prisma/client';
+import { searchUserHandler } from './actions';
 
 function UserSearchBar() {
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<User[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -17,10 +17,10 @@ function UserSearchBar() {
         }
 
         const timeout = setTimeout(async () => {
-            const searchData = await searchHandler(query);
+            const searchData = await searchUserHandler(query);
             setSuggestions(searchData);
             setShowSuggestions(true);
-        }, 100);
+        }, 300);
 
         return () => clearTimeout(timeout);
     }, [query]);
@@ -45,7 +45,7 @@ function UserSearchBar() {
                 id="username"
                 autoComplete="off"
                 required
-                className="rounded-full p-2 mx-4 my-2 border-2 focus:outline-none focus:ring-2 focus:ring-black"
+                className="input p-2 mx-4 my-2 h-10 w-min"
             />
             {showSuggestions && (
                 <ul className="absolute left-0 w-full mt-1 z-10 bg-white border rounded-md shadow-lg">

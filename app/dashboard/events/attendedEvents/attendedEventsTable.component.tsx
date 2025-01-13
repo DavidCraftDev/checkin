@@ -1,9 +1,9 @@
-"use client"
+"use server";
 
 import StudentNote from "./studentNote.component";
-import StudyTimeSelect from "./studyTimeSelect.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
+import { StudyTimeSelect } from "./forms";
 
 interface AttendedEventTableProps {
     attendances: AttendancePerUserPerEvent[];
@@ -23,7 +23,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                             <th>Fach</th>
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
-                            <th>Wann Teilgenommen</th>
+                            <th>Zeitpunkt</th>
                         </tr>
                     </thead>
                     <tbody>

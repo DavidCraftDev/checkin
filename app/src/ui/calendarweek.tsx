@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -8,20 +8,22 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
 let currentWeek = dayjs().isoWeek();
 let currentYear = dayjs().year();
 
 export function addWeek(pathname: string, year: number, cw: number, router: AppRouterInstance, searchParams: URLSearchParams) {
-    if (year >= currentYear && cw >= currentWeek) return;
-    if (cw === 53) {
+    if (year > currentYear || (year === currentYear && cw >= currentWeek)) return;
+    if (cw === dayjs().year(year).isoWeeksInYear()) {
+        year = year + 1;
         searchParams.set("cw", "1");
-        searchParams.set("year", (year + 1).toString());
+        searchParams.set("year", year.toString());
     } else {
-        searchParams.set("cw", (cw + 1).toString());
+        cw = cw + 1;
+        searchParams.set("cw", cw.toString());
         searchParams.set("year", year.toString());
     }
     router.push(`${pathname}?${searchParams.toString()}`);
@@ -29,10 +31,12 @@ export function addWeek(pathname: string, year: number, cw: number, router: AppR
 
 export function subWeek(pathname: string, year: number, cw: number, router: AppRouterInstance, searchParams: URLSearchParams) {
     if (cw === 1) {
-        searchParams.set("cw", "53");
-        searchParams.set("year", (year - 1).toString());
+        year = year - 1;
+        searchParams.set("cw", dayjs().year(year).isoWeeksInYear().toString());
+        searchParams.set("year", year.toString());
     } else {
-        searchParams.set("cw", (cw - 1).toString());
+        cw = cw - 1;
+        searchParams.set("cw", cw.toString());
         searchParams.set("year", year.toString());
     }
     router.push(`${pathname}?${searchParams.toString()}`);
@@ -44,8 +48,7 @@ function CalendarWeek() {
     const searchParams = new URLSearchParams(useSearchParams());
     const year = Number(searchParams.get("year")) || currentYear;
     const cw = Number(searchParams.get("cw")) || currentWeek;
-    let isCurrentWeek = false;
-    if (year >= currentYear && cw >= currentWeek) isCurrentWeek = true;
+    const isCurrentWeek = year >= currentYear && cw >= currentWeek;
     return (
         <div className="flex items-center justify-center space-x-4">
             <button className="btn p-3 font-bold" onClick={() => subWeek(pathname, year, cw, router, searchParams)}>−</button>

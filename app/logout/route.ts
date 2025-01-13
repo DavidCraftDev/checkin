@@ -6,5 +6,5 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { session } = await getCurrentSession();
     if (session) await invalidateSession(session.id);
     await deleteSessionTokenCookie();
-    return NextResponse.redirect(new URL("/login", request.url).toString());
+    return NextResponse.redirect(new URL("/login", request.url));
 }

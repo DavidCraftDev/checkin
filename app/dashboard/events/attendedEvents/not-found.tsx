@@ -1,4 +1,6 @@
-async function notFound() {
+import { Metadata } from "next";
+
+async function NotFound() {
     return (
         <div>
             <h1>404 - Nutzer nicht gefunden</h1>
@@ -7,4 +9,9 @@ async function notFound() {
     )
 }
 
-export default notFound;
+export default NotFound;
+
+const metadata: Metadata = {
+    title: "Nutzer nicht gefunden - CheckIN-System",
+    description: "Der Nutzer, den du suchst, existiert nicht.",
+}

@@ -4,7 +4,6 @@ import db from "../db";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 import type { User, Session } from "@prisma/client";
-import { setSessionTokenCookie } from "./cookieManager";
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -19,7 +18,7 @@ export async function createSession(token: string, userID: string): Promise<Sess
 		data: {
 			id: sessionID,
 			userID: userID,
-			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31)
 		}
 	});
 	return session;
@@ -46,16 +45,6 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 			}
 		});
 		return { session: null, user: null };
-	} else if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 6) {
-		await db.session.update({
-			where: {
-				id: sessionID
-			},
-			data: {
-				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
-			}
-		});
-		await setSessionTokenCookie(token, session.expiresAt);
 	}
 	return { session, user };
 }

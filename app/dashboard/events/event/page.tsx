@@ -3,19 +3,20 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import EventTable from "./eventTable.component";
-import CheckinForm from "./checkinForm.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Metadata } from "next/types";
+import { CheckinForm } from "./forms";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
-export default async function event({ searchParams }: { searchParams: SearchParams }) {
+async function EventPage({ searchParams }: { searchParams: SearchParams }) {
     const user = await getSessionUser(1);
-    const eventID = searchParams.id
+    const eventID = searchParams.id;
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);
     if (!event) notFound();
@@ -28,7 +29,7 @@ export default async function event({ searchParams }: { searchParams: SearchPara
                 <div>
                     <h1>Studienzeit {event.type} {user.displayname}</h1>
                     <p>erstellt am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
-                    <p>{attendances.length} Teilnehmer</p>
+                    <p>{attendances.length} anwesende Schüler</p>
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
             </div>
@@ -39,4 +40,11 @@ export default async function event({ searchParams }: { searchParams: SearchPara
             </p>
         </div>
     );
+}
+
+export default EventPage;
+
+export const metadata: Metadata = {
+    title: "Studienzeit - CheckIN-System",
+    description: "Eine Studienzeit im CheckIN-System",
 }

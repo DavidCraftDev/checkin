@@ -9,14 +9,15 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { Metadata } from "next";
 
-dayjs.extend(isoWeek)
-dayjs.extend(isoWeeksInYear)
-dayjs.extend(isLeapYear)
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
-async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
+async function CreatedEventsPage({ searchParams }: { searchParams: SearchParams }) {
   const sessionUser = await getSessionUser(1);
-  if (sessionUser.permission < 1) redirect("/dashboard");
+  if (!sessionUser || sessionUser.permission < 1) redirect("/dashboard");
 
   const currentWeek = dayjs().isoWeek();
   const currentYear = dayjs().year();
@@ -44,4 +45,9 @@ async function createdEvents({ searchParams }: { searchParams: SearchParams }) {
   );
 }
 
-export default createdEvents;
+export default CreatedEventsPage;
+
+export const metadata: Metadata = {
+  title: "Erstellte Studienzeiten - CheckIN-System",
+  description: "Erstellte Studienzeiten im CheckIN-System",
+}

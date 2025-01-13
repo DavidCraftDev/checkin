@@ -1,12 +1,8 @@
-"use client";
+"use server";
 
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
-interface AttendancesWithoutTypeProps {
-    attendances: AttendancePerUserPerEvent[];
-}
-
-function AttendancesWithoutType(props: AttendancesWithoutTypeProps) {
+function AttendancesWithoutType(props: { attendances: AttendancePerUserPerEvent[] }) {
     return (
         <div className="overflow-x-auto">
             <div className="table">

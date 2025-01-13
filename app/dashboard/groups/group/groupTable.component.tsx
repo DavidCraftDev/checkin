@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import AttendedStudyTimes from "./attenedStudyTimes.component";
 import { GroupMember } from "@/app/src/interfaces/groups";

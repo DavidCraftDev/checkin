@@ -1,15 +1,10 @@
-'use client'
+"use client";
 
 import { useQRCode } from 'next-qrcode';
 
-interface QRCodeProps {
-  data: string;
-};
-
-const QRCode = ({ data }: QRCodeProps) => {
+function QRCodeComponent(props: { data: string }) {
   const { SVG } = useQRCode();
+  return <SVG text={props.data} />
+}
 
-  return <SVG text={data} />
-};
-
-export default QRCode;
+export default QRCodeComponent;

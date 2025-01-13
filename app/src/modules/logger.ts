@@ -9,7 +9,7 @@ async function deleteOldLogs() {
     files.forEach(file => {
         const filePath = path.join(logPath, file);
         const fileStats = fs.statSync(filePath);
-        if ((dayjs().diff(dayjs(fileStats.birthtime), "minute")) > 30) fs.unlinkSync(filePath);
+        if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
     });
 }
 
@@ -42,7 +42,9 @@ export async function error(message: string, category: string) {
 }
 
 process.on("uncaughtException", async (errorMessage) => {
-    await error(errorMessage.toString(), "UncaughtException");
+    await error(errorMessage.stack || errorMessage.message, "UncaughtException");
 });
 
-export default { info, warn, error };
+const logger = { info, warn, error };
+
+export default logger;

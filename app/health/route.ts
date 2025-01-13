@@ -1,8 +1,8 @@
-import { maintance } from "../src/modules/config";
+import { config_data } from "../src/modules/data/config";
 import db from "../src/modules/db";
 
 export async function GET() {
-    let dbConnected: Boolean
+    let dbConnected: boolean
     try {
         await db.$connect()
         await db.$queryRaw`SELECT 1`
@@ -15,9 +15,9 @@ export async function GET() {
         status = "error"
     }
     const data = {
-        maintance: maintance,
+        maintenance: config_data.MAINTENANCE,
         status: status,
         databaseConnected: dbConnected
     }
-    return Response.json({ data })
+    return Response.json({ data });
 }
