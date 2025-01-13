@@ -57,6 +57,7 @@ async function updateUserData(ldapData: Entry[]) {
                 if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
             }
         }
+        const pwdLastSet = (Number(entry.pwdLastSet) / 10000) - 11644473600000
         const user = await db.user.update({
             where: {
                 id: entry.id
@@ -68,7 +69,7 @@ async function updateUserData(ldapData: Entry[]) {
                 ...groups,
                 ...needs,
                 ...competence,
-                pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
+                pwdLastSet: new Date(pwdLastSet)
             }
         })
         existUser.push(user.id)
@@ -84,9 +85,7 @@ async function updateUserData(ldapData: Entry[]) {
                 if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
             }
         }
-        console.log(entry.pwdLastSet) // As Example: 133746662804606760, is never null
-        const number = (Number(entry.pwdLastSet) / 10000) - 11644473600000
-        console.log(new Date(Number(number))) // As Example: 1970-01-02T07:57:46.627Z
+        const pwdLastSet = (Number(entry.pwdLastSet) / 10000) - 11644473600000
         createData.push({
             id: String(entry.objectGUID),
             username: String(entry.sAMAccountName).toLowerCase(),
@@ -95,7 +94,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...groups,
             ...needs,
             ...competence,
-            pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
+            pwdLastSet: new Date(pwdLastSet)
         })
         logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
     })
