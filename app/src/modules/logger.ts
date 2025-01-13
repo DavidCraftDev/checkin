@@ -9,7 +9,7 @@ async function deleteOldLogs() {
     files.forEach(file => {
         const filePath = path.join(logPath, file);
         const fileStats = fs.statSync(filePath);
-        if ((dayjs().diff(dayjs(fileStats.birthtime), "minute")) > 30) fs.unlinkSync(filePath);
+        if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
     });
 }
 
