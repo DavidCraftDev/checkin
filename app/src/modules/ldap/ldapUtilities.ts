@@ -46,7 +46,7 @@ async function updateUserData(ldapData: Entry[]) {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
             await db.user.delete({ where: { id: entry.id } })
-            console.log("[Info] [LDAP-Utilities] User Deleted: " + entry.username)
+            logger.info("User Deleted: " + entry.username, "LDAP-Utilities")
             return
         }
         let { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
@@ -84,6 +84,8 @@ async function updateUserData(ldapData: Entry[]) {
                 if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
             }
         }
+        console.log(entry.pwdLastSet)
+        console.log(new Date(Number(entry.pwdLastSet)))
         createData.push({
             id: String(entry.objectGUID),
             username: String(entry.sAMAccountName).toLowerCase(),
@@ -94,7 +96,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...competence,
             pwdLastSet: entry.pwdLastSet ? new Date(Number(entry.pwdLastSet)) : new Date()
         })
-        console.log("[Info] [LDAP-Utilities] User Created: " + entry.sAMAccountName)
+        logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
     })
     await db.user.createMany({ data: createData })
 }
