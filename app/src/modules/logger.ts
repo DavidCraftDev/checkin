@@ -41,8 +41,19 @@ export async function error(message: string, category: string) {
     console.log("\x1b[1m\x1b[31m" + logMessage + "\x1b[0m");
 }
 
+export async function debug(message: string, category: string) {
+    if (!process.env.DEBUG) return;
+    let logMessage = `[Debug] [${category}] ${message}`;
+    await writeLog(logMessage);
+    console.log("\x1b[2m" + logMessage + "\x1b[0m");
+}
+
 process.on("uncaughtException", async (errorMessage) => {
     await error(errorMessage.stack || errorMessage.message, "UncaughtException");
+});
+
+process.on("warning", async (warning) => {
+    await warn(warning.stack || warning.message, "Warning");
 });
 
 const logger = { info, warn, error };
