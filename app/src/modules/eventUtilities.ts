@@ -33,6 +33,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
+                logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
                 await db.attendances.deleteMany({
                     where: {
                         id: attendance.id

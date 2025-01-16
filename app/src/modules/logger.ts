@@ -56,6 +56,6 @@ process.on("warning", async (warning) => {
     await warn(warning.stack || warning.message, "Warning");
 });
 
-const logger = { info, warn, error };
+const logger = { info, warn, error, debug };
 
 export default logger;
