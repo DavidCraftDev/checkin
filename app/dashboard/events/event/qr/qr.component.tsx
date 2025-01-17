@@ -6,6 +6,7 @@ import { submitHandler } from './submitHandler';
 import toast from 'react-hot-toast';
 import { notFound, useSearchParams } from 'next/navigation';
 import { User } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 let lastResult: string
 
@@ -16,6 +17,15 @@ function QRScannerComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const successAudioRef = useRef<HTMLAudioElement>(null);
   const errorAudioRef = useRef<HTMLAudioElement>(null);
+  const router = useRouter()
+
+  const checkCamera = async () => {
+    if(!await QrScanner.hasCamera()) router.push("/dashboard/events/event?id=" + id)
+  }
+
+  useEffect(() => {
+    checkCamera();
+  }, []);
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
@@ -23,6 +33,7 @@ function QRScannerComponent() {
       lastResult = result.data
       if (!result.data.startsWith("checkin://")) {
         toast.error("Kein CheckIN QR-Code")
+        if (errorAudioRef.current) errorAudioRef.current.play()
         return
       }
       const userID = result.data.replace("checkin://", "")
@@ -30,20 +41,20 @@ function QRScannerComponent() {
       console.log(navigator)
       if (typeof data === "string") {
         toast.error(data)
-        if(errorAudioRef.current) errorAudioRef.current.play()
+        if (errorAudioRef.current) errorAudioRef.current.play()
       } else {
         if (data.id === userID) {
           toast.success(`${data.displayname} erfolgreich hinzugefügt`)
-          if(successAudioRef.current) successAudioRef.current.play()
+          if (successAudioRef.current) successAudioRef.current.play()
         } else {
           toast.error("Unbekannter Fehler")
-          if(errorAudioRef.current) errorAudioRef.current.play()
+          if (errorAudioRef.current) errorAudioRef.current.play()
         }
       }
     }
 
     if (videoRef.current) {
-      const qrScanner = new QrScanner(
+      const scanner = new QrScanner(
         videoRef.current,
         handleScanResult,
         {
@@ -52,10 +63,10 @@ function QRScannerComponent() {
           highlightCodeOutline: true,
         },
       );
-      qrScanner.start();
+      scanner.start();
 
       return () => {
-        qrScanner.stop();
+        scanner.stop();
       };
     }
   }, [id]);
