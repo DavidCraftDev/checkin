@@ -10,10 +10,12 @@ import { User } from '@prisma/client';
 let lastResult: string
 
 function QRScannerComponent() {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const searchParams = useSearchParams();
   let id: string = searchParams.get("id") || "";
   if (!id) notFound();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const successAudioRef = useRef<HTMLAudioElement>(null);
+  const errorAudioRef = useRef<HTMLAudioElement>(null);
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
@@ -25,19 +27,17 @@ function QRScannerComponent() {
       }
       const userID = result.data.replace("checkin://", "")
       const data: string | User = await submitHandler(userID, id)
+      console.log(navigator)
       if (typeof data === "string") {
-        if (data === "ErrorNotFound") {
-          toast.error("Nutzer nicht gefunden")
-        } else if (data === "ErrorAlreadyCheckedIn") {
-          toast.error("Nutzer bereits hinzugefügt")
-        } else {
-          toast.error("Unbekannter Fehler")
-        }
+        toast.error(data)
+        if(errorAudioRef.current) errorAudioRef.current.play()
       } else {
         if (data.id === userID) {
           toast.success(`${data.displayname} erfolgreich hinzugefügt`)
+          if(successAudioRef.current) successAudioRef.current.play()
         } else {
           toast.error("Unbekannter Fehler")
+          if(errorAudioRef.current) errorAudioRef.current.play()
         }
       }
     }
@@ -67,6 +67,8 @@ function QRScannerComponent() {
   return (
     <div className='w-full'>
       <video ref={videoRef}></video>
+      <audio src="/success.mp3" ref={successAudioRef} preload="auto" />
+      <audio src="/error.mp3" ref={errorAudioRef} preload="auto" />
     </div>
   );
 };
