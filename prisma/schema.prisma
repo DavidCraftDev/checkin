@@ -1,50 +1,52 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_URL")
+  url      = env("POSTGRES_URL")
 }
 
 model Attendances {
-  id         String   @default(cuid()) @id @unique
-  userID     String      
-  eventID    String    
-  cw         Int
+  id          String   @id @unique @default(cuid())
+  userID      String
+  eventID     String
+  cw          Int
   teacherNote String?
   studentNote String?
-  type       String?
-  created_at DateTime @default(now())
+  type        String?
+  attended    Boolean  @default(true)
+  created_at  DateTime @default(now())
 }
 
 model Events {
-  id         String   @default(cuid()) @id @unique
-  type       String    
-  user       String    
+  id         String   @id @unique @default(cuid())
+  type       String
+  user       String
   cw         Int
   created_at DateTime @default(now())
 }
 
 model StudyTimeData {
-  id        String   @default(cuid()) @id @unique
-  userID    String
-  needs     String[] @default([])
-  cw        Int
-  year      Int
+  id     String   @id @unique @default(cuid())
+  userID String
+  needs  String[] @default([])
+  cw     Int
+  year   Int
 }
 
 model User {
-  id          String  @default(cuid()) @id @unique
-  username    String  @unique
-  displayname String 
-  permission  Int     @default(0)
-  password    String?  
-  group       String[] @default([])
-  needs       String[] @default([])
-  competence  String[] @default([])
-  pwdLastSet  DateTime @default(now())
+  id          String    @id @unique @default(cuid())
+  username    String    @unique
+  displayname String
+  permission  Int       @default(0)
+  password    String?
+  group       String[]  @default([])
+  needs       String[]  @default([])
+  competence  String[]  @default([])
+  courses     String[]
+  pwdLastSet  DateTime  @default(now())
   sessions    Session[]
 }
 
