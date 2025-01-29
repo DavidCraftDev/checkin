@@ -11,7 +11,8 @@ import {
   Cog8ToothIcon,
   ArrowLeftIcon,
   FolderArrowDownIcon,
-  ServerStackIcon
+  ServerStackIcon,
+  AcademicCapIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -28,6 +29,7 @@ const linksNormal = [
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
+  { name: 'Unterricht (Beta)', href: '/dashboard/lessons/createdLessons', icon: AcademicCapIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
   { name: 'Administration', href: '/administration', icon: Cog8ToothIcon, mobile: true, permission: 2 },
 ];
