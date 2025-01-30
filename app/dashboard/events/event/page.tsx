@@ -21,6 +21,7 @@ async function EventPage({ searchParams }: { searchParams: SearchParams }) {
     const event = await getEventPerID(eventID);
     if (!event) notFound();
     if (event.user !== user.id) redirect("/dashboard/");
+    if (event.type.startsWith("Unterricht:")) redirect("/dashboard/events/lesson/" + eventID);
     const attendances = await getAttendancesPerEvent(eventID);
     const addable = event.cw === dayjs().isoWeek() && dayjs(event.created_at).year() === dayjs().year();
     return (
