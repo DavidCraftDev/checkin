@@ -76,6 +76,9 @@ function UserEditForm(props: UserEditFormProps) {
                     <label htmlFor="competence">Kompetenzen (Durch Komma getrennt)</label><br />
                     <input type="text" name="competence" id="competence" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.competence?.toString() || ""} disabled={config.ldap_auto_studytime_data} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
                     <br className={config.use_ldap ? "hidden" : ""} />
+                    <label htmlFor="courses">Kurse (Durch Komma getrennt)</label><br />
+                    <input type="text" name="courses" id="courses" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.courses?.toString() || ""} disabled={true} className="rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1" />
+                    <br className={config.use_ldap ? "hidden" : ""} />
                     <label htmlFor="password" className={config.use_ldap ? "hidden" : ""} >Neues Passwort setzen</label><br />
                     <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-black-600 ring-0 ring-black-600 focus:outline-none focus:ring-1", { "hidden": config.use_ldap })} />
                 </div>
