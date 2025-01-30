@@ -49,7 +49,7 @@ async function updateUserData(ldapData: Entry[]) {
             logger.info("User Deleted: " + entry.username, "LDAP-Utilities")
             return
         }
-        let { permission, groups, needs, competence } = readLDAPUserData(ldapUser, entry)
+        let { permission, groups, needs, competence, coursesData } = readLDAPUserData(ldapUser, entry)
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
             const competences = await getTeacherCompetenceFile();
             if (competences) {
@@ -69,6 +69,7 @@ async function updateUserData(ldapData: Entry[]) {
                 ...groups,
                 ...needs,
                 ...competence,
+                ...coursesData,
                 pwdLastSet: new Date(pwdLastSet)
             }
         })
@@ -77,7 +78,7 @@ async function updateUserData(ldapData: Entry[]) {
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
     const createData: any[] = new Array();
     newUser.map(async (entry) => {
-        let { permission, groups, needs, competence } = readLDAPUserData(entry);
+        let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
             const competences = await getTeacherCompetenceFile();
             if (competences) {
@@ -94,6 +95,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...groups,
             ...needs,
             ...competence,
+            ...coursesData,
             pwdLastSet: new Date(pwdLastSet)
         })
         logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
@@ -122,8 +124,10 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
 
     let needs = { needs: [] as any[] }
     let competence = { competence: [] as any[] }
+    let coursesData = { courses: [] as any[] }
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
         let memberData = new Set()
+        let coursesArray = new Array()
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")
@@ -132,8 +136,13 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
                 if (splitedName[0].startsWith("EF") || splitedName[0].startsWith("Q1") || splitedName[0].startsWith("Q2")) {
                     if (courses[splitedName[1].toUpperCase()]) memberData.add(courses[splitedName[1].toUpperCase()] as string)
                 }
+                const course = data[0].replace("CN=", "").replace("cn=", "")
+                if(course.startsWith("EF") || course.startsWith("Q1") || course.startsWith("Q2")) {
+                    coursesArray.push(course);
+                }
             }
         })
+        let coursesData = { courses: coursesArray }
         if ((permission.permission && permission.permission >= 1) || (dbUser && dbUser.permission >= 1)) {
             competence = { competence: Array.from(memberData) }
             needs = { needs: [] }
@@ -141,9 +150,10 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
             needs = { needs: Array.from(memberData) }
             competence = { competence: [] }
         }
+
     }
     const groupData = { group: groups }
-    return { permission, groups: groupData, needs, competence }
+    return { permission, groups: groupData, needs, competence, coursesData }
 }
 
 function convertGUIDToString(guidRaw: Buffer) {
