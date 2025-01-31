@@ -73,6 +73,7 @@ async function updateUserData(ldapData: Entry[]) {
                 pwdLastSet: new Date(pwdLastSet)
             }
         })
+        console.log(user)
         existUser.push(user.id)
     }))
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
@@ -153,6 +154,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
 
     }
     const groupData = { group: groups }
+    console.log(coursesData)
     return { permission, groups: groupData, needs, competence, coursesData }
 }
 
