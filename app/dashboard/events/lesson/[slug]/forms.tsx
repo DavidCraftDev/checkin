@@ -18,6 +18,6 @@ export function StudentAttendButton(props: { attendanceID: string, attended: boo
         router.refresh();
     }
     return (
-        <button onClick={setAttendance} className="rounded m-1 p-1 hover:underline hover:bg-gray-50 border-2 border-gray-300 shadow-md transition-transform transform active:scale-95">{props.attended ? "Abwesend" : "Anwesend"}</button>
+        <button onClick={setAttendance} className="rounded m-1 p-1 hover:underline hover:bg-gray-50 border-2 border-gray-300 shadow-md transition-transform transform active:scale-95">{props.attended ? "Nicht anwesend" : "Anwesend"}</button>
     )
 }
