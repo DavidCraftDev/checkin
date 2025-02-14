@@ -23,7 +23,7 @@ async function DashboardPage() {
         });
         if (!foundAttendance) missingStudyTimes.push(neededStudyTime);
     });
-    const completedStudyTimes = attendances.filter((attendance) => attendance.attendance.type !== null);
+    const completedStudyTimes = attendances.filter((attendance) => attendance.attendance.type !== null && attendance.attendance.type !== "Unterricht");
     const attendancesWithoutType = attendances.filter((attendance) => attendance.attendance.type === null);
     return (
         <div>
