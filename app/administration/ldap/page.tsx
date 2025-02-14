@@ -2,7 +2,6 @@
 
 import { config_data } from "@/app/src/modules/data/config";
 import { LDAPBindCredentialsForm, LDAPTestConnection, LDAPToggleForm, LDAPURIForm } from "./forms";
-import { LDAPNotifications } from "./notifications";
 import { redirect } from "next/navigation";
 
 async function ldapConfig() {
