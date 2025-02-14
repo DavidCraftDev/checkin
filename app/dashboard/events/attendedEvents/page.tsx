@@ -33,7 +33,7 @@ async function AttendedEventsPage({ searchParams }: { searchParams: SearchParams
     if (year == currentYear && cw > currentWeek) redirect("/dashboard/events/attendedEvents");
 
     const attendances = await getAttendancesPerUser(userID, cw, year);
-    const completedStudyTimesCount = attendances.filter((attendance) => attendance.event.type !== null).length;
+    const completedStudyTimesCount = attendances.filter((attendance) => attendance.event.type !== null && attendance.attendance.type !== "Unterricht").length;
 
     let addable = (cw === currentWeek && year === currentYear);
 

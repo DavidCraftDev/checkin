@@ -14,7 +14,10 @@ export async function GET() {
     if (!dbConnected) {
         status = "error"
     }
+    const packageJson = require("../../package.json")
+    let version = packageJson.version
     const data = {
+        version: version,
         maintenance: config_data.MAINTENANCE,
         status: status,
         databaseConnected: dbConnected

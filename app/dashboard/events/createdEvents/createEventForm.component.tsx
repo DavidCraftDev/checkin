@@ -1,8 +1,8 @@
 "use client";
 
 import { User } from "@prisma/client";
-import submitHandlerStudyTime from "./actions";
 import toast from "react-hot-toast";
+import { createLessonHandler, createStudyTimeHandler } from "./actions";
 
 function CreateEventForm(props: { user: User }) {
     async function createStudyTime(formData: FormData): Promise<void> {
@@ -11,13 +11,26 @@ function CreateEventForm(props: { user: User }) {
             toast.error("Bitte wähle eine Studienzeit aus");
             return;
         }
-        const data = await submitHandlerStudyTime(selectedStudyTime);
+        const data = await createStudyTimeHandler(selectedStudyTime);
+        if (data && data.warning) toast(data.warning, { icon: "❗" });
+        else if (data && data.error) toast.error(data.error);
+        else if (data) toast.error("Ein unbekannter Fehler ist aufgetreten");
+    }
+
+    async function createLesson(formData: FormData): Promise<void> {
+        const selectedCourse = formData.get("lesson") as string;
+        if (selectedCourse === "default" || !selectedCourse) {
+            toast.error("Bitte wähle einen Kurs aus");
+            return;
+        }
+        const data = await createLessonHandler(selectedCourse);
         if (data && data.warning) toast(data.warning, { icon: "❗" });
         else if (data && data.error) toast.error(data.error);
         else if (data) toast.error("Ein unbekannter Fehler ist aufgetreten");
     }
 
     let competences: Array<string> = props.user.competence as Array<string> || [];
+    let courses: Array<string> = props.user.courses as Array<string> || [];
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 gap-4 md:gap-8 mt-4">
             <div className="p-6 rounded-lg shadow-md border border-gray-200">
@@ -33,6 +46,20 @@ function CreateEventForm(props: { user: User }) {
                         </select>
                     </div>
                     <button type="submit" className="btn w-full">Studienzeit Erstellen</button>
+                </form>
+            </div>
+            <div className="p-6 rounded-lg shadow-md border border-gray-200">
+                <form action={createLesson}>
+                    <div className="mb-4">
+                        <label htmlFor="lesson" className="block text-gray-700 font-bold mb-2">Unterricht (Keine Studienzeit)</label>
+                        <select defaultValue="default" id="lesson" name="lesson" className="w-full rounded-lg p-2 border-2 focus:outline-none focus:ring-2 focus:ring-black">
+                            <option disabled value="default">Kurs auswählen</option>
+                            {courses.map((course) => (
+                                <option key={course} value={course}>{course}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <button type="submit" className="btn w-full">Unterrichtsstunde Erstellen</button>
                 </form>
             </div>
         </div>

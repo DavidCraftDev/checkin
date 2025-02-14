@@ -33,6 +33,10 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }
+    if(props.attendance.type == "Unterricht") {
+        if(props.attendance.attended) return <td>Anwesend</td>
+        else return <td>Nicht anwesend</td>
+    }
     return (
         <td>
             <select className="border-gray-200 border-2 rounded-md p-2.5 bg-white" defaultValue={defaultValue} onChange={(event) => submitStudyTimeSelect(event.target.value)}>

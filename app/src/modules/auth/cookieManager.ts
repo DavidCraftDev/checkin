@@ -31,9 +31,9 @@ export async function getCurrentSession(): Promise<SessionValidationResult> {
     return result;
 }
 
-export async function getSessionUser(permission?: number) {
+export async function getSessionUser(permission: number = 0) {
     const { user, session } = await getCurrentSession();
     if(!session) redirect("/login");
-    if (permission && user.permission < permission) redirect("/dashboard");
+    if (user.permission < permission) redirect("/dashboard");
     return user;
 }

@@ -4,23 +4,19 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import QrScanner from 'qr-scanner';
 import { submitHandler } from './submitHandler';
 import toast from 'react-hot-toast';
-import { notFound, useSearchParams } from 'next/navigation';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
 let lastResult: string
 
-function QRScannerComponent() {
-  const searchParams = useSearchParams();
-  let id: string = searchParams.get("id") || "";
-  if (!id) notFound();
+function QRScannerComponent(props: {eventID: string}): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
   const successAudioRef = useRef<HTMLAudioElement>(null);
   const errorAudioRef = useRef<HTMLAudioElement>(null);
   const router = useRouter()
 
   const checkCamera = async () => {
-    if(!await QrScanner.hasCamera()) router.push("/dashboard/events/event?id=" + id)
+    if(!await QrScanner.hasCamera()) router.push("/dashboard/events/lesson/" + props.eventID)
   }
 
   useEffect(() => {
@@ -37,8 +33,7 @@ function QRScannerComponent() {
         return
       }
       const userID = result.data.replace("checkin://", "")
-      const data: string | User = await submitHandler(userID, id)
-      console.log(navigator)
+      const data: string | User = await submitHandler(userID, props.eventID)
       if (typeof data === "string") {
         toast.error(data)
         if (errorAudioRef.current) errorAudioRef.current.play()
@@ -69,7 +64,7 @@ function QRScannerComponent() {
         scanner.stop();
       };
     }
-  }, [id]);
+  }, [props.eventID]);
 
   useEffect(() => {
     startScanner();
