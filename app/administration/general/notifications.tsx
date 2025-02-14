@@ -7,10 +7,10 @@ import toast from "react-hot-toast";
 export function GeneralNotifications() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    let successSchoolName = searchParams.get("successSchoolName");
-    let successUsername = searchParams.get("successUsername");
-    let successPassword = searchParams.get("successPassword");
     useEffect(() => {
+        let successSchoolName = searchParams.get("successSchoolName");
+        let successUsername = searchParams.get("successUsername");
+        let successPassword = searchParams.get("successPassword");
         if (successSchoolName) {
             toast.success("Schulname gespeichert!");
             successSchoolName = null;
@@ -24,6 +24,6 @@ export function GeneralNotifications() {
             successPassword = null;
             router.replace("/administration");
         }
-    }, [successSchoolName, successUsername, successPassword]);
+    }, [searchParams]);
     return (<></>);
 }
