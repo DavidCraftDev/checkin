@@ -37,7 +37,7 @@ function StudentNote(props: { attendance: Attendances }) {
             }
         }
         saveNote();
-    }, [debouncedNote, props.attendance.studentNote, props.attendance.id]);
+    }, [debouncedNote, props.attendance, props.attendance]);
 
     useEffect(() => {
         if (textareaRef.current && !props.attendance.studentNote && props.attendance.eventID === "NOTE") textareaRef.current.focus();
