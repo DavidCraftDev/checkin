@@ -24,6 +24,6 @@ export function GeneralNotifications() {
             successPassword = null;
             router.replace("/administration");
         }
-    }, [searchParams]);
+    }, [searchParams, router]);
     return (<></>);
 }
