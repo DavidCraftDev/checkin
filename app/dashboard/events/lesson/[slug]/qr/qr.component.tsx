@@ -21,7 +21,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
 
   useEffect(() => {
     checkCamera();
-  }, []);
+  }, [checkCamera]);
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
