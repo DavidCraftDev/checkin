@@ -22,9 +22,9 @@
     "clsx": "2.1.1",
     "dayjs": "1.11.13",
     "eslint": "8.57.1",
-    "eslint-config-next": "14.2.23",
+    "eslint-config-next": "14.2.24",
     "ldapts": "7.3.1",
-    "next": "14.2.23",
+    "next": "14.2.24",
     "next-qrcode": "2.5.1",
     "papaparse": "5.5.2",
     "qr-scanner": "1.4.2",
@@ -37,8 +37,8 @@
     "write-excel-file": "2.0.11"
   },
   "devDependencies": {
-    "@types/node": "22.12.0",
-    "postcss": "8.5.1",
+    "@types/node": "22.13.4",
+    "postcss": "8.5.2",
     "prisma": "5.22.0",
     "ts-node": "10.9.2"
   },
