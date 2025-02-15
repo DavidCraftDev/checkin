@@ -22,5 +22,5 @@ export async function GET() {
         status: status,
         databaseConnected: dbConnected
     }
-    return Response.json({ data });
+    return Response.json({ data }, { status: 418 });
 }
