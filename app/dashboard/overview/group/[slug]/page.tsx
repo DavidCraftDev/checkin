@@ -19,7 +19,7 @@ dayjs.extend(isLeapYear);
 async function GroupOverviewPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     // Get session user 
     const sessionUser = await getSessionUser(1);
-    const groupID = (await params).slug;
+    const groupID = decodeURIComponent((await params).slug);
     if (!groupID) notFound();
 
     // Check if user is allowed to view this page
