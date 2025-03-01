@@ -1,20 +1,9 @@
 import "server-only";
 
 import { Columns, SheetData } from "write-excel-file";
-import { getUserPerID } from "../../../userUtilities";
-import { getSortedUserOverviewData } from "../../../overview/user";
-import getAttendedEventsXLSX from "../../attendedEvents/xlsx";
+import { SortedData } from "../../../overview/user";
 
-export async function getUserOverviewDataXLSX(userID: string, startCW: number, startYear: number, endCW: number, endYear: number) {
-    // Get user data
-    const user = await getUserPerID(userID);
-    if (!user) return null;
-
-    // Get the overview data
-    const overviewData = await getSortedUserOverviewData(userID, startCW, startYear, endCW, endYear);
-    if (!overviewData) return null;
-    const { mergedData, sortedData } = overviewData;
-
+export async function getUserOverviewDataXLSX(userDisplayname: string, sortedData: SortedData, startCW: number, startYear: number, endCW: number, endYear: number) {
     // Initialize data
     const sheetData: SheetData[] = [];
     const sheetName: Array<string> = [];
@@ -24,7 +13,7 @@ export async function getUserOverviewDataXLSX(userID: string, startCW: number, s
     const meta = new Array()
     meta.push([{
         "type": String,
-        "value": "Übersicht " + user.displayname,
+        "value": "Übersicht " + userDisplayname,
         "fontWeight": "bold"
     }])
     meta.push([{
@@ -177,16 +166,6 @@ export async function getUserOverviewDataXLSX(userID: string, startCW: number, s
     ]);
     sheetName.push("Übersicht")
     sheetData.push(meta)
-
-    // Add sheet for every Calendar Week
-    for (const key in mergedData) {
-        // Get CW and Year from key
-        const [year, cw] = key.split("-");
-        const cwData = await getAttendedEventsXLSX(user, Number(cw), Number(year))
-        columeData.push(cwData.columnData);
-        sheetName.push(cw + "-" + year)
-        sheetData.push(cwData.sheetData);
-    }
 
     return { sheetData, sheetName, columeData };
 }

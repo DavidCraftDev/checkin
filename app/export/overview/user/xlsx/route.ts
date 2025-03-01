@@ -1,5 +1,8 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
 import { getUserOverviewDataXLSX } from "@/app/src/modules/export/overview/user/xlsx";
+import { getSortedUserOverviewData } from "@/app/src/modules/overview/user";
+import { getUserPerID } from "@/app/src/modules/userUtilities";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
@@ -18,11 +21,30 @@ export async function GET(request: NextRequest) {
     const endCW = Number(searchParams.get("endCW")) || startCW;
     const endYear = Number(searchParams.get("endYear")) || startYear;
 
-    // Get the XLSX data (getUserOverviewDataXLSX)
-    const overviewData = await getUserOverviewDataXLSX(userID, startCW, startYear, endCW, endYear);
-    if (!overviewData) return new NextResponse("404 Not Found", { status: 404 });
+    // Get user data
+    const userData = await getUserPerID(userID);
+    if (!userData) return new NextResponse("404 Not Found", { status: 404 });
 
-    const bufferData = await writeXlsxFile(overviewData.sheetData, { buffer: true, sheets: overviewData.sheetName, columns: overviewData.columeData })
+    // Get the overview data
+    const overviewData = await getSortedUserOverviewData(userID, startCW, startYear, endCW, endYear);
+    if (!overviewData) return null;
+    const { mergedData, sortedData } = overviewData;
+
+
+    // Get the XLSX data (getUserOverviewDataXLSX)
+    let { sheetData, sheetName, columeData } = await getUserOverviewDataXLSX(userData.displayname, sortedData, startCW, startYear, endCW, endYear);
+
+    // Add sheet for every Calendar Week
+    for (const key in mergedData) {
+        // Get CW and Year from key
+        const [year, cw] = key.split("-");
+        const cwData = await getAttendedEventsXLSX(user, Number(cw), Number(year))
+        columeData.push(cwData.columnData);
+        sheetName.push(cw + "-" + year)
+        sheetData.push(cwData.sheetData);
+    }
+
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
     return new NextResponse(bufferData, {
         status: 200,
         headers: {
