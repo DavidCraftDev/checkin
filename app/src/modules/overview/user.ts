@@ -146,5 +146,5 @@ export async function getSortedUserOverviewData(userID: string, startCW: number,
     // Sort data into categories
     const sortedData = await sortUserOverviewDataIntoCaterogies(mergedData);
 
-    return sortedData;
+    return { mergedData, sortedData };
 }
