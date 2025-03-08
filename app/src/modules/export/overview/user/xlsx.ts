@@ -75,7 +75,7 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
         "value": "Gesamt",
         "fontWeight": "bold"
     }])
-    const totalAttendancesGeneral = sortedData.categories.normal + sortedData.categories.parallel + sortedData.categories.notes + sortedData.categories.absent;
+    const totalAttendancesGeneral = sortedData.categories.normal + sortedData.categories.parallel + sortedData.categories.notes;
     meta.push([{
         "type": Number,
         "value": sortedData.categories.normal
@@ -129,7 +129,7 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
     }])
     for (const key in sortedData.categoriesPerCW) {
         const { normal, parallel, notes, absent, total } = sortedData.categoriesPerCW[key];
-        const totalAttendancesPerWeek = normal + parallel + notes + absent;
+        const totalAttendancesPerWeek = normal + parallel + notes;
         meta.push([{
             "type": String,
             "value": key
@@ -164,7 +164,7 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
         { width: 20 },
         { width: 20 }
     ]);
-    sheetName.push("Übersicht")
+    sheetName.push("Übersicht " + userDisplayname.substring(0, 23));
     sheetData.push(meta)
 
     return { sheetData, sheetName, columeData };

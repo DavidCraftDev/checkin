@@ -27,9 +27,8 @@ export async function GET(request: NextRequest) {
 
     // Get the overview data
     const overviewData = await getSortedUserOverviewData(userID, startCW, startYear, endCW, endYear);
-    if (!overviewData) return null;
+    if (!overviewData) return new NextResponse("404 Not Found", { status: 404 });
     const { mergedData, sortedData } = overviewData;
-
 
     // Get the XLSX data (getUserOverviewDataXLSX)
     let { sheetData, sheetName, columeData } = await getUserOverviewDataXLSX(userData.displayname, sortedData, startCW, startYear, endCW, endYear);
