@@ -23,7 +23,7 @@ async function GroupOverviewPage({ params, searchParams }: { params: Promise<{ s
     if (!groupID) notFound();
 
     // Check if user is allowed to view this page
-    if(sessionUser.permission !== 2 && sessionUser.group.find(group => group === groupID) == undefined) redirect("/dashboard/");
+    if (sessionUser.permission !== 2 && sessionUser.group.find(group => group === groupID) == undefined) redirect("/dashboard/");
 
     // Get all users in group
     const users = await getGroupUsers(groupID);
@@ -40,7 +40,9 @@ async function GroupOverviewPage({ params, searchParams }: { params: Promise<{ s
     if (startYear > endYear || (startYear === endYear && startCW > endCW)) redirect(`/dashboard/overview/group/${groupID}/`);
 
     // Get group overview data
-    const { categories, categoriesPerUser } = await getSortedGroupOverviewData(groupID, startCW, startYear, endCW, endYear) || { categories: null, categoriesPerUser: null };
+    const overviewData = await getSortedGroupOverviewData(groupID, startCW, startYear, endCW, endYear);
+    if (!overviewData) notFound();
+    const { categories, categoriesPerUser } = overviewData.sortedData;
     if (!categories) notFound();
     if (!categoriesPerUser) notFound();
     return (
@@ -54,10 +56,11 @@ async function GroupOverviewPage({ params, searchParams }: { params: Promise<{ s
             </div>
             <OverviewChart categories={categories} />
             <GroupOverviewTable data={categoriesPerUser} users={users} startCW={startCW} startYear={startYear} endCW={endCW} endYear={endYear} />
-            {/*<p>Exportieren als:
-                <a href={`/export/groups/group/json?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.json`} className="hover:underline mx-1">JSON</a>
-                <a href={`/export/groups/group/xlsx?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.xlsx`} className="hover:underline mx-1">XLSX</a>
-            </p>*/}
+            <p>Exportieren als:
+                <a href={`/api/v1/overview?groupID=${groupID}&startCW=${startCW}&startYear${startYear}&endCW=${endCW}&endYear=${endYear}`} download={`overview_${groupID}_${startCW + startYear}_${endCW + endYear}.json`} className="hover:underline mx-1">JSON</a>
+                <a href={`/export/overview/group/xlsx?groupID=${groupID}&startCW=${startCW}&startYear${startYear}&endCW=${endCW}&endYear=${endYear}`} className="hover:underline mx-1">XLSX</a>
+            </p>
+
         </>
     );
 }
