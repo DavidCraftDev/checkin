@@ -23,7 +23,7 @@ function UserOverviewTable(props: { data: { [key: string]: Categories }, userID:
                             return (
                                 <tr key={key}>
                                     <td>{cw + "/" + year}</td>
-                                    <td><TableOverviewChart categories={props.data[key]}/></td>
+                                    <td><TableOverviewChart categories={props.data[key]} /></td>
                                     <td><a href={`/dashboard/events/attendedEvents?userID=${props.userID}&cw=${cw}&year=${year}`} className="hover:underline">Anzeigen</a></td>
                                 </tr>
                             )
