@@ -37,7 +37,9 @@ async function UserOverviewPage({ params, searchParams }: { params: Promise<{ sl
     if (startYear > endYear || (startYear === endYear && startCW > endCW)) redirect(`/dashboard/overview/user/${userID}/`);
 
     // Get user overview data
-    const { categories, categoriesPerCW } = await getSortedUserOverviewData(userID, startCW, startYear, endCW, endYear) || { categories: null, categoriesPerCW: null };
+    const overviewData = await getSortedUserOverviewData(userID, startCW, startYear, endCW, endYear);
+    if (!overviewData) notFound();
+    const { categories, categoriesPerCW } = overviewData.sortedData
     if (!categories) notFound();
     if (!categoriesPerCW) notFound();
     return (
@@ -51,10 +53,10 @@ async function UserOverviewPage({ params, searchParams }: { params: Promise<{ sl
             </div>
             <OverviewChart categories={categories} />
             <UserOverviewTable data={categoriesPerCW} userID={userID} />
-            {/*<p>Exportieren als:
-                <a href={`/export/groups/group/json?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.json`} className="hover:underline mx-1">JSON</a>
-                <a href={`/export/groups/group/xlsx?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.xlsx`} className="hover:underline mx-1">XLSX</a>
-            </p>*/}
+            {<p>Exportieren als:
+                <a href={`/api/v1/overview/user?userID=${userID}&startCW=${startCW}&startYear${startYear}&endCW=${endCW}&endYear=${endYear}`} download={`overview_${userData.username}_${startCW + startYear}_${endCW + endYear}.json`} className="hover:underline mx-1">JSON</a>
+                <a href={`/export/overview/user/xlsx?userID=${userID}&startCW=${startCW}&startYear${startYear}&endCW=${endCW}&endYear=${endYear}`} download={`overview_${userData.username}_${startCW + startYear}_${endCW + endYear}.xlsx`} className="hover:underline mx-1">XLSX</a>
+            </p>}
         </>
     );
 }

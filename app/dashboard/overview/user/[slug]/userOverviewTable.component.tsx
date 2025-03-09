@@ -4,7 +4,6 @@ import { Categories } from "@/app/src/modules/overview/user";
 import { TableOverviewChart } from "../../forms";
 
 function UserOverviewTable(props: { data: { [key: string]: Categories }, userID: string }) {
-
     return (
         <div className="overflow-x-auto">
             <div className="table">
@@ -23,7 +22,7 @@ function UserOverviewTable(props: { data: { [key: string]: Categories }, userID:
                             return (
                                 <tr key={key}>
                                     <td>{cw + "/" + year}</td>
-                                    <td><TableOverviewChart categories={props.data[key]}/></td>
+                                    <td><TableOverviewChart categories={props.data[key]} /></td>
                                     <td><a href={`/dashboard/events/attendedEvents?userID=${props.userID}&cw=${cw}&year=${year}`} className="hover:underline">Anzeigen</a></td>
                                 </tr>
                             )

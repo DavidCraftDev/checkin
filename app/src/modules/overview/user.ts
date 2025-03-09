@@ -90,6 +90,13 @@ export interface Categories {
     total: number;
 }
 
+export interface SortedData {
+    categories: Categories;
+    categoriesPerCW: {
+        [key: string]: Categories;
+    };
+}
+
 export async function sortUserOverviewDataIntoCaterogies(data: OverviewUserDataPerCW) {
     // Initialize categories
     const categories: Categories = {
@@ -146,5 +153,5 @@ export async function getSortedUserOverviewData(userID: string, startCW: number,
     // Sort data into categories
     const sortedData = await sortUserOverviewDataIntoCaterogies(mergedData);
 
-    return sortedData;
+    return { mergedData, sortedData };
 }

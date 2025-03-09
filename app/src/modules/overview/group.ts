@@ -3,7 +3,7 @@
 import { Attendances, StudyTimeData } from "@prisma/client";
 import { getSessionUser } from "../auth/cookieManager";
 import { getGroupUsers } from "../group";
-import { Categories, getUserOverviewData, mergeUserDataPerCW, OverviewUserDataPerCW, sortUserOverviewDataIntoCaterogies } from "./user";
+import { Categories, getUserOverviewData, mergeUserDataPerCW, OverviewUserDataPerCW, SortedData, sortUserOverviewDataIntoCaterogies } from "./user";
 
 type UserAttendances = { [key: string]: Attendances[] };
 type UserStudyTimeData = { [key: string]: StudyTimeData[] };
@@ -45,7 +45,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
     const data: OverviewGroupDataPerCW = {};
 
     // Get data per user
-    for (const key in userAttendances) {
+    await Promise.all(Object.keys(userAttendances).map(async key => {
         const attendances = userAttendances[key];
         const studyTimeData = userStudyTimeData[key];
 
@@ -54,7 +54,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
 
         // Add userData to data
         data[key] = userData;
-    }
+    }));
 
     return data;
 }
@@ -68,13 +68,13 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
         absent: 0,
         total: 0
     };
-    const categoriesPerUser: { [key: string]: Categories } = {};
+    const categoriesPerUser: { [key: string]: SortedData } = {};
 
     // Sort data into categories
-    for (const key in data) {
+    await Promise.all(Object.keys(data).map(async key => {
         const userData = data[key];
-        const userOvervireCaterogieData = await sortUserOverviewDataIntoCaterogies(userData);
-        const userCaterogies = userOvervireCaterogieData.categories;
+        const userOverviewCaterogieData = await sortUserOverviewDataIntoCaterogies(userData);
+        const userCaterogies = userOverviewCaterogieData.categories;
 
         // Add data to categories
         categories.normal += userCaterogies.normal;
@@ -84,15 +84,8 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
         categories.total += userCaterogies.total;
 
         // Initialize categories for this user
-        if (!categoriesPerUser[key]) categoriesPerUser[key] = { normal: 0, parallel: 0, notes: 0, absent: 0, total: 0 };
-
-        // Add data to categoriesPerUser
-        categoriesPerUser[key].normal = userCaterogies.normal;
-        categoriesPerUser[key].parallel = userCaterogies.parallel;
-        categoriesPerUser[key].notes = userCaterogies.notes;
-        categoriesPerUser[key].absent = userCaterogies.absent;
-        categoriesPerUser[key].total = userCaterogies.total;
-    }
+        categoriesPerUser[key] = userOverviewCaterogieData
+    }));
 
     return { categories, categoriesPerUser };
 }
@@ -109,5 +102,5 @@ export async function getSortedGroupOverviewData(groupID: string, startCW: numbe
     // Sort data into categories
     const sortedData = await sortGroupOverviewDataIntoCaterogies(mergedData);
 
-    return sortedData;
+    return { mergedData, sortedData };
 }

@@ -42,14 +42,13 @@ async function GroupPage({ searchParams }: { searchParams: SearchParams }) {
   }));
   return (
     <div>
-      <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-4">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <div>
           <h1>Gruppe {groupID}</h1>
           <p>{groupData.length} Schüler</p>
         </div>
-        <div className="hidden md:block"></div>
-        <a href={`/dashboard/overview/group/${groupID}?startCW=${cw}&startYear=${year}`} className="btn w-min h-min p-3 hidden md:block">Übersicht</a>
         <CalendarWeek />
+        <a href={`/dashboard/overview/group/${groupID}?startCW=${cw}&startYear=${year}`} className="btn w-min">Übersicht</a>
       </div>
       <GroupTable user={groupData} cw={cw} year={year} studyTimeData={studyTimeData} />
       <p>Exportieren als:
