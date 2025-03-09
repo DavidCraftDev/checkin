@@ -45,7 +45,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
     const data: OverviewGroupDataPerCW = {};
 
     // Get data per user
-    for (const key in userAttendances) {
+    await Promise.all(Object.keys(userAttendances).map(async key => {
         const attendances = userAttendances[key];
         const studyTimeData = userStudyTimeData[key];
 
@@ -54,7 +54,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
 
         // Add userData to data
         data[key] = userData;
-    }
+    }));
 
     return data;
 }
@@ -71,7 +71,7 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
     const categoriesPerUser: { [key: string]: SortedData } = {};
 
     // Sort data into categories
-    for (const key in data) {
+    await Promise.all(Object.keys(data).map(async key => {
         const userData = data[key];
         const userOverviewCaterogieData = await sortUserOverviewDataIntoCaterogies(userData);
         const userCaterogies = userOverviewCaterogieData.categories;
@@ -85,7 +85,7 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
 
         // Initialize categories for this user
         categoriesPerUser[key] = userOverviewCaterogieData
-    }
+    }));
 
     return { categories, categoriesPerUser };
 }
