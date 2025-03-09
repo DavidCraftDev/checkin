@@ -4,7 +4,6 @@ import { Categories } from "@/app/src/modules/overview/user";
 import { TableOverviewChart } from "../../forms";
 
 function UserOverviewTable(props: { data: { [key: string]: Categories }, userID: string }) {
-
     return (
         <div className="overflow-x-auto">
             <div className="table">

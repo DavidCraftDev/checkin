@@ -5,7 +5,6 @@ import { TableOverviewChart } from "../../forms";
 import { User } from "@prisma/client";
 
 function GroupOverviewTable(props: { data: { [key: string]: SortedData }, users: User[], startCW: number, startYear: number, endCW: number, endYear: number }) {
-
     return (
         <div className="overflow-x-auto">
             <div className="table">

@@ -9,7 +9,6 @@ import { OverviewChart } from "../../forms";
 import { getGroupUsers } from "@/app/src/modules/group";
 import { getSortedGroupOverviewData } from "@/app/src/modules/overview/group";
 import GroupOverviewTable from "./groupOverviewTable.component";
-import { title } from "process";
 import { Metadata } from "next";
 
 dayjs.extend(isoWeek);
