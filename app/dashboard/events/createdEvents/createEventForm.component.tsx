@@ -37,7 +37,7 @@ function CreateEventForm(props: { user: User }) {
                 <form action={createStudyTime}>
                     <div className="mb-4">
                         <label htmlFor="studyTime" className="block text-gray-700 font-bold mb-2">Studienzeit</label>
-                        <select defaultValue="default" id="studyTime" name="studyTime" className="w-full rounded-lg p-2 border-2 focus:outline-none focus:ring-2 focus:ring-black">
+                        <select defaultValue="default" id="studyTime" name="studyTime" className="w-full rounded-lg p-2 border-2 border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-black">
                             <option disabled value="default">Stammfach auswählen</option>
                             {competences.map((competence) => (
                                 <option key={competence} value={competence}>{competence}</option>
@@ -52,7 +52,7 @@ function CreateEventForm(props: { user: User }) {
                 <form action={createLesson}>
                     <div className="mb-4">
                         <label htmlFor="lesson" className="block text-gray-700 font-bold mb-2">Unterricht (Keine Studienzeit)</label>
-                        <select defaultValue="default" id="lesson" name="lesson" className="w-full rounded-lg p-2 border-2 focus:outline-none focus:ring-2 focus:ring-black">
+                        <select defaultValue="default" id="lesson" name="lesson" className="w-full rounded-lg p-2 border-2 border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-black">
                             <option disabled value="default">Kurs auswählen</option>
                             {courses.map((course) => (
                                 <option key={course} value={course}>{course}</option>
