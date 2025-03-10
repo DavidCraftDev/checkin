@@ -1,8 +1,8 @@
-"use client";
-
+"use client";;
 import toast from "react-hot-toast";
 import { setAttendanceStatus } from "./actions";
 import { useRouter } from "next/navigation";
+import type { JSX } from "react";
 
 export function StudentAttendButton(props: { attendanceID: string, attended: boolean } ): JSX.Element {
     const router = useRouter();

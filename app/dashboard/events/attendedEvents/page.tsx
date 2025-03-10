@@ -17,7 +17,8 @@ dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
-async function AttendedEventsPage({ searchParams }: { searchParams: SearchParams }) {
+async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }) {
+    const searchParams = await props.searchParams;
     const sessionUser = await getSessionUser();
     if (searchParams.userID && sessionUser.permission < 1) redirect("/dashboard");
     const userID = searchParams.userID || sessionUser.id;

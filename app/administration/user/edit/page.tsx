@@ -6,9 +6,9 @@ import { notFound } from "next/navigation";
 import { User } from "@prisma/client";
 import { config_data } from "@/app/src/modules/data/config";
 
-async function userEdit(searchParams: { searchParams: SearchParams }) {
+async function userEdit(searchParams: { searchParams: Promise<SearchParams> }) {
     await getSessionUser(2);
-    const userData: User = await getUserPerID(searchParams.searchParams.userID);
+    const userData: User = await getUserPerID((await searchParams.searchParams).userID);
     if (!userData) notFound();
     const config = {
         "use_ldap": config_data.LDAP.ENABLE,

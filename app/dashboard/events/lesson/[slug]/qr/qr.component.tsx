@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, type JSX } from 'react';
 import QrScanner from 'qr-scanner';
 import { submitHandler } from './submitHandler';
 import toast from 'react-hot-toast';
@@ -16,7 +16,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
   const router = useRouter()
 
   const checkCamera = async () => {
-    if(!await QrScanner.hasCamera()) router.push("/dashboard/events/lesson/" + props.eventID)
+    if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
   }
 
   useEffect(() => {

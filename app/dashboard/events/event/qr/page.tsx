@@ -14,7 +14,8 @@ dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
 
-async function QRScanner({ searchParams }: { searchParams: SearchParams }) {
+async function QRScanner(props: { searchParams: Promise<SearchParams> }) {
+    const searchParams = await props.searchParams;
     const user = await getSessionUser(1);
     if (!searchParams.id) redirect("/dashboard/");
     const event = await getEventPerID(searchParams.id);
