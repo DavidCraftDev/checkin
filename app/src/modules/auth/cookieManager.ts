@@ -5,7 +5,7 @@ import { SessionValidationResult, validateSessionToken } from "./sessionManager"
 import { redirect } from "next/navigation";
 
 export async function setSessionTokenCookie(token: string, expiresAt: Date): Promise<void> {
-    cookies().set("session", token, {
+    (await cookies()).set("session", token, {
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
@@ -15,7 +15,7 @@ export async function setSessionTokenCookie(token: string, expiresAt: Date): Pro
 }
 
 export async function deleteSessionTokenCookie(): Promise<void> {
-    cookies().set("session", "", {
+    (await cookies()).set("session", "", {
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
@@ -25,7 +25,7 @@ export async function deleteSessionTokenCookie(): Promise<void> {
 }
 
 export async function getCurrentSession(): Promise<SessionValidationResult> {
-    const token = cookies().get("session")?.value ?? null;
+    const token = (await cookies()).get("session")?.value ?? null;
     if (token === null) return { session: null, user: null };
     const result = await validateSessionToken(token);
     return result;

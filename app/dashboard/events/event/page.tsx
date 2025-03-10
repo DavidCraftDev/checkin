@@ -14,7 +14,8 @@ dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
-async function EventPage({ searchParams }: { searchParams: SearchParams }) {
+async function EventPage(props: { searchParams: Promise<SearchParams> }) {
+    const searchParams = await props.searchParams;
     const user = await getSessionUser(1);
     const eventID = searchParams.id;
     if (!eventID) notFound();

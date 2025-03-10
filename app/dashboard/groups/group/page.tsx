@@ -22,7 +22,8 @@ interface AttendanceCount {
   needed: number
 }
 
-async function GroupPage({ searchParams }: { searchParams: SearchParams }) {
+async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
+  const searchParams = await props.searchParams;
   const sessionUser = await getSessionUser(1);
   if (searchParams.groupID && !sessionUser.group.includes(searchParams.groupID) && sessionUser.permission < 2) redirect("/dashboard");
   const groupID = searchParams.groupID || sessionUser.group[0];

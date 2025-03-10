@@ -15,7 +15,7 @@ const rateLimit = new RateLimit();
 
 export async function login(username: string, password: string): Promise<boolean> {
     if (!username || !password || username === "" || password === "") return false;
-    const header = headers();
+    const header = await headers();
     if (rateLimit.rateLimit(header.get("x-forwarded-for") ?? "999.999.999.999")) return false;
     const userData = await getUserPerUsername(username);
     if (!userData) {
