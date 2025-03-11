@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @utility btn {
   @apply bg-green-600 text-white p-2 rounded-full hover:bg-green-700 shadow-md transition-transform transform active:scale-95;
