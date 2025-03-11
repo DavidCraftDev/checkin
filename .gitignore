@@ -43,6 +43,7 @@ next-env.d.ts
 *.pem
 
 # Ignore log files
+/log/
 *.log
 
 # Ignore data files
