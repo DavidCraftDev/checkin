@@ -19,6 +19,7 @@ const eslintConfig = [
       '@typescript-eslint/no-array-constructor': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   }),
 ];
