@@ -82,4 +82,9 @@ async function parseCSV() {
 
 if (existsSync(faecherCSVPath)) parseCSV();
 
+async function getCourseFromName(name: string): Promise<string | undefined> {
+    const course = Object.keys(data).find((key) => name.includes(data[key]));
+    return course;
+}
+
 export default data;
