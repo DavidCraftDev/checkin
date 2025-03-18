@@ -18,7 +18,7 @@ const eslintConfig = [
       '@typescript-eslint/no-wrapper-object-types': 'off',
       '@typescript-eslint/no-array-constructor': 'off',
     },
-  )},
+  }),
 ];
 
 export default eslintConfig;
