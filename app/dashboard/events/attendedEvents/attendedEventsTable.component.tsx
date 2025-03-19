@@ -4,11 +4,13 @@ import StudentNote from "./studentNote.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
 import { StudyTimeSelect } from "./forms";
+import TeacherNote from "../event/teacherNote.component";
 
 interface AttendedEventTableProps {
     attendances: AttendancePerUserPerEvent[];
-    addable: boolean;
+    isEditable: boolean;
     studyTimeTypes: Record<string, string[]>;
+    isTeacher: boolean;
 }
 
 function AttendedEventTable(props: AttendedEventTableProps) {
@@ -31,9 +33,9 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                             <tr key={attendances.attendance.id}>
                                 <td>{attendances.event.type}</td>
                                 <td>{attendances.eventUser.displayname}</td>
-                                {props.addable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span>}
-                                {props.addable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
-                                <td>{attendances.attendance.teacherNote}</td>
+                                {props.isEditable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span>}
+                                {props.isEditable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
+                                {props.isTeacher ? <TeacherNote attendance={attendances.attendance}/>: <td>{attendances.attendance.teacherNote}</td>}
                                 <td>{dayjs(attendances.attendance.created_at).format("DD.MM. HH:mm")}</td>
                             </tr>
                         ))}

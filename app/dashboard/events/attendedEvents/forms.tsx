@@ -27,7 +27,7 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
     const defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function submitStudyTimeSelect(type: string): Promise<void> {
-        const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userID, type, type);
+        const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userID, type);
         if (data && data.success) toast.success("Studienzeit gespeichert");
         else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");

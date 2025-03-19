@@ -11,7 +11,7 @@ async function NotFound() {
 
 export default NotFound;
 
-const metadata: Metadata = {
+export const metadata: Metadata = {
     title: "Nutzer nicht gefunden - CheckIN-System",
     description: "Der Nutzer, den du suchst, existiert nicht.",
 }
