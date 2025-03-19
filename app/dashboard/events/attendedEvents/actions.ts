@@ -18,7 +18,7 @@ export async function setStudentNote(studentNote: string, attendance: Attendance
     return { success: false, error: "Notiz konnte nicht gespeichert werden" };
 }
 
-let disabledUsers: disabledType = {};
+const disabledUsers: disabledType = {};
 export async function createStudyTimeNote(userID: string, cw: number, year: number): Promise<functionResult> {
     if (disabledUsers[userID] && disabledUsers[userID] + 5000 > Date.now()) {
         revalidatePath("/dashboard/events/attendedEvents");
@@ -38,7 +38,7 @@ export async function createStudyTimeNote(userID: string, cw: number, year: numb
     return result;
 }
 
-export async function saveSelectedStudyTimeType(attendance: Attendances, userID: string, type: string, searchParamsString: string): Promise<functionResult> {
+export async function saveSelectedStudyTimeType(attendance: Attendances, userID: string, type: string): Promise<functionResult> {
     const data = await saveStudyTimeType(attendance, userID, type);
     const result: functionResult = { success: data };
     if (!result.success) {
