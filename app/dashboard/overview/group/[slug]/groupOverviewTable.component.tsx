@@ -20,6 +20,7 @@ function GroupOverviewTable(props: { data: { [key: string]: SortedData }, users:
                         {Object.keys(props.data).map((key) => {
                             const user = props.users.find(user => user.id === key);
                             if (!user) return null;
+                            if (user.needs.length === 0 && user.permission !== 0) return null;
                             return (
                                 <tr key={key}>
                                     <td>{user.displayname}</td>

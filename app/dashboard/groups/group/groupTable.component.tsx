@@ -30,13 +30,16 @@ function GroupTable(props: GroupTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.user.map((user) => (
-                            <tr key={user.user.id}>
-                                <td>{user.user.displayname}</td>
-                                <td><AttendedStudyTimes studyTimeData={props.studyTimeData[user.user.id]} /></td>
-                                <td><a href={`/dashboard/events/attendedEvents?userID=${user.user.id}&cw=${props.cw}&year=${props.year}`} className="hover:underline">Anzeigen</a></td>
-                            </tr>
-                        ))}
+                        {props.user.map((user) => {
+                            if (user.user.needs.length === 0 && user.user.permission !== 0) return;
+                            return (
+                                <tr key={user.user.id}>
+                                    <td>{user.user.displayname}</td>
+                                    <td><AttendedStudyTimes studyTimeData={props.studyTimeData[user.user.id]} /></td>
+                                    <td><a href={`/dashboard/events/attendedEvents?userID=${user.user.id}&cw=${props.cw}&year=${props.year}`} className="hover:underline">Anzeigen</a></td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>
