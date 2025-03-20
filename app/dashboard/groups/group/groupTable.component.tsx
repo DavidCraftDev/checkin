@@ -31,7 +31,7 @@ function GroupTable(props: GroupTableProps) {
                     </thead>
                     <tbody>
                         {props.user.map((user) => {
-                            if (user.user.needs.length === 0 && user.user.permission !== 0) return;
+                            if (user.user.needs.length === 0 && user.user.permission !== 0) return null;
                             return (
                                 <tr key={user.user.id}>
                                     <td>{user.user.displayname}</td>
