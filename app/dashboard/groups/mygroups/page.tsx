@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 async function GroupsPage() {
   const user = await getSessionUser(1);
 
-  let groups = await getGroupsFromUser(user);
+  const groups = await getGroupsFromUser(user);
   const groupCount = groups.length;
   if(groupCount === 0) redirect("/dashboard");
   else if(groupCount === 1) redirect("/dashboard/groups/group");

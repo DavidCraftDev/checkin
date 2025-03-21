@@ -3,6 +3,7 @@
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
 function CompletedStudyTimes(props: { attendances: AttendancePerUserPerEvent[] }) {
+    // Function to get the name of the study time based on its type
     function getStudyTimeName(type: string) {
         if (type.startsWith("Notiz:")) {
             return type.replace("Notiz:", "") + " (Notiz)"
@@ -12,6 +13,15 @@ function CompletedStudyTimes(props: { attendances: AttendancePerUserPerEvent[] }
             return type
         }
     }
+
+    // Sort attendances by study time type
+    props.attendances.sort((a, b) => {
+        const nameA = getStudyTimeName(a.attendance.type || "").toLowerCase();
+        const nameB = getStudyTimeName(b.attendance.type || "").toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
     return (
         <div className="overflow-x-auto">
             <div className="table">
