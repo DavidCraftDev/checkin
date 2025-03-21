@@ -103,6 +103,7 @@ export async function GET(request: NextRequest) {
         "fontWeight": "bold"
     }])
     await Promise.all(groupMember.map(async (user) => {
+        if(user.needs.length === 0 && user.permission !== 0) return;
         const attendances = await getAttendancesPerUser(user.id, calendarWeek, year)
         const studyTimes: Array<string> = [];
         attendances.forEach((attendance) => {
@@ -144,6 +145,7 @@ export async function GET(request: NextRequest) {
         { width: 22 }
     ]);
     await Promise.all(groupMember.map(async (user) => {
+        if(user.needs.length === 0 && user.permission !== 0) return;
         const userData = await getAttendedEventsXLSX(user, calendarWeek, year)
         sheetData.push(userData.sheetData)
         sheetName.push(userData.sheetName)

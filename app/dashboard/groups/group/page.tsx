@@ -35,9 +35,10 @@ async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
   const year = Number(searchParams.year) || currentYear;
   if (cw > dayjs().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
 
-  let groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
+  const groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, AttendanceCount> = {};
   await Promise.all(groupData.map(async (user) => {
+    if(user.user.needs.length === 0 && user.user.permission !== 0) return;
     const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes } = await getAttendedStudyTimesCount(user.user, cw, year);
     studyTimeData[user.user.id] = { normal: normalStudyTimes, parallel: parallelStudyTimes, noted: notedStudyTimes, needed: neededStudyTimes };
   }));
