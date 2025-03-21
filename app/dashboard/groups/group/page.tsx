@@ -42,6 +42,14 @@ async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
     const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes } = await getAttendedStudyTimesCount(user.user, cw, year);
     studyTimeData[user.user.id] = { normal: normalStudyTimes, parallel: parallelStudyTimes, noted: notedStudyTimes, needed: neededStudyTimes };
   }));
+
+  groupData.sort((a, b) => {
+    const nameA = a.user.displayname.toLowerCase();
+    const nameB = b.user.displayname.toLowerCase();
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    return 0;
+  });
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2">
