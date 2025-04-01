@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image'
 
@@ -34,18 +34,27 @@ const tips = [
     "Die teuerste Kaffeesorte der Welt wird von Schleichkatzen verdaut und wieder ausgeschieden. Genieße deinen normalen Kaffee!",
     "Koffein blockiert das Adenosin im Gehirn, was dich wach hält. Perfekt für lange Schulstunden!",
     "Überprüfe regelmäßig die Dokumentierten Studienzeiten deines Jahrgangs!",
-    "Entferne keinen Schüler grundlos aus einer Studienzeit!"
+    "Entferne keinen Schüler grundlos aus einer Studienzeit!",
+    "Schreibe mit Lehrern und Schülern über Nextcloud-Talk!",
+    "Speichere deine Dateien in der Nextcloud!",
+    "Verwende das CheckIN-System, um deine Studienzeiten zu dokumentieren!",
+    "Verwende Moodle, um Abgaben abzugeben!",
+    "Auf Moodle findest du dein Arbeitsmaterial!"
 ];
 
 function StuhuTips() {
     const [showTip, setShowTip] = useState(true);
     const [tipIndex, setTipIndex] = useState(0);
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
             setTipIndex(Math.floor(Math.random() * tips.length));
             setShowTip(true);
-        }, Math.random() * 180000 + 10000);
+            if (audioRef.current) {
+                audioRef.current.play();
+            }
+        }, Math.random() * 120000 + 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -72,6 +81,7 @@ function StuhuTips() {
                     </div>
                 </div>
             )}
+            <audio src="/uhu.mp3" ref={audioRef} preload="auto" />
         </div>
     );
 };
