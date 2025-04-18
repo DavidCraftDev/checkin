@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import path from "path";
 import logger from "../logger";
 
-let data: Record<string, string> = {
+const data: Record<string, string> = {
     "E5": "Englisch",
     "E": "Englisch",
     "EG": "Englisch",
@@ -56,7 +56,8 @@ let data: Record<string, string> = {
 const faecherCSVPath = path.join(process.cwd(), "data", "Faecher.csv");
 
 async function parseCSV() {
-    new Promise((resolve, reject) => {
+    "use server";
+    await new Promise((resolve, reject) => {
         const fileContent = readFileSync(faecherCSVPath, "utf8");
 
         Papa.parse(fileContent, {
@@ -82,7 +83,7 @@ async function parseCSV() {
 
 if (existsSync(faecherCSVPath)) parseCSV();
 
-async function getCourseFromName(name: string): Promise<string | undefined> {
+export function getCourseFromName(name: string): string | undefined {
     const course = Object.keys(data).find((key) => name.includes(data[key]));
     return course;
 }
