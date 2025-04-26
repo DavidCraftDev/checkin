@@ -85,7 +85,7 @@ if (existsSync(faecherCSVPath)) parseCSV();
 
 export function getCourseFromName(name: string): string | undefined {
     const course = Object.keys(data).find((key) => name.includes(data[key]));
-    return course;
+    return course !== undefined ? data[course] : undefined;
 }
 
 export default data;
