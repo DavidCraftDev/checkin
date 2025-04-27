@@ -27,7 +27,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
         }
     });
-    const data: AttendancePerUserPerEvent[] = new Array();
+    const data: AttendancePerUserPerEvent[] = [];
     await Promise.all(dataAttendances.map(async (attendance) => {
         let dataEvent: Events;
         let dataUserEvent: User;
@@ -75,7 +75,7 @@ export async function getAttendancesPerEvent(eventID: string) {
             eventID: eventID
         }
     });
-    const data: AttendancePerEventPerUser[] = new Array();
+    const data: AttendancePerEventPerUser[] = [];
     await Promise.all(dataAttendance.map(async (attendance) => {
         const dataUser = await getUserPerID(attendance.userID);
         data.push({
@@ -131,7 +131,7 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             }
         }
     });
-    const data: CreatedEventPerUser[] = new Array();
+    const data: CreatedEventPerUser[] = [];
     await Promise.all(dataEvents.map(async (event) => {
         const attendedUser = await db.attendances.count({
             where: {
@@ -189,7 +189,7 @@ export async function checkINHandler(eventID: string, userID: string) {
             cw: dayjs().isoWeek(),
         }
     });
-    let userData: User = await getUserPerID(userID);
+    const userData: User = await getUserPerID(userID);
     return userData;
 }
 
@@ -237,7 +237,7 @@ export async function getAttendancesWithoutType(userID: string, cw: number, year
             }
         }
     });
-    const data: AttendancePerUserPerEvent[] = new Array();
+    const data: AttendancePerUserPerEvent[] = [];
     await Promise.all(dataAttendances.map(async (attendance) => {
         const dataEvent = await getEventPerID(attendance.eventID);
         if (!dataEvent) return;
