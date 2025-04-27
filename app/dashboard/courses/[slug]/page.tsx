@@ -5,8 +5,6 @@ import CalendarWeek from "@/app/src/ui/calendarweek";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import StudyTimeTable from "./studyTimesTable.component";
-import { Suspense } from 'react'
-import FallbackTable from "@/app/src/ui/fallbackTable";
 
 async function CoursePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     // Check if the user is logged in and has permission to view this page
@@ -37,9 +35,7 @@ async function CoursePage({ params, searchParams }: { params: Promise<{ slug: st
             <p>Anwesenheiten</p>
             <div>
                 <h2>Studienzeiten</h2>
-                <Suspense fallback={<FallbackTable text="Lade Studienzeiten..." />}>
-                    <StudyTimeTable students={students} studyTimesPromise={studyTimeData} />
-                </Suspense>
+                <StudyTimeTable students={students} studyTimesPromise={studyTimeData} />
             </div>
         </>
     )
