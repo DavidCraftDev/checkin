@@ -32,6 +32,9 @@ async function CoursePage({ params, searchParams }: { params: Promise<{ slug: st
                 <CalendarWeek />
                 <p>Anwesenheit kontrollieren</p>
             </div>
+            <div>
+                
+            </div>
             <p>Anwesenheiten</p>
             <div>
                 <h2>Studienzeiten</h2>

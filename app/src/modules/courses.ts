@@ -4,7 +4,7 @@ import { Attendances, User } from "@prisma/client";
 import { getSessionUser } from "./auth/cookieManager";
 import db from "./db";
 import { getCurrentWeek, checkDate } from "./date";
-import { getCourseFromName } from "./data/courses";
+import { getCourseTypeFromName } from "./data/courses";
 import { TeacherPerEvent } from "./eventUtilities";
 import { getUserPerID } from "./userUtilities";
 
@@ -64,7 +64,7 @@ export async function getStudyTimeDataPerCourseMember(courseID: string, student:
     if (!checkDate(year, calendarWeek)) return {} as Attendances;
 
     // Get subject of the course
-    const subject: string = getCourseFromName(courseID) || courseID;
+    const subject: string = getCourseTypeFromName(courseID) || courseID;
 
     // Get study time data for the student in the subject of the course in the given week and year
     const data = await db.attendances.findMany({
