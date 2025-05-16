@@ -13,7 +13,7 @@
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
     "@prisma/client": "6.5.0",
-    "@tailwindcss/postcss": "4.1.0",
+    "@tailwindcss/postcss": "4.1.7",
     "@types/papaparse": "5.3.16",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
@@ -31,7 +31,7 @@
     "react-dom": "19.1.0",
     "react-hot-toast": "2.5.2",
     "server-only": "0.0.1",
-    "tailwindcss": "4.1.0",
+    "tailwindcss": "4.1.7",
     "ts-node": "10.9.2",
     "typescript": "5.8.3",
     "write-excel-file": "2.3.2"
