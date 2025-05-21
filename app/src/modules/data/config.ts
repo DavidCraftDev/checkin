@@ -37,6 +37,9 @@ interface Config {
             };
         };
     };
+    MODULES: {
+        SPONSORENLAUF: boolean;
+    }
 }
 
 const defaultConfig: Config = {
@@ -72,6 +75,9 @@ const defaultConfig: Config = {
                 STUDYTIME_OU: "",
             },
         },
+    },
+    MODULES: {
+        SPONSORENLAUF: false,
     },
 };
 
