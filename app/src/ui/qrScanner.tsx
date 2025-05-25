@@ -9,15 +9,15 @@ interface QRScannerProps {
   validate?: (data: string) => boolean;
 }
 
-let lastResult: string | null = null;
-
 const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validate }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const scannerRef = useRef<QrScanner | null>(null);
+  const lastResultRef = useRef<string | null>(null);
 
   const startScanner = useCallback(() => {
     async function handleScanResult(result: QrScanner.ScanResult) {
-      if (result.data === lastResult) return;
-      lastResult = result.data;
+      if (result.data === lastResultRef.current) return;
+      lastResultRef.current = result.data;
 
       const isValid = validate ? validate(result.data) : true;
       if (!isValid) {
@@ -39,18 +39,16 @@ const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validat
         highlightCodeOutline: true,
       });
 
+      scannerRef.current = scanner;
       scanner.start();
-
-      return () => {
-        scanner.stop();
-      };
     }
   }, [onScan, onError, validate]);
 
   useEffect(() => {
-    const stopScanner = startScanner();
+    startScanner();
+
     return () => {
-      if (stopScanner) stopScanner();
+      scannerRef.current?.stop();
     };
   }, [startScanner]);
 
