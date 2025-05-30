@@ -152,5 +152,12 @@ function generateRandomSecurePassword(): string {
     return Array.from(crypto.randomFillSync(new Uint32Array(length))).map((x) => charset[x % charset.length]).join("");
 }
 
+
+let isConfigLoaded: boolean = false;
+export async function loadConfig() {
+    if (isConfigLoaded) return;
+    isConfigLoaded = true;
+    await readConfig();
+}
 // Initial load
-readConfig();
+loadConfig();
