@@ -6,6 +6,8 @@ import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { Metadata } from "next";
+import { config_data } from "../src/modules/data/config";
+import { getRoundCountForUser } from "./modules/sponsorenlauf/handler";
 
 dayjs.extend(isoWeek);
 
@@ -30,6 +32,12 @@ async function DashboardPage() {
             <h1>Übersicht</h1>
             <p>Hallo {user.displayname}</p>
             <p>{String(completedStudyTimes.length) + "/" + String(user.needs.length)} Studienzeiten besucht</p>
+            {config_data.MODULES.SPONSORENLAUF && (
+                <p>{await getRoundCountForUser(user.id)} Runden gelaufen!</p>
+            )}
+            { config_data.MODULES.SPONSORENLAUF && user.permission !== 0 && (
+                <p className="mt-2"><a href="/dashboard/modules/sponsorenlauf" className="btn">Zum Sponsorenlauf</a></p>
+            )}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">
                 <MissingStudyTimes missingStudyTimes={missingStudyTimes} />
                 <CompletedStudyTimes attendances={completedStudyTimes} />
