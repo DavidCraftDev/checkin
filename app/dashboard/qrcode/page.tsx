@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import QRCodeComponent from "./qr.component";
+import QRCodeComponent from "./qrcode.component";
 import { getCurrentSession } from "../../src/modules/auth/cookieManager";
 import { Metadata } from "next";
 
