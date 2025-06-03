@@ -75,14 +75,14 @@ export async function GET() {
             {
                 type: String,
                 value: user.displayName,
-                height: 132,
+                height: 80,
                 alignVertical: "center",
                 wrap: true
             },
             {
                 type: String,
                 value: user.group,
-                height: 132,
+                height: 80,
                 alignVertical: "center",
                 wrap: true
             }
@@ -175,7 +175,7 @@ export async function GET() {
                 {
                     type: String,
                     value: user1.displayName,
-                    height: 132,
+                    height: 80,
                     alignVertical: "center",
                     wrap: true
                 },
@@ -184,7 +184,7 @@ export async function GET() {
                 user2 ? {
                     type: String,
                     value: user2.displayName,
-                    height: 132,
+                    height: 80,
                     alignVertical: "center",
                     wrap: true
                 } : { type: String, value: "" }
