@@ -3,12 +3,11 @@ import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
 import logger from "../app/src/modules/logger";
 import { cleanUpData } from "./cleanUp";
-import { config_data, loadConfig } from "../app/src/modules/data/config";
+import { config_data } from "../app/src/modules/data/config";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await loadConfig();
   if (config_data.LDAP.ENABLE) {
     logger.info("Use LDAP Auth...", "Seed")
     await seedLdapData();

@@ -2,10 +2,9 @@ import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { redirect } from "next/navigation";
 import QRScannerComponent from "./qr.component";
 import { Metadata } from "next";
-import { config_data, loadConfig } from "@/app/src/modules/data/config";
+import { config_data } from "@/app/src/modules/data/config";
 
 async function QRScanner() {
-    await loadConfig();
     if (!config_data.MODULES.SPONSORENLAUF) redirect("/dashboard");
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");

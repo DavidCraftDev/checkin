@@ -1,11 +1,10 @@
-import { config_data, loadConfig } from "@/app/src/modules/data/config";
+import { config_data } from "@/app/src/modules/data/config";
 import { redirect } from "next/navigation";
 import { getRoundSaveDataForTable } from "./handler";
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { ResetButton, SponsorenlaufTable } from "./components";
 
 async function SponsorenlaufPage() {
-    await loadConfig();
     if (!config_data.MODULES.SPONSORENLAUF) redirect("/dashboard");
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
