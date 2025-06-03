@@ -18,6 +18,7 @@ export async function GET() {
         }
     });
     const userData = await Promise.all(users.map(async user => ({
+        id: user.id,
         displayName: user.displayname,
         group: user.permission === 0 ? user.group[0] : "Lehrer",
         qrCode: await QRCode.toString("checkin://" + user.id, { errorCorrectionLevel: "H", type: "utf8" })
@@ -137,7 +138,7 @@ export async function GET() {
             const user2 = usersInGroup[i + 1];
 
             // QR Code for user 1
-            const qrCodeBuffer1 = await QRCode.toBuffer("checkin://" + user1.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+            const qrCodeBuffer1 = await QRCode.toBuffer("checkin://" + user1.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
             const qrCodeImage1: Image = {
                 content: qrCodeBuffer1,
                 contentType: "image/png",
@@ -153,7 +154,7 @@ export async function GET() {
 
             // QR Code for user 2 (if exists)
             if (user2) {
-                const qrCodeBuffer2 = await QRCode.toBuffer("checkin://" + user2.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+                const qrCodeBuffer2 = await QRCode.toBuffer("checkin://" + user2.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
                 const qrCodeImage2: Image = {
                     content: qrCodeBuffer2,
                     contentType: "image/png",
