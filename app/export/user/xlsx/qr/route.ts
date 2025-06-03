@@ -65,7 +65,7 @@ export async function GET() {
             height: 100,
             dpi: 96,
             anchor: {
-                row: allUserSheetData.length + 1, // +3 to account for the header and empty rows
+                row: allUserSheetData.length + 1,
                 column: 3
             },
         };
@@ -102,7 +102,7 @@ export async function GET() {
         groupSheetData.push([
             {
                 type: String,
-                value: "QR-Codes für Gruppe " + group,
+                value: "QR-Codes für " + group,
                 fontWeight: "bold"
             }
         ]);
@@ -117,36 +117,81 @@ export async function GET() {
                 type: String,
                 value: "QR-Code",
                 fontWeight: "bold"
+            },
+            {},
+            {
+                type: String,
+                value: "Name",
+                fontWeight: "bold"
+            },
+            {
+                type: String,
+                value: "QR-Code",
+                fontWeight: "bold"
             }
         ]);
-        
-        for (const user of userData.filter(u => u.group === group)) {
-            const qrCodeBuffer = await QRCode.toBuffer("checkin://" + user.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
-            const qrCodeImage: Image = {
-                content: qrCodeBuffer,
+
+        const usersInGroup = userData.filter(u => u.group === group);
+        for (let i = 0; i < usersInGroup.length; i += 2) {
+            const user1 = usersInGroup[i];
+            const user2 = usersInGroup[i + 1];
+
+            // QR Code for user 1
+            const qrCodeBuffer1 = await QRCode.toBuffer("checkin://" + user1.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+            const qrCodeImage1: Image = {
+                content: qrCodeBuffer1,
                 contentType: "image/png",
                 width: 100,
                 height: 100,
                 dpi: 96,
                 anchor: {
-                    row: groupSheetData.length + 1, // +3 to account for the header and empty rows
+                    row: groupSheetData.length + 1,
                     column: 2
                 },
             };
-            groupImages.push(qrCodeImage);
+            groupImages.push(qrCodeImage1);
+
+            // QR Code for user 2 (if exists)
+            if (user2) {
+                const qrCodeBuffer2 = await QRCode.toBuffer("checkin://" + user2.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+                const qrCodeImage2: Image = {
+                    content: qrCodeBuffer2,
+                    contentType: "image/png",
+                    width: 100,
+                    height: 100,
+                    dpi: 96,
+                    anchor: {
+                        row: groupSheetData.length + 1,
+                        column: 5
+                    },
+                };
+                groupImages.push(qrCodeImage2);
+            }
+
             groupSheetData.push([
                 {
                     type: String,
-                    value: user.displayName,
+                    value: user1.displayName,
                     height: 132,
                     alignVertical: "center"
-                }
+                },
+                {},
+                {},
+                user2 ? {
+                    type: String,
+                    value: user2.displayName,
+                    height: 132,
+                    alignVertical: "center"
+                } : { type: String, value: "" }
             ]);
         }
-        
+
         sheetData.push(groupSheetData);
         sheetNames.push(group);
         columnData.push([
+            { width: 20 },
+            { width: 12.5 },
+            { width: 5 },
             { width: 20 },
             { width: 12.5 }
         ]);
