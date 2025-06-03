@@ -69,8 +69,8 @@ export async function GET() {
         const qrCodeImage: Image = {
             content: qrCodeBuffers[user.id],
             contentType: "image/png",
-            width: 100,
-            height: 100,
+            width: 124,
+            height: 124,
             dpi: 96,
             anchor: {
                 row: allUserSheetData.length + 1,
@@ -82,14 +82,14 @@ export async function GET() {
             {
                 type: String,
                 value: user.displayName,
-                height: 80,
+                height: 94,
                 alignVertical: "center",
                 wrap: true
             },
             {
                 type: String,
                 value: user.group,
-                height: 80,
+                height: 94,
                 alignVertical: "center",
                 wrap: true
             }
@@ -100,7 +100,7 @@ export async function GET() {
     columnData.push([
         { width: 20 },
         { width: 15 },
-        { width: 12.5 }
+        { width: 16 }
     ]);
     imagesAll.push(allUserImages);
 
@@ -150,8 +150,8 @@ export async function GET() {
             const qrCodeImage1: Image = {
                 content: qrCodeBuffers[user1.id],
                 contentType: "image/png",
-                width: 100,
-                height: 100,
+                width: 124,
+                height: 124,
                 dpi: 96,
                 anchor: {
                     row: groupSheetData.length + 1,
@@ -165,8 +165,8 @@ export async function GET() {
                 const qrCodeImage2: Image = {
                     content: qrCodeBuffers[user2.id],
                     contentType: "image/png",
-                    width: 100,
-                    height: 100,
+                    width: 124,
+                    height: 124,
                     dpi: 96,
                     anchor: {
                         row: groupSheetData.length + 1,
@@ -180,7 +180,7 @@ export async function GET() {
                 {
                     type: String,
                     value: user1.displayName,
-                    height: 80,
+                    height: 94,
                     alignVertical: "center",
                     wrap: true
                 },
@@ -189,7 +189,7 @@ export async function GET() {
                 user2 ? {
                     type: String,
                     value: user2.displayName,
-                    height: 80,
+                    height: 94,
                     alignVertical: "center",
                     wrap: true
                 } : { type: String, value: "" }
@@ -200,10 +200,10 @@ export async function GET() {
         sheetNames.push(group);
         columnData.push([
             { width: 20 },
-            { width: 12.5 },
-            { width: 5 },
+            { width: 16 },
+            { width: 2 },
             { width: 20 },
-            { width: 12.5 }
+            { width: 16 }
         ]);
         imagesAll.push(groupImages);
     }
