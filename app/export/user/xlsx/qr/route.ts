@@ -20,7 +20,7 @@ export async function GET() {
     const userData = await Promise.all(users.map(async user => ({
         id: user.id,
         displayName: user.displayname,
-        group: user.permission === 0 ? user.group[0] : "Lehrer",
+        group: user.permission === 0 ? user.group[0] || "Keine Klasse" : "Lehrer",
         qrCode: await QRCode.toString("checkin://" + user.id, { errorCorrectionLevel: "H", type: "utf8" })
     })));
 
