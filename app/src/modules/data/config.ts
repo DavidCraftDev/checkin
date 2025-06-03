@@ -84,14 +84,14 @@ const defaultConfig: Config = {
 export let config_data: Config = { ...defaultConfig };
 const configFilePath = path.join(process.cwd(), "data", "config.json");
 
-export async function readConfig(writeBack: boolean = true) {
+export function readConfig(writeBack: boolean = true) {
     let loadedConfig: Partial<Config> = {};
 
     // Check if the config file exists and read it
     // If it doesn't exist, create it with default values
     try {
-        if (await fs.promises.access(configFilePath).then(() => true).catch(() => false)) {
-            loadedConfig = JSON.parse(await fs.promises.readFile(configFilePath, "utf-8"));
+        if (fs.existsSync(configFilePath)) {
+            loadedConfig = JSON.parse(fs.readFileSync(configFilePath, "utf-8"));
             config_data = Object.assign({}, defaultConfig, loadedConfig);
             logger.info("Loaded config file.", "Config");
         } else {
@@ -100,7 +100,7 @@ export async function readConfig(writeBack: boolean = true) {
     } catch (error) {
         logger.error("Error reading or parsing config file:" + error, "Config");
     }
-
+    
     // Check if a password is set for the default login
     // If not, generate a random password and log a warning
     if (!config_data.DEFAULT_LOGIN.PASSWORD || config_data.DEFAULT_LOGIN.PASSWORD === "") {
@@ -114,12 +114,13 @@ export async function readConfig(writeBack: boolean = true) {
     if (writeBack) writeConfig();
 }
 
-export async function writeConfig() {
-    if (!(await fs.promises.access(path.dirname(configFilePath)).then(() => true).catch(() => false))) {
-        await fs.promises.mkdir(path.dirname(configFilePath), { recursive: true });
+export function writeConfig() {
+    const dir = path.dirname(configFilePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
         logger.info("Created config directory.", "Config");
     }
-    await fs.promises.writeFile(configFilePath, JSON.stringify(config_data, null, 4));
+    fs.writeFileSync(configFilePath, JSON.stringify(config_data, null, 4));
 }
 
 function applyEnvOverrides() {
@@ -152,12 +153,4 @@ function generateRandomSecurePassword(): string {
     return Array.from(crypto.randomFillSync(new Uint32Array(length))).map((x) => charset[x % charset.length]).join("");
 }
 
-
-let isConfigLoaded: boolean = false;
-export async function loadConfig() {
-    if (isConfigLoaded) return;
-    isConfigLoaded = true;
-    await readConfig();
-}
-// Initial load
-loadConfig();
+readConfig();
