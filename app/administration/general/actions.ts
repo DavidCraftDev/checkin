@@ -13,7 +13,7 @@ export async function saveSchoolName(formData: FormData): Promise<void> {
     const schoolName = formData.get("schoolName") as string;
     config_data.SCHOOL_NAME = schoolName;
     await logger.info("School name changed to " + schoolName + " by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/administration?successSchoolName=true");
 }
 
@@ -23,7 +23,7 @@ export async function enableMaintanceMode(): Promise<void> {
     if (user.permission !== 2) redirect("/dashboard");
     config_data.MAINTENANCE = true;
     await logger.info("Maintenance mode enabled by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/");
 }
 
@@ -34,7 +34,7 @@ export async function saveDefaultUsername(formData: FormData): Promise<void> {
     const username = formData.get("username") as string;
     config_data.DEFAULT_LOGIN.USERNAME = username;
     await logger.info("Default username changed to " + username + " by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/administration?successUsername=true");
 }
 
@@ -45,7 +45,7 @@ export async function saveDefaultPassword(formData: FormData): Promise<void> {
     const password = formData.get("password") as string;
     config_data.DEFAULT_LOGIN.PASSWORD = password;
     await logger.info("Default password changed by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/administration?successPassword=true");
 }
 

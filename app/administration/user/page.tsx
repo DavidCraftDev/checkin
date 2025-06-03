@@ -16,6 +16,7 @@ async function UserPage() {
                 </div>
                 {!config_data.LDAP.ENABLE ? <a className="btn place-self-center" href={`/administration/user/create`}>Nutzer erstellen</a> : null}
             </div>
+            <a href="/export/user/xlsx/qr" className="hover:underline">QR-Codes exportieren</a>
             <UserTable users={users} />
             <p>Exportieren als:
                 <a href="/export/user/json" download="users.json" className="hover:underline mx-1">JSON</a>

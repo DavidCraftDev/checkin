@@ -38,7 +38,7 @@ export async function enableLDAP(): Promise<void> {
         });
     }));
     config_data.LDAP.ENABLE = true;
-    await writeConfig();
+    writeConfig();
     await logger.info("LDAP enabled by " + user.username + " (" + user.id + ")", "Administration");
     redirect("/administration/ldap?success=LDAP aktiviert!");
 }
@@ -70,7 +70,7 @@ export async function disableLDAP(): Promise<void> {
         }
     });
     config_data.LDAP.ENABLE = false;
-    await writeConfig();
+    writeConfig();
     await logger.info("LDAP disabled by " + user.username + " (" + user.id + ")", "Administration");
     redirect("/administration/ldap?success=LDAP deaktiviert!");
 }
@@ -109,7 +109,7 @@ export async function saveLDAPBindCredentials(formData: FormData): Promise<void>
     config_data.LDAP.BIND_CREADENTIALS.DN = dn;
     config_data.LDAP.BIND_CREADENTIALS.PASSWORD = password;
     await logger.info("LDAP Bind Credentials changed by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/administration/ldap?success=LDAP Bind Credentials gespeichert!");
 }
 
@@ -121,6 +121,6 @@ export async function saveLDAPURI(formData: FormData): Promise<void> {
     if (user.permission !== 2) redirect("/dashboard");
     config_data.LDAP.URI = uri;
     await logger.info("LDAP URI changed to " + uri + " by " + user.username + " (" + user.id + ")", "Administration");
-    await writeConfig();
+    writeConfig();
     redirect("/administration/ldap?success=LDAP URI gespeichert!");
 }
