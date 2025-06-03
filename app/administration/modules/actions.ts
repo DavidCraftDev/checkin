@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache";
 
 export async function toggleSponsorenlaufModule(formData: FormData) {
     const newValue = formData.get("sponsorenlauf") === "on";
-    await readConfig(false);
+    readConfig(false);
     config_data.MODULES.SPONSORENLAUF = newValue;
-    await writeConfig();
+    writeConfig();
     revalidatePath("/administration/modules");
 }
