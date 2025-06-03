@@ -8,5 +8,5 @@ export async function toggleSponsorenlaufModule(formData: FormData) {
     await readConfig(false);
     config_data.MODULES.SPONSORENLAUF = newValue;
     await writeConfig();
-    revalidatePath("/admin/settings/modules");
+    revalidatePath("/administration/settings/modules");
 }
