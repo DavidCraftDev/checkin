@@ -57,7 +57,7 @@ export async function GET() {
         }
     ]);
     for (const user of userData) {
-        const qrCodeBuffer = await QRCode.toBuffer("checkin://" + user.displayName, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+        const qrCodeBuffer = await QRCode.toBuffer("checkin://" + user.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
         const qrCodeImage: Image = {
             content: qrCodeBuffer,
             contentType: "image/png",
