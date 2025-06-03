@@ -15,7 +15,7 @@ export function SponsorenlaufTable(props: { data: RoundResponse[] }) {
           </thead>
           <tbody>
             {props.data.map((item) => (
-              <tr key={item.id}>
+              <tr key={item.displayName}>
                 <td>{item.displayName}</td>
                 <td>{item.roundCount}</td>
               </tr>
