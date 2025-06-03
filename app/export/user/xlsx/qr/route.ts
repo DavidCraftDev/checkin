@@ -98,7 +98,7 @@ export async function GET() {
     imagesAll.push(allUserImages);
 
     // Create sheet for every group
-    const groups = Array.from(new Set(userData.map(user => user.group)));
+    const groups = Array.from(new Set(userData.map(user => user.group))).sort((a, b) => a.localeCompare(b));
     for (const group of groups) {
         const groupSheetData: SheetData = [];
         const groupImages: Image[] = [];
