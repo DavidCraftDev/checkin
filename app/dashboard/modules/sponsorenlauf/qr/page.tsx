@@ -5,7 +5,8 @@ import { Metadata } from "next";
 import { config_data, loadConfig } from "@/app/src/modules/data/config";
 
 async function QRScanner() {
-    //if (!config_data.MODULES.SPONSORENLAUF) redirect("/dashboard");
+    await loadConfig();
+    if (!config_data.MODULES.SPONSORENLAUF) redirect("/dashboard");
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
     if (user.permission === 0) redirect("/dashboard");
