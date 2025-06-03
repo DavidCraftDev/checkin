@@ -24,6 +24,14 @@ export async function GET() {
         qrCode: await QRCode.toString("checkin://" + user.id, { errorCorrectionLevel: "H", type: "utf8" })
     })));
 
+    // Generate QR codes for each user
+    const qrCodeBuffers: Record<string, Buffer> = {};
+    await Promise.all(
+        userData.map(async user => {
+            qrCodeBuffers[user.id] = await QRCode.toBuffer("checkin://" + user.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
+        })
+    );
+
     // Create XLSX file
     const sheetData: SheetData[] = [];
     const imagesAll: Image[][] = [];
@@ -58,9 +66,8 @@ export async function GET() {
         }
     ]);
     for (const user of userData) {
-        const qrCodeBuffer = await QRCode.toBuffer("checkin://" + user.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
         const qrCodeImage: Image = {
-            content: qrCodeBuffer,
+            content: qrCodeBuffers[user.id],
             contentType: "image/png",
             width: 100,
             height: 100,
@@ -140,9 +147,8 @@ export async function GET() {
             const user2 = usersInGroup[i + 1];
 
             // QR Code for user 1
-            const qrCodeBuffer1 = await QRCode.toBuffer("checkin://" + user1.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
             const qrCodeImage1: Image = {
-                content: qrCodeBuffer1,
+                content: qrCodeBuffers[user1.id],
                 contentType: "image/png",
                 width: 100,
                 height: 100,
@@ -156,9 +162,8 @@ export async function GET() {
 
             // QR Code for user 2 (if exists)
             if (user2) {
-                const qrCodeBuffer2 = await QRCode.toBuffer("checkin://" + user2.id, { errorCorrectionLevel: "H", type: "png", margin: 1 });
                 const qrCodeImage2: Image = {
-                    content: qrCodeBuffer2,
+                    content: qrCodeBuffers[user2.id],
                     contentType: "image/png",
                     width: 100,
                     height: 100,
