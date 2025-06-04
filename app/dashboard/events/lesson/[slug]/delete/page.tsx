@@ -16,5 +16,6 @@ export async function deleteLesson({ params }: { params: Promise<{ slug: string 
         },
     });
     logger.info("Deleted lesson with ID " + slug, "Lesson");
-    return redirect("/dashboard");
+    redirect("/dashboard");
+    return (<></>);
 }
