@@ -12,7 +12,8 @@ import {
   ArrowLeftIcon,
   FolderArrowDownIcon,
   ServerStackIcon,
-  SquaresPlusIcon
+  SquaresPlusIcon,
+  DocumentMagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -41,6 +42,7 @@ const linksAdministration = [
   { name: 'Gruppen', href: '/administration/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
   { name: 'Nutzer', href: '/administration/user', icon: UserCircleIcon, mobile: false, permission: 2 },
   { name: 'Module', href: '/administration/modules', icon: SquaresPlusIcon, mobile: false, permission: 2 },
+  { name: 'Logs', href: '/administration/logs', icon: DocumentMagnifyingGlassIcon, mobile: false, permission: 2 },
 ];
 
 export default function NavLinks(props: NavLinkProps) {
