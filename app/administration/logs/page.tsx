@@ -1,15 +1,16 @@
-// View log files from Dashboard
-
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { redirect } from "next/navigation";
-
 import fs from "fs";
 import path from "path";
 import logger from "@/app/src/modules/logger";
 
-export default async function LogsPage({ searchParams }: { searchParams?: { file?: string } }) {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
+export default async function LogsPage(props: { searchParams: SearchParams }) {
     const { session } = await getCurrentSession();
     if (!session) redirect("/login");
+
+    const searchParams = await props.searchParams;
 
     // List all log files in the log directory
     const logDir = path.join(process.cwd(), "log");
@@ -22,7 +23,7 @@ export default async function LogsPage({ searchParams }: { searchParams?: { file
     logFiles.sort();
 
     // Read selected log file (default: latest)
-    const selectedFile = searchParams?.file || logFiles[logFiles.length - 1];
+    const selectedFile = searchParams?.file as string || logFiles[logFiles.length - 1];
     let logContent = "";
     if (selectedFile) {
         try {
