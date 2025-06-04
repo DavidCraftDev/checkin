@@ -12,7 +12,7 @@
     "@heroicons/react": "2.2.0",
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
-    "@prisma/client": "6.8.2",
+    "@prisma/client": "6.9.0",
     "@tailwindcss/postcss": "4.1.8",
     "@types/papaparse": "5.3.16",
     "@types/qrcode": "1.5.5",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/node": "22.15.29",
     "postcss": "8.5.4",
-    "prisma": "6.8.2"
+    "prisma": "6.9.0"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/seed.ts"
