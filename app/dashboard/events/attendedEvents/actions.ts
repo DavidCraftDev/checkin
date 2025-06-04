@@ -1,6 +1,8 @@
 "use server";
 
 import { disabledType, functionResult } from "@/app/src/interfaces/utilties";
+import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import db from "@/app/src/modules/db";
 import { createStudentNote } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
 import { createUserStudyTimeNote, saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
@@ -39,6 +41,18 @@ export async function createStudyTimeNote(userID: string, cw: number, year: numb
 }
 
 export async function saveSelectedStudyTimeType(attendance: Attendances, userID: string, type: string): Promise<functionResult> {
+    const session = await getCurrentSession();
+    if (!session || !session.user) return { success: false, error: "Session not found" };
+    if (session.user.id !== userID && session.user.permission < 2) {
+        return { success: false, error: "Keine Berechtigung zum Speichern" };
+    }
+    if(type === "Löschen" && session.user.permission !== 0) {
+        db.attendances.delete({
+            where: {
+                id: attendance.id
+            },
+        });
+    }
     const data = await saveStudyTimeType(attendance, userID, type);
     const result: functionResult = { success: data };
     if (!result.success) {
