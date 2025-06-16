@@ -38,7 +38,7 @@
     "write-excel-file": "2.3.2"
   },
   "devDependencies": {
-    "@types/node": "22.15.29",
+    "@types/node": "22.15.32",
     "postcss": "8.5.4",
     "prisma": "6.9.0"
   },
