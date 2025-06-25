@@ -94,6 +94,7 @@ export async function GET() {
                 wrap: true
             }
         ]);
+        allUserSheetData.push([]);
     }
     sheetData.push(allUserSheetData);
     sheetNames.push("QR-Codes");
@@ -194,6 +195,7 @@ export async function GET() {
                     wrap: true
                 } : { type: String, value: "" }
             ]);
+            groupSheetData.push([]);
         }
 
         sheetData.push(groupSheetData);
