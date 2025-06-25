@@ -8,16 +8,25 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
+enum TraficLightFeedback {
+  GREEN
+  YELLOW
+  RED
+}
+
 model Attendances {
-  id          String   @id @unique @default(cuid())
-  userID      String
-  eventID     String
-  cw          Int
-  teacherNote String?
-  studentNote String?
-  type        String?
-  attended    Boolean  @default(true)
-  created_at  DateTime @default(now())
+  id             String              @id @unique @default(cuid())
+  userID         String
+  eventID        String
+  cw             Int
+  teacherNote    String?
+  studentNote    String?
+  type           String?
+  feedback       TraficLightFeedback @default(GREEN)
+  productiveWork Boolean             @default(true)
+  goodAtmosphere Boolean             @default(true)
+  attended       Boolean             @default(true)
+  created_at     DateTime            @default(now())
 }
 
 model Events {

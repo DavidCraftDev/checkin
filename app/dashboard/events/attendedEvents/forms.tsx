@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { createStudyTimeNote, saveSelectedStudyTimeType } from "./actions";
+import { createStudyTimeNote, saveSelectedStudyTimeType, saveSelfReflection } from "./actions";
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import { Attendances } from '@prisma/client';
 import toast from 'react-hot-toast';
@@ -46,6 +46,36 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
                     <option key={type} value={type}>{type}</option>
                 ))}
             </select>
+        </td>
+    );
+}
+
+export function SelfReflectionSelect(props: { attendance: Attendances, type: "goodWorkatmosphere" | "productiveWork" }) {
+    const router = useRouter();
+    let isChecked = true;
+    if(props.type === "goodWorkatmosphere") {
+        isChecked = props.attendance.goodAtmosphere;
+    } else if(props.type === "productiveWork") {
+        isChecked = props.attendance.productiveWork;
+    }
+    
+    async function toggleSelfReflection(): Promise<void> {
+        const data = await saveSelfReflection(props.attendance, props.type);
+        if (data && data.success) {
+            toast.success("Selbstreflexion aktualisiert");
+        } else if (data && data.error) {
+            toast.error(data.error);
+        } else {
+            toast.error("Ein unbekannter Fehler ist aufgetreten");
+        }
+        router.refresh();
+    }
+
+    return (
+        <td>
+            <button type="button" onClick={toggleSelfReflection} className="text-2xl border-2 border-gray-400">
+                {isChecked ? "✅" : "❌"}
+            </button>
         </td>
     );
 }

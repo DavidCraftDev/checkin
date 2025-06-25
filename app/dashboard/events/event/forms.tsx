@@ -1,13 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { handleEventDelete, handleUserCheckIN, removeUserHandler } from "./actions";
+import { handleEventDelete, handleUserCheckIN, removeUserHandler, saveSelectedStudyTimeFeedback } from "./actions";
 import { Attendances, Events, User } from "@prisma/client";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import toast from "react-hot-toast";
 import SearchBar from "./search.component";
 import { SubmitButton } from "@/app/src/ui/submitButton";
+import TrafficLight from "../attendedEvents/trafficLight";
 
 dayjs.extend(isoWeek);
 
@@ -63,4 +64,28 @@ export function CheckinForm(props: { event: Events }) {
             </div>
         </form>
     )
+}
+
+// Trafic Light Attendance Feedback Select Component
+export function TrafficLightSelect(props: { attendance: Attendances }) {
+    const router = useRouter();
+    async function submitTrafficLightSelect(feedback: string): Promise<void> {
+        const data = await saveSelectedStudyTimeFeedback(props.attendance, feedback.toLocaleUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
+        if (data && data.success) {
+            toast.success("Feedback gespeichert");
+        } else if (data && data.error) {
+            toast.error(data.error);
+        } else {
+            toast.error("Ein unbekannter Fehler ist aufgetreten");
+        }
+        router.refresh();
+    }
+    return (
+        <select className="border-gray-200 border-2 rounded-md p-2.5 bg-white" defaultValue={props.attendance.feedback || "default"} onChange={(event) => submitTrafficLightSelect(event.target.value)}>
+            <option disabled value="default">Feedback wählen</option>
+            <option value="red"><TrafficLight status="RED" />Rot</option>
+            <option value="yellow"><TrafficLight status="YELLOW" />Gelb</option>
+            <option value="green"><TrafficLight status="GREEN" />Grün</option>
+        </select>
+    );
 }
