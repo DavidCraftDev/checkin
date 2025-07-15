@@ -23,7 +23,7 @@
     "dayjs": "1.11.13",
     "eslint": "9.29.0",
     "eslint-config-next": "15.4.1",
-    "ldapts": "8.0.1",
+    "ldapts": "8.0.6",
     "next": "15.4.1",
     "papaparse": "5.5.3",
     "qr-scanner": "1.4.2",
