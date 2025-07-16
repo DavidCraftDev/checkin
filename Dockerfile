@@ -22,7 +22,7 @@ RUN apk upgrade --no-cache -a && \
     fi && \
     npm cache clean --force && \
     clean-modules --yes
-FROM alpine:3.22.0 AS strip
+FROM alpine:3.22.1 AS strip
 COPY --from=build /app /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates binutils file && \
