@@ -36,30 +36,37 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     const attendances = await getAttendancesPerUser(userID, cw, year);
     const completedStudyTimesCount = attendances.filter((attendance) => attendance.event.type !== null && attendance.attendance.type !== "Unterricht").length;
 
-    let addable = (cw === currentWeek && year === currentYear);
+    let isEditable = (cw === currentWeek && year === currentYear);
 
-    let userNeeds;
-    if (addable) {
+    let userNeeds: Array<string> = [];
+    if (isEditable) {
         userNeeds = userData.needs || [];
     } else {
         const savedNeededStudyTimes = await getSavedNeededStudyTimes(userData, cw, year);
         userNeeds = savedNeededStudyTimes?.needs || [];
     }
-    if (addable) saveNeededStudyTimes(userData);
-    if (sessionUser.id !== userData.id) addable = true;
+    if (isEditable) saveNeededStudyTimes(userData);
+
+    let isTeacher = false;
+    if (sessionUser.id !== userData.id) {
+        isEditable = true;
+        isTeacher = true;
+    }
 
     const missingStudyTimes: Array<string> = userNeeds.filter(neededStudyTime => !attendances.find(attendanceData => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
 
     const studyTimeTypes: Record<string, string[]> = {};
-    if (addable) await Promise.all(attendances.map(async (event) => {
+    if (isEditable) await Promise.all(attendances.map(async (event) => {
         if (event.event.id !== "NOTE") {
-            const vertretung: Array<string> = new Array();
+            const vertretung: Array<string> = [];
             const neededStudyTimesForAttendance: Array<string> = [];
             missingStudyTimes.forEach((missingStudyTime) => {
                 if (event.eventUser.competence.includes(missingStudyTime)) neededStudyTimesForAttendance.push(missingStudyTime);
                 else vertretung.push(missingStudyTime);
             });
             vertretung.forEach((vertretung) => neededStudyTimesForAttendance.push("Vertretung:" + vertretung));
+            neededStudyTimesForAttendance.push("Keine Studienzeit");
+            if(isTeacher) neededStudyTimesForAttendance.push("Löschen");
             studyTimeTypes[event.attendance.id] = neededStudyTimesForAttendance;
         } else {
             const neededStudyTimesForNotes: Array<string> = [];
@@ -78,11 +85,11 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
                     <p>von {userData.displayname}</p>
                     {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
-                    {addable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}
+                    {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}
                 </div>
                 <CalendarWeek />
             </div>
-            <AttendedEventTable attendances={attendances} addable={addable} studyTimeTypes={studyTimeTypes} />
+            <AttendedEventTable attendances={attendances} isEditable={isEditable} studyTimeTypes={studyTimeTypes} isTeacher={isTeacher} />
             <p>Exportieren als:
                 <a href={`/export/events/attended/json?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.json`} className="hover:underline mx-1">JSON</a>
                 <a href={`/export/events/attended/xlsx?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.xlsx`} className="hover:underline mx-1">XLSX</a>

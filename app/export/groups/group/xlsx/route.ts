@@ -1,5 +1,4 @@
 import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
-import { getGroupMembers } from "@/app/src/modules/groupUtilities";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
@@ -8,6 +7,9 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { getGroupUsers } from "@/app/src/modules/group";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -15,8 +17,8 @@ dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 1) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 1) return new NextResponse(null, { status: 403 });
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
@@ -25,13 +27,13 @@ export async function GET(request: NextRequest) {
     if (!groupID) return NextResponse.json({ error: "No groupID provided" })
     if (!user.group.includes(groupID) && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
 
-    const groupMember = await getGroupMembers(groupID, calendarWeek, year)
+    const groupMember = await getGroupUsers(groupID)
 
-    const sheetData: SheetData[] = new Array();
-    const sheetName: Array<string> = new Array();
-    const columeData: Columns[] = new Array();
+    const sheetData: SheetData[] = [];
+    const sheetName: Array<string> = [];
+    const columeData: Columns[] = [];
 
-    const meta = new Array()
+    const meta: SheetData = [];
     meta.push([{
         "type": String,
         "value": "Gruppe " + groupID,
@@ -77,35 +79,74 @@ export async function GET(request: NextRequest) {
     meta.push([{}])
     meta.push([{
         "type": String,
-        "value": "Mitglied",
+        "value": "Schüler",
         "fontWeight": "bold"
     },
     {
         "type": String,
-        "value": "Teilgenomme Studienzeiten",
+        "value": "Erledigte Studienzeiten:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Davon Vertretungen:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Davon nur mit Notizen:",
+        "fontWeight": "bold"
+    },
+    {
+        "type": String,
+        "value": "Fehlende Studienzeiten:",
         "fontWeight": "bold"
     }])
-    groupMember.forEach((user) => {
+    await Promise.all(groupMember.map(async (user) => {
+        if(user.needs.length === 0 && user.permission !== 0) return;
+        const attendances = await getAttendancesPerUser(user.id, calendarWeek, year)
+        const studyTimes: Array<string> = [];
+        attendances.forEach((attendance) => {
+            if (attendance.attendance.type && attendance.attendance.type !== "Unterricht") {
+                studyTimes.push(attendance.attendance.type);
+            }
+        });
+        const neededStudyTimes = await getSavedNeededStudyTimes(user, calendarWeek, year);
+        const missingStudyTimes = neededStudyTimes.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
         meta.push([{
             "type": String,
-            "value": user.user.displayname,
+            "value": user.displayname,
             "wrap": true
         },
         {
             "type": Number,
-            "value": user.attendances,
+            "value": studyTimes.length
+        },
+        {
+            "type": Number,
+            "value": studyTimes.filter((studyTime) => studyTime.includes("Vertretung:")).length,
+        },
+        {
+            "type": Number,
+            "value": studyTimes.filter((studyTime) => studyTime.includes("Notiz:")).length,
+        },
+        {
+            "type": Number,
+            "value": missingStudyTimes.length,
         }])
-    })
+    }))
     sheetData.push(meta)
     sheetName.push("Meta")
     columeData.push([
-        { width: 20 },
-        { width: 28 },
-        { width: 20 },
-        { width: 20 }
+        { width: 22 },
+        { width: 22 },
+        { width: 22 },
+        { width: 22 },
+        { width: 22 }
     ]);
     await Promise.all(groupMember.map(async (user) => {
-        const userData = await getAttendedEventsXLSX(user.user, calendarWeek, year)
+        if(user.needs.length === 0 && user.permission !== 0) return;
+        const userData = await getAttendedEventsXLSX(user, calendarWeek, year)
         sheetData.push(userData.sheetData)
         sheetName.push(userData.sheetName)
         columeData.push(userData.columnData)

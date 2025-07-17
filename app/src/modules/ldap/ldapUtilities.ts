@@ -108,8 +108,8 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
     let permission
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ENABLE) {
         permission = { permission: 0 }
-        if (ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP)) permission = { permission: 2 }
-        else if (ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP)) permission = { permission: 1 }
+        if (ldapUser.memberOf && ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.ADMIN_GROUP)) permission = { permission: 2 }
+        else if (ldapUser.memberOf && ldapUser.memberOf.toString().includes(config_data.LDAP.AUTOMATIC_DATA_DETECTION.PERMISSION.TEACHER_GROUP)) permission = { permission: 1 }
         else permission = { permission: 0 }
     } else permission = {}
 

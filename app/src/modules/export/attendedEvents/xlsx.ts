@@ -6,8 +6,8 @@ import { Columns, SheetData } from "write-excel-file";
 import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
-    let sheetData: SheetData = new Array()
-    let columnData: Columns = []
+    const sheetData: SheetData = []
+    const columnData: Columns = []
     const sheetName: string = user.displayname.substring(0, 31)
     const attendances = await getAttendancesPerUser(user.id, cw, year)
     sheetData.push([{
@@ -44,14 +44,14 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
         "value": cw + "/" + year
     }])
     sheetData.push([{}])
-    let studyTimes: Array<string> = [];
+    const studyTimes: Array<string> = [];
     attendances.forEach((attendance) => {
-        if (attendance.attendance.type) {
+        if (attendance.attendance.type && attendance.attendance.type !== "Unterricht") {
             studyTimes.push(attendance.attendance.type);
         }
     });
-    const missing = await getSavedNeededStudyTimes(user, cw, year);
-    const missingStudyTimes = missing.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
+    const neededStudyTimes = await getSavedNeededStudyTimes(user, cw, year);
+    const missingStudyTimes = neededStudyTimes.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
     sheetData.push([{
         "type": String,
         "value": "Erledigte Studienzeiten:",
@@ -74,7 +74,7 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     }])
     sheetData.push([{
         "type": String,
-        "value": studyTimes.toString().replaceAll("Notiz:", "").replaceAll("Vertretung:", "").replaceAll(",", ", "),
+        "value": studyTimes.toString().replaceAll("Notiz:", "").replaceAll("Vertretung:", "").replaceAll(",", ", ") + " (" + studyTimes.length + ")",
         "wrap": true
     },
     {
@@ -87,7 +87,7 @@ async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     },
     {
         "type": String,
-        "value": missingStudyTimes.toString().replaceAll(",", ", "),
+        "value": missingStudyTimes.toString().replaceAll(",", ", ") + " (" + missingStudyTimes.length + ")",
         "wrap": true
     }])
     sheetData.push([{}])

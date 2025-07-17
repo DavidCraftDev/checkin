@@ -1,6 +1,14 @@
 "use server";
 
 function MissingStudyTimes(props: { missingStudyTimes: string[] }) {
+    // Sort missing study times by name
+    props.missingStudyTimes.sort((a, b) => {
+        const nameA = a.toLowerCase();
+        const nameB = b.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
     return (
         <div className="overflow-x-auto">
             <div className="table">

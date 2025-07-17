@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         const columeData: Columns[] = [];
 
         // Add meta sheet
-        const meta = new Array()
+        const meta: SheetData = [];
         meta.push([{
                 "type": String,
                 "value": "Übersicht " + groupID,
@@ -160,6 +160,7 @@ export async function GET(request: NextRequest) {
         Object.keys(sortedData.categoriesPerUser).forEach((key) => {
                 const user = group.find(user => user.id === key);
                 if (!user) return;
+                if (user.needs.length === 0 && user.permission !== 0) return;
                 const userCategories = sortedData.categoriesPerUser[key].categories;
                 const totalAttendances = userCategories.normal + userCategories.parallel + userCategories.notes;
                 meta.push([{
@@ -201,6 +202,7 @@ export async function GET(request: NextRequest) {
         await Promise.all(Object.keys(mergedData).map(async (key) => {
                 const user = group.find(user => user.id === key);
                 if (!user) return;
+                if (user.needs.length === 0 && user.permission !== 0) return;
                 const data = await getUserOverviewDataXLSX(user.displayname, sortedData.categoriesPerUser[key], startCW, startYear, endCW, endYear);
                 sheetData.push(data.sheetData[0]);
                 sheetName.push(data.sheetName[0]);

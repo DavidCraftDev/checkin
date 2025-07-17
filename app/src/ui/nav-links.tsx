@@ -12,6 +12,8 @@ import {
   ArrowLeftIcon,
   FolderArrowDownIcon,
   ServerStackIcon,
+  SquaresPlusIcon,
+  DocumentMagnifyingGlassIcon,
   PresentationChartBarIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
@@ -41,6 +43,8 @@ const linksAdministration = [
   { name: 'LDAP', href: '/administration/ldap', icon: ServerStackIcon, mobile: true, permission: 3 },
   { name: 'Gruppen', href: '/administration/groups', icon: UserGroupIcon, mobile: false, permission: 2 },
   { name: 'Nutzer', href: '/administration/user', icon: UserCircleIcon, mobile: false, permission: 2 },
+  { name: 'Module', href: '/administration/modules', icon: SquaresPlusIcon, mobile: false, permission: 2 },
+  { name: 'Logs', href: '/administration/logs', icon: DocumentMagnifyingGlassIcon, mobile: false, permission: 2 },
 ];
 
 export default function NavLinks(props: NavLinkProps) {

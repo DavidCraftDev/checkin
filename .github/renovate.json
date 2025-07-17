@@ -6,10 +6,8 @@
     "main"
   ],
   "forkProcessing": "enabled",
+  "lockFileMaintenance": { "enabled": true },
   "automerge": false,
   "branchPrefix": "renovate-deps-update-",
-  "rangeStrategy": "pin",
-  "digest": {
-    "enabled": false
-  }
+  "rangeStrategy": "pin"
 }

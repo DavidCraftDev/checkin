@@ -32,7 +32,10 @@ async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
                     <p>am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
                     <p>{attendedStudents} anwesende Schüler, {notAttendedStudents} abwesende Schüler</p>
                 </div>
-                <span>{addable ? <a className="btn float-right px-4" href={`/dashboard/events/lesson/${event.id}/qr`}>QR-Scanner</a> : null}</span>
+                <div className="flex justify-end items-center gap-2">
+                    {addable ? <a className="btn float-right px-4" href={`/dashboard/events/lesson/${event.id}/delete`}>Löschen</a> : null}
+                    {addable ? <a className="btn float-right px-4" href={`/dashboard/events/lesson/${event.id}/qr`}>QR-Scanner</a> : null}
+                </div>
             </div>
             <EventTable attendances={attendances} user={user} eventID={eventID} addable={addable} />
             <p className="hidden">Exportieren als:

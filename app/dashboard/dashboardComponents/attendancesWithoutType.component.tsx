@@ -3,6 +3,14 @@
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 
 function AttendancesWithoutType(props: { attendances: AttendancePerUserPerEvent[] }) {
+    // Sort attendances by event type and user display name
+    props.attendances.sort((a, b) => {
+        const nameA = a.event.type.toLowerCase() + " " + a.eventUser.displayname.toLowerCase();
+        const nameB = b.event.type.toLowerCase() + " " + b.eventUser.displayname.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
     return (
         <div className="overflow-x-auto">
             <div className="table">
