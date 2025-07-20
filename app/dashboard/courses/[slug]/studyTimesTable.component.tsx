@@ -40,10 +40,10 @@ function StudyTimeTableEntry({ students, studyTimesPromise }: { students: User[]
                 <tr key={studentID}>
                     <td>{students.find(student => student.id === studentID)?.displayname}</td>
                     <td>{attendance ? attendance.type : "Noch keine Studienzeit besucht"}</td>
-                    <td>{attendance ? teacherPerEvent[attendance.eventID].displayname : ""}</td>
+                    <td>{attendance ? teacherPerEvent[attendance.eventID]?.displayname : ""}</td>
                     <td>{attendance ? attendance.studentNote : ""}</td>
                     <td>{attendance ? attendance.teacherNote : ""}</td>
-                    <td>{attendance ? attendance.created_at.toLocaleString("de-DE") : ""}</td>
+                    <td>{attendance ? attendance.created_at?.toLocaleString("de-DE") : ""}</td>
                 </tr>
             ))}
         </>

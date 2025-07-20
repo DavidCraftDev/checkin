@@ -30,12 +30,8 @@ async function CoursePage({ params, searchParams }: { params: Promise<{ slug: st
                 <h1>Kurs {courseID}</h1>
                 <p>{students.length} Schüler</p>
                 <CalendarWeek />
-                <p>Anwesenheit kontrollieren</p>
+                {/*<p>Anwesenheit kontrollieren</p>*/}
             </div>
-            <div>
-                
-            </div>
-            <p>Anwesenheiten</p>
             <div>
                 <h2>Studienzeiten</h2>
                 <StudyTimeTable students={students} studyTimesPromise={studyTimeData} />
