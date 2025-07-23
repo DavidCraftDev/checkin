@@ -36,8 +36,7 @@ export async function getCreatedAttendanceChecks(courseID: string, calendarWeek:
         const teacher = await getUserPerID(teacherID);
         if (!teacher) return;
         if (teacher) teachersPerAttendanceCheck[teacherID] = teacher;
-    });
-
+    }));
 
     return attendanceChecks;
 }
