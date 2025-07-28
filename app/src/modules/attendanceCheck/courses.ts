@@ -29,13 +29,12 @@ export async function getCreatedAttendanceChecks(courseID: string, calendarWeek:
     // Get teacher data for each attendance check
     const teacherIDs = new Set<string>();
     const teachersPerAttendanceCheck: { [key: string]: User } = {};
-    const teachers: { [key: string]: User } = {};
     
     attendanceChecks.forEach(check => teacherIDs.add(check.user));
     await Promise.all(Array.from(teacherIDs).map(async (teacherID) => {
         const teacher = await getUserPerID(teacherID);
         if (!teacher) return;
-        if (teacher) teachersPerAttendanceCheck[teacherID] = teacher;
+        teachersPerAttendanceCheck[teacherID] = teacher;
     }));
 
     return attendanceChecks;

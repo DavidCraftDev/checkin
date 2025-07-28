@@ -55,7 +55,7 @@ export default function NavLinks(props: NavLinkProps) {
       {links.map((link) => {
         const LinkIcon = link.icon;
         if (props.permission < link.permission) return;
-        if(props.permission !== 0 && link.permission === 0) link.mobile = false;
+        if (props.permission !== 0 && link.permission === 0) link.mobile = false;
         if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return;
         if (link.name === "Meine Gruppe" && props.group.length > 1) {
           link.name = "Meine Gruppen"
