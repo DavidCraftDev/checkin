@@ -39,7 +39,7 @@ function StudyTimeTableEntry({ students, studyTimesPromise }: { students: User[]
             {Object.entries(studyTimes).map(([studentID, attendance]) => (
                 <tr key={studentID}>
                     <td>{students.find(student => student.id === studentID)?.displayname}</td>
-                    <td>{attendance?.type ? attendance.type : "Noch keine Studienzeit besucht"}</td>
+                    <td>{attendance?.type || "Noch keine Studienzeit besucht"}</td>
                     <td>{attendance && teacherPerEvent[attendance.eventID]?.displayname ? teacherPerEvent[attendance.eventID].displayname : ""}</td>
                     <td>{attendance?.studentNote || ""}</td>
                     <td>{attendance?.teacherNote || ""}</td>
