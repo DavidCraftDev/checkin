@@ -13,7 +13,8 @@ import {
   FolderArrowDownIcon,
   ServerStackIcon,
   SquaresPlusIcon,
-  DocumentMagnifyingGlassIcon
+  DocumentMagnifyingGlassIcon,
+  PresentationChartBarIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -30,6 +31,7 @@ const linksNormal = [
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
+  { name: 'Meine Kurse', href: '/dashboard/courses', icon: PresentationChartBarIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
   { name: 'Administration', href: '/administration', icon: Cog8ToothIcon, mobile: true, permission: 2 },
 ];
@@ -53,6 +55,7 @@ export default function NavLinks(props: NavLinkProps) {
       {links.map((link) => {
         const LinkIcon = link.icon;
         if (props.permission < link.permission) return;
+        if (props.permission !== 0 && link.permission === 0) link.mobile = false;
         if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return;
         if (link.name === "Meine Gruppe" && props.group.length > 1) {
           link.name = "Meine Gruppen"

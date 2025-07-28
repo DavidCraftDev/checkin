@@ -27,7 +27,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
         }
     });
-    const data: AttendancePerUserPerEvent[] = new Array();
+    const data: AttendancePerUserPerEvent[] = [];
     await Promise.all(dataAttendances.map(async (attendance) => {
         let dataEvent: Events;
         let dataUserEvent: User;
@@ -75,7 +75,7 @@ export async function getAttendancesPerEvent(eventID: string) {
             eventID: eventID
         }
     });
-    const data: AttendancePerEventPerUser[] = new Array();
+    const data: AttendancePerEventPerUser[] = [];
     await Promise.all(dataAttendance.map(async (attendance) => {
         const dataUser = await getUserPerID(attendance.userID);
         data.push({
@@ -131,7 +131,7 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             }
         }
     });
-    const data: CreatedEventPerUser[] = new Array();
+    const data: CreatedEventPerUser[] = [];
     await Promise.all(dataEvents.map(async (event) => {
         const attendedUser = await db.attendances.count({
             where: {
@@ -189,7 +189,7 @@ export async function checkINHandler(eventID: string, userID: string) {
             cw: dayjs().isoWeek(),
         }
     });
-    let userData: User = await getUserPerID(userID);
+    const userData: User = await getUserPerID(userID);
     return userData;
 }
 
@@ -237,7 +237,7 @@ export async function getAttendancesWithoutType(userID: string, cw: number, year
             }
         }
     });
-    const data: AttendancePerUserPerEvent[] = new Array();
+    const data: AttendancePerUserPerEvent[] = [];
     await Promise.all(dataAttendances.map(async (attendance) => {
         const dataEvent = await getEventPerID(attendance.eventID);
         if (!dataEvent) return;
@@ -262,4 +262,43 @@ export async function deleteEmptyEvent(eventID: string) {
         return true;
     }
     return false;
+}
+
+export async function getTeacherPerEvent(eventID: string): Promise<User | null> {
+    // Check if the user is allowed to get this data
+    const sessionUser = await getSessionUser();
+    if (sessionUser.permission < 1) return null;
+
+    // Get the event data
+    const data = await db.events.findUnique({
+        where: {
+            id: eventID
+        },
+        select: {
+            user: true
+        }
+    });
+    if (!data) return null;
+
+    // Get the data of the teacher
+    const teacher = await getUserPerID(data.user);
+
+    return teacher;
+}
+
+export type TeacherPerEvent = { [eventID: string]: User };
+
+export async function getTeachersForEvents(eventIDs: string[]): Promise<TeacherPerEvent> {
+    // Check if the user is allowed to get this data
+    const sessionUser = await getSessionUser();
+    if (sessionUser.permission < 1) return {} as TeacherPerEvent;
+
+    // Initialize object to store teacher data and get teacher data for each event
+    const data: TeacherPerEvent = {};
+    await Promise.all(eventIDs.map(async (eventID) => {
+        const teacher = await getTeacherPerEvent(eventID);
+        if (teacher) data[eventID] = teacher;
+    }));
+
+    return data;
 }
