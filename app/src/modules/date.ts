@@ -19,9 +19,22 @@ export function checkDate(year: number = new Date().getFullYear(), week: number 
     // Check if the year is current year or before current year
     if (date.year() > new Date().getFullYear()) return false;
     // Check if the week is in a valid range for the year
-    if (week > dayjs().isoWeeksInYear()) return false;
+    if (week > dayjs().year(year).isoWeeksInYear()) return false;
     // Check if the week is in the future
     if (week > dayjs().isoWeek()) return false;
     // Return true if all checks passed
     return true;
+}
+
+export function formatDate(date: Date | string): string {
+    const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Europe/Berlin"
+    };
+    return new Date(date).toLocaleString("de-DE", options);
 }

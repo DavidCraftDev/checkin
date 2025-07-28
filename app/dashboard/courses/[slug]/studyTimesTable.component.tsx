@@ -1,6 +1,7 @@
 "use client";
 
 import { CourseStudyTimes } from "@/app/src/modules/courses";
+import { formatDate } from "@/app/src/modules/date";
 import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
 import { User } from "@prisma/client";
 import { Suspense } from "react";
@@ -43,7 +44,7 @@ function StudyTimeTableEntry({ students, studyTimesPromise }: { students: User[]
                     <td>{teacherPerEvent[attendance?.eventID]?.displayname || ""}</td>
                     <td>{attendance?.studentNote || ""}</td>
                     <td>{attendance?.teacherNote || ""}</td>
-                    <td>{attendance?.created_at?.toLocaleString("de-DE") || ""}</td>
+                    <td>{attendance?.created_at ? formatDate(attendance?.created_at) : ""}</td>
                 </tr>
             ))}
         </>
