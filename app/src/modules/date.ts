@@ -11,7 +11,7 @@ export function getCurrentWeek(): number {
     return dayjs().isoWeek();
 }
 
-export function checkDate(year: number = new Date().getFullYear(), week: number = dayjs().isoWeek()): boolean {
+export function checkDate(year: number = new Date().getFullYear(), week: number = dayjs().year(year).isoWeek()): boolean {
     // Check if the week is in a valid range
     if (week < 1 || week > 53) return false;
     // Initialize date
@@ -20,8 +20,9 @@ export function checkDate(year: number = new Date().getFullYear(), week: number 
     if (date.year() > new Date().getFullYear()) return false;
     // Check if the week is in a valid range for the year
     if (week > dayjs().year(year).isoWeeksInYear()) return false;
-    // Check if the week is in the future
-    if (week > dayjs().isoWeek()) return false;
+    // Check if the week is in the future (only for current year)
+    const currentYear = new Date().getFullYear();
+    if (year === currentYear && week > dayjs().isoWeek()) return false;
     // Return true if all checks passed
     return true;
 }
