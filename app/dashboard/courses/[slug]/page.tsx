@@ -26,9 +26,11 @@ async function CoursePage({ params, searchParams }: { params: Promise<{ slug: st
     const studyTimeData = getStudyTimesDataForAllCourseMembers(courseID, students, calendarWeek, year);
     return (
         <>
-            <div>
-                <h1>Kurs {courseID}</h1>
-                <p>{students.length} Schüler</p>
+            <div className="grid grid-rows-2 md:grid-rows-1 grid-cols-1 md:grid-cols-2">
+                <div>
+                    <h1>Kurs {courseID}</h1>
+                    <p>{students.length} Schüler</p>
+                </div>
                 <CalendarWeek />
                 {/*<p>Anwesenheit kontrollieren</p>*/}
             </div>
