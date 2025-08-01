@@ -93,7 +93,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Studienzeiten</h1>
-                    <p>von {userData.displayname} <TrafficLight status={status} /></p>
+                    <span>von {userData.displayname} <TrafficLight status={status} /></span>
                     {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}
