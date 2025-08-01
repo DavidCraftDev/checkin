@@ -23,8 +23,7 @@ model Attendances {
   studentNote    String?
   type           String?
   feedback       TraficLightFeedback @default(GREEN)
-  productiveWork Boolean             @default(true)
-  goodAtmosphere Boolean             @default(true)
+  selfReflection String?
   attended       Boolean             @default(true)
   created_at     DateTime            @default(now())
 }
