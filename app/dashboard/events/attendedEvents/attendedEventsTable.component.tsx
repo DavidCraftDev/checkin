@@ -3,7 +3,7 @@
 import StudentNote from "./studentNote.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
-import { SelfReflectionSelect, StudyTimeSelect } from "./forms";
+import { SelfReflectionEmojiSelect, StudyTimeSelect } from "./forms";
 import TeacherNote from "../event/teacherNote.component";
 import TrafficLight from "./trafficLight";
 
@@ -32,8 +32,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                             <th>Fach</th>
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
-                            <th>Produktive Arbeit</th>
-                            <th>Gute Atmosphäre</th>
+                            <th>Selbstreflexion</th>
                             <th>Ampel</th>
                             <th>Zeitpunkt</th>
                         </tr>
@@ -46,8 +45,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                                 {props.isEditable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span>}
                                 {props.isEditable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
                                 {props.isTeacher ? <TeacherNote attendance={attendances.attendance} /> : <td>{attendances.attendance.teacherNote}</td>}
-                                <td><SelfReflectionSelect attendance={attendances.attendance} type="productiveWork"/></td>
-                                <td><SelfReflectionSelect attendance={attendances.attendance} type="goodWorkatmosphere"/></td>
+                                {props.isEditable ? <td><SelfReflectionEmojiSelect attendance={attendances.attendance} /></td> : <td>{attendances.attendance.selfReflection || "?"}</td>}
                                 <td><TrafficLight status={attendances.attendance.feedback} /></td>
                                 <td>{dayjs(attendances.attendance.created_at).format("DD.MM. HH:mm")}</td>
                             </tr>

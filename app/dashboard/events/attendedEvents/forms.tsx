@@ -33,9 +33,9 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }
-    if(props.attendance.type == "Unterricht") {
-        if(props.attendance.attended) return <td>Anwesend</td>
-        else return <td>Nicht anwesend</td>
+    if (props.attendance.type == "Unterricht") {
+        if (props.attendance.attended) return <td>Anwesend</td>;
+        else return <td>Nicht anwesend</td>;
     }
     return (
         <td>
@@ -50,32 +50,28 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
     );
 }
 
-export function SelfReflectionSelect(props: { attendance: Attendances, type: "goodWorkatmosphere" | "productiveWork" }) {
+// Let the User select a own emoji for self-reflection
+export function SelfReflectionEmojiSelect(props: { attendance: Attendances }) {
     const router = useRouter();
-    let isChecked = true;
-    if(props.type === "goodWorkatmosphere") {
-        isChecked = props.attendance.goodAtmosphere;
-    } else if(props.type === "productiveWork") {
-        isChecked = props.attendance.productiveWork;
-    }
-    
-    async function toggleSelfReflection(): Promise<void> {
-        const data = await saveSelfReflection(props.attendance, props.type);
-        if (data && data.success) {
-            toast.success("Selbstreflexion aktualisiert");
-        } else if (data && data.error) {
-            toast.error(data.error);
-        } else {
-            toast.error("Ein unbekannter Fehler ist aufgetreten");
-        }
+    const emojiOptions = ["🤩", "😀", "😐", "😔", "😡", "🤔", "😴"];
+    const defaultValue = props.attendance.selfReflection || "";
+    async function handleEmojiSelect(emoji: string) {
+        const data = await saveSelfReflection(props.attendance, emoji);
+        if (data && data.success) toast.success("Emoji gespeichert");
+        else if (data && data.error) toast.error(data.error);
+        else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }
-
     return (
-        <td>
-            <button type="button" onClick={toggleSelfReflection} className="text-2xl border-2 border-gray-400">
-                {isChecked ? "✅" : "❌"}
-            </button>
-        </td>
+        <select
+            className="border-gray-200 border-2 rounded-md p-2.5 bg-white"
+            defaultValue={defaultValue}
+            onChange={e => handleEmojiSelect(e.target.value)}
+        >
+            <option disabled value="">Emoji wählen</option>
+            {emojiOptions.map(emoji => (
+                <option key={emoji} value={emoji}>{emoji}</option>
+            ))}
+        </select>
     );
 }
