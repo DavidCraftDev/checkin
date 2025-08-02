@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { createStudyTimeNote, saveSelectedStudyTimeType, saveSelfReflection } from "./actions";
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import { Attendances } from '@prisma/client';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export function CreateStudyTimeNote(props: { userID: string, cw: number, year: number }) {
     const router = useRouter();

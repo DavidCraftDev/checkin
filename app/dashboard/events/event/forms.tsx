@@ -5,7 +5,7 @@ import { handleEventDelete, handleUserCheckIN, removeUserHandler, saveSelectedSt
 import { Attendances, Events, User } from "@prisma/client";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import SearchBar from "./search.component";
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import TrafficLight from "../attendedEvents/trafficLight";

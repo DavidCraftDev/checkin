@@ -1,6 +1,6 @@
 "use client";
 
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { submitCreateHandler } from "./submitCreateHandler";
 import clsx from "clsx";
 import { FormEvent } from "react";

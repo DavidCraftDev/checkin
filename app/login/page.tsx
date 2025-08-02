@@ -1,6 +1,6 @@
 "use client";
 
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { FormEvent, useEffect, useState } from "react";
@@ -76,7 +76,7 @@ function LoginPage() {
           <button type="submit" className="btn">Anmelden</button>
         </div>
       </form>
-      <Toaster position="bottom-center" />
+      <Toaster richColors />
     </div>
   );
 }

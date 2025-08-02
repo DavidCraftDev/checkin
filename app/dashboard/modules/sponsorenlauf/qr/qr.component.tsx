@@ -3,7 +3,7 @@
 import QRScannerComponent from '@/app/src/ui/qrScanner';
 import React from 'react';
 import { increaseRoundCount } from '../handler';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 function QRScanner() {
 

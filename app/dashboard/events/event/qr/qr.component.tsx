@@ -2,7 +2,7 @@
 
 import QRScannerComponent from '@/app/src/ui/qrScanner';
 import React from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { submitHandler } from './submitHandler';
 
 function QRScanner(props: { eventID: string }) {
