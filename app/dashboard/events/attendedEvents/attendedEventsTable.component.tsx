@@ -45,7 +45,7 @@ function AttendedEventTable(props: AttendedEventTableProps) {
                                 {props.isEditable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span>}
                                 {props.isEditable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
                                 {props.isTeacher ? <TeacherNote attendance={attendances.attendance} /> : <td>{attendances.attendance.teacherNote}</td>}
-                                {props.isEditable ? <td><SelfReflectionEmojiSelect attendance={attendances.attendance} /></td> : <td>{attendances.attendance.selfReflection || "❔"}</td>}
+                                {props.isEditable ? <td><SelfReflectionEmojiSelect attendance={attendances.attendance} /></td> : <td>{attendances.attendance.selfReflection || "❓"}</td>}
                                 <td><TrafficLight status={attendances.attendance.feedback} /></td>
                                 <td>{dayjs(attendances.attendance.created_at).format("DD.MM. HH:mm")}</td>
                             </tr>
