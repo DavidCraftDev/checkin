@@ -25,8 +25,7 @@ function EventTable(props: EventTableProps) {
                             <th>Schüler Notiz</th>
                             <th>Lehrer Notiz</th>
                             <th>Ampel</th>
-                            <th>Produktive Arbeit</th>
-                            <th>Gute Atmosphäre</th>
+                            <th>Selbstreflexion</th>
                             <th>Zeitpunkt</th>
                             {props.addable ? <th>Schüler entfernen</th> : null}
                         </tr>
@@ -39,8 +38,7 @@ function EventTable(props: EventTableProps) {
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td><TrafficLightSelect attendance={attendance.attendance} /></td>
-                                <td>{attendance.attendance.productiveWork ? <span>Ja</span> : <span>Nein</span>}</td>
-                                <td>{attendance.attendance.goodAtmosphere ? <span>Ja</span> : <span>Nein</span>}</td>
+                                <td>{attendance.attendance.selfReflection || "❓"}</td>
                                 <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
                                 {props.addable ? <RemoveUserButton user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
