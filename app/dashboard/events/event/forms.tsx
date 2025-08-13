@@ -70,7 +70,7 @@ export function CheckinForm(props: { event: Events }) {
 export function TrafficLightSelect(props: { attendance: Attendances }) {
     const router = useRouter();
     async function submitTrafficLightSelect(feedback: string): Promise<void> {
-        const data = await saveSelectedStudyTimeFeedback(props.attendance, feedback.toLocaleUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
+        const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
         if (data && data.success) {
             toast.success("Feedback gespeichert");
         } else if (data && data.error) {
@@ -83,9 +83,9 @@ export function TrafficLightSelect(props: { attendance: Attendances }) {
     return (
         <select className="border-gray-200 border-2 rounded-md p-2.5 bg-white" defaultValue={props.attendance.feedback || "default"} onChange={(event) => submitTrafficLightSelect(event.target.value)}>
             <option disabled value="default">Feedback wählen</option>
-            <option value="red"><TrafficLight status="RED" />Rot</option>
-            <option value="yellow"><TrafficLight status="YELLOW" />Gelb</option>
-            <option value="green"><TrafficLight status="GREEN" />Grün</option>
+            <option value="RED">Rot</option>
+            <option value="YELLOW">Gelb</option>
+            <option value="GREEN">Grün</option>
         </select>
     );
 }

@@ -12,7 +12,11 @@ async function Layout({ children }: { children: React.ReactNode }) {
         <SideNav user={user} administration={false} />
       </div>
       <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
-      <Toaster richColors />
+      <Toaster richColors toastOptions={{
+        classNames: {
+          title: "!font-bold"
+        }
+      }} />
     </div>
   );
 }
