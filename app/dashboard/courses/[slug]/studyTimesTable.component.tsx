@@ -6,6 +6,7 @@ import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
 import { User } from "@prisma/client";
 import { Suspense } from "react";
 import { use } from "react";
+import TrafficLight from "../../events/attendedEvents/trafficLight";
 
 export default function StudyTimeTable({ students, studyTimesPromise }: { students: User[], studyTimesPromise: Promise<{ studyTimes: CourseStudyTimes, teacherPerEvent: TeacherPerEvent }> }) {
     return (
@@ -19,11 +20,13 @@ export default function StudyTimeTable({ students, studyTimesPromise }: { studen
                             <th scope="col">Lehrer</th>
                             <th scope="col">Schüler Notiz</th>
                             <th scope="col">Lehrer Notiz</th>
+                            <th scope="col">Selbstreflexion</th>
+                            <th scope="col">Ampel</th>
                             <th scope="col">Datum</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <Suspense fallback={<tr><td colSpan={6}>Lade Studienzeiten...</td></tr>}>
+                        <Suspense fallback={<tr><td colSpan={8}>Lade Studienzeiten...</td></tr>}>
                             <StudyTimeTableEntry students={students} studyTimesPromise={studyTimesPromise} />
                         </Suspense>
                     </tbody>
@@ -44,6 +47,8 @@ function StudyTimeTableEntry({ students, studyTimesPromise }: { students: User[]
                     <td>{teacherPerEvent[attendance?.eventID]?.displayname || ""}</td>
                     <td>{attendance?.studentNote || ""}</td>
                     <td>{attendance?.teacherNote || ""}</td>
+                    <td>{attendance?.selfReflection || "❓"}</td>
+                    <td><TrafficLight status={attendance?.feedback} /></td>
                     <td>{attendance?.created_at ? formatDate(attendance?.created_at) : ""}</td>
                 </tr>
             ))}
