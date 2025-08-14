@@ -8,7 +8,7 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-enum TraficLightFeedback {
+enum TrafficLightFeedback {
   GREEN
   YELLOW
   RED
@@ -22,7 +22,7 @@ model Attendances {
   teacherNote    String?
   studentNote    String?
   type           String?
-  feedback       TraficLightFeedback @default(GREEN)
+  feedback       TrafficLightFeedback @default(GREEN)
   selfReflection String?
   attended       Boolean             @default(true)
   created_at     DateTime            @default(now())
