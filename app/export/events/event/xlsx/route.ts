@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const eventUser = await getUserPerID(event.user)
     const { sheetData, columnData } = await getEventXLSX(eventUser, event, event.cw, dayjs(event.created_at).year())
     const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheet: (event.type + " " + dayjs(event.created_at).format("DD.MM.YYYY")).substring(0, 31), columns: columnData })
-    return new NextResponse(bufferData, {
+    return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="event${event.id}.xlsx"`,

@@ -113,7 +113,7 @@ export async function GET() {
         { width: 24 }
     ];
     const bufferData = await writeXlsxFile(data, { buffer: true, sheet: "Nutzer", columns: columns })
-    return new NextResponse(bufferData, {
+    return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="users.xlsx"`,

@@ -152,7 +152,7 @@ export async function GET(request: NextRequest) {
         columeData.push(userData.columnData)
     }))
     const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
-    return new NextResponse(bufferData, {
+    return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="group${calendarWeek + "_" + year + groupID}.xlsx"`,

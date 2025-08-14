@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
     const { sheetData, columnData, sheetName } = await getAttendedEventsXLSX(userData, cw, year)
     const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheet: sheetName, columns: columnData })
-    return new NextResponse(bufferData, {
+    return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {
             'Content-Disposition': `attachment; filename="attended_events${cw + "_" + year + userData.id}.xlsx"`,
