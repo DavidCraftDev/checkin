@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { createStudyTimeNote, saveSelectedStudyTimeType } from "./actions";
+import { createStudyTimeNote, saveSelectedStudyTimeType, saveSelfReflection } from "./actions";
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import { Attendances } from '@prisma/client';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 export function CreateStudyTimeNote(props: { userID: string, cw: number, year: number }) {
     const router = useRouter();
@@ -33,9 +33,9 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
         else toast.error("Ein unbekannter Fehler ist aufgetreten");
         router.refresh();
     }
-    if(props.attendance.type == "Unterricht") {
-        if(props.attendance.attended) return <td>Anwesend</td>
-        else return <td>Nicht anwesend</td>
+    if (props.attendance.type == "Unterricht") {
+        if (props.attendance.attended) return <td>Anwesend</td>;
+        else return <td>Nicht anwesend</td>;
     }
     return (
         <td>
@@ -47,5 +47,31 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
                 ))}
             </select>
         </td>
+    );
+}
+
+// Let the User select a own emoji for self-reflection
+export function SelfReflectionEmojiSelect(props: { attendance: Attendances }) {
+    const router = useRouter();
+    const emojiOptions = ["🤩", "😀", "😐", "😔", "😡", "🤔", "😴"];
+    const defaultValue = props.attendance.selfReflection || "";
+    async function handleEmojiSelect(emoji: string) {
+        const data = await saveSelfReflection(props.attendance, emoji);
+        if (data && data.success) toast.success("Emoji gespeichert");
+        else if (data && data.error) toast.error(data.error);
+        else toast.error("Ein unbekannter Fehler ist aufgetreten");
+        router.refresh();
+    }
+    return (
+        <select
+            className="border-gray-200 border-2 rounded-md p-2.5 bg-white"
+            defaultValue={defaultValue}
+            onChange={e => handleEmojiSelect(e.target.value)}
+        >
+            <option disabled value="">Emoji wählen</option>
+            {emojiOptions.map(emoji => (
+                <option key={emoji} value={emoji}>{emoji}</option>
+            ))}
+        </select>
     );
 }

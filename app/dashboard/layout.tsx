@@ -1,5 +1,5 @@
 import SideNav from "../src/ui/sidenav";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 import { getCurrentSession } from "../src/modules/auth/cookieManager";
 import { redirect } from "next/navigation";
 
@@ -12,7 +12,11 @@ async function Layout({ children }: { children: React.ReactNode }) {
         <SideNav user={user} administration={false} />
       </div>
       <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
-      <Toaster position="bottom-center" />
+      <Toaster richColors toastOptions={{
+        classNames: {
+          title: "!font-bold"
+        }
+      }} />
     </div>
   );
 }

@@ -47,3 +47,21 @@ export async function setTeacherNote(teacherNote: string, attendanceID: string):
     if (data && data.teacherNote === teacherNote) return { success: true };
     return { success: false, error: "Notiz konnte nicht gespeichert werden" };
 }
+
+export async function saveSelectedStudyTimeFeedback(attendanceID: string, status: "GREEN" | "YELLOW" | "RED", userID: string): Promise<functionResult> {
+    const sessionUser = await getSessionUser(1);
+    if (!sessionUser || (sessionUser.id !== userID && sessionUser.permission < 2)) {
+        return { success: false, error: "Keine Berechtigung zum Speichern" };
+    }
+    const data = await db.attendances.update({
+        where: { id: attendanceID },
+        data: { feedback: status }
+    });
+    revalidatePath("/dashboard/events/attendedEvents");
+    if (data) {
+        logger.info(`Studienzeit Status für ${attendanceID} auf ${status} gesetzt`, "saveSelectedStudyTimeFeedback");
+        return { success: true };
+    }
+    logger.error(`Studienzeit Status für ${attendanceID} konnte nicht gespeichert werden`, "saveSelectedStudyTimeFeedback");
+    return { success: false, error: "Studienzeit Status konnte nicht gespeichert werden" };
+}

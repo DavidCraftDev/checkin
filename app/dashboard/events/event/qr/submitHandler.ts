@@ -4,13 +4,32 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
 import { User } from "@prisma/client";
 import dayjs from "dayjs";
+import { saveSelectedStudyTimeFeedback } from "../actions";
+import db from "@/app/src/modules/db";
 
-export async function submitHandler(userID: string, eventID: string) {
+export async function checkinUserHandler(userID: string, eventID: string) {
     const sessionUser: User = await getSessionUser(1);
     const event = await getEventPerID(eventID);
-    if (!event) return "EventNotFound";
-    if(event.cw !== dayjs().isoWeek()) return "NotCurrentWeek";
-    if (event.user !== sessionUser.id) return "NoPermission";
+    if (!event) return "Die Studienzeit wurde nicht gefunden";
+    if (event.cw !== dayjs().isoWeek()) return "Die Studienzeit ist nicht aktuell";
+    if (event.user !== sessionUser.id) return "Keine Berechtigung";
     const data: User | string = await checkINHandler(eventID, userID)
     return data;
+};
+
+export async function saveTrafficLightFeedback(eventID: string, userID: string, color: string) {
+    const sessionUser: User = await getSessionUser(1);
+    const event = await getEventPerID(eventID);
+    if (!event) return "Die Studienzeit wurde nicht gefunden";
+    if (event.cw !== dayjs().isoWeek()) return "Die Studienzeit ist nicht aktuell";
+    if (event.user !== sessionUser.id) return "Keine Berechtigung";
+    const attendance = await db.attendances.findFirst({
+        where: {
+            eventID: eventID,
+            userID: userID
+        }
+    });
+    if (!attendance) return "Die Anwesenheit wurde nicht gefunden";
+    const result = await saveSelectedStudyTimeFeedback(attendance.id, color as "GREEN" | "YELLOW" | "RED", userID);
+    return result;
 };

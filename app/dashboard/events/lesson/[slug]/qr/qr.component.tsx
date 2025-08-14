@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useRef, type JSX } from 'react';
 import QrScanner from 'qr-scanner';
 import { submitHandler } from './submitHandler';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 

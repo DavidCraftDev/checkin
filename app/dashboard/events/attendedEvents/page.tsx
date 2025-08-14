@@ -12,6 +12,7 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { CreateStudyTimeNote } from "./forms";
 import { Metadata } from "next";
+import TrafficLight from "./trafficLight";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -77,12 +78,22 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
             studyTimeTypes[event.attendance.id] = neededStudyTimesForNotes;
         }
     }));
+
+    const length: number = attendances.length;
+    let feedback: number = 0;
+    attendances.forEach((attendance) => {
+        if(attendance.attendance.feedback === "GREEN") feedback++;
+        else if(attendance.attendance.feedback === "YELLOW") feedback += 2;
+        else if(attendance.attendance.feedback === "RED") feedback += 3;
+    });
+    const feedbackAverage = length > 0 ? Math.round(feedback / length) : 0;
+    const status = feedbackAverage === 1 ? "GREEN" : feedbackAverage === 2 ? "YELLOW" : "RED";
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Studienzeiten</h1>
-                    <p>von {userData.displayname}</p>
+                    <span>von {userData.displayname} <TrafficLight status={status} /></span>
                     {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}

@@ -2,19 +2,19 @@ import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getEventPerID } from "@/app/src/modules/eventUtilities";
 import { redirect } from "next/navigation";
-import QRScannerComponent from "./qr.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next";
+import QRScanner from "./qr.component";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
 
-async function QRScanner(props: { searchParams: Promise<SearchParams> }) {
+async function QRScannerPage(props: { searchParams: Promise<SearchParams> }) {
     const searchParams = await props.searchParams;
     const user = await getSessionUser(1);
     if (!searchParams.id) redirect("/dashboard/");
@@ -27,12 +27,12 @@ async function QRScanner(props: { searchParams: Promise<SearchParams> }) {
                 <h1>QR Code Scanner: {event.type} {user.displayname}</h1>
                 <a className="btn w-max h-min place-self-center items-center mt-2 md:mt-0" href={`/dashboard/events/event?id=${searchParams.id}`}>Zurück zur Studienzeit</a>
             </div>
-            <QRScannerComponent />
+            <QRScanner eventID={event.id} />
         </div>
     )
 }
 
-export default QRScanner;
+export default QRScannerPage;
 
 export const metadata: Metadata = {
     title: "QR Code Scanner - CheckIN-System",

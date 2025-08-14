@@ -1,87 +1,85 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef } from 'react';
-import QrScanner from 'qr-scanner';
-import { submitHandler } from './submitHandler';
-import toast from 'react-hot-toast';
-import { notFound, useSearchParams } from 'next/navigation';
-import { User } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import QRScannerComponent from '@/app/src/ui/qrScanner';
+import { useState, useRef, useCallback } from 'react';
+import { toast } from 'sonner';
+import { checkinUserHandler, saveTrafficLightFeedback } from './submitHandler';
 
-let lastResult: string
-
-function QRScannerComponent() {
-  const searchParams = useSearchParams();
-  let id: string = searchParams.get("id") || "";
-  if (!id) notFound();
-  const videoRef = useRef<HTMLVideoElement>(null);
+function QRScanner({ eventID }: { eventID: string }) {
   const successAudioRef = useRef<HTMLAudioElement>(null);
   const errorAudioRef = useRef<HTMLAudioElement>(null);
-  const router = useRouter()
 
-  const checkCamera = async () => {
-    if(!await QrScanner.hasCamera()) router.push("/dashboard/events/event?id=" + id)
-  }
-
-  useEffect(() => {
-    checkCamera();
-  }, [checkCamera]);
-
-  const startScanner = useCallback(async () => {
-    async function handleScanResult(result: QrScanner.ScanResult) {
-      if (result.data === lastResult) return;
-      lastResult = result.data
-      if (!result.data.startsWith("checkin://")) {
-        toast.error("Kein CheckIN QR-Code")
-        if (errorAudioRef.current) errorAudioRef.current.play()
-        return
-      }
-      const userID = result.data.replace("checkin://", "")
-      const data: string | User = await submitHandler(userID, id)
-      console.log(navigator)
-      if (typeof data === "string") {
-        toast.error(data)
-        if (errorAudioRef.current) errorAudioRef.current.play()
-      } else {
-        if (data.id === userID) {
-          toast.success(`${data.displayname} erfolgreich hinzugefügt`)
-          if (successAudioRef.current) successAudioRef.current.play()
-        } else {
-          toast.error("Unbekannter Fehler")
-          if (errorAudioRef.current) errorAudioRef.current.play()
-        }
-      }
+  const handleScan = useCallback(async (data: string) => {
+    const result = await checkinUserHandler(data.replace("checkin://", ""), eventID);
+    if (typeof result === "string") {
+      toast.error(result);
+      errorAudioRef.current?.play();
+    } else {
+      toast.success(`${result.displayname} hinzugefügt!`, {
+        description: <TrafficLightSelector eventID={eventID} userID={result.id} />,
+        duration: 5000,
+      });
+      successAudioRef.current?.play();
     }
-
-    if (videoRef.current) {
-      const scanner = new QrScanner(
-        videoRef.current,
-        handleScanResult,
-        {
-          maxScansPerSecond: 10,
-          highlightScanRegion: true,
-          highlightCodeOutline: true,
-        },
-      );
-      scanner.start();
-
-      return () => {
-        scanner.stop();
-      };
-    }
-  }, [id]);
-
-  useEffect(() => {
-    startScanner();
-  }, [startScanner]);
+  }, [eventID]);
 
   return (
-    <div className='w-full'>
-      <video ref={videoRef}></video>
+    <div>
+      <QRScannerComponent
+        onScan={handleScan}
+        onError={(error) => toast.error(error.message)}
+        validate={(data) => data.startsWith("checkin://")}
+      />
       <audio src="/success.mp3" ref={successAudioRef} preload="auto" />
       <audio src="/error.mp3" ref={errorAudioRef} preload="auto" />
     </div>
   );
-};
+}
 
-export default QRScannerComponent;
+function TrafficLightSelector({ eventID, userID }: { eventID: string; userID: string }) {
+  const [selected, setSelected] = useState<string>("GREEN");
+
+  const handleClick = useCallback(async (color: string) => {
+    const result = await saveTrafficLightFeedback(eventID, userID, color);
+    if (typeof result === "string") {
+      toast.error(result);
+    } else if (!result.success) {
+      toast.error(result.error || "Unbekannter Fehler");
+    } else {
+      setSelected(color);
+    }
+  }, [eventID, userID]);
+
+
+  const colors = [
+    { name: "Rot", value: "RED", bg: "bg-red-500" },
+    { name: "Gelb", value: "YELLOW", bg: "bg-yellow-400" },
+    { name: "Grün", value: "GREEN", bg: "bg-green-500" },
+  ];
+
+  return (
+    <div className="flex gap-4 mt-4 justify-center flex-wrap">
+      {colors.map((c) => (
+        <button
+          key={c.value}
+          type="button"
+          onClick={() => handleClick(c.value)}
+          className={`
+            rounded-full 
+            ${c.bg} border-4 shadow-md transition-transform duration-150
+            ${selected === c.value ? "border-black scale-110" : "border-transparent"}
+            hover:scale-110
+            w-8 h-8
+            sm:w-10 sm:h-10
+            md:w-8 md:h-8
+            lg:w-7 lg:h-7
+            active:scale-105
+          `}
+          title={c.name}
+        />
+      ))}
+    </div>
+  );
+}
+
+export default QRScanner;

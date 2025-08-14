@@ -1,5 +1,5 @@
 "use client";;
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { setAttendanceStatus } from "./actions";
 import { useRouter } from "next/navigation";
 import type { JSX } from "react";

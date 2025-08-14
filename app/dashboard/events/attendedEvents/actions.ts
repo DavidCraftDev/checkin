@@ -46,7 +46,7 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
     if (session.user.id !== userID && session.user.permission < 2) {
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
-    if(type === "Löschen" && session.user.permission !== 0) {
+    if (type === "Löschen" && session.user.permission !== 0) {
         db.attendances.delete({
             where: {
                 id: attendance.id
@@ -60,6 +60,39 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
         result.error = "Studienzeit konnte nicht gespeichert werden";
     } else {
         logger.debug(`Studienzeit Fach für ${attendance.id} gespeichert`, "saveSelectedStudyTimeType");
+    }
+    revalidatePath("/dashboard/events/attendedEvents");
+    return result;
+}
+
+export async function saveSelfReflection(attendance: Attendances, emoji: string): Promise<functionResult> {
+    const session = await getCurrentSession();
+    if (!session || !session.user) return { success: false, error: "Session not found" };
+    if (session.user.id !== attendance.userID && session.user.permission < 1) {
+        return { success: false, error: "Keine Berechtigung zum Speichern" };
+    }
+
+    let data;
+    try {
+        data = await db.attendances.update({
+            where: {
+                id: attendance.id
+            },
+            data: {
+                selfReflection: emoji
+            }
+        });
+    } catch (error) {
+        logger.error(`Selbstreflexion für ${attendance.id} konnte nicht gespeichert werden: ${error}`, "saveSelfReflection");
+        return { success: false, error: "Selbstreflexion konnte nicht gespeichert werden" };
+    }
+
+    let result: functionResult = { success: data.selfReflection === emoji };
+    if (!result.success) {
+        logger.error(`Selbstreflexion für ${attendance.id} konnte nicht gespeichert werden`, "saveSelfReflection");
+        result.error = "Selbstreflexion konnte nicht gespeichert werden";
+    } else {
+        logger.debug(`Selbstreflexion für ${attendance.id} gespeichert`, "saveSelfReflection");
     }
     revalidatePath("/dashboard/events/attendedEvents");
     return result;

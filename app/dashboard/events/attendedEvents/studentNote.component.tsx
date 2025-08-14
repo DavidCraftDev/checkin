@@ -1,7 +1,7 @@
 "use client";
 
 import { Attendances } from "@prisma/client";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { setStudentNote } from "./actions";
 

@@ -2,7 +2,7 @@
 
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import { importTeacherCompetenceData } from "./actions";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export function TeacherCompetenceImport() {
     async function importTeacherCompeteneDataHandler(formData: FormData): Promise<void> {
