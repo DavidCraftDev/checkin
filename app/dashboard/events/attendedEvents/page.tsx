@@ -13,6 +13,7 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { CreateStudyTimeNote } from "./forms";
 import { Metadata } from "next";
 import TrafficLight from "./trafficLight";
+import MemeDisplay from "./MemeDisplay";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -90,6 +91,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     const status = feedbackAverage === 1 ? "GREEN" : feedbackAverage === 2 ? "YELLOW" : "RED";
     return (
         <div>
+            <MemeDisplay isMissingStudyTimes={missingStudyTimes.length > 0} />
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Studienzeiten</h1>
