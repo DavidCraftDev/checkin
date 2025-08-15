@@ -22,18 +22,28 @@ export async function getAttendedStudyTimesCount(user: User, cw: number, year: n
   let normalStudyTimes = 0;
   let parallelStudyTimes = 0;
   let notedStudyTimes = 0;
+  let trafficLightCount = 0;
+  let total = 0;
   await getAttendancesPerUser(user.id, cw, year).then((result) => {
+    total = result.length;
     result.forEach((studyTime) => {
       if (studyTime.attendance.type === null) return;
       if (studyTime.attendance.type.startsWith("Vertretung:")) parallelStudyTimes++;
       else if (studyTime.attendance.type.startsWith("Notiz:")) notedStudyTimes++;
       else normalStudyTimes++;
+      if (studyTime.attendance.feedback === "RED") {
+        trafficLightCount += 3;
+      } else if (studyTime.attendance.feedback === "YELLOW") {
+        trafficLightCount += 2;
+      } else {
+        trafficLightCount += 1;
+      }
     });
   });
   const savedStudyTimesData = await getSavedNeededStudyTimes(user, cw, year);
   const savedStudyTimes = savedStudyTimesData && savedStudyTimesData.needs ? savedStudyTimesData.needs as Array<string> : [] as Array<string>;
   const neededStudyTimes = savedStudyTimes.length || 0;
-  return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes };
+  return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total };
 }
 
 export async function saveStudyTimeType(attendance: Attendances, userID: string, type: string) {

@@ -19,7 +19,8 @@ interface AttendanceCount {
   normal: number,
   parallel: number,
   noted: number,
-  needed: number
+  needed: number,
+  trafficLight: number
 }
 
 async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
@@ -38,9 +39,15 @@ async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
   const groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
   const studyTimeData: Record<string, AttendanceCount> = {};
   await Promise.all(groupData.map(async (user) => {
-    if(user.user.needs.length === 0 && user.user.permission !== 0) return;
-    const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes } = await getAttendedStudyTimesCount(user.user, cw, year);
-    studyTimeData[user.user.id] = { normal: normalStudyTimes, parallel: parallelStudyTimes, noted: notedStudyTimes, needed: neededStudyTimes };
+    if (user.user.needs.length === 0 && user.user.permission !== 0) return;
+    const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total } = await getAttendedStudyTimesCount(user.user, cw, year);
+    studyTimeData[user.user.id] = {
+      normal: normalStudyTimes,
+      parallel: parallelStudyTimes,
+      noted: notedStudyTimes,
+      needed: neededStudyTimes,
+      trafficLight: total > 0 ? (trafficLightCount / total) : 0
+    };
   }));
 
   groupData.sort((a, b) => {
