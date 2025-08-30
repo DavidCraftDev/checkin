@@ -24,7 +24,7 @@
     "eslint": "9.33.0",
     "eslint-config-next": "15.4.6",
     "ldapts": "8.0.9",
-    "next": "15.4.6",
+    "next": "15.4.7",
     "papaparse": "5.5.3",
     "qr-scanner": "1.4.2",
     "qrcode": "1.5.4",
