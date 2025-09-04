@@ -13,7 +13,7 @@
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
     "@prisma/client": "6.14.0",
-    "@tailwindcss/postcss": "4.1.12",
+    "@tailwindcss/postcss": "4.1.13",
     "@types/papaparse": "5.3.16",
     "@types/qrcode": "1.5.5",
     "@types/react": "19.1.10",
@@ -32,7 +32,7 @@
     "react-dom": "19.1.1",
     "server-only": "0.0.1",
     "sonner": "2.0.7",
-    "tailwindcss": "4.1.12",
+    "tailwindcss": "4.1.13",
     "ts-node": "10.9.2",
     "typescript": "5.9.2",
     "write-excel-file": "2.3.4"
