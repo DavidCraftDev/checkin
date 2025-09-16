@@ -54,27 +54,29 @@ export default function NavLinks(props: NavLinkProps) {
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
-        if (props.permission < link.permission) return;
-        if (props.permission !== 0 && link.permission === 0) link.mobile = false;
-        if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return;
-        if (link.name === "Meine Gruppe" && props.group.length > 1) {
-          link.name = "Meine Gruppen"
-          link.href = "/dashboard/groups/mygroups"
-        }
+        // Filter: required permission and group availability
+        if (props.permission < link.permission) return null;
+        if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return null;
+
+        const label = link.name === "Meine Gruppe" && props.group.length > 1 ? "Meine Gruppen" : link.name;
+        const href = link.name === "Meine Gruppe" && props.group.length > 1 ? "/dashboard/groups/mygroups" : link.href;
+
+        // Teachers/Admin (permission > 0) should not see the mobile variant of permission 0 links on small screens
+        const isMobileVisible = link.mobile && (props.permission === 0 || link.permission !== 0);
         return (
           <Link
-            key={link.name}
-            href={link.href}
+            key={label}
+            href={href}
             className={clsx(
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-                "hidden md:flex": !link.mobile,
+                'bg-sky-100 text-blue-600': pathname === href,
+                "hidden md:flex": !isMobileVisible,
               },
             )}
           >
             <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
+            <p className="hidden md:block">{label}</p>
           </Link>
         );
       })}
