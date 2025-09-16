@@ -50,7 +50,7 @@ export async function setTeacherNote(teacherNote: string, attendanceID: string):
 
 export async function saveSelectedStudyTimeFeedback(attendanceID: string, status: "GREEN" | "YELLOW" | "RED", userID: string): Promise<functionResult> {
     const sessionUser = await getSessionUser(1);
-    if (!sessionUser || (sessionUser.id !== userID && sessionUser.permission < 2)) {
+    if (!sessionUser || sessionUser.permission === 0) {
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
     const data = await db.attendances.update({
