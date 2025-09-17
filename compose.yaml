@@ -1,33 +1,33 @@
 services:
-  web:
+  checkin:
     container_name: checkin
     image: ghcr.io/davidcraftdev/checkin:main
     restart: always
     depends_on:
-      - db
+      - checkin-db
     environment:
-      - TZ=Europe/Berlin
+      TZ: Europe/Berlin
       # Enable MAINTENANCE Mode (true/false). When enabled, only a MAINTENANCE page will be shown, the login is disabled.
-      - MAINTENANCE:false
+      MAINTENANCE: false
       # Replace the following environment variables with your own values, you need to set the same values in the db service
-      - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
+      POSTGRES_URL: postgres://postgres:postgres@db:5432/postgres
       # Set own default admin credentials
-      - DEFAULT_LOGIN_USERNAME=OwnUsername
-      - DEFAULT_LOGIN_PASSWORD=OwnPassword
+      DEFAULT_LOGIN_USERNAME: OwnUsername
+      DEFAULT_LOGIN_PASSWORD: OwnPassword
     ports:
-      - "3030:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
-      - "/home/checkin/data:/app/data"
+      - "/opt/checkin/data:/app/data"
 
-  db:
+  checkin-db:
     container_name: checkin-db
     image: postgres:17-alpine
     restart: always
     environment:
-      - TZ=Europe/Berlin
+      TZ: Europe/Berlin
       # Please replace the following environment variables with your own values, you need to set the same values in the checkin service
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     volumes:
-      - /home/checkin/db:/var/lib/postgresql/data
+      - "/opt/checkin/db:/var/lib/postgresql/data"
