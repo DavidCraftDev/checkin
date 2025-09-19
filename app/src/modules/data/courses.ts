@@ -11,6 +11,7 @@ const data: Record<string, string> = {
     "M": "Mathematik",
     "ME": "Mathematik",
     "S8": "Spanisch",
+    "S9": "Spanisch",
     "S0": "Spanisch",
     "S1": "Spanisch",
     "S6": "Spanisch",
