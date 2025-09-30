@@ -34,7 +34,7 @@
     "sonner": "2.0.7",
     "tailwindcss": "4.1.13",
     "ts-node": "10.9.2",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "write-excel-file": "2.3.10"
   },
   "devDependencies": {
