@@ -2,11 +2,13 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "main"
   ],
   "forkProcessing": "enabled",
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "automerge": false,
   "branchPrefix": "renovate-deps-update-",
   "rangeStrategy": "pin"
