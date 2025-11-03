@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" node:22.21.0-alpine3.21 AS build
+FROM --platform="$BUILDPLATFORM" node:24.11.0-alpine3.21 AS build
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
@@ -29,7 +29,7 @@ RUN apk upgrade --no-cache -a && \
     find /app/node_modules -name "*.node" -type f -exec strip -s {} \; && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
-FROM node:22.21.0-alpine3.21
+FROM node:24.11.0-alpine3.21
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --from=strip --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
