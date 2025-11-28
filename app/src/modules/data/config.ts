@@ -43,6 +43,7 @@ interface Config {
         USERNAME: string;
         PASSWORD: string;
         BASE_URL: string;
+        CLASS_IDS: number[];
     };
     MODULES: {
         SPONSORENLAUF: boolean;
@@ -89,6 +90,7 @@ const defaultConfig: Config = {
         USERNAME: "",
         PASSWORD: "",
         BASE_URL: "",
+        CLASS_IDS: []
     },
     MODULES: {
         SPONSORENLAUF: false,
