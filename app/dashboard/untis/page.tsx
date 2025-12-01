@@ -8,7 +8,7 @@ import React from "react";
 
 async function UntisPage({ searchParams }: { searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
     // Check if Untis module is enabled
-    if(!config_data.UNTIS.ENABLE) redirect("/dashboard");
+    if (!config_data.UNTIS.ENABLE) redirect("/dashboard");
 
     // Get search params and user session in parallel 
     const [params, user] = await Promise.all([
@@ -55,7 +55,6 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
                 <span className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-amber-800 ring-1 ring-inset ring-amber-200">Geschlossen</span>
             </div>
 
-            {/* Tabelle im CheckIN-Style */}
             <div className="table overflow-x-auto">
                 <table>
                     <colgroup>
@@ -151,7 +150,7 @@ function LessonElement(props: { entry: LessonUnit; showLock: boolean }) {
                             aria-label="Studienzeit schließen"
                             title="Studienzeit schließen"
                         >
-                            🔒 <span className="hidden 2xl:block">Schließen</span>
+                            🔒<span className="hidden 2xl:block"> Schließen</span>
                         </button>
                     ) : null}
                 </div>
@@ -197,7 +196,7 @@ function LeasonGroup(props: { entries: LessonUnit[]; currentUserId: string, isAd
                 <LessonElement
                     key={`${entry.teacherName}-${entry.room}-${entry.startTime}-${entry.endTime}-${entry.subjects.join("-")}`}
                     entry={entry}
-                    showLock={isAdmin || entry.teacherID === currentUserId}
+                    showLock={!entry.cancelled && !entry.closed && (isAdmin || entry.teacherID === currentUserId)}
                 />
             ))}
         </div>
