@@ -15,7 +15,7 @@ enum TrafficLightFeedback {
 }
 
 model Attendances {
-  id             String              @id @unique @default(cuid())
+  id             String               @id @unique @default(cuid())
   userID         String
   eventID        String
   cw             Int
@@ -24,8 +24,8 @@ model Attendances {
   type           String?
   feedback       TrafficLightFeedback @default(GREEN)
   selfReflection String?
-  attended       Boolean             @default(true)
-  created_at     DateTime            @default(now())
+  attended       Boolean              @default(true)
+  created_at     DateTime             @default(now())
 }
 
 model Events {
@@ -63,4 +63,10 @@ model Session {
   userID    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userID], onDelete: Cascade)
+}
+
+model LockedStudyTimes {
+  id       String @id @unique @default(cuid())
+  lessonID String
+  courseID String
 }
