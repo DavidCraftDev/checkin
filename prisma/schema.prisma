@@ -65,7 +65,7 @@ model Session {
   user      User     @relation(references: [id], fields: [userID], onDelete: Cascade)
 }
 
-model LockedStudyTimes {
+model ClosedStudyTimes {
   lessonID String @id @unique @default(cuid())
   courseID String
 }
