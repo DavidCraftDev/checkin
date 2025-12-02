@@ -1,5 +1,7 @@
 /** Types for the mapped data for the frontend timetable */
 
+import { Timegrid } from "webuntis"
+
 /**
  * This interface represents a lesson unit for the timetable in the frontend.
  *
@@ -76,9 +78,29 @@ export interface LessonUnit {
 }
 
 /**
+ * This interface represents the mapping of the timetable data for the frontend.
+ *
+ * @export
+ * @interface TimetableMapping
+ */
+export interface TimetableMapping {
+  /**
+   * Holds the timetable data mapped by date and start time.
+   *
+   * @type {Record<string, Record<string, LessonUnit[]>>}
+   */
+  timetable: Record<string, Record<string, LessonUnit[]>>
+  /**
+   * The timegrid data from WebUntis.
+   *
+   * @type {Timegrid[]}
+   */
+  timegrid: Timegrid[]
+}
+
+/**
  * The result type for closing a study time lessons in the database.
  *
  * @export
- * @typedef {CloseStudyTimeResult}
  */
 export type CloseStudyTimeResult = 'SUCCESS' | 'ALREADY_CLOSED' | 'LIMIT_EXCEEDED' | 'ERROR';

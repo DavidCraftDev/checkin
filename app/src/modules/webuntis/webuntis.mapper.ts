@@ -1,13 +1,21 @@
 /** @file Provides data mapping for the data from the WebUntis API for the frontend timetable */
 
 import "server-only";
-import { LessonUnit } from "./webuntis.types";
+import { LessonUnit, TimetableMapping } from "./webuntis.types";
 import courses from "../data/courses";
 import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable } from "./webuntis.caching";
 import { config_data } from "../data/config";
 import { WebAPITimetable } from "webuntis";
 
-export async function getMappedTimetable(date: Date) {
+/**
+ * Gets the mapped timetable for a whole week and timegrid for the frontend
+ *
+ * @export
+ * @async
+ * @param {Date} date A date in the week for which to get the mapped timetable
+ * @returns {TimetableMapping} The mapped timetable and timegrid
+ */
+export async function getMappedTimetable(date: Date): Promise<TimetableMapping> {
     const [timetable, timegrid] = await Promise.all([
         buildTimetable(date),
         cachedTimegrid()
@@ -18,6 +26,13 @@ export async function getMappedTimetable(date: Date) {
     };
 }
 
+/**
+ * Description placeholder
+ *
+ * @async
+ * @param {Date} date 
+ * @returns {unknown} 
+ */
 async function buildTimetable(date: Date) {
     // Fetch data
     const timetableDatas: Record<number, WebAPITimetable[]> = {};
