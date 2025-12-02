@@ -3,7 +3,7 @@
 import "server-only";
 import { LessonUnit } from "./webuntis.types";
 import courses from "../data/courses";
-import { cachedDBTeacher, cachedTeachers, cachedTimegrid, cachedTimetable } from "./webuntis.caching";
+import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable } from "./webuntis.caching";
 import { config_data } from "../data/config";
 import { WebAPITimetable } from "webuntis";
 
@@ -73,7 +73,7 @@ async function buildTimetable(date: Date) {
             }
 
             // Placeholder, implement logic if needed
-            let closed: boolean = false;
+            let closed: boolean = await cachedLessonCloseStatus(String(entry.id));
 
             // Map WebAPITimetable entry to LessonUnit
             const lessonUnit: LessonUnit = {

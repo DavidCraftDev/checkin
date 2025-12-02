@@ -7,6 +7,7 @@ import logger from "../logger";
 import db from "../db";
 import { User } from "@prisma/client";
 import { config_data } from "../data/config";
+import { isStudyTimeClosed } from "./webuntis.close";
 
 /**
  * The variable to save WebUntisService Instance
@@ -22,7 +23,7 @@ let WebUntisAPI: WebUntisService | undefined;
  * @returns {WebUntisService} 
  */
 export function getWebUntisAPIInstance(): WebUntisService {
-    if(!config_data.UNTIS.ENABLE) {
+    if (!config_data.UNTIS.ENABLE) {
         throw logger.error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.", "WebUntis-Caching");
     }
     if (!WebUntisAPI) {
@@ -70,6 +71,18 @@ export const cachedTimetable = unstable_cache(
     [],
     { revalidate: 300000 }
 )
+
+/**
+ * Gets the cached lesson close status from the database
+ *
+ * @export
+ * @type {Promise<boolean>}
+ */
+export const cachedLessonCloseStatus = unstable_cache(
+    async (lessonID: string) => await isStudyTimeClosed(lessonID),
+    [],
+    { revalidate: 300000 }
+);
 
 // The following is only temporary placed here until the full rewrite of the CheckIN is done
 /**

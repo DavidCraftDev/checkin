@@ -74,3 +74,11 @@ export interface LessonUnit {
    */
   closed: boolean
 }
+
+/**
+ * The result type for closing a study time lessons in the database.
+ *
+ * @export
+ * @typedef {CloseStudyTimeResult}
+ */
+export type CloseStudyTimeResult = 'SUCCESS' | 'ALREADY_CLOSED' | 'LIMIT_EXCEEDED' | 'ERROR';
