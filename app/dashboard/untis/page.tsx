@@ -122,7 +122,7 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
                                         if (!timetable[dateArray[i]][unit.startTime]) timetable[dateArray[i]][unit.startTime] = [];
                                         return (
                                             <td key={i} className="align-top">
-                                                <LeasonGroup entries={timetable[dateArray[i]][unit.startTime]} hideLockButton={hideLockButton} currentUserId={user.id} isAdmin={user.permission === 2} />
+                                                <LessonGroup entries={timetable[dateArray[i]][unit.startTime]} hideLockButton={hideLockButton} currentUserId={user.id} isAdmin={user.permission === 2} />
                                             </td>
                                         );
                                     })}
@@ -197,7 +197,7 @@ function LessonElement(props: { entry: LessonUnit; showLock: boolean }) {
     );
 }
 
-function LeasonGroup(props: { entries: LessonUnit[]; hideLockButton: boolean; currentUserId: string, isAdmin: boolean }) {
+function LessonGroup(props: { entries: LessonUnit[]; hideLockButton: boolean; currentUserId: string, isAdmin: boolean }) {
     const { entries, hideLockButton, currentUserId, isAdmin } = props;
     if (!entries || entries.length === 0) {
         return <div className="text-center text-sm text-zinc-400">–</div>;
