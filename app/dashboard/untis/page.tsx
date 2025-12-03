@@ -2,9 +2,18 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { config_data } from "@/app/src/modules/data/config";
 import { getMappedTimetable } from "@/app/src/modules/webuntis/webuntis.mapper";
 import { LessonUnit } from "@/app/src/modules/webuntis/webuntis.types";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
 import { redirect } from "next/navigation";
 import { Metadata } from "next/types";
 import React from "react";
+import { LockButtonComponent } from "./lockButton.component";
+
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
 
 async function UntisPage({ searchParams }: { searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
     // Check if Untis module is enabled
@@ -41,6 +50,16 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
         dateSet.add(dateNum);
     });
     const dateArray: Record<number, number> = Array.from(dateSet).sort();
+
+    // Hide lock button for teachers if the timetable is in the current or past week
+    let hideLockButton = false;
+    if (user.permission === 1) {
+        if (dayjs(date).startOf("isoWeek").isBefore(dayjs().startOf("isoWeek"))) {
+            hideLockButton = true;
+        } else if (dayjs(date).startOf("isoWeek").isSame(dayjs().startOf("isoWeek"))) {
+            hideLockButton = true;
+        }
+    }
     return (
         <div className="space-y-3">
             <h1>Studienzeit-Plan</h1>
@@ -103,7 +122,7 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
                                         if (!timetable[dateArray[i]][unit.startTime]) timetable[dateArray[i]][unit.startTime] = [];
                                         return (
                                             <td key={i} className="align-top">
-                                                <LeasonGroup entries={timetable[dateArray[i]][unit.startTime]} currentUserId={user.id} isAdmin={user.permission === 2} />
+                                                <LeasonGroup entries={timetable[dateArray[i]][unit.startTime]} hideLockButton={hideLockButton} currentUserId={user.id} isAdmin={user.permission === 2} />
                                             </td>
                                         );
                                     })}
@@ -144,14 +163,7 @@ function LessonElement(props: { entry: LessonUnit; showLock: boolean }) {
                 <div className="flex items-center gap-2">
                     <div className="text-xs text-zinc-600">{entry.room}</div>
                     {showLock ? (
-                        <button
-                            type="button"
-                            className="inline-flex items-center rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-800 ring-1 ring-inset ring-zinc-300 hover:bg-zinc-200"
-                            aria-label="Studienzeit schließen"
-                            title="Studienzeit schließen"
-                        >
-                            🔒<span className="hidden 2xl:block"> Schließen</span>
-                        </button>
+                        <LockButtonComponent lessonID={entry.id} courseID={entry.course} />
                     ) : null}
                 </div>
             </div>
@@ -185,8 +197,8 @@ function LessonElement(props: { entry: LessonUnit; showLock: boolean }) {
     );
 }
 
-function LeasonGroup(props: { entries: LessonUnit[]; currentUserId: string, isAdmin: boolean }) {
-    const { entries, currentUserId, isAdmin } = props;
+function LeasonGroup(props: { entries: LessonUnit[]; hideLockButton: boolean; currentUserId: string, isAdmin: boolean }) {
+    const { entries, hideLockButton, currentUserId, isAdmin } = props;
     if (!entries || entries.length === 0) {
         return <div className="text-center text-sm text-zinc-400">–</div>;
     }
@@ -196,7 +208,7 @@ function LeasonGroup(props: { entries: LessonUnit[]; currentUserId: string, isAd
                 <LessonElement
                     key={`${entry.teacherName}-${entry.room}-${entry.startTime}-${entry.endTime}-${entry.subjects.join("-")}`}
                     entry={entry}
-                    showLock={!entry.cancelled && !entry.closed && (isAdmin || entry.teacherID === currentUserId)}
+                    showLock={!hideLockButton && !entry.cancelled && !entry.closed && (isAdmin || entry.teacherID === currentUserId)}
                 />
             ))}
         </div>

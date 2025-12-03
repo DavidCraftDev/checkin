@@ -92,6 +92,7 @@ async function buildTimetable(date: Date) {
 
             // Map WebAPITimetable entry to LessonUnit
             const lessonUnit: LessonUnit = {
+                id: String(entry.id),
                 course: entry.classes[0].element.name + " " + entry.subjects.map(subject => subject.element.name).join(", "),
                 teacherID: dbTeacherData ? dbTeacherData.id : "0",
                 teacherName: entry.teachers.map(teacher => webUntisTeacherData?.name || teacher.element.name).join(", "),

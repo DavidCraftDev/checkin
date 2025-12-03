@@ -10,6 +10,12 @@ import { Timegrid } from "webuntis"
  */
 export interface LessonUnit {
   /**
+   * The unique identifier of the lesson from WebUntis
+   *
+   * @type {string}
+   */
+  id: string,
+  /**
    * The name of the original course of the lesson
    *
    * @type {string}
