@@ -61,13 +61,24 @@ export const cachedTeachers = unstable_cache(
 )
 
 /**
+ * Holds the last refresh date for each week timetable
+ *
+ * @export
+ * @type {Record<number, Date>}
+ */
+export const lastTimetableRefresh: Record<string, Date> = {};
+
+/**
  * Gets the cached timetable from the WebUntis API
  *
  * @export
  * @returns {Promise<Timetable[]>}
  */
 export const cachedTimetable = unstable_cache(
-    async (date: Date, classNumber: number) => await getWebUntisAPIInstance().getTimetable(classNumber, date),
+    async (date: Date, classNumber: number) => {
+        lastTimetableRefresh[date.toJSON()] = new Date();
+        return await getWebUntisAPIInstance().getTimetable(classNumber, date);
+    },
     [],
     { revalidate: 300000 }
 )
@@ -81,7 +92,7 @@ export const cachedTimetable = unstable_cache(
 export const cachedLessonCloseStatus = unstable_cache(
     async (lessonID: string) => await isStudyTimeClosed(lessonID),
     [],
-    { revalidate: 300000 }
+    { tags: ["lessonCloseStatus"], revalidate: 300000 }
 );
 
 // The following is only temporary placed here until the full rewrite of the CheckIN is done

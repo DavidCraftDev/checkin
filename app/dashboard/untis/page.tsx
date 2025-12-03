@@ -31,9 +31,10 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
     if (weekParam) {
         date = parseDate(weekParam);
     }
+    date.setHours(12, 0, 0, 0); // Set to noon to avoid multiple caching entries
 
     // Fetch mapped timetable and timegrid from WebUntis in the given week
-    const { timetable, timegrid } = await getMappedTimetable(date);
+    const { timetable, timegrid, lastRefresh } = await getMappedTimetable(date);
 
     // Prepare timegrid and days array
     const timelayout = timegrid[0].timeUnits;
@@ -64,7 +65,7 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
         <div className="space-y-3">
             <h1>Studienzeit-Plan</h1>
             <div className="text-sm text-zinc-600">
-                Zuletzt aktualisiert: {new Date().toLocaleString("de-DE", { dateStyle: "long", timeStyle: "short" })}
+                Zuletzt aktualisiert: {new Date(lastRefresh).toLocaleString("de-DE", { dateStyle: "long", timeStyle: "short" })}
             </div>
 
             {/* Status-Legende */}

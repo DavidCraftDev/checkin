@@ -102,6 +102,12 @@ export interface TimetableMapping {
    * @type {Timegrid[]}
    */
   timegrid: Timegrid[]
+  /**
+   * The last refresh date of the timetable
+   *
+   * @type {Date}
+   */
+  lastRefresh: Date
 }
 
 /**

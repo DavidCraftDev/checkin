@@ -3,6 +3,7 @@
 import "server-only";
 import db from "../db";
 import { CloseStudyTimeResult } from "./webuntis.types";
+import { revalidateTag } from "next/cache";
 
 /**
  * Checks if a study time lesson is closed in the database.
@@ -54,6 +55,10 @@ export async function closeStudyTime(lessonID: string, courseID: string): Promis
             courseID: courseID
         }
     });
+
+    // Revalidate cache
+    revalidateTag("lessonCloseStatus");
+
     if (result.courseID === courseID && result.lessonID === lessonID) {
         return 'SUCCESS';
     }

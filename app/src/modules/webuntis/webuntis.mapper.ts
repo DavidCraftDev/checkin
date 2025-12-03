@@ -3,7 +3,7 @@
 import "server-only";
 import { LessonUnit, TimetableMapping } from "./webuntis.types";
 import courses from "../data/courses";
-import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable } from "./webuntis.caching";
+import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable, lastTimetableRefresh } from "./webuntis.caching";
 import { config_data } from "../data/config";
 import { WebAPITimetable } from "webuntis";
 
@@ -16,13 +16,15 @@ import { WebAPITimetable } from "webuntis";
  * @returns {TimetableMapping} The mapped timetable and timegrid
  */
 export async function getMappedTimetable(date: Date): Promise<TimetableMapping> {
+    date.setHours(12, 0, 0, 0); // Set to noon to avoid multiple caching entries
     const [timetable, timegrid] = await Promise.all([
         buildTimetable(date),
         cachedTimegrid()
     ]);
     return {
         timetable: timetable,
-        timegrid: timegrid
+        timegrid: timegrid,
+        lastRefresh: lastTimetableRefresh[date.toJSON()]
     };
 }
 
