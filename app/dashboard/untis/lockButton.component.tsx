@@ -21,6 +21,10 @@ export function LockButtonComponent(props: { lessonID: string; courseID: string,
 }
 
 async function closeStudyTimeAction(lessonID: string, courseID: string) {
+    const confirm = window.confirm("Möchtest du die Studienzeit wirklich schließen? Dies kann nicht rückgängig gemacht werden.");
+    if (!confirm) {
+        return;
+    }
     const data = await lockStudyTimeAction(lessonID, courseID);
     if (data === "SUCCESS") {
         toast.success("Studienzeit erfolgreich geschlossen");
