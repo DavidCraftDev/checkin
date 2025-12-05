@@ -14,11 +14,13 @@ import {
   ServerStackIcon,
   SquaresPlusIcon,
   DocumentMagnifyingGlassIcon,
-  PresentationChartBarIcon
+  PresentationChartBarIcon,
+  TableCellsIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { config_data } from '../modules/data/config';
 
 interface NavLinkProps {
   permission: number;
@@ -30,6 +32,7 @@ const linksNormal = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
+  { name: 'Stundenplan', href: '/dashboard/untis', icon: TableCellsIcon, mobile: true, permission: 1 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
   { name: 'Meine Kurse', href: '/dashboard/courses', icon: PresentationChartBarIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
@@ -57,6 +60,7 @@ export default function NavLinks(props: NavLinkProps) {
         // Filter: required permission and group availability
         if (props.permission < link.permission) return null;
         if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return null;
+        if (!config_data.UNTIS.ENABLE && link.name === "Stundenplan") return null;
 
         const label = link.name === "Meine Gruppe" && props.group.length > 1 ? "Meine Gruppen" : link.name;
         const href = link.name === "Meine Gruppe" && props.group.length > 1 ? "/dashboard/groups/mygroups" : link.href;
