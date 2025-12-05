@@ -29,11 +29,12 @@ export async function getMappedTimetable(date: Date): Promise<TimetableMapping> 
 }
 
 /**
- * Description placeholder
+ * Builds a timetable for the given week by fetching and mapping WebUntis API data
+ * to the internal LessonUnit structure, grouped by date and start time.
  *
  * @async
- * @param {Date} date 
- * @returns {unknown} 
+ * @param {Date} date A date in the week for which to build the timetable
+ * @returns {Record<string, Record<string, LessonUnit[]>>} The mapped timetable data
  */
 async function buildTimetable(date: Date) {
     // Fetch data
