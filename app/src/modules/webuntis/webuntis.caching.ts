@@ -24,7 +24,8 @@ let WebUntisAPI: WebUntisService | undefined;
  */
 export function getWebUntisAPIInstance(): WebUntisService {
     if (!config_data.UNTIS.ENABLE) {
-        throw logger.error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.", "WebUntis-Caching");
+        logger.error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.", "WebUntis-Caching");
+        throw new Error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.");
     }
     if (!WebUntisAPI) {
         const school = config_data.UNTIS.SCHOOL;
