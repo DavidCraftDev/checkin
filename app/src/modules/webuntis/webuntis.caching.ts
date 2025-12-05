@@ -108,7 +108,7 @@ async function findCheckINTeacher(teacherDisplayName: string): Promise<User | nu
         where: {
             AND: [
                 { displayname: teacherDisplayName },
-                { permission: 0 }
+                { permission: { gte: 1 } } // Ensure it's a teacher or higher
             ]
         }
     });
