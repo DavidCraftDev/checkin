@@ -90,7 +90,6 @@ async function buildTimetable(date: Date) {
                 cancelled = true;
             }
 
-            // Placeholder, implement logic if needed
             let closed: boolean = await cachedLessonCloseStatus(String(entry.id));
 
             // Map WebAPITimetable entry to LessonUnit
