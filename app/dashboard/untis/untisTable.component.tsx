@@ -101,10 +101,11 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                 <col
                                     key={i}
                                     span={1}
-                                    className={`${isHiddenOnMobile ? "hidden md:table-column" : "w-auto md:w-2/11"}`}
+                                    className={`${isHiddenOnMobile ? "hidden md:table-column" : ""}` + " w-auto md:w-2/11"}
                                 />
                             );
                         })}
+                        { }
                     </colgroup>
                     <thead className="sticky top-0 z-10 bg-white">
                         <tr>
@@ -143,17 +144,22 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                     {Array.from({ length: dayCount }).map((_, i) => {
                                         const dateKey = dateArray[i];
                                         const entries = timetable[dateKey]?.[unit.startTime] || [];
-                                        
+
                                         // Apply filters
                                         let filteredEntries = entries;
 
                                         if (filterNeeds && isStudent) {
-                                            filteredEntries = filteredEntries.filter(entry => {
-                                                // If lesson has no subjects, hide it? User said: "if a Lesson had no subject the student need, the lesson should completly hide"
-                                                // This implies we check intersection.
-                                                const hasNeededSubject = entry.subjects.some(subject => user.needs.includes(subject));
-                                                return hasNeededSubject;
-                                            });
+                                            // Remove subjects that are not needed from the entries
+                                            filteredEntries = filteredEntries.map(entry => {
+                                                const data = {
+                                                    ...entry,
+                                                    subjects: entry.subjects.filter(subject => user.needs.includes(subject)),
+                                                }
+                                                if (data.subjects.length === 0) {
+                                                    return null;
+                                                }
+                                                return data;
+                                            }).filter(entry => entry !== null) as LessonUnit[];
                                         }
 
                                         if (filterMyCourses && isTeacher) {
@@ -164,11 +170,11 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
 
                                         return (
                                             <td key={i} className={`align-top ${isHiddenOnMobile ? "hidden md:table-cell" : ""}`}>
-                                                <LessonGroup 
-                                                    entries={filteredEntries} 
-                                                    hideLockButton={hideLockButton} 
-                                                    currentUserId={user.id} 
-                                                    isAdmin={user.permission === 2} 
+                                                <LessonGroup
+                                                    entries={filteredEntries}
+                                                    hideLockButton={hideLockButton}
+                                                    currentUserId={user.id}
+                                                    isAdmin={user.permission === 2}
                                                 />
                                             </td>
                                         );
