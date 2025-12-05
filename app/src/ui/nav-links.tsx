@@ -14,7 +14,8 @@ import {
   ServerStackIcon,
   SquaresPlusIcon,
   DocumentMagnifyingGlassIcon,
-  PresentationChartBarIcon
+  PresentationChartBarIcon,
+  TableCellsIcon
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -24,12 +25,14 @@ interface NavLinkProps {
   permission: number;
   group: string[];
   administration: boolean;
+  untisEnabled: boolean;
 }
 
 const linksNormal = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
+  { name: 'Stundenplan', href: '/dashboard/untis', icon: TableCellsIcon, mobile: true, permission: 1 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
   { name: 'Meine Kurse', href: '/dashboard/courses', icon: PresentationChartBarIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
@@ -57,6 +60,7 @@ export default function NavLinks(props: NavLinkProps) {
         // Filter: required permission and group availability
         if (props.permission < link.permission) return null;
         if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return null;
+        if (!props.untisEnabled && link.name === "Stundenplan") return null;
 
         const label = link.name === "Meine Gruppe" && props.group.length > 1 ? "Meine Gruppen" : link.name;
         const href = link.name === "Meine Gruppe" && props.group.length > 1 ? "/dashboard/groups/mygroups" : link.href;
@@ -68,7 +72,7 @@ export default function NavLinks(props: NavLinkProps) {
             key={label}
             href={href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
+              'flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
               {
                 'bg-sky-100 text-blue-600': pathname === href,
                 "hidden md:flex": !isMobileVisible,

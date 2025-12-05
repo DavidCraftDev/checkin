@@ -37,6 +37,14 @@ interface Config {
             };
         };
     };
+    UNTIS: {
+        ENABLE: boolean;
+        SCHOOL: string;
+        USERNAME: string;
+        PASSWORD: string;
+        BASE_URL: string;
+        CLASS_IDS: number[];
+    };
     MODULES: {
         SPONSORENLAUF: boolean;
     }
@@ -76,6 +84,14 @@ const defaultConfig: Config = {
             },
         },
     },
+    UNTIS: {
+        ENABLE: false,
+        SCHOOL: "",
+        USERNAME: "",
+        PASSWORD: "",
+        BASE_URL: "",
+        CLASS_IDS: []
+    },
     MODULES: {
         SPONSORENLAUF: false,
     },
@@ -100,7 +116,7 @@ export function readConfig(writeBack: boolean = true) {
     } catch (error) {
         logger.error("Error reading or parsing config file:" + error, "Config");
     }
-    
+
     // Check if a password is set for the default login
     // If not, generate a random password and log a warning
     if (!config_data.DEFAULT_LOGIN.PASSWORD || config_data.DEFAULT_LOGIN.PASSWORD === "") {
@@ -144,6 +160,12 @@ function applyEnvOverrides() {
     if (env.LDAP_AUTO_GROUPS_OU) config_data.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.GROUP_OU = env.LDAP_AUTO_GROUPS_OU;
     if (env.LDAP_AUTO_STUDYTIME_DATA) config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE = env.LDAP_AUTO_STUDYTIME_DATA === "true";
     if (env.LDAP_AUTO_STUDYTIME_DATA_OU) config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.STUDYTIME_OU = env.LDAP_AUTO_STUDYTIME_DATA_OU;
+    if (env.UNTIS_ENABLE) config_data.UNTIS.ENABLE = env.UNTIS_ENABLE === "true";
+    if (env.UNTIS_SCHOOL) config_data.UNTIS.SCHOOL = env.UNTIS_SCHOOL;
+    if (env.UNTIS_USERNAME) config_data.UNTIS.USERNAME = env.UNTIS_USERNAME;
+    if (env.UNTIS_PASSWORD) config_data.UNTIS.PASSWORD = env.UNTIS_PASSWORD;
+    if (env.UNTIS_BASE_URL) config_data.UNTIS.BASE_URL = env.UNTIS_BASE_URL;
+    if (env.MODULE_SPONSORENLAUF) config_data.MODULES.SPONSORENLAUF = env.MODULE_SPONSORENLAUF === "true";
 }
 
 function generateRandomSecurePassword(): string {
