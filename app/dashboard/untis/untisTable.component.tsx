@@ -101,10 +101,11 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                 <col
                                     key={i}
                                     span={1}
-                                    className={`${isHiddenOnMobile ? "hidden md:table-column" : "w-auto md:w-2/11"}`}
+                                    className={`${isHiddenOnMobile ? "hidden md:table-column" : ""}` + " w-auto md:w-2/11"}
                                 />
                             );
                         })}
+                        { }
                     </colgroup>
                     <thead className="sticky top-0 z-10 bg-white">
                         <tr>
@@ -143,7 +144,7 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                     {Array.from({ length: dayCount }).map((_, i) => {
                                         const dateKey = dateArray[i];
                                         const entries = timetable[dateKey]?.[unit.startTime] || [];
-                                        
+
                                         // Apply filters
                                         let filteredEntries = entries;
 
@@ -164,11 +165,11 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
 
                                         return (
                                             <td key={i} className={`align-top ${isHiddenOnMobile ? "hidden md:table-cell" : ""}`}>
-                                                <LessonGroup 
-                                                    entries={filteredEntries} 
-                                                    hideLockButton={hideLockButton} 
-                                                    currentUserId={user.id} 
-                                                    isAdmin={user.permission === 2} 
+                                                <LessonGroup
+                                                    entries={filteredEntries}
+                                                    hideLockButton={hideLockButton}
+                                                    currentUserId={user.id}
+                                                    isAdmin={user.permission === 2}
                                                 />
                                             </td>
                                         );
