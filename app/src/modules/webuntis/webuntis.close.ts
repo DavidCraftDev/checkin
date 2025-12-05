@@ -1,4 +1,4 @@
-/** @file Provides to get locked study times and locked study times from our database */
+/** @file Provides functions to get and manage locked study times from our database */
 
 import "server-only";
 import db from "../db";
