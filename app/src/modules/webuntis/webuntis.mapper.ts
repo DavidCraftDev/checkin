@@ -73,7 +73,7 @@ async function buildTimetable(date: Date) {
 
             // Find webuntis teacher data and corresponding checkIN teacher data from database
             const webUntisTeacherData = webuntisTeachers.find(teacher => entry.teachers.some(t => t.element.id === teacher.id || t.orgId === teacher.id));
-            const dbTeacherData = webUntisTeacherData ? await cachedDBTeacher(webUntisTeacherData.name) : null;
+            const dbTeacherData = webUntisTeacherData ? await cachedDBTeacher(webUntisTeacherData.foreName + " " + webUntisTeacherData.longName) : null;
 
             // List subjects from checkIN teacher competence if available, otherwise use subjects from WebUntis entry
             let subjectList: string[] = [];
