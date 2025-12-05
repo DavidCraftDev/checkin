@@ -10,6 +10,8 @@ import { redirect } from "next/navigation";
 import { Metadata } from "next/types";
 import React from "react";
 import { LockButtonComponent } from "./lockButton.component";
+import Link from "next/link";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -61,11 +63,42 @@ async function UntisPage({ searchParams }: { searchParams?: Promise<Record<strin
             hideLockButton = true;
         }
     }
+
+    // Prepare week navigation dates
+    const startOfWeek = dayjs(date).startOf("isoWeek");
+    const endOfWeek = dayjs(date).endOf("isoWeek");
+    const prevWeek = startOfWeek.subtract(1, "week").format("YYYYMMDD");
+    const nextWeek = startOfWeek.add(1, "week").format("YYYYMMDD");
     return (
         <div className="space-y-3">
-            <h1>Studienzeit-Plan</h1>
-            <div className="text-sm text-zinc-600">
-                Zuletzt aktualisiert: {new Date(lastRefresh).toLocaleString("de-DE", { dateStyle: "long", timeStyle: "short" })}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1>Studienzeit-Plan</h1>
+                    <div className="text-sm text-zinc-600">
+                        Zuletzt aktualisiert: {new Date(lastRefresh).toLocaleString("de-DE", { dateStyle: "long", timeStyle: "short" })}
+                    </div>
+                </div>
+
+                {/* Week Navigation */}
+                <div className="flex items-center gap-2 rounded-lg bg-white p-1 shadow-sm ring-1 ring-zinc-200">
+                    <Link
+                        href={`?week=${prevWeek}`}
+                        className="rounded-md p-1 hover:bg-zinc-100 text-zinc-600"
+                        title="Vorherige Woche"
+                    >
+                        <ChevronLeftIcon className="h-5 w-5" />
+                    </Link>
+                    <div className="px-2 text-sm font-medium text-zinc-700">
+                        {startOfWeek.format("DD.MM.")} – {endOfWeek.format("DD.MM.YYYY")}
+                    </div>
+                    <Link
+                        href={`?week=${nextWeek}`}
+                        className="rounded-md p-1 hover:bg-zinc-100 text-zinc-600"
+                        title="Nächste Woche"
+                    >
+                        <ChevronRightIcon className="h-5 w-5" />
+                    </Link>
+                </div>
             </div>
 
             {/* Status-Legende */}
