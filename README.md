@@ -1,5 +1,9 @@
 # CheckIN
 
+
+| :exclamation:  Das Checkin wird in der Zukunft komplett neugeschrieben, mit SolidJS für das Frontend und Hono als Backend. Dieses Funktion wird nur noch am leben erhalten bis die neue Version fertig ist. Die alte Codebasis ist sehr chaotisch und schwer wartbar. |
+|----------------------------------------------|
+
 Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.
 Die Studienzeit ist ein Konzept über dass selbstständigen Lernen in der Oberstufe.
 
