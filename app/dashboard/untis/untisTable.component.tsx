@@ -149,12 +149,17 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                         let filteredEntries = entries;
 
                                         if (filterNeeds && isStudent) {
-                                            filteredEntries = filteredEntries.filter(entry => {
-                                                // If lesson has no subjects, hide it? User said: "if a Lesson had no subject the student need, the lesson should completly hide"
-                                                // This implies we check intersection.
-                                                const hasNeededSubject = entry.subjects.some(subject => user.needs.includes(subject));
-                                                return hasNeededSubject;
-                                            });
+                                            // Remove subjects that are not needed from the entries
+                                            filteredEntries = filteredEntries.map(entry => {
+                                                const data = {
+                                                    ...entry,
+                                                    subjects: entry.subjects.filter(subject => user.needs.includes(subject)),
+                                                }
+                                                if (data.subjects.length === 0) {
+                                                    return null;
+                                                }
+                                                return data;
+                                            }).filter(entry => entry !== null) as LessonUnit[];
                                         }
 
                                         if (filterMyCourses && isTeacher) {
