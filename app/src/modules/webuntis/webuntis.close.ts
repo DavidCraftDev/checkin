@@ -32,7 +32,7 @@ export async function isStudyTimeClosed(lessonID: string): Promise<boolean> {
  * @returns {Promise<CloseStudyTimeResult>} The result of the close operation
  */
 export async function closeStudyTime(lessonID: string, courseID: string): Promise<CloseStudyTimeResult> {
-    // Check if the lessons is already closed
+    // Check if the lesson is already closed
     const alreadyClosed = await isStudyTimeClosed(lessonID);
     if (alreadyClosed) {
         return 'ALREADY_CLOSED';
