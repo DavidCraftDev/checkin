@@ -5,6 +5,7 @@ import { User } from "@prisma/client";
 import React, { useState } from "react";
 import { LockButtonComponent } from "./lockButton.component";
 import { Timegrid } from "webuntis";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 interface UntisTableProps {
     timetable: Record<string, Record<string, LessonUnit[]>>;
@@ -18,6 +19,15 @@ interface UntisTableProps {
 export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLockButton }: UntisTableProps) {
     const [filterNeeds, setFilterNeeds] = useState(false);
     const [filterMyCourses, setFilterMyCourses] = useState(false);
+
+    const today = new Date();
+    const todayNumber = parseInt(
+        today.getFullYear().toString() +
+        (today.getMonth() + 1).toString().padStart(2, '0') +
+        today.getDate().toString().padStart(2, '0')
+    );
+    const initialIndex = dateArray.indexOf(todayNumber);
+    const [currentMobileDayIndex, setCurrentMobileDayIndex] = useState(initialIndex !== -1 ? initialIndex : 0);
 
     const timelayout = timegrid[0].timeUnits;
     const dayCount = timegrid.length;
@@ -53,23 +63,57 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                 )}
             </div>
 
+            {/* Mobile Navigation */}
+            <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm ring-1 ring-zinc-200 md:hidden">
+                <button
+                    onClick={() => setCurrentMobileDayIndex((prev) => Math.max(0, prev - 1))}
+                    disabled={currentMobileDayIndex === 0}
+                    className="rounded p-1 hover:bg-zinc-100 disabled:opacity-30"
+                >
+                    <ChevronLeftIcon className="h-6 w-6 text-zinc-600" />
+                </button>
+                <div className="flex flex-col items-center">
+                    <span className="font-semibold text-zinc-900">{days[currentMobileDayIndex]}</span>
+                    <span className="text-xs text-zinc-500">
+                        {parseDate(String(dateArray[currentMobileDayIndex])).toLocaleDateString("de-DE", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                        })}
+                    </span>
+                </div>
+                <button
+                    onClick={() => setCurrentMobileDayIndex((prev) => Math.min(dayCount - 1, prev + 1))}
+                    disabled={currentMobileDayIndex === dayCount - 1}
+                    className="rounded p-1 hover:bg-zinc-100 disabled:opacity-30"
+                >
+                    <ChevronRightIcon className="h-6 w-6 text-zinc-600" />
+                </button>
+            </div>
+
             <div className="table overflow-x-auto">
                 <table>
                     <colgroup>
                         <col span={1} className="w-1/13" />
-                        <col span={1} className="w-2/11" />
-                        <col span={1} className="w-2/11" />
-                        <col span={1} className="w-2/11" />
-                        <col span={1} className="w-2/11" />
-                        <col span={1} className="w-2/11" />
+                        {Array.from({ length: dayCount }).map((_, i) => {
+                            const isHiddenOnMobile = i !== currentMobileDayIndex;
+                            return (
+                                <col
+                                    key={i}
+                                    span={1}
+                                    className={`${isHiddenOnMobile ? "hidden md:table-column" : "w-auto md:w-2/11"}`}
+                                />
+                            );
+                        })}
                     </colgroup>
                     <thead className="sticky top-0 z-10 bg-white">
                         <tr>
                             <th className="font-bold">Zeit</th>
                             {Array.from({ length: dayCount }).map((_, i) => {
                                 const date = parseDate(String(dateArray[i]));
+                                const isHiddenOnMobile = i !== currentMobileDayIndex;
                                 return (
-                                    <th key={i} className="font-bold">
+                                    <th key={i} className={`font-bold ${isHiddenOnMobile ? "hidden md:table-cell" : ""}`}>
                                         <div className="flex flex-col">
                                             <span>{days[i]}</span>
                                             <span className="text-xs font-normal text-zinc-500">
@@ -116,8 +160,10 @@ export function UntisTable({ timetable, timegrid, dateArray, days, user, hideLoc
                                             filteredEntries = filteredEntries.filter(entry => entry.teacherID === user.id);
                                         }
 
+                                        const isHiddenOnMobile = i !== currentMobileDayIndex;
+
                                         return (
-                                            <td key={i} className="align-top">
+                                            <td key={i} className={`align-top ${isHiddenOnMobile ? "hidden md:table-cell" : ""}`}>
                                                 <LessonGroup 
                                                     entries={filteredEntries} 
                                                     hideLockButton={hideLockButton} 
