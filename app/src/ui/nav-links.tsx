@@ -20,12 +20,12 @@ import {
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { config_data } from '../modules/data/config';
 
 interface NavLinkProps {
   permission: number;
   group: string[];
   administration: boolean;
+  untisEnabled: boolean;
 }
 
 const linksNormal = [
@@ -60,7 +60,7 @@ export default function NavLinks(props: NavLinkProps) {
         // Filter: required permission and group availability
         if (props.permission < link.permission) return null;
         if (link.name === "Meine Gruppe" && (props.group.length < 1 || props.group[0] === "")) return null;
-        if (!config_data.UNTIS.ENABLE && link.name === "Stundenplan") return null;
+        if (!props.untisEnabled && link.name === "Stundenplan") return null;
 
         const label = link.name === "Meine Gruppe" && props.group.length > 1 ? "Meine Gruppen" : link.name;
         const href = link.name === "Meine Gruppe" && props.group.length > 1 ? "/dashboard/groups/mygroups" : link.href;

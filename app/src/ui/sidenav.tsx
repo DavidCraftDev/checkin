@@ -2,6 +2,7 @@ import Link from 'next/link';
 import NavLinks from '@/app/src/ui/nav-links';
 import { ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
 import { User } from '@prisma/client';
+import { config_data } from '../modules/data/config';
 
 interface SideNavProps {
   user: User;
@@ -20,7 +21,7 @@ export default function SideNav(props: SideNavProps) {
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <NavLinks permission={props.user.permission} group={props.user.group} administration={props.administration} />
+        <NavLinks permission={props.user.permission} group={props.user.group} administration={props.administration} untisEnabled={config_data.UNTIS.ENABLE} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form className={props.administration ? "hidden" : ""}>
           <a href={"/logout"} className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4">
