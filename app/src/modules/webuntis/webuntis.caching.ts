@@ -88,7 +88,7 @@ export const cachedTimetable = unstable_cache(
  * Gets the cached lesson close status from the database
  *
  * @export
- * @type {Promise<boolean>}
+ * @returns {Promise<boolean>}
  */
 export const cachedLessonCloseStatus = unstable_cache(
     async (lessonID: string) => await isStudyTimeClosed(lessonID),
