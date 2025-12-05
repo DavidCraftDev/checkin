@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { lockStudyTimeAction } from "./lockButton.action";
 
-export function LockButtonComponent(props: { lessonID: string; courseID: string, closingFunction?: () => void }) {
+export function LockButtonComponent(props: { lessonID: string; courseID: string }) {
     const { lessonID, courseID } = props;
     return (
         <button
