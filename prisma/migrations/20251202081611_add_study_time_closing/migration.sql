@@ -7,4 +7,4 @@ CREATE TABLE "ClosedStudyTimes" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ClosedStudyTimes_id_key" ON "ClosedStudyTimes"("lessonID");
+CREATE UNIQUE INDEX "ClosedStudyTimes_lessonID_key" ON "ClosedStudyTimes"("lessonID");
