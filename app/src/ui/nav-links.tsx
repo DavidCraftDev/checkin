@@ -32,7 +32,7 @@ const linksNormal = [
   { name: 'Übersicht', href: '/dashboard', icon: HomeIcon, mobile: false, permission: 0 },
   { name: 'QR-Code', href: '/dashboard/qrcode', icon: QrCodeIcon, mobile: true, permission: 0 },
   { name: 'Teilgenomme Studienzeiten', href: '/dashboard/events/attendedEvents', icon: CalendarDaysIcon, mobile: true, permission: 0 },
-  { name: 'Stundenplan', href: '/dashboard/untis', icon: TableCellsIcon, mobile: true, permission: 1 },
+  { name: 'Stundenplan', href: '/dashboard/untis', icon: TableCellsIcon, mobile: true, permission: 0 },
   { name: 'Erstellte Studienzeiten', href: '/dashboard/events/createdEvents', icon: PlusCircleIcon, mobile: true, permission: 1 },
   { name: 'Meine Kurse', href: '/dashboard/courses', icon: PresentationChartBarIcon, mobile: true, permission: 1 },
   { name: 'Meine Gruppe', href: '/dashboard/groups/group', icon: UsersIcon, mobile: true, permission: 1 },
