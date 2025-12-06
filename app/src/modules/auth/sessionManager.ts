@@ -5,6 +5,9 @@ import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/enco
 import { sha256 } from "@oslojs/crypto/sha2";
 import type { User, Session } from "@prisma/client";
 
+const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 31; // 31 days
+const SESSION_RENEWAL_THRESHOLD_MS = 1000 * 60 * 60 * 24 * 15; // 15 days (half of session duration)
+
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
 	crypto.getRandomValues(bytes);
@@ -18,7 +21,7 @@ export async function createSession(token: string, userID: string): Promise<Sess
 		data: {
 			id: sessionID,
 			userID: userID,
-			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31)
+			expiresAt: new Date(Date.now() + SESSION_DURATION_MS)
 		}
 	});
 	return session;
@@ -47,17 +50,16 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		return { session: null, user: null };
 	}
 	
-	// Renew session if it's past half its lifetime (15 days for 31 day sessions)
-	const sessionAge = Date.now() - (session.expiresAt.getTime() - (1000 * 60 * 60 * 24 * 31));
-	const renewalThreshold = 1000 * 60 * 60 * 24 * 15; // 15 days
+	// Renew session if it's past half its lifetime
+	const sessionAge = Date.now() - (session.expiresAt.getTime() - SESSION_DURATION_MS);
 	
-	if (sessionAge > renewalThreshold) {
+	if (sessionAge > SESSION_RENEWAL_THRESHOLD_MS) {
 		await db.session.update({
 			where: {
 				id: sessionID
 			},
 			data: {
-				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31)
+				expiresAt: new Date(Date.now() + SESSION_DURATION_MS)
 			}
 		});
 	}
