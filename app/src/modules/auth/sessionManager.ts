@@ -46,6 +46,22 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		});
 		return { session: null, user: null };
 	}
+	
+	// Renew session if it's past half its lifetime (15 days for 31 day sessions)
+	const sessionAge = Date.now() - (session.expiresAt.getTime() - (1000 * 60 * 60 * 24 * 31));
+	const renewalThreshold = 1000 * 60 * 60 * 24 * 15; // 15 days
+	
+	if (sessionAge > renewalThreshold) {
+		await db.session.update({
+			where: {
+				id: sessionID
+			},
+			data: {
+				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 31)
+			}
+		});
+	}
+	
 	return { session, user };
 }
 

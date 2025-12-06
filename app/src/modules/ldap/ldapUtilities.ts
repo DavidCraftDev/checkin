@@ -42,12 +42,14 @@ async function updateUserData(ldapData: Entry[]) {
     lastUpdate = dayjs();
     const dbData = await db.user.findMany({ where: { password: null } })
     const existUser: Array<string> = new Array()
-    await Promise.all(dbData.map(async (entry) => {
+    
+    // Use Promise.allSettled to handle errors gracefully
+    const updateResults = await Promise.allSettled(dbData.map(async (entry) => {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
             await db.user.delete({ where: { id: entry.id } })
             logger.info("User Deleted: " + entry.username, "LDAP-Utilities")
-            return
+            return null;
         }
         let { permission, groups, needs, competence, coursesData } = readLDAPUserData(ldapUser, entry)
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
@@ -73,34 +75,57 @@ async function updateUserData(ldapData: Entry[]) {
                 pwdLastSet: new Date(pwdLastSet)
             }
         })
-        existUser.push(user.id)
-    }))
+        return user.id;
+    }));
+    
+    // Collect successful updates and log errors
+    updateResults.forEach((result, index) => {
+        if (result.status === 'fulfilled' && result.value) {
+            existUser.push(result.value);
+        } else if (result.status === 'rejected') {
+            logger.error("Error updating user: " + result.reason, "LDAP-Utilities");
+        }
+    });
+    
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
     const createData: any[] = new Array();
-    newUser.map(async (entry) => {
-        let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
-        if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
-            const competences = await getTeacherCompetenceFile();
-            if (competences) {
-                const teacher = competences[String(entry.sAMAccountName).toLowerCase()]
-                if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
+    
+    // Process new users sequentially to avoid race conditions
+    for (const entry of newUser) {
+        try {
+            let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
+            if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
+                const competences = await getTeacherCompetenceFile();
+                if (competences) {
+                    const teacher = competences[String(entry.sAMAccountName).toLowerCase()]
+                    if (teacher) competence = { competence: Array.from(new Set([...competence.competence, ...teacher])) }
+                }
             }
+            const pwdLastSet = (Number(entry.pwdLastSet) / 10000) - 11644473600000
+            createData.push({
+                id: String(entry.objectGUID),
+                username: String(entry.sAMAccountName).toLowerCase(),
+                displayname: String(entry.displayName),
+                ...permission,
+                ...groups,
+                ...needs,
+                ...competence,
+                ...coursesData,
+                pwdLastSet: new Date(pwdLastSet)
+            })
+            logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
+        } catch (error) {
+            logger.error("Error preparing user creation for " + entry.sAMAccountName + ": " + error, "LDAP-Utilities");
         }
-        const pwdLastSet = (Number(entry.pwdLastSet) / 10000) - 11644473600000
-        createData.push({
-            id: String(entry.objectGUID),
-            username: String(entry.sAMAccountName).toLowerCase(),
-            displayname: String(entry.displayName),
-            ...permission,
-            ...groups,
-            ...needs,
-            ...competence,
-            ...coursesData,
-            pwdLastSet: new Date(pwdLastSet)
-        })
-        logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
-    })
-    await db.user.createMany({ data: createData })
+    }
+    
+    if (createData.length > 0) {
+        try {
+            await db.user.createMany({ data: createData })
+        } catch (error) {
+            logger.error("Error creating users: " + error, "LDAP-Utilities");
+        }
+    }
 }
 
 function readLDAPUserData(ldapUser: Entry, dbUser?: User) {

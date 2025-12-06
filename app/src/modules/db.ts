@@ -9,9 +9,10 @@ const db = new PrismaClient().$extends({
                     return await query(args);
                 } catch (error) {
                     const data = error as Prisma.PrismaClientUnknownRequestError;
-                    data.message
                     logger.error(data.message, "Database");
-                    return;
+                    // Re-throw the error instead of returning undefined
+                    // This ensures errors are properly propagated and handled
+                    throw error;
                 }
             },
         },

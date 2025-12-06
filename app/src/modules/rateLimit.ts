@@ -9,8 +9,31 @@ interface rateLimtsType {
 
 class RateLimit {
     private rateLimits: rateLimtsType = {};
+    private lastCleanup: Date = new Date();
+    private readonly CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+    private readonly ENTRY_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
+
+    private cleanup(): void {
+        const now = new Date();
+        if (now.getTime() - this.lastCleanup.getTime() < this.CLEANUP_INTERVAL_MS) {
+            return;
+        }
+        
+        this.lastCleanup = now;
+        const cutoff = now.getTime() - this.ENTRY_EXPIRY_MS;
+        
+        // Remove expired entries to prevent memory leak
+        for (const ip in this.rateLimits) {
+            if (this.rateLimits[ip].lastRequest.getTime() < cutoff) {
+                delete this.rateLimits[ip];
+            }
+        }
+    }
 
     public rateLimit(ip: string): Boolean {
+        // Periodically cleanup old entries
+        this.cleanup();
+        
         if (!this.rateLimits[ip]) {
             this.rateLimits[ip] = {
                 requests: 1,
