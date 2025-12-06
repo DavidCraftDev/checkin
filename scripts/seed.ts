@@ -2,13 +2,14 @@ import 'dotenv/config';
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
+const { Pool } = pg;
 import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
 import logger from "../app/src/modules/logger";
 import { cleanUpData } from "./cleanUp";
 import { config_data } from "../app/src/modules/data/config";
 
-const pool = new pg.Pool({ connectionString: process.env.POSTGRES_URL });
+const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 

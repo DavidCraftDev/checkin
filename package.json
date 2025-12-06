@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update": "prisma generate && next build && prisma migrate deploy && prisma db seed"
+    "generate": "prisma generate && npm run postgenerate",
+    "update": "npm run generate && next build && prisma migrate deploy && prisma db seed",
+    "postgenerate": "node scripts/postgenerate.mjs"
   },
   "dependencies": {
     "@heroicons/react": "2.2.0",
