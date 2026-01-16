@@ -7,6 +7,7 @@ import { FormEvent, useEffect, useState } from "react";
 import getPasswordResetURL from "./passwordReset";
 import React from "react";
 import { login } from "../src/modules/auth/loginManager";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 function LoginPage() {
   const router = useRouter();
@@ -73,7 +74,10 @@ function LoginPage() {
 
           {passwordResetURL ? <a href={passwordResetURL} className="text-gray-400 text-xs ml-5 hover:underline" style={{ marginTop: "-3px" }}>Passwort vergessen?</a> : null}
 
-          <button type="submit" className="btn">Anmelden</button>
+          <button type="submit" className="btn flex justify-center items-center gap-2" disabled={disabled}>
+            {disabled && <ArrowPathIcon className="h-5 w-5 animate-spin" />}
+            {disabled ? "Anmelden..." : "Anmelden"}
+          </button>
         </div>
       </form>
       <Toaster richColors />
