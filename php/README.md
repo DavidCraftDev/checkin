@@ -151,7 +151,10 @@ php/
 - Passwords are hashed using bcrypt
 - Sessions use secure, HTTP-only cookies
 - SQL queries use prepared statements (PDO)
-- CSRF protection should be added for production use
+- CSRF protection **is not yet implemented** in this PHP backend
+  - For any production deployment, you **must** add CSRF protection for all state-changing endpoints (POST/PUT/PATCH/DELETE) that rely on cookie-based sessions.
+  - A common approach is the synchronizer token pattern: generate a random CSRF token per session, store it server-side, and require it to be sent with each modifying request (e.g., in a hidden form field or custom HTTP header), then validate it before processing the request.
+  - You can either implement this yourself in a middleware/`SessionManager` layer or use a well-known library (for example, Symfony's CSRF component or another PHP CSRF library) and ensure all relevant controllers validate the token.
 
 ## Comparison with TypeScript Version
 

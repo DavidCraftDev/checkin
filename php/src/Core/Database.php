@@ -51,9 +51,14 @@ class Database
 
     public static function query(string $sql, array $params = []): \PDOStatement
     {
-        $stmt = self::getConnection()->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
+        try {
+            $stmt = self::getConnection()->prepare($sql);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log('Database query failed: ' . $e->getMessage() . ' | SQL: ' . $sql);
+            throw new \Exception('Database query failed: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public static function fetchAll(string $sql, array $params = []): array

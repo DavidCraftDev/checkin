@@ -44,12 +44,19 @@ class UserOverviewController
             [$userID, $startCW, $endCW]
         );
 
+        // Safely decode group field with error handling
+        $rawGroup = $userData['group'] ?? '[]';
+        $decodedGroup = json_decode($rawGroup, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($decodedGroup)) {
+            $decodedGroup = [];
+        }
+
         Response::json([
             'user' => [
                 'id' => $userData['id'],
                 'username' => $userData['username'],
                 'displayname' => $userData['displayname'],
-                'group' => json_decode($userData['group'] ?? '[]'),
+                'group' => $decodedGroup,
                 'permission' => $userData['permission']
             ],
             'attendances' => $attendances,

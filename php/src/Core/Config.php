@@ -38,7 +38,18 @@ class Config
 
         // Load from file if exists
         if (file_exists(self::$configPath)) {
-            $loadedConfig = json_decode(file_get_contents(self::$configPath), true);
+            $fileContents = file_get_contents(self::$configPath);
+            $loadedConfig = [];
+
+            if ($fileContents !== false && $fileContents !== '') {
+                $decodedConfig = json_decode($fileContents, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedConfig)) {
+                    $loadedConfig = $decodedConfig;
+                } else {
+                    error_log('Failed to parse config file: ' . json_last_error_msg());
+                }
+            }
+            
             self::$config = array_replace_recursive($defaultConfig, $loadedConfig);
         } else {
             self::$config = $defaultConfig;

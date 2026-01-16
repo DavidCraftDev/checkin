@@ -63,6 +63,10 @@ class SessionManager
 
     public static function setSessionCookie(string $sessionId, int $expiresAt): void
     {
+        // Check for HTTPS via standard variable or X-Forwarded-Proto header (for proxies)
+        $isSecure = isset($_SERVER['HTTPS']) || 
+                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
         setcookie(
             'session',
             $sessionId,
@@ -71,7 +75,7 @@ class SessionManager
                 'path' => '/',
                 'httponly' => true,
                 'samesite' => 'Lax',
-                'secure' => isset($_SERVER['HTTPS'])
+                'secure' => $isSecure
             ]
         );
     }

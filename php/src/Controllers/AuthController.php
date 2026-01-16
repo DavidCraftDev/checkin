@@ -10,7 +10,17 @@ class AuthController
 {
     public function login(): void
     {
-        $input = json_decode(file_get_contents('php://input'), true);
+        $rawBody = file_get_contents('php://input');
+        $input = json_decode($rawBody, true);
+
+        if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
+            Response::error('Invalid JSON in request body: ' . json_last_error_msg(), 400);
+        }
+
+        if (!is_array($input)) {
+            Response::error('Invalid request body format', 400);
+        }
+
         $username = $input['username'] ?? '';
         $password = $input['password'] ?? '';
 

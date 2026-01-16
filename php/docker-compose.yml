@@ -9,7 +9,8 @@ services:
       - TZ=Europe/Berlin
       - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
       - DEFAULT_LOGIN_USERNAME=admin
-      - DEFAULT_LOGIN_PASSWORD=SecurePassword123!
+      # IMPORTANT: Change DEFAULT_LOGIN_PASSWORD for any non-development (production/staging) deployment.
+      - DEFAULT_LOGIN_PASSWORD=CHANGE_ME_IN_PRODUCTION
       - MAINTENANCE=false
     ports:
       - "8080:80"

@@ -10,8 +10,10 @@ class Response
         header('Content-Type: application/json');
         $json = json_encode($data);
         if ($json === false) {
+            // Fallback to plain text if JSON encoding fails
             http_response_code(500);
-            echo json_encode(['error' => 'JSON encoding failed: ' . json_last_error_msg()]);
+            header('Content-Type: text/plain; charset=utf-8');
+            echo 'JSON encoding failed: ' . json_last_error_msg();
         } else {
             echo $json;
         }

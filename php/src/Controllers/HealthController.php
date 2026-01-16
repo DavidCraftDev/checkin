@@ -31,6 +31,8 @@ class HealthController
             ]
         ];
 
-        Response::json($data, 418);
+        // Use standard HTTP status codes: 200 for healthy, 503 for unhealthy
+        $httpStatus = $dbConnected ? 200 : 503;
+        Response::json($data, $httpStatus);
     }
 }
