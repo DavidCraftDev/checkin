@@ -129,9 +129,8 @@
             currentCW--;
             if (currentCW < 1) {
                 currentYear--;
-                // Get max weeks in previous year (52 or 53)
-                const lastDayOfYear = new Date(currentYear, 11, 31);
-                currentCW = utils.getCurrentWeek.call({ getFullYear: () => currentYear, getTime: () => lastDayOfYear.getTime() }) || 52;
+                // Most years have 52 weeks, some have 53
+                currentCW = 52;
             }
             updateDisplay();
             loadEvents();
@@ -139,8 +138,8 @@
 
         document.getElementById('nextWeekBtn').addEventListener('click', () => {
             currentCW++;
-            const maxWeeks = 53; // ISO 8601 allows up to 53 weeks
-            if (currentCW > maxWeeks) {
+            // Allow up to week 53 per ISO 8601
+            if (currentCW > 53) {
                 currentCW = 1;
                 currentYear++;
             }
