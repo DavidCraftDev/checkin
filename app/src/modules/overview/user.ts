@@ -66,18 +66,18 @@ export async function mergeUserDataPerCW(attendances: Attendances[], studyTimeDa
     const data: OverviewUserDataPerCW = {};
 
     // Sort attendances by CW
-    await Promise.all(attendances.map(attendance => {
+    for (const attendance of attendances) {
         const key = `${attendance.created_at.getFullYear()}-${attendance.cw}`;
         if (!data[key]) data[key] = { attendances: [], studyTimeData: { id: "", needs: [], userID: attendance.userID, cw: attendance.cw, year: attendance.created_at.getFullYear() } };
         data[key].attendances.push(attendance);
-    }));
+    }
 
     // Sort study time data by CW
-    await Promise.all(studyTimeData.map(studyTime => {
+    for (const studyTime of studyTimeData) {
         const key = `${studyTime.year}-${studyTime.cw}`;
         if (!data[key]) data[key] = { attendances: [], studyTimeData: studyTime };
         else data[key].studyTimeData = studyTime;
-    }));
+    }
 
     return data;
 }
@@ -117,14 +117,13 @@ export async function sortUserOverviewDataIntoCaterogies(data: OverviewUserDataP
         categoriesPerCW[key].total = studyTimeData.needs.length;
         categories.total += studyTimeData.needs.length;
 
-        await Promise.all(studyTimeData.needs.map(async need => {
+        for (const need of studyTimeData.needs) {
             const attendance = attendances.find(attendance => attendance.type && attendance.type.includes(need));
             if (attendance && attendance.type) {
                 let type = attendance.type;
                 if (type.startsWith("Notiz:")) {
                     categories.notes += 1;
-                }
-                else if (type.startsWith("Vertretung:")) {
+                } else if (type.startsWith("Vertretung:")) {
                     categories.parallel += 1;
                     categoriesPerCW[key].parallel += 1;
                 } else {
@@ -135,7 +134,7 @@ export async function sortUserOverviewDataIntoCaterogies(data: OverviewUserDataP
                 categories.absent += 1;
                 categoriesPerCW[key].absent += 1;
             }
-        }));
+        }
     }
 
     return { categories, categoriesPerCW };
