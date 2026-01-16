@@ -1,23 +1,25 @@
-import { existsSync, readFileSync } from "fs";
-import Papa from "papaparse";
-import path from "path";
-import logger from "../logger";
+// 📚 COURSES DATA MODULE! Course name mappings! 🎓
+import { existsSync, readFileSync } from "fs"; // 📁 File system!
+import Papa from "papaparse"; // 📊 CSV parser! Papa Parse FTW!
+import path from "path"; // 🛤️ Path utilities!
+import logger from "../logger"; // 📝 Logger!
 
+// 🗺️ Course code to full name mapping! The Rosetta Stone of courses! 📖
 const data: Record<string, string> = {
-    "E5": "Englisch",
+    "E5": "Englisch", // 🇬🇧 English courses!
     "E": "Englisch",
     "EG": "Englisch",
-    "D": "Deutsch",
-    "M": "Mathematik",
+    "D": "Deutsch", // 🇩🇪 German!
+    "M": "Mathematik", // 🔢 Math! Numbers and stuff!
     "ME": "Mathematik",
-    "S8": "Spanisch",
+    "S8": "Spanisch", // 🇪🇸 Spanish courses galore!
     "S9": "Spanisch",
     "S0": "Spanisch",
     "S1": "Spanisch",
     "S6": "Spanisch",
     "SA": "Spanisch",
     "SM": "Spanisch",
-    "FR": "Französisch",
+    "FR": "Französisch", // 🇫🇷 French!
     "F6": "Französisch",
     "R0": "Russisch",
     "MU": "Musik",
