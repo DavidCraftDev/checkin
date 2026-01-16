@@ -17,7 +17,7 @@ dayjs.extend(isLeapYear);
 
 async function EventPage(props: { searchParams: Promise<SearchParams> }) {
     const searchParams = await props.searchParams;
-    const user = await getSessionUser();
+    const user = await getSessionUser(Permission.TEACHER);
     const eventID = searchParams.id;
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);

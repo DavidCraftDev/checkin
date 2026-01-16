@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 let lastResult: string
 
 function QRScannerComponent(props: {eventID: string}): JSX.Element {
+  const { eventID } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
   const successAudioRef = useRef<HTMLAudioElement>(null);
   const errorAudioRef = useRef<HTMLAudioElement>(null);
@@ -17,10 +18,10 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
 
   useEffect(() => {
     const checkCamera = async () => {
-      if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
+      if(!(await QrScanner.hasCamera())) router.push(`/dashboard/events/lesson/${eventID}`)
     }
     checkCamera();
-  }, [router, props.eventID]);
+  }, [router, eventID]);
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {
@@ -32,7 +33,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
         return
       }
       const userID = result.data.replace("checkin://", "")
-      const data: string | User = await submitHandler(userID, props.eventID)
+      const data: string | User = await submitHandler(userID, eventID)
       if (typeof data === "string") {
         toast.error(data)
         if (errorAudioRef.current) errorAudioRef.current.play()
@@ -63,7 +64,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
         scanner.stop();
       };
     }
-  }, [props.eventID]);
+  }, [eventID]);
 
   useEffect(() => {
     startScanner();
