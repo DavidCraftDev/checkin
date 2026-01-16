@@ -1,6 +1,6 @@
 "use client";
 
-import QRScannerComponent from '@/app/src/ui/qrScanner';
+import QRScannerComponent from '@/components/qrScanner';
 import { useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { checkinUserHandler, saveTrafficLightFeedback } from './submitHandler';
@@ -15,7 +15,7 @@ function QRScanner({ eventID }: { eventID: string }) {
       toast.error(result);
       errorAudioRef.current?.play();
     } else {
-      toast.success(`${result.displayname} hinzugefügt!`, {
+      toast.success(`${result.displayName} hinzugefügt!`, {
         description: <TrafficLightSelector eventID={eventID} userID={result.id} />,
         duration: 5000,
       });

@@ -1,8 +1,8 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
-import { getUserOverviewDataXLSX } from "@/app/src/modules/export/overview/user/xlsx";
-import { getSortedUserOverviewData } from "@/app/src/modules/overview/user";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import getAttendedEventsXLSX from "@/lib/export/attendedEvents/xlsx";
+import { getUserOverviewDataXLSX } from "@/lib/export/overview/user/xlsx";
+import { getSortedUserOverviewData } from "@/lib/overview/user";
+import { getUserPerID } from "@/lib/users";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 import writeXlsxFile from "write-excel-file/node";
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const { mergedData, sortedData } = overviewData;
 
     // Get the XLSX data (getUserOverviewDataXLSX)
-    let { sheetData, sheetName, columeData } = await getUserOverviewDataXLSX(userData.displayname, sortedData, startCW, startYear, endCW, endYear);
+    let { sheetData, sheetName, columeData } = await getUserOverviewDataXLSX(userData.displayName, sortedData, startCW, startYear, endCW, endYear);
 
     // Add sheet for every Calendar Week
     Object.keys(mergedData).forEach(async (key) => {

@@ -1,6 +1,6 @@
 "use server";
 
-import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
+import { AttendancePerUserPerEvent } from "@/types/events";
 
 function CompletedStudyTimes(props: { attendances: AttendancePerUserPerEvent[] }) {
     // Function to get the name of the study time based on its type

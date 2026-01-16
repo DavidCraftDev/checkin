@@ -1,6 +1,6 @@
 "use client";
 
-import { LessonUnit } from "@/app/src/modules/webuntis/webuntis.types";
+import { LessonUnit } from "@/lib/webuntis/webuntis.types";
 import { User } from "@prisma/client";
 import React, { useState } from "react";
 import { LockButtonComponent } from "./lockButton.component";

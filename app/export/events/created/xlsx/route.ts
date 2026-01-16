@@ -1,4 +1,4 @@
-import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
+import { getCreatedEventsPerUser } from "@/lib/events";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
@@ -6,8 +6,8 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import getEventXLSX from "@/app/src/modules/export/event/xlsx";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import getEventXLSX from "@/lib/export/event/xlsx";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const meta = new Array()
     meta.push([{
         "type": String,
-        "value": "Erstellte Studienzeiten von " + user.displayname,
+        "value": "Erstellte Studienzeiten von " + user.displayName,
         "fontWeight": "bold"
     }])
     meta.push([{
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
         },
         {
             "type": Date,
-            "value": new Date(event.event.created_at),
+            "value": new Date(event.event.createdAt),
             "format": "DD.MM.YYYY HH:mm"
         }])
     }
@@ -108,15 +108,15 @@ export async function GET(request: NextRequest) {
         const eventData = await getEventXLSX(user, event.event, calendarWeek, year)
         sheetData.push(eventData.sheetData)
         columeData.push(eventData.columnData)
-        if (sheetName.includes((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 31))) {
+        if (sheetName.includes((event.event.type + " " + dayjs(event.event.createdAt).format("DD.MM.YYYY")).substring(0, 31))) {
             for (let i = 1; i < 999; i++) {
-                if (!(event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")") {
-                    sheetName.push((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")")
+                if (!(event.event.type + " " + dayjs(event.event.createdAt).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")") {
+                    sheetName.push((event.event.type + " " + dayjs(event.event.createdAt).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetName.push((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 31))
+            sheetName.push((event.event.type + " " + dayjs(event.event.createdAt).format("DD.MM.YYYY")).substring(0, 31))
         }
     }
 

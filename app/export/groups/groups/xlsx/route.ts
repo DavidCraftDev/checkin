@@ -1,5 +1,5 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getGroupsWithUserData } from "@/lib/groups";
 import { NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
@@ -45,7 +45,7 @@ export async function GET() {
     },
     {
         "type": String,
-        "value": user.displayname
+        "value": user.displayName
     }])
     meta.push([{}])
     meta.push([{
@@ -61,7 +61,7 @@ export async function GET() {
     groups.forEach((group) => {
         meta.push([{
             "type": String,
-            "value": group.group,
+            "value": group.groups,
             "wrap": true
         },
         {
@@ -80,7 +80,7 @@ export async function GET() {
         const groupData = new Array()
         groupData.push([{
             "type": String,
-            "value": group.group,
+            "value": group.groups,
             "fontWeight": "bold"
         }])
         groupData.push([{
@@ -109,7 +109,7 @@ export async function GET() {
         },
         {
             "type": String,
-            "value": user.displayname
+            "value": user.displayName
         }])
         groupData.push([{}])
         groupData.push([{
@@ -125,7 +125,7 @@ export async function GET() {
         group.members.forEach((member) => {
             groupData.push([{
                 "type": String,
-                "value": member.displayname
+                "value": member.displayName
             },
             {
                 "type": String,
@@ -133,15 +133,15 @@ export async function GET() {
             }])
         })
         sheetData.push(groupData)
-        if (sheetName.includes(group.group.substring(0, 31))) {
+        if (sheetName.includes(group.groups.substring(0, 31))) {
             for (let i = 1; i < 9999; i++) {
-                if (!sheetName.includes(group.group.substring(0, 27) + " (" + i + ")")) {
-                    sheetName.push(group.group.substring(0, 27) + " (" + i + ")")
+                if (!sheetName.includes(group.groups.substring(0, 27) + " (" + i + ")")) {
+                    sheetName.push(group.groups.substring(0, 27) + " (" + i + ")")
                     break
                 }
             }
         } else {
-            sheetName.push(group.group.substring(0, 31))
+            sheetName.push(group.groups.substring(0, 31))
         }
         columeData.push([
             { width: 20 },

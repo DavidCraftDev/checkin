@@ -1,15 +1,17 @@
 import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getGroupMembers } from "@/app/src/modules/groupUtilities";
-import CalendarWeek from "@/app/src/ui/calendarweek";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getGroupMembers } from "@/lib/groups";
+import CalendarWeek from "@/components/calendarweek";
+import { SearchParams } from "@/types/searchParams";
 import GroupTable from "./groupTable.component";
-import { getAttendedStudyTimesCount } from "@/app/src/modules/studytimeUtilities";
-import { GroupMember } from "@/app/src/interfaces/groups";
+import { getAttendedStudyTimesCount } from "@/lib/studyTime";
+import { GroupMember } from "@/types/groups";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -26,9 +28,11 @@ interface AttendanceCount {
 async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
   const sessionUser = await getSessionUser(1);
-  if (searchParams.groupID && !sessionUser.group.includes(searchParams.groupID) && sessionUser.permission < 2) redirect("/dashboard");
-  const groupID = searchParams.groupID || sessionUser.group[0];
-  if (!groupID) notFound();
+
+  // Use groupId consistently
+  if (searchParams.groupId && !sessionUser.groups.includes(searchParams.groupId) && sessionUser.permission < 2) redirect("/dashboard");
+  const groupId = searchParams.groupId || sessionUser.groups[0];
+  if (!groupId) notFound();
 
   const currentWeek = dayjs().isoWeek();
   const currentYear = dayjs().year();
@@ -36,8 +40,10 @@ async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
   const year = Number(searchParams.year) || currentYear;
   if (cw > dayjs().year(year).isoWeeksInYear() || cw < 1 || year > currentYear || (year == currentYear && cw > currentWeek)) redirect("/dashboard");
 
-  const groupData: GroupMember[] = await getGroupMembers(groupID, cw, year);
+  const groupData: GroupMember[] = await getGroupMembers(groupId, cw, year);
   const studyTimeData: Record<string, AttendanceCount> = {};
+
+  // Using Promise.all with map for async operations
   await Promise.all(groupData.map(async (user) => {
     if (user.user.needs.length === 0 && user.user.permission !== 0) return;
     const { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total } = await getAttendedStudyTimesCount(user.user, cw, year);
@@ -51,27 +57,33 @@ async function GroupPage(props: { searchParams: Promise<SearchParams> }) {
   }));
 
   groupData.sort((a, b) => {
-    const nameA = a.user.displayname.toLowerCase();
-    const nameB = b.user.displayname.toLowerCase();
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-    return 0;
+    const nameA = a.user.displayName.toLowerCase();
+    const nameB = b.user.displayName.toLowerCase();
+    return nameA.localeCompare(nameB);
   });
+
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2">
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1>Gruppe {groupID}</h1>
-          <p>{groupData.length} Schüler</p>
+          <h1 className="text-2xl font-bold">Gruppe {groupId}</h1>
+          <p className="text-gray-500">{groupData.length} Schüler</p>
         </div>
-        <CalendarWeek />
-        <a href={`/dashboard/overview/group/${groupID}?startCW=${cw}&startYear=${year}`} className="btn w-min">Übersicht</a>
+        <div className="flex items-center gap-2">
+            <CalendarWeek />
+            <Link href={`/dashboard/overview/group/${groupId}?startCW=${cw}&startYear=${year}`}>
+                <Button>Übersicht</Button>
+            </Link>
+        </div>
       </div>
+
       <GroupTable user={groupData} cw={cw} year={year} studyTimeData={studyTimeData} />
-      <p>Exportieren als:
-        <a href={`/export/groups/group/json?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.json`} className="hover:underline mx-1">JSON</a>
-        <a href={`/export/groups/group/xlsx?groupID=${groupID}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.xlsx`} className="hover:underline mx-1">XLSX</a>
-      </p>
+
+      <div className="text-sm text-gray-500">
+        Exportieren als:
+        <a href={`/export/groups/group/json?groupId=${groupId}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.json`} className="hover:underline mx-1 text-blue-600">JSON</a>
+        <a href={`/export/groups/group/xlsx?groupId=${groupId}&cw=${cw}&year=${year}`} download={`group${cw}_${year}.xlsx`} className="hover:underline mx-1 text-blue-600">XLSX</a>
+      </div>
     </div>
   );
 }

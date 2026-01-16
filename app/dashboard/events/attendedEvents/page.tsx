@@ -1,11 +1,11 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
-import CalendarWeek from "@/app/src/ui/calendarweek";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getAttendancesPerUser } from "@/lib/events";
+import { getUserPerID } from "@/lib/users";
+import CalendarWeek from "@/components/calendarweek";
 import { notFound, redirect } from "next/navigation";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
+import { SearchParams } from "@/types/searchParams";
 import AttendedEventTable from "./attendedEventsTable.component";
-import { getSavedNeededStudyTimes, saveNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { getSavedNeededStudyTimes, saveNeededStudyTimes } from "@/lib/studyTime";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
@@ -21,11 +21,11 @@ dayjs.extend(isLeapYear);
 async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }) {
     const searchParams = await props.searchParams;
     const sessionUser = await getSessionUser();
-    if (searchParams.userID && sessionUser.permission < 1) redirect("/dashboard");
-    const userID = searchParams.userID || sessionUser.id;
-    const userData = searchParams.userID ? await getUserPerID(userID) : sessionUser;
+    if (searchParams.userId && sessionUser.permission < 1) redirect("/dashboard");
+    const userID = searchParams.userId || sessionUser.id;
+    const userData = searchParams.userId ? await getUserPerID(userID) : sessionUser;
     if (!userData || !userData.id) notFound();
-    if (searchParams.userID && (sessionUser.permission < 2 && sessionUser.group.filter(value => userData.group.includes(value)).length === 0)) redirect("/dashboard");
+    if (searchParams.userId && (sessionUser.permission < 2 && sessionUser.groups.filter(value => userData.groups.includes(value)).length === 0)) redirect("/dashboard");
 
     const currentWeek = dayjs().isoWeek();
     const currentYear = dayjs().year();
@@ -93,7 +93,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Teilgenommene Studienzeiten</h1>
-                    <span>von {userData.displayname} <TrafficLight status={status} /></span>
+                    <span>von {userData.displayName} <TrafficLight status={status} /></span>
                     {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
                     {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
                     {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}

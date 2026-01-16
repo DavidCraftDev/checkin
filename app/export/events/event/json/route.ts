@@ -1,6 +1,6 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getEventPerID } from "@/app/src/modules/eventUtilities";
-import getEventDataJSON from "@/app/src/modules/export/event/json";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getEventPerID } from "@/lib/events";
+import getEventDataJSON from "@/lib/export/event/json";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

@@ -1,4 +1,4 @@
-import { CoursesPerUser } from "@/app/src/modules/courses";
+import { CoursesPerUser } from "@/lib/courses";
 
 function CoursesTable(props: { courses: CoursesPerUser}) {
     const coursesCount = Object.keys(props.courses).length;

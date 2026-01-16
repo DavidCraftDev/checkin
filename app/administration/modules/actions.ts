@@ -1,6 +1,6 @@
 "use server";
 
-import { config_data, readConfig, writeConfig } from "@/app/src/modules/data/config";
+import { config_data, readConfig, writeConfig } from "@/lib/data/config";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/dist/client/components/navigation";
 

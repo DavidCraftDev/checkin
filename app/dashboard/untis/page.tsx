@@ -1,6 +1,6 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { config_data } from "@/app/src/modules/data/config";
-import { getMappedTimetable } from "@/app/src/modules/webuntis/webuntis.mapper";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { config_data } from "@/lib/data/config";
+import { getMappedTimetable } from "@/lib/webuntis/webuntis.mapper";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";

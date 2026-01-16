@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import { importTeacherCompetenceData } from "./actions";
 import { toast } from "sonner";
 

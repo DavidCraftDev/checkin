@@ -1,7 +1,7 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { getSessionUser } from "@/lib/auth/cookieManager";
 import UserCreateForm from "./userCreateForm.component";
 import { redirect } from "next/navigation";
-import { config_data } from "@/app/src/modules/data/config";
+import { config_data } from "@/lib/data/config";
 
 async function UserCreatePage() {
     await getSessionUser(2);

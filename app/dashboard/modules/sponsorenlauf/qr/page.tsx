@@ -1,8 +1,8 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { redirect } from "next/navigation";
 import QRScannerComponent from "./qr.component";
 import { Metadata } from "next";
-import { config_data } from "@/app/src/modules/data/config";
+import { config_data } from "@/lib/data/config";
 
 async function QRScanner() {
     if (!config_data.MODULES.SPONSORENLAUF) redirect("/dashboard");

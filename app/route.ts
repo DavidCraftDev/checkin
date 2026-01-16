@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentSession } from "./src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { redirect } from "next/navigation";
 
 export async function GET(request: NextRequest) {

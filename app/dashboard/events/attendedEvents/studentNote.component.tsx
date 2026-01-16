@@ -40,8 +40,8 @@ function StudentNote(props: { attendance: Attendances }) {
     }, [debouncedNote, props.attendance]);
 
     useEffect(() => {
-        if (textareaRef.current && !props.attendance.studentNote && props.attendance.eventID === "NOTE") textareaRef.current.focus();
-    }, [props.attendance.studentNote, props.attendance.eventID]);
+        if (textareaRef.current && !props.attendance.studentNote && props.attendance.eventId === "NOTE") textareaRef.current.focus();
+    }, [props.attendance.studentNote, props.attendance.eventId]);
     return (
         <td>
             <textarea ref={textareaRef} value={note} onChange={(e) => { setNote(e.target.value); changed.current = true }} placeholder="Schüler Notiz" name="StudentNote" className="border-gray-200 border-2 rounded-md"></textarea>

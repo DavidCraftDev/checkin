@@ -1,6 +1,6 @@
 "use client";
 
-import { SortedData } from "@/app/src/modules/overview/user";
+import { SortedData } from "@/lib/overview/user";
 import { TableOverviewChart } from "../../forms";
 import { User } from "@prisma/client";
 
@@ -23,7 +23,7 @@ function GroupOverviewTable(props: { data: { [key: string]: SortedData }, users:
                             if (user.needs.length === 0 && user.permission !== 0) return null;
                             return (
                                 <tr key={key}>
-                                    <td>{user.displayname}</td>
+                                    <td>{user.displayName}</td>
                                     <td><TableOverviewChart categories={props.data[key].categories} /></td>
                                     <td><a href={`/dashboard/overview/user/${user.id}?startCW=${props.startCW}&startYear=${props.startYear}&endCW=${props.endCW}&endYear=${props.endYear}`} className="hover:underline">Anzeigen</a></td>
                                 </tr>

@@ -1,5 +1,5 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import db from "@/lib/db";
 import { NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
@@ -41,7 +41,7 @@ export async function GET() {
     },
     {
         "type": String,
-        "value": user.displayname
+        "value": user.displayName
     }])
     data.push([{}])
     data.push([{
@@ -77,7 +77,7 @@ export async function GET() {
     users.forEach((userData) => {
         data.push([{
             "type": String,
-            "value": userData.displayname,
+            "value": userData.displayName,
             "wrap": true
         },
         {
@@ -90,7 +90,7 @@ export async function GET() {
         },
         {
             "type": String,
-            "value": userData.group.toString() || "",
+            "value": userData.groups.toString() || "",
             "wrap": true
         },
         {

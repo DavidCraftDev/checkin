@@ -16,7 +16,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
   const router = useRouter()
 
   const checkCamera = async () => {
-    if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
+    if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventId)
   }
 
   useEffect(() => {
@@ -33,13 +33,13 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
         return
       }
       const userID = result.data.replace("checkin://", "")
-      const data: string | User = await submitHandler(userID, props.eventID)
+      const data: string | User = await submitHandler(userID, props.eventId)
       if (typeof data === "string") {
         toast.error(data)
         if (errorAudioRef.current) errorAudioRef.current.play()
       } else {
         if (data.id === userID) {
-          toast.success(`${data.displayname} erfolgreich hinzugefügt`)
+          toast.success(`${data.displayName} erfolgreich hinzugefügt`)
           if (successAudioRef.current) successAudioRef.current.play()
         } else {
           toast.error("Unbekannter Fehler")
@@ -64,7 +64,7 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
         scanner.stop();
       };
     }
-  }, [props.eventID]);
+  }, [props.eventId]);
 
   useEffect(() => {
     startScanner();

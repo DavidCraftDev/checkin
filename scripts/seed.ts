@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
-import logger from "../app/src/modules/logger";
+import logger from '@/lib/logger";
 import { cleanUpData } from "./cleanUp";
-import { config_data } from "../app/src/modules/data/config";
+import { config_data } from '@/lib/data/config";
 
 const prisma = new PrismaClient();
 

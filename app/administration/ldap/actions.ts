@@ -1,10 +1,10 @@
 "use server";
 
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { config_data, writeConfig } from "@/app/src/modules/data/config";
-import db from "@/app/src/modules/db";
-import LDAP from "@/app/src/modules/ldap/ldap";
-import logger from "@/app/src/modules/logger";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { config_data, writeConfig } from "@/lib/data/config";
+import db from "@/lib/db";
+import LDAP from "@/lib/ldap/ldap";
+import logger from "@/lib/logger";
 import { redirect } from "next/navigation";
 
 export async function enableLDAP(): Promise<void> {

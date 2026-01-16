@@ -1,7 +1,7 @@
 "use server";
 
 import TeacherNote from "./teacherNote.component";
-import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
+import { AttendancePerEventPerUser } from "@/types/events";
 import { User } from "@prisma/client";
 import { StudentAttendButton } from "./forms";
 
@@ -28,7 +28,7 @@ function EventTable(props: EventTableProps) {
                     <tbody>
                         {props.attendances.map((attendance: AttendancePerEventPerUser) => (
                             <tr key={attendance.attendance.id}>
-                                <td>{attendance.user.displayname}</td>
+                                <td>{attendance.user.displayName}</td>
                                 <td>{attendance.attendance.attended ? "✅" : "❌"}<StudentAttendButton attendanceID={attendance.attendance.id} attended={attendance.attendance.attended} /></td>
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}

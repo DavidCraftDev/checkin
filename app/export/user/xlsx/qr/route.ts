@@ -1,5 +1,5 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import db from "@/lib/db";
 import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { Columns, SheetData } from "write-excel-file";
@@ -19,8 +19,8 @@ export async function GET() {
     });
     const userData = await Promise.all(users.map(async user => ({
         id: user.id,
-        displayName: user.displayname,
-        group: user.permission === 0 ? user.group[0] || "Keine Klasse" : "Lehrer",
+        displayName: user.displayName,
+        group: user.permission === 0 ? user.groups[0] || "Keine Klasse" : "Lehrer",
         qrCode: await QRCode.toString("checkin://" + user.id, { errorCorrectionLevel: "H", type: "utf8" })
     })));
 
@@ -88,7 +88,7 @@ export async function GET() {
             },
             {
                 type: String,
-                value: user.group,
+                value: user.groups,
                 height: 94,
                 alignVertical: "center",
                 wrap: true
@@ -106,7 +106,7 @@ export async function GET() {
     imagesAll.push(allUserImages);
 
     // Create sheet for every group
-    const groups = Array.from(new Set(userData.map(user => user.group))).sort((a, b) => a.localeCompare(b));
+    const groups = Array.from(new Set(userData.map(user => user.groups))).sort((a, b) => a.localeCompare(b));
     for (const group of groups) {
         const groupSheetData: SheetData = [];
         const groupImages: Image[] = [];
@@ -142,7 +142,7 @@ export async function GET() {
             }
         ]);
 
-        const usersInGroup = userData.filter(u => u.group === group);
+        const usersInGroup = userData.filter(u => u.groups === group);
         for (let i = 0; i < usersInGroup.length; i += 2) {
             const user1 = usersInGroup[i];
             const user2 = usersInGroup[i + 1];

@@ -1,11 +1,11 @@
-import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
-import getEventDataJSON from "@/app/src/modules/export/event/json";
+import { getCreatedEventsPerUser } from "@/lib/events";
+import getEventDataJSON from "@/lib/export/event/json";
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)

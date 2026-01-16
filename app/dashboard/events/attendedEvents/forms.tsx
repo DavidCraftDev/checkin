@@ -2,14 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { createStudyTimeNote, saveSelectedStudyTimeType, saveSelfReflection } from "./actions";
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import { Attendances } from '@prisma/client';
 import { toast } from 'sonner';
 
 export function CreateStudyTimeNote(props: { userID: string, cw: number, year: number }) {
     const router = useRouter();
     async function submitCreateStudyTimeNote(): Promise<void> {
-        const data = await createStudyTimeNote(props.userID, props.cw, props.year);
+        const data = await createStudyTimeNote(props.userId, props.cw, props.year);
         if (data && data.success) toast.success("Notiz erstellt");
         else if (data && data.warning) toast.error(data.warning);
         else if (data && data.error) toast.error(data.error);
@@ -27,7 +27,7 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
     const defaultValue = props.attendance.type || "default";
     const router = useRouter();
     async function submitStudyTimeSelect(type: string): Promise<void> {
-        const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userID, type);
+        const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userId, type);
         if (data && data.success) toast.success("Studienzeit gespeichert");
         else if (data && data.error) toast.error(data.error);
         else toast.error("Ein unbekannter Fehler ist aufgetreten");

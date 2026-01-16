@@ -1,25 +1,29 @@
-"use server";
-
-import { Groups } from "@/app/src/interfaces/groups";
+import { Groups } from "@/types/groups";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 function MyGroupsTable(props: { groups: Groups[] }) {
     return (
         <div className="overflow-x-auto">
-            <div className="table">
-                <table>
-                    <thead>
+            <div className="table w-full">
+                <table className="w-full text-left text-sm text-gray-500">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
-                            <th>Gruppenname</th>
-                            <th>Schüler</th>
-                            <th>Anzeigen</th>
+                            <th className="px-6 py-3">Gruppenname</th>
+                            <th className="px-6 py-3">Schüler</th>
+                            <th className="px-6 py-3">Anzeigen</th>
                         </tr>
                     </thead>
                     <tbody>
                         {props.groups.map((group) => (
-                            <tr key={group.group}>
-                                <td>{group.group}</td>
-                                <td>{group.members} Schüler</td>
-                                <td><a href={`/dashboard/groups/group?groupID=${group.group}`} className="hover:underline">Anzeigen</a></td>
+                            <tr key={group.group} className="bg-white border-b hover:bg-gray-50">
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{group.group}</td>
+                                <td className="px-6 py-4">{group.members} Schüler</td>
+                                <td className="px-6 py-4">
+                                    <Link href={`/dashboard/groups/group?groupId=${group.group}`}>
+                                        <Button variant="outline">Anzeigen</Button>
+                                    </Link>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

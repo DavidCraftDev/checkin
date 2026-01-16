@@ -25,10 +25,10 @@ function UserTable(props: { users: User[] }) {
                     <tbody>
                         {props.users.map((user: User) => (
                             <tr key={user.id}>
-                                <td>{user.displayname}</td>
+                                <td>{user.displayName}</td>
                                 <td>{user.username}</td>
                                 <td>{permissionMap[user.permission]}</td>
-                                <td>{user.group.toString().replaceAll(",", ", ")}</td>
+                                <td>{user.groups.toString().replaceAll(",", ", ")}</td>
                                 <td><a href={`/administration/user/edit?userID=${user.id}`} className="hover:underline">Bearbeiten</a></td>
                             </tr>
                         ))}

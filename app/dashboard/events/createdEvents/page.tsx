@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
-import CalendarWeek from "@/app/src/ui/calendarweek";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getCreatedEventsPerUser } from "@/lib/events";
+import CalendarWeek from "@/components/calendarweek";
+import { SearchParams } from "@/types/searchParams";
 import CreatedEventTable from "./createdEventsTable.component";
 import CreateEventForm from "./createEventForm.component";
 import dayjs from "dayjs";
@@ -32,7 +32,7 @@ async function CreatedEventsPage(props: { searchParams: Promise<SearchParams> })
       <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
         <div>
           <h1>Erstellte Studienzeiten</h1>
-          <p>von {sessionUser.displayname}</p>
+          <p>von {sessionUser.displayName}</p>
         </div>
         <CalendarWeek />
       </div>

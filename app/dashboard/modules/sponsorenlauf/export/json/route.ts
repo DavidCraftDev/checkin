@@ -1,4 +1,4 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { readData } from "../../handler";
 import { NextResponse } from "next/server";
 

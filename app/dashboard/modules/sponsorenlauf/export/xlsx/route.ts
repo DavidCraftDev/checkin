@@ -1,6 +1,6 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { readData } from "../../handler";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getUserPerID } from "@/lib/users";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 import { NextResponse } from "next/server";
@@ -17,8 +17,8 @@ export async function GET() {
             const user = await getUserPerID(userID);
             return {
                 userID: userID,
-                displayName: user.displayname,
-                group: user.permission === 0 ? user.group[0] : "Lehrer",
+                displayName: user.displayName,
+                group: user.permission === 0 ? user.groups[0] : "Lehrer",
                 roundCount: roundCount,
             };
         })
@@ -70,7 +70,7 @@ export async function GET() {
             },
             {
                 type: String,
-                value: user.group
+                value: user.groups
             },
             {
                 type: Number,
@@ -86,7 +86,7 @@ export async function GET() {
         { width: 10 }
     ]);
 
-    const groups = new Set(userData.map(user => user.group));
+    const groups = new Set(userData.map(user => user.groups));
     groups.forEach(group => {
         const groupSheetData: SheetData = [];
         groupSheetData.push([
@@ -109,7 +109,7 @@ export async function GET() {
                 fontWeight: "bold"
             }
         ]);
-        userData.filter(user => user.group === group).forEach(user => {
+        userData.filter(user => user.groups === group).forEach(user => {
             groupSheetData.push([
                 {
                     type: String,

@@ -1,7 +1,7 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getUserOverviewDataXLSX } from "@/app/src/modules/export/overview/user/xlsx";
-import { getGroupUsers } from "@/app/src/modules/group";
-import { getSortedGroupOverviewData } from "@/app/src/modules/overview/group";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getUserOverviewDataXLSX } from "@/lib/export/overview/user/xlsx";
+import { getGroupUsers } from "@/lib/group";
+import { getSortedGroupOverviewData } from "@/lib/overview/group";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
@@ -15,14 +15,14 @@ export async function GET(request: NextRequest) {
 
         // Get search parameters
         const searchParams = request.nextUrl.searchParams;
-        const groupID = searchParams.get("groupID") || user.group[0];
+        const groupID = searchParams.get("groupID") || user.groups[0];
         const startCW = Number(searchParams.get("startCW")) || dayjs().isoWeek();
         const startYear = Number(searchParams.get("startYear")) || dayjs().year();
         const endCW = Number(searchParams.get("endCW")) || startCW;
         const endYear = Number(searchParams.get("endYear")) || startYear;
 
         // Check if the user is allowed to view this data
-        if (!user.group.includes(groupID) && user.permission < 2) return new NextResponse("403 Forbidden", { status: 403 });
+        if (!user.groups.includes(groupID) && user.permission < 2) return new NextResponse("403 Forbidden", { status: 403 });
 
         // Get the overview data
         const overviewData = await getSortedGroupOverviewData(groupID, startCW, startYear, endCW, endYear);
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
                 const totalAttendances = userCategories.normal + userCategories.parallel + userCategories.notes;
                 meta.push([{
                         "type": String,
-                        "value": user.displayname
+                        "value": user.displayName
                 },
                 {
                         "type": Number,
@@ -203,7 +203,7 @@ export async function GET(request: NextRequest) {
                 const user = group.find(user => user.id === key);
                 if (!user) return;
                 if (user.needs.length === 0 && user.permission !== 0) return;
-                const data = await getUserOverviewDataXLSX(user.displayname, sortedData.categoriesPerUser[key], startCW, startYear, endCW, endYear);
+                const data = await getUserOverviewDataXLSX(user.displayName, sortedData.categoriesPerUser[key], startCW, startYear, endCW, endYear);
                 sheetData.push(data.sheetData[0]);
                 sheetName.push(data.sheetName[0]);
                 columeData.push(data.columeData[0]);

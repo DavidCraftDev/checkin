@@ -1,10 +1,10 @@
 "use server";
 
-import { functionResult, disabledType } from "@/app/src/interfaces/utilties";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { createEvent } from "@/app/src/modules/eventUtilities";
-import { createLesson } from "@/app/src/modules/lessonUtilities";
-import logger from "@/app/src/modules/logger";
+import { functionResult, disabledType } from "@/types/utilties";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { createEvent } from "@/lib/events";
+import { createLesson } from "@/lib/lessons";
+import logger from "@/lib/logger";
 import { redirect } from "next/navigation";
 
 let disabled: disabledType = {};
@@ -16,11 +16,11 @@ export async function createStudyTimeHandler(studyTimeType: string): Promise<fun
     try {
         const data = await createEvent(studyTimeType.replace("parallel", "Vertretung"), sessionUser.id);
         if (data.id) {
-            logger.info(`Studienzeit für ${sessionUser.displayname} erstellt (ID: ${data.id} Fach: ${data.type})`, "createStudyTimeHandler");
+            logger.info(`Studienzeit für ${sessionUser.displayName} erstellt (ID: ${data.id} Fach: ${data.type})`, "createStudyTimeHandler");
             redirect(`/dashboard/events/event?id=${data.id}`)
         }
         else {
-            logger.error(`Studienzeit für ${sessionUser.displayname} konnte nicht erstellt werden`, "createStudyTimeHandler");
+            logger.error(`Studienzeit für ${sessionUser.displayName} konnte nicht erstellt werden`, "createStudyTimeHandler");
             return { success: false, error: "Studienzeit konnte nicht erstellt werden" };
         }
     } finally {
@@ -35,11 +35,11 @@ export async function createLessonHandler(lessonType: string): Promise<functionR
     try {
         const data = await createLesson(lessonType)
         if (data.id) {
-            logger.info(`Unterricht für ${sessionUser.displayname} erstellt (ID: ${data.id} Fach: ${data.type})`, "createLessonHandler");
+            logger.info(`Unterricht für ${sessionUser.displayName} erstellt (ID: ${data.id} Fach: ${data.type})`, "createLessonHandler");
             redirect(`/dashboard/events/lesson/${data.id}`)
         }
         else {
-            logger.error(`Unterricht für ${sessionUser.displayname} konnte nicht erstellt werden`, "createLessonHandler");
+            logger.error(`Unterricht für ${sessionUser.displayName} konnte nicht erstellt werden`, "createLessonHandler");
             return { success: false, error: "Unterricht konnte nicht erstellt werden" };
         }
     } finally {

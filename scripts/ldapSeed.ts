@@ -1,5 +1,5 @@
-import logger from "../app/src/modules/logger";
-import { getAllUsers } from "../app/src/modules/ldap/ldapUtilities";
+import logger from '@/lib/logger";
+import { getAllUsers } from '@/lib/ldap/ldapUtilities";
 
 export async function seedLdapData() {
     await getAllUsers()

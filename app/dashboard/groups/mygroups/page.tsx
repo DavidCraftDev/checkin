@@ -1,5 +1,5 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getGroupsFromUser } from "@/app/src/modules/groupUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getGroupsFromUser } from "@/lib/groups";
 import GroupsTable from "./myGroupsTable.component";
 import { redirect } from "next/navigation";
 

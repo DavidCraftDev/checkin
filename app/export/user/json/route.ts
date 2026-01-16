@@ -1,5 +1,5 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {

@@ -1,7 +1,7 @@
-import db from "@/app/src/modules/db"
+import db from "@/lib/db"
 import UserTable from "./userTable.component";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { config_data } from "@/app/src/modules/data/config";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { config_data } from "@/lib/data/config";
 
 async function UserPage() {
     await getSessionUser(2);

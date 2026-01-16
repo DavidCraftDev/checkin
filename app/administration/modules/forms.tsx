@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import { toggleSponsorenlaufModule } from "./actions";
 
 export default function SponsorenlaufModuleCheck(props: { defaultChecked: boolean }) {

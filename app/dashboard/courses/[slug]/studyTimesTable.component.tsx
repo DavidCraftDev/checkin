@@ -1,8 +1,8 @@
 "use client";
 
-import { CourseStudyTimes } from "@/app/src/modules/courses";
-import { formatDate } from "@/app/src/modules/date";
-import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
+import { CourseStudyTimes } from "@/lib/courses";
+import { formatDate } from "@/lib/date";
+import { TeacherPerEvent } from "@/lib/events";
 import { User } from "@prisma/client";
 import { Suspense } from "react";
 import { use } from "react";
@@ -42,14 +42,14 @@ function StudyTimeTableEntry({ students, studyTimesPromise }: { students: User[]
         <>
             {Object.entries(studyTimes).map(([studentID, attendance]) => (
                 <tr key={studentID}>
-                    <td>{students.find(student => student.id === studentID)?.displayname}</td>
+                    <td>{students.find(student => student.id === studentID)?.displayName}</td>
                     <td>{attendance?.type || "Noch keine Studienzeit besucht"}</td>
-                    <td>{teacherPerEvent[attendance?.eventID]?.displayname || ""}</td>
+                    <td>{teacherPerEvent[attendance?.eventId]?.displayName || ""}</td>
                     <td>{attendance?.studentNote || ""}</td>
                     <td>{attendance?.teacherNote || ""}</td>
                     <td>{attendance?.selfReflection || "❓"}</td>
                     <td><TrafficLight status={attendance?.feedback} /></td>
-                    <td>{attendance?.created_at ? formatDate(attendance?.created_at) : ""}</td>
+                    <td>{attendance?.createdAt ? formatDate(attendance?.createdAt) : ""}</td>
                 </tr>
             ))}
         </>

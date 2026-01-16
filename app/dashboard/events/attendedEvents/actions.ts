@@ -1,11 +1,11 @@
 "use server";
 
-import { disabledType, functionResult } from "@/app/src/interfaces/utilties";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
-import { createStudentNote } from "@/app/src/modules/eventUtilities";
-import logger from "@/app/src/modules/logger";
-import { createUserStudyTimeNote, saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
+import { disabledType, functionResult } from "@/types/utilties";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import db from "@/lib/db";
+import { createStudentNote } from "@/lib/events";
+import logger from "@/lib/logger";
+import { createUserStudyTimeNote, saveStudyTimeType } from "@/lib/studyTime";
 import { Attendances } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -47,7 +47,7 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
     if (type === "Löschen" && session.user.permission !== 0) {
-        db.attendances.delete({
+        db.attendance.delete({
             where: {
                 id: attendance.id
             },
@@ -68,13 +68,13 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
 export async function saveSelfReflection(attendance: Attendances, emoji: string): Promise<functionResult> {
     const session = await getCurrentSession();
     if (!session || !session.user) return { success: false, error: "Session not found" };
-    if (session.user.id !== attendance.userID && session.user.permission < 1) {
+    if (session.user.id !== attendance.userId && session.user.permission < 1) {
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
 
     let data;
     try {
-        data = await db.attendances.update({
+        data = await db.attendance.update({
             where: {
                 id: attendance.id
             },

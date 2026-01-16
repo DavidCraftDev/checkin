@@ -1,7 +1,7 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getStudentsPerCourse, getStudyTimesDataForAllCourseMembers } from "@/app/src/modules/courses";
-import { checkDate, getCurrentWeek } from "@/app/src/modules/date";
-import CalendarWeek from "@/app/src/ui/calendarweek";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getStudentsPerCourse, getStudyTimesDataForAllCourseMembers } from "@/lib/courses";
+import { checkDate, getCurrentWeek } from "@/lib/date";
+import CalendarWeek from "@/components/calendarweek";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import StudyTimeTable from "./studyTimesTable.component";

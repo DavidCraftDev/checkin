@@ -1,13 +1,13 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import CalendarWeekRange from "@/app/src/ui/calendarweekRange";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import CalendarWeekRange from "@/components/calendarweekRange";
 import { notFound, redirect } from "next/navigation";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { OverviewChart } from "../../forms";
-import { getGroupUsers } from "@/app/src/modules/group";
-import { getSortedGroupOverviewData } from "@/app/src/modules/overview/group";
+import { getGroupUsers } from "@/lib/group";
+import { getSortedGroupOverviewData } from "@/lib/overview/group";
 import GroupOverviewTable from "./groupOverviewTable.component";
 import { Metadata } from "next";
 
@@ -22,7 +22,7 @@ async function GroupOverviewPage({ params, searchParams }: { params: Promise<{ s
     if (!groupID) notFound();
 
     // Check if user is allowed to view this page
-    if (sessionUser.permission !== 2 && sessionUser.group.find(group => group === groupID) == undefined) redirect("/dashboard/");
+    if (sessionUser.permission !== 2 && sessionUser.groups.find(group => group === groupID) == undefined) redirect("/dashboard/");
 
     // Get all users in group
     const users = await getGroupUsers(groupID);

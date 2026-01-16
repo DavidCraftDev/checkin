@@ -55,7 +55,7 @@ function UserEditForm(props: UserEditFormProps) {
             <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
-                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
+                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayName} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
                     <br />
                     <label htmlFor="username">Nutzername*</label><br />
                     <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username.replace("local/", "")} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required />
@@ -68,7 +68,7 @@ function UserEditForm(props: UserEditFormProps) {
                     </select>
                     <br />
                     <label htmlFor="group">Gruppen (Durch Komma getrennt)</label><br />
-                    <input type="text" name="group" id="group" placeholder="Klasse 14.2" defaultValue={userData.group || ""} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1" />
+                    <input type="text" name="group" id="group" placeholder="Klasse 14.2" defaultValue={userData.groups || ""} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1" />
                     <br />
                     <label htmlFor="needs">Benötigte Studienzeiten (Durch Komma getrennt)</label><br />
                     <input type="text" name="needs" id="needs" placeholder="Deutsch,Mathe,Englisch" defaultValue={userData.needs?.toString() || ""} disabled={config.ldap_auto_studytime_data} className="rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1" />

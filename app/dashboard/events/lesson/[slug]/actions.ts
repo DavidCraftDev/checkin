@@ -1,8 +1,8 @@
 "use server";
 
-import { functionResult } from "@/app/src/interfaces/utilties";
-import db from "@/app/src/modules/db";
-import { createTeacherNote } from "@/app/src/modules/eventUtilities";
+import { functionResult } from "@/types/utilties";
+import db from "@/lib/db";
+import { createTeacherNote } from "@/lib/events";
 import { revalidatePath } from "next/cache";
 
 export async function setTeacherNote(teacherNote: string, attendanceID: string): Promise<functionResult> {
@@ -13,7 +13,7 @@ export async function setTeacherNote(teacherNote: string, attendanceID: string):
 }
 
 export async function setAttendanceStatus(attendanceID: string, status: boolean): Promise<functionResult> {
-    const data = await db.attendances.update({
+    const data = await db.attendance.update({
         where: {
             id: attendanceID
         },

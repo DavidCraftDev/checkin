@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteSessionTokenCookie, getCurrentSession } from "../src/modules/auth/cookieManager";
-import { invalidateSession } from "../src/modules/auth/sessionManager";
+import { deleteSessionTokenCookie, getCurrentSession } from "@/lib/auth/cookieManager";
+import { invalidateSession } from "@/lib/auth/sessionManager";
 import { redirect } from "next/navigation";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {

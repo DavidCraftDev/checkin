@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { toast } from "sonner";
 import SearchBar from "./search.component";
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import TrafficLight from "../attendedEvents/trafficLight";
 
 dayjs.extend(isoWeek);
@@ -15,7 +15,7 @@ dayjs.extend(isoWeek);
 export function DeleteEventButton(props: { eventID: string }) {
     return (
         <p className="text-center">
-            <button onClick={() => handleEventDelete(props.eventID)} className="btn bg-red-700 hover:bg-red-900 m-2 mt-0 text-center">Studienzeit löschen</button>
+            <button onClick={() => handleEventDelete(props.eventId)} className="btn bg-red-700 hover:bg-red-900 m-2 mt-0 text-center">Studienzeit löschen</button>
         </p>
     )
 }
@@ -23,11 +23,11 @@ export function DeleteEventButton(props: { eventID: string }) {
 export function RemoveUserButton(props: { attendance: Attendances, user: User, removeUser: User }) {
     const router = useRouter();
     async function removeUserManager() {
-        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
-        if (!confirm("Möchtest du " + props.removeUser.displayname + " wirklich entfernen?")) return;
+        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.createdAt).year() !== dayjs().year()) return router.refresh();
+        if (!confirm("Möchtest du " + props.removeUser.displayName + " wirklich entfernen?")) return;
         const data = await removeUserHandler(props.attendance, props.user, props.removeUser);
-        if (data && data.id === props.attendance.id) toast.success(props.removeUser.displayname + " erfolgreich entfernt");
-        else toast.error("Fehler beim Entfernen von " + props.removeUser.displayname);
+        if (data && data.id === props.attendance.id) toast.success(props.removeUser.displayName + " erfolgreich entfernt");
+        else toast.error("Fehler beim Entfernen von " + props.removeUser.displayName);
         router.refresh();
     }
     return (
@@ -40,11 +40,11 @@ export function RemoveUserButton(props: { attendance: Attendances, user: User, r
 export function CheckinForm(props: { event: Events }) {
     const router = useRouter();
     async function eventHandler(formData: FormData) {
-        if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.created_at).year() !== dayjs().year()) router.refresh();
+        if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.createdAt).year() !== dayjs().year()) router.refresh();
         if (!formData.get("name")) return;
         const data = await handleUserCheckIN(formData.get("name") as string, props.event)
         if (data && data.success && data.data) {
-            toast.success(`${data.data.displayname} erfolgreich hinzugefügt`);
+            toast.success(`${data.data.displayName} erfolgreich hinzugefügt`);
             router.refresh();
         } else if (data && data.error) {
             toast.error(data.error);
@@ -70,7 +70,7 @@ export function CheckinForm(props: { event: Events }) {
 export function TrafficLightSelect(props: { attendance: Attendances }) {
     const router = useRouter();
     async function submitTrafficLightSelect(feedback: string): Promise<void> {
-        const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
+        const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userId);
         if (data && data.success) {
             toast.success("Feedback gespeichert");
         } else if (data && data.error) {

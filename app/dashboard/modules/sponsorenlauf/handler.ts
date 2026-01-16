@@ -1,9 +1,9 @@
 "use server";
 
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getUserPerID } from "@/lib/users";
 import path from "path";
 import fs from "fs/promises";
-import logger from "@/app/src/modules/logger";
+import logger from "@/lib/logger";
 
 const usersCache: Map<string, string> = new Map();
 const roundSavePath = path.join(process.cwd(), "data", "sponsorenlauf.json");
@@ -57,8 +57,8 @@ async function getDisplayName(userID: string): Promise<string | null> {
     }
     const user = await getUserPerID(userID);
     if (user) {
-        usersCache.set(userID, user.displayname);
-        return user.displayname;
+        usersCache.set(userID, user.displayName);
+        return user.displayName;
     }
     return null;
 }

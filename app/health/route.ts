@@ -1,5 +1,5 @@
-import { config_data } from "../src/modules/data/config";
-import db from "../src/modules/db";
+import { config_data } from "@/lib/data/config";
+import db from "@/lib/db";
 
 export async function GET() {
     let dbConnected: boolean

@@ -1,5 +1,5 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getEventPerID } from "@/app/src/modules/eventUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getEventPerID } from "@/lib/events";
 import { redirect } from "next/navigation";
 import QRScannerComponent from "./qr.component";
 import dayjs from "dayjs";
@@ -17,11 +17,11 @@ async function QRScanner({ params }: { params: Promise<{ slug: string }> }) {
     const eventID = (await params).slug;
     const event = await getEventPerID(eventID);
     if (!event || !event.id || event.user !== user.id) redirect("/dashboard/");
-    if (event.cw !== dayjs().isoWeek() || dayjs(event.created_at).year() !== dayjs().year()) redirect("/dashboard/");
+    if (event.cw !== dayjs().isoWeek() || dayjs(event.createdAt).year() !== dayjs().year()) redirect("/dashboard/");
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2 mb-4">
-                <h1>QR Code Scanner: {event.type.replace("Unterricht:", "")} {user.displayname}</h1>
+                <h1>QR Code Scanner: {event.type.replace("Unterricht:", "")} {user.displayName}</h1>
                 <a className="btn w-max h-min place-self-center items-center mt-2 md:mt-0" href={`/dashboard/events/lesson/${eventID}`}>Zurück zur Unterrichtsstunde</a>
             </div>
             <QRScannerComponent eventID={eventID} />

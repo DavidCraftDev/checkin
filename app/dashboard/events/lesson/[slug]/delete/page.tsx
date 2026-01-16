@@ -1,16 +1,16 @@
-import db from "@/app/src/modules/db";
-import logger from "@/app/src/modules/logger";
+import db from "@/lib/db";
+import logger from "@/lib/logger";
 import { notFound, redirect } from "next/navigation";
 
 export default async function deleteLesson({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     if (!slug) return notFound();
-    await db.attendances.deleteMany({
+    await db.attendance.deleteMany({
         where: {
             eventID: slug
         },
     });
-    await db.events.delete({
+    await db.event.delete({
         where: {
             id: slug
         },

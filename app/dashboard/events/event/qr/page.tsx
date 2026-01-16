@@ -1,6 +1,6 @@
-import { SearchParams } from "@/app/src/interfaces/searchParams";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getEventPerID } from "@/app/src/modules/eventUtilities";
+import { SearchParams } from "@/types/searchParams";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getEventPerID } from "@/lib/events";
 import { redirect } from "next/navigation";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -20,11 +20,11 @@ async function QRScannerPage(props: { searchParams: Promise<SearchParams> }) {
     if (!searchParams.id) redirect("/dashboard/");
     const event = await getEventPerID(searchParams.id);
     if (!event || !event.id || event.user !== user.id) redirect("/dashboard/");
-    if (event.cw !== dayjs().isoWeek() || dayjs(event.created_at).year() !== dayjs().year()) redirect("/dashboard/");
+    if (event.cw !== dayjs().isoWeek() || dayjs(event.createdAt).year() !== dayjs().year()) redirect("/dashboard/");
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2 mb-4">
-                <h1>QR Code Scanner: {event.type} {user.displayname}</h1>
+                <h1>QR Code Scanner: {event.type} {user.displayName}</h1>
                 <a className="btn w-max h-min place-self-center items-center mt-2 md:mt-0" href={`/dashboard/events/event?id=${searchParams.id}`}>Zurück zur Studienzeit</a>
             </div>
             <QRScanner eventID={event.id} />

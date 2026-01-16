@@ -1,5 +1,5 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getGroups } from "@/app/src/modules/groupUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getGroups } from "@/lib/groups";
 import GroupsTable from "./groupsTable.component";
 
 async function GroupsPage() {

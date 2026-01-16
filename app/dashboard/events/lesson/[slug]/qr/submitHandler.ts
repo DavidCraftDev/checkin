@@ -1,8 +1,8 @@
 "use server";
 
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getEventPerID } from "@/app/src/modules/eventUtilities";
-import { setAttendanceStatus } from "@/app/src/modules/lessonUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getEventPerID } from "@/lib/events";
+import { setAttendanceStatus } from "@/lib/lessons";
 import { User } from "@prisma/client";
 import dayjs from "dayjs";
 

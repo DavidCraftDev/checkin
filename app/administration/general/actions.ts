@@ -1,9 +1,9 @@
 "use server";
 
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { config_data, writeConfig } from "@/app/src/modules/data/config";
-import db from "@/app/src/modules/db";
-import logger from "@/app/src/modules/logger";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { config_data, writeConfig } from "@/lib/data/config";
+import db from "@/lib/db";
+import logger from "@/lib/logger";
 import { redirect } from "next/navigation";
 
 export async function saveSchoolName(formData: FormData): Promise<void> {
@@ -65,8 +65,8 @@ export async function deleteData(): Promise<void> {
     await Promise.all([
         db.studyTimeData.deleteMany(),
         db.session.deleteMany(),
-        db.events.deleteMany(),
-        db.attendances.deleteMany()
+        db.event.deleteMany(),
+        db.attendance.deleteMany()
     ]);
     await logger.info("All data deleted by " + user.username + " (" + user.id + ")", "Administration");
     redirect("/");

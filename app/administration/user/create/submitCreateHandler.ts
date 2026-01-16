@@ -1,6 +1,6 @@
 "use server";
 
-import { createUser } from "@/app/src/modules/userUtilities";
+import { createUser } from "@/lib/users";
 
 export async function submitCreateHandler(formdata: FormData) {
     const displayname = formdata.get('displayname') as string || "_";
@@ -13,11 +13,14 @@ export async function submitCreateHandler(formdata: FormData) {
     const needsArray = needsData.split(",") as string[];
     const competenceData = formdata.get('competence') as string || "";
     const competenceArray = competenceData.split(",") as string[];
+
     if (!displayname) return "displayname"
     //Username only letters, numbers and dots
     if (!/^[a-zA-Z0-9.]*$/.test(username)) return "username"
     if (!password) return "password"
+
     const data = await createUser(username, displayname, parseInt(permission), group, needsArray, competenceArray, password)
-    if (!data.id) return "exist"
+
+    if (!data) return "exist"
     return "success"
 }

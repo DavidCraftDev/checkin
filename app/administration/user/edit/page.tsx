@@ -1,14 +1,14 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { getSessionUser } from "@/lib/auth/cookieManager";
 import UserEditForm from "./userEditForm.component";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { SearchParams } from "@/types/searchParams";
+import { getUserPerID } from "@/lib/users";
 import { notFound } from "next/navigation";
 import { User } from "@prisma/client";
-import { config_data } from "@/app/src/modules/data/config";
+import { config_data } from "@/lib/data/config";
 
 async function userEdit(searchParams: { searchParams: Promise<SearchParams> }) {
     await getSessionUser(2);
-    const userData: User = await getUserPerID((await searchParams.searchParams).userID);
+    const userData: User = await getUserPerID((await searchParams.searchParams).userId);
     if (!userData) notFound();
     const config = {
         "use_ldap": config_data.LDAP.ENABLE,

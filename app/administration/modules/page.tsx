@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import SponsorenlaufModuleCheck from "./forms";
-import { config_data } from "@/app/src/modules/data/config";
+import { config_data } from "@/lib/data/config";
 
 export default async function ModuleSettingsPage() {
     const { session } = await getCurrentSession();

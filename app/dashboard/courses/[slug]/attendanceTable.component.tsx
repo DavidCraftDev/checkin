@@ -1,7 +1,7 @@
 "use client";
 
-import { CourseStudyTimes } from "@/app/src/modules/courses";
-import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
+import { CourseStudyTimes } from "@/lib/courses";
+import { TeacherPerEvent } from "@/lib/events";
 import { User } from "@prisma/client";
 
 export default function AttendanceTable({ students, studyTimesPromise }: { students: User[], studyTimesPromise: Promise<{ studyTimes: CourseStudyTimes, teacherPerEvent: TeacherPerEvent }> }) {

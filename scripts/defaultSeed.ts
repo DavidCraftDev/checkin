@@ -1,5 +1,5 @@
-import { config_data } from "../app/src/modules/data/config";
-import logger from "../app/src/modules/logger";
+import { config_data } from '@/lib/data/config";
+import logger from '@/lib/logger";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 

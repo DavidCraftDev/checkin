@@ -1,5 +1,5 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getGroupsWithUserData } from "@/lib/groups";
 import { NextResponse } from "next/server";
 
 export async function GET() {

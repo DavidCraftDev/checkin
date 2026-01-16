@@ -1,12 +1,12 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
-import CalendarWeekRange from "@/app/src/ui/calendarweekRange";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getUserPerID } from "@/lib/users";
+import CalendarWeekRange from "@/components/calendarweekRange";
 import { notFound, redirect } from "next/navigation";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { getSortedUserOverviewData } from "@/app/src/modules/overview/user";
+import { getSortedUserOverviewData } from "@/lib/overview/user";
 import { OverviewChart } from "../../forms";
 import UserOverviewTable from "./userOverviewTable.component";
 import { Metadata } from "next";
@@ -24,7 +24,7 @@ async function UserOverviewPage({ params, searchParams }: { params: Promise<{ sl
     if (!userData) notFound();
 
     // Check if user is allowed to view this page
-    if (sessionUser.permission !== 2 && userData.group.find(group => sessionUser.group.includes(group)) == undefined) redirect("/dashboard/");
+    if (sessionUser.permission !== 2 && userData.groups.find(group => sessionUser.groups.includes(group)) == undefined) redirect("/dashboard/");
 
     // Decode search params
     const searchParamsData = await searchParams;
@@ -46,8 +46,8 @@ async function UserOverviewPage({ params, searchParams }: { params: Promise<{ sl
         <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <h1>Übersicht {userData.displayname}</h1>
-                    {userData.group ? <p>{userData.group.toLocaleString()}</p> : <p>Keine Gruppenzugehörigkeit</p>}
+                    <h1>Übersicht {userData.displayName}</h1>
+                    {userData.groups ? <p>{userData.groups.toLocaleString()}</p> : <p>Keine Gruppenzugehörigkeit</p>}
                 </div>
                 <CalendarWeekRange />
             </div>

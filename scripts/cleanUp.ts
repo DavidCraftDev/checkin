@@ -1,4 +1,4 @@
-import logger from "../app/src/modules/logger";
+import logger from '@/lib/logger";
 import { PrismaClient } from "@prisma/client";
 
 export async function cleanUpData(prisma: PrismaClient) {

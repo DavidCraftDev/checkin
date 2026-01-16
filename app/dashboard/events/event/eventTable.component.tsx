@@ -1,7 +1,7 @@
 "use server";
 
 import TeacherNote from "./teacherNote.component";
-import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
+import { AttendancePerEventPerUser } from "@/types/events";
 import dayjs from "dayjs";
 import { User } from "@prisma/client";
 import { DeleteEventButton, RemoveUserButton, TrafficLightSelect } from "./forms";
@@ -33,20 +33,20 @@ function EventTable(props: EventTableProps) {
                     <tbody>
                         {props.attendances.map((attendance: AttendancePerEventPerUser) => (
                             <tr key={attendance.attendance.id}>
-                                <td>{attendance.user.displayname}</td>
+                                <td>{attendance.user.displayName}</td>
                                 {attendance.attendance.type ? <td>{attendance.attendance.type}</td> : <td className="italic">Kein Fach ausgewählt</td>}
                                 <td>{attendance.attendance.studentNote}</td>
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td><TrafficLightSelect attendance={attendance.attendance} /></td>
                                 <td>{attendance.attendance.selfReflection || "❓"}</td>
-                                <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
+                                <td>{dayjs(attendance.attendance.createdAt).format("DD.MM. HH:mm")}</td>
                                 {props.addable ? <RemoveUserButton user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 {props.attendances.length === 0 ? <p className="text-center italic m-2">Keine Schüler anwesend</p> : null}
-                {props.attendances.length === 0 ? <DeleteEventButton eventID={props.eventID} /> : null}
+                {props.attendances.length === 0 ? <DeleteEventButton eventID={props.eventId} /> : null}
             </div>
         </div>
     )

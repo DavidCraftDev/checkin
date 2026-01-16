@@ -1,6 +1,6 @@
 "use client";
 
-import { Categories } from "@/app/src/modules/overview/user";
+import { Categories } from "@/lib/overview/user";
 import { TableOverviewChart } from "../../forms";
 
 function UserOverviewTable(props: { data: { [key: string]: Categories }, userID: string }) {
@@ -23,7 +23,7 @@ function UserOverviewTable(props: { data: { [key: string]: Categories }, userID:
                                 <tr key={key}>
                                     <td>{cw + "/" + year}</td>
                                     <td><TableOverviewChart categories={props.data[key]} /></td>
-                                    <td><a href={`/dashboard/events/attendedEvents?userID=${props.userID}&cw=${cw}&year=${year}`} className="hover:underline">Anzeigen</a></td>
+                                    <td><a href={`/dashboard/events/attendedEvents?userID=${props.userId}&cw=${cw}&year=${year}`} className="hover:underline">Anzeigen</a></td>
                                 </tr>
                             )
                         })}

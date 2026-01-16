@@ -1,11 +1,11 @@
 "use server";
 
-import { functionResult } from "@/app/src/interfaces/utilties";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
-import { checkINHandler, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
-import logger from "@/app/src/modules/logger";
-import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
+import { functionResult } from "@/types/utilties";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import db from "@/lib/db";
+import { checkINHandler, createTeacherNote, deleteEmptyEvent } from "@/lib/events";
+import logger from "@/lib/logger";
+import { getUserPerUsername, searchUser } from "@/lib/users";
 import { Attendances, Events, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -33,8 +33,8 @@ export async function searchUserHandler(search: string): Promise<User[]> {
 }
 
 export async function removeUserHandler(attendance: Attendances, user: User, removeUser: User): Promise<Attendances> {
-    logger.info(user.displayname + " hat " + removeUser.displayname + " aus der Studienzeit mit der ID " + attendance.eventID + " entfernt", "Event");
-    return await db.attendances.delete({
+    logger.info(user.displayName + " hat " + removeUser.displayName + " aus der Studienzeit mit der ID " + attendance.eventId + " entfernt", "Event");
+    return await db.attendance.delete({
         where: {
             id: attendance.id
         }
@@ -53,7 +53,7 @@ export async function saveSelectedStudyTimeFeedback(attendanceID: string, status
     if (!sessionUser || sessionUser.permission === 0) {
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
-    const data = await db.attendances.update({
+    const data = await db.attendance.update({
         where: { id: attendanceID },
         data: { feedback: status }
     });

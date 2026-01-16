@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getAttendancesPerEvent, getEventPerID } from "@/lib/events";
 import EventTable from "./eventTable.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -23,13 +23,13 @@ async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const attendances = await getAttendancesPerEvent(eventID);
     const attendedStudents = attendances.filter(attendance => attendance.attendance.attended === true).length;
     const notAttendedStudents = attendances.filter(attendance => attendance.attendance.attended === false).length;
-    const addable = event.cw === dayjs().isoWeek() && dayjs(event.created_at).year() === dayjs().year();
+    const addable = event.cw === dayjs().isoWeek() && dayjs(event.createdAt).year() === dayjs().year();
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>Unterricht {event.type.replace("Unterricht:", "")} {user.displayname}</h1>
-                    <p>am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
+                    <h1>Unterricht {event.type.replace("Unterricht:", "")} {user.displayName}</h1>
+                    <p>am {dayjs(event.createdAt).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
                     <p>{attendedStudents} anwesende Schüler, {notAttendedStudents} abwesende Schüler</p>
                 </div>
                 <div className="flex justify-end items-center gap-2">

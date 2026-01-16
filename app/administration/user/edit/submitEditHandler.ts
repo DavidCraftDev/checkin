@@ -1,7 +1,7 @@
 "use server";
 
-import { config_data } from "@/app/src/modules/data/config";
-import { updateUser } from "@/app/src/modules/userUtilities";
+import { config_data } from "@/lib/data/config";
+import { updateUser } from "@/lib/users";
 
 export async function submitEditHandler(formdata: FormData, id: string) {
     const displayname = formdata.get('displayname') as string;

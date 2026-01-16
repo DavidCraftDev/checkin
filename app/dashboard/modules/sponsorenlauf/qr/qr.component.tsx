@@ -1,6 +1,6 @@
 "use client";
 
-import QRScannerComponent from '@/app/src/ui/qrScanner';
+import QRScannerComponent from '@/components/qrScanner';
 import React from 'react';
 import { increaseRoundCount } from '../handler';
 import { toast } from 'sonner';

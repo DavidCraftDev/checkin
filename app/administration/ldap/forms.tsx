@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import { disableLDAP, enableLDAP, saveLDAPBindCredentials, saveLDAPURI, testLDAPConnection } from "./actions";
 import { useSearchParams } from "next/navigation";
 

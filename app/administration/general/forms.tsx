@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/app/src/ui/submitButton";
+import { SubmitButton } from "@/components/submitButton";
 import { deleteAllSessions, deleteData, enableMaintanceMode, saveDefaultPassword, saveDefaultUsername, saveSchoolName } from "./actions";
 
 export function SchoolNameForm(props: { schoolName: string }) {

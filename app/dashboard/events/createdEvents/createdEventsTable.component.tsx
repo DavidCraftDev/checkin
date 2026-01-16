@@ -1,6 +1,6 @@
 "use server";
 
-import { CreatedEventPerUser } from "@/app/src/interfaces/events";
+import { CreatedEventPerUser } from "@/types/events";
 import dayjs from "dayjs";
 
 function CreatedEventTable(props: { events: CreatedEventPerUser[] }) {
@@ -21,7 +21,7 @@ function CreatedEventTable(props: { events: CreatedEventPerUser[] }) {
                             <tr key={event.event.id}>
                                 <td>{event.event.type}</td>
                                 <td>{event.user}</td>
-                                <td>{dayjs(event.event.created_at).format("DD.MM. HH:mm")}</td>
+                                <td>{dayjs(event.event.createdAt).format("DD.MM. HH:mm")}</td>
                                 <td><a href={`/dashboard/events/event?id=${event.event.id}`} className="hover:underline">Anzeigen</a></td>
                             </tr>
                         ))}

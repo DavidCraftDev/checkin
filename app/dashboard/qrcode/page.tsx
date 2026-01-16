@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import QRCodeComponent from "./qrcode.component";
-import { getCurrentSession } from "../../src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { Metadata } from "next";
 
 async function QRCodePage() {
@@ -11,7 +11,7 @@ async function QRCodePage() {
       <h1>QR-Code</h1>
       <div className="text-center w-full md:w-1/3">
         <QRCodeComponent data={"checkin://" + user.id} />
-        <p>{user.displayname}</p>
+        <p>{user.displayName}</p>
         <p>Nutzername: {user.username}</p>
       </div>
     </div>

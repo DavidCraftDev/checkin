@@ -1,4 +1,4 @@
-import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
+import getAttendedEventsXLSX from "@/lib/export/attendedEvents/xlsx";
 import { NextRequest, NextResponse } from "next/server";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
@@ -6,10 +6,10 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
-import { getGroupUsers } from "@/app/src/modules/group";
-import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getSavedNeededStudyTimes } from "@/lib/studyTime";
+import { getGroupUsers } from "@/lib/group";
+import { getAttendancesPerUser } from "@/lib/events";
 
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
@@ -23,9 +23,9 @@ export async function GET(request: NextRequest) {
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
 
-    const groupID = request.nextUrl.searchParams.get("groupID") || user.group[0]
+    const groupID = request.nextUrl.searchParams.get("groupID") || user.groups[0]
     if (!groupID) return NextResponse.json({ error: "No groupID provided" })
-    if (!user.group.includes(groupID) && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
+    if (!user.groups.includes(groupID) && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
 
     const groupMember = await getGroupUsers(groupID)
 
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     },
     {
         "type": String,
-        "value": user.displayname
+        "value": user.displayName
     },
     {
         "type": String,
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
         const missingStudyTimes = neededStudyTimes.needs.filter((neededStudyTime) => !attendances.find((attendanceData) => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
         meta.push([{
             "type": String,
-            "value": user.displayname,
+            "value": user.displayName,
             "wrap": true
         },
         {

@@ -1,11 +1,11 @@
 "use server";
 
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { checkINHandler, getEventPerID } from "@/lib/events";
 import { User } from "@prisma/client";
 import dayjs from "dayjs";
 import { saveSelectedStudyTimeFeedback } from "../actions";
-import db from "@/app/src/modules/db";
+import db from "@/lib/db";
 
 export async function checkinUserHandler(userID: string, eventID: string) {
     const sessionUser: User = await getSessionUser(1);
@@ -23,7 +23,7 @@ export async function saveTrafficLightFeedback(eventID: string, userID: string, 
     if (!event) return "Die Studienzeit wurde nicht gefunden";
     if (event.cw !== dayjs().isoWeek()) return "Die Studienzeit ist nicht aktuell";
     if (event.user !== sessionUser.id) return "Keine Berechtigung";
-    const attendance = await db.attendances.findFirst({
+    const attendance = await db.attendance.findFirst({
         where: {
             eventID: eventID,
             userID: userID

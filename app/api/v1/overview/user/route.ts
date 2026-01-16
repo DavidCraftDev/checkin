@@ -1,6 +1,6 @@
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { getSortedUserOverviewData } from "@/app/src/modules/overview/user";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
+import { getSortedUserOverviewData } from "@/lib/overview/user";
+import { getUserPerID } from "@/lib/users";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 

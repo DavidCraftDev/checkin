@@ -52,8 +52,8 @@ function UserSearchBar() {
                     {suggestions.length > 0 ? (
                         suggestions.map((suggestion) => (
                             <li key={suggestion.id} onClick={() => handleSuggestionClick(suggestion)} className="px-4 py-2 cursor-pointer hover:rounded-md hover:bg-green-600 hover:text-white">
-                                {suggestion.displayname}
-                                <p className="text-gray-600 text-sm">{suggestion.username + "・" + suggestion.group}</p>
+                                {suggestion.displayName}
+                                <p className="text-gray-600 text-sm">{suggestion.username + "・" + suggestion.groups}</p>
                             </li>
                         ))
                     ) : (<li className="px-4 py-2 text-gray-500">Keine Nutzer gefunden</li>)}

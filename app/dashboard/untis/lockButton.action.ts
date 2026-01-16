@@ -1,8 +1,8 @@
 "use server";
 
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { closeStudyTime } from "@/app/src/modules/webuntis/webuntis.close";
-import { CloseStudyTimeResult } from "@/app/src/modules/webuntis/webuntis.types";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { closeStudyTime } from "@/lib/webuntis/webuntis.close";
+import { CloseStudyTimeResult } from "@/lib/webuntis/webuntis.types";
 
 /**
  * Locks a study time lesson via action

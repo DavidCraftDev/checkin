@@ -1,5 +1,5 @@
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getCoursesForSessionUser } from "@/app/src/modules/courses";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getCoursesForSessionUser } from "@/lib/courses";
 import { Metadata } from "next";
 import CoursesTable from "./coursesTable.component";
 

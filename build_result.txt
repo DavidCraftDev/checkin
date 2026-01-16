@@ -1,0 +1,48 @@
+
+> checkin@1.6.2 build
+> next build
+
+   ▲ Next.js 15.5.9
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./app/dashboard/page.tsx
+Module not found: Can't resolve '@/components/ui/Button'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./components/sidenav.tsx
+Module not found: Can't resolve '@/app/src/ui/nav-links'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/administration/layout.tsx
+
+./components/sidenav.tsx
+Module not found: Can't resolve '../modules/data/config'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/administration/layout.tsx
+
+./lib/export/attendedEvents/json.ts
+Module not found: Can't resolve '../../eventUtilities'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/export/events/attended/json/route.ts
+
+./lib/export/attendedEvents/json.ts
+Module not found: Can't resolve '../../studytimeUtilities'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/export/events/attended/json/route.ts
+
+
+> Build failed because of webpack errors

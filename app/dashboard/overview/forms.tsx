@@ -1,7 +1,7 @@
 "use client";
 
-import { Categories } from "@/app/src/modules/overview/user";
-import CategoryBar from "@/app/src/ui/categoryBar";
+import { Categories } from "@/lib/overview/user";
+import CategoryBar from "@/components/categoryBar";
 
 function getCategoryData(categories: Categories) {
   const data = [

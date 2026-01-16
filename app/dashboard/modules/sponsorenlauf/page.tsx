@@ -1,7 +1,7 @@
-import { config_data } from "@/app/src/modules/data/config";
+import { config_data } from "@/lib/data/config";
 import { redirect } from "next/navigation";
 import { getRoundSaveDataForTable } from "./handler";
-import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/lib/auth/cookieManager";
 import { ResetButton, SponsorenlaufTable } from "./components";
 
 async function SponsorenlaufPage() {

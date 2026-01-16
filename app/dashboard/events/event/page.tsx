@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
+import { getSessionUser } from "@/lib/auth/cookieManager";
+import { getAttendancesPerEvent, getEventPerID } from "@/lib/events";
+import { SearchParams } from "@/types/searchParams";
 import EventTable from "./eventTable.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -24,13 +24,13 @@ async function EventPage(props: { searchParams: Promise<SearchParams> }) {
     if (event.user !== user.id) redirect("/dashboard/");
     if (event.type.startsWith("Unterricht:")) redirect("/dashboard/events/lesson/" + eventID);
     const attendances = await getAttendancesPerEvent(eventID);
-    const addable = event.cw === dayjs().isoWeek() && dayjs(event.created_at).year() === dayjs().year();
+    const addable = event.cw === dayjs().isoWeek() && dayjs(event.createdAt).year() === dayjs().year();
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
-                    <h1>Studienzeit {event.type} {user.displayname}</h1>
-                    <p>erstellt am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
+                    <h1>Studienzeit {event.type} {user.displayName}</h1>
+                    <p>erstellt am {dayjs(event.createdAt).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
                     <p>{attendances.length} anwesende Schüler</p>
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
