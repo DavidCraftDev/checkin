@@ -9,7 +9,7 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next/types";
 import { CheckinForm } from "./forms";
-import { DATE_FORMATS, SPECIAL_EVENT_TYPES } from "@/app/src/constants/permissions";
+import { DATE_FORMATS, Permission, SPECIAL_EVENT_TYPES } from "@/app/src/constants/permissions";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
