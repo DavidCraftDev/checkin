@@ -1,22 +1,27 @@
-import { User } from "@prisma/client";
-import { AttendancePerUserPerEvent } from "./events";
+// 👥 GROUP INTERFACES! Type definitions for groups and members! 🏘️
+import { User } from "@prisma/client"; // 👤 User type from Prisma!
+import { AttendancePerUserPerEvent } from "./events"; // 📊 Event attendance interface!
 
+// 👤 Group member with attendance count! How many times did they show up? 🔢
 export interface GroupMember {
-    user: User;
-    attendances: number;
+    user: User; // 👤 The user!
+    attendances: number; // 📊 Attendance count! 🧮
 }
 
+// 👤 Group member with FULL attendance data! All the details! 📋
 export interface GroupMemberWithAttendanceData {
-    user: User;
-    attendances: AttendancePerUserPerEvent[];
+    user: User; // 👤 The user!
+    attendances: AttendancePerUserPerEvent[]; // 📊 Array of attendance records with events! 📚
 }
 
+// 🏘️ Groups with member count! How big is this group? 👥
 export interface Groups {
-    group: string;
-    members: number;
+    group: string; // 🏷️ Group name!
+    members: number; // 🔢 Number of members! Count 'em! 
 }
 
+// 🏘️ Groups with full user data! The deluxe package! 🌟
 export interface GroupsWithUserData {
-    group: string;
-    members: User[];
+    group: string; // 🏷️ Group name!
+    members: User[]; // 👥 Array of users! The whole squad! 🎪
 }
