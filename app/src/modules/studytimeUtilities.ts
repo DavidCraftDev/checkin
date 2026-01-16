@@ -1,51 +1,64 @@
-import "server-only";
+// 🎓 STUDY TIME UTILITIES! Managing all those study sessions! 📚
+import "server-only"; // 🚫 Server-only! No browser snooping!
 
-import { getAttendancesPerUser } from "./eventUtilities";
-import { Attendances, StudyTimeData, User } from "@prisma/client";
-import db from "./db";
-import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
-import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
-import isLeapYear from "dayjs/plugin/isLeapYear";
-import { disabledType } from "../interfaces/utilties";
-import { getUserPerID } from "./userUtilities";
-import { redirect } from "next/navigation";
-import { getSessionUser } from "./auth/cookieManager";
+// 🎪 Import circus! Bringing in all the helpers! 🎭
+import { getAttendancesPerUser } from "./eventUtilities"; // 📊 Attendance getter!
+import { Attendances, StudyTimeData, User } from "@prisma/client"; // 🎯 Prisma types!
+import db from "./db"; // 🗄️ The database overlord!
+import dayjs from "dayjs"; // 📅 Time wizard!
+import isoWeek from "dayjs/plugin/isoWeek"; // 📆 ISO week plugin!
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear"; // 🗓️ Weeks in year!
+import isLeapYear from "dayjs/plugin/isLeapYear"; // 🦘 Leap year detector!
+import { disabledType } from "../interfaces/utilties"; // 🎨 Type utilities!
+import { getUserPerID } from "./userUtilities"; // 👤 User fetcher!
+import { redirect } from "next/navigation"; // 🧭 Navigation redirect!
+import { getSessionUser } from "./auth/cookieManager"; // 🍪 Session cookie manager!
 
-dayjs.extend(isoWeek);
-dayjs.extend(isoWeeksInYear);
-dayjs.extend(isLeapYear);
+// 🔌 Activate dayjs superpowers! Transform! ⚡
+dayjs.extend(isoWeek); // ⚡ Zap!
+dayjs.extend(isoWeeksInYear); // ⚡ Pow!
+dayjs.extend(isLeapYear); // ⚡ Boom!
 
+// 💾 Cache for saved study time data! Because we're efficient like that! 🚀
 const lastSaveStudyTimeData: disabledType = {};
 
+// 📊 Get attended study times count! Let's crunch those numbers! 🧮
 export async function getAttendedStudyTimesCount(user: User, cw: number, year: number) {
-  let normalStudyTimes = 0;
-  let parallelStudyTimes = 0;
-  let notedStudyTimes = 0;
-  let trafficLightCount = 0;
-  let total = 0;
+  let normalStudyTimes = 0; // 📚 Regular study times counter!
+  let parallelStudyTimes = 0; // 🔀 Parallel/substitute sessions!
+  let notedStudyTimes = 0; // 📝 Noted study times!
+  let trafficLightCount = 0; // 🚦 Traffic light feedback counter!
+  let total = 0; // 🔢 Total attendance count!
+  // 🎯 Fetch and process all attendances! Let's see what you've been up to! 👀
   await getAttendancesPerUser(user.id, cw, year).then((result) => {
-    total = result.length;
+    total = result.length; // 📊 How many in total?
+    // 🔄 Loop through each study time and categorize! Sort 'em out! 📦
     result.forEach((studyTime) => {
-      if (studyTime.attendance.type === null) return;
+      if (studyTime.attendance.type === null) return; // 🤷 No type? Skip it!
+      // 🔀 Is it a substitute/parallel session?
       if (studyTime.attendance.type.startsWith("Vertretung:")) parallelStudyTimes++;
+      // 📝 Is it a noted session?
       else if (studyTime.attendance.type.startsWith("Notiz:")) notedStudyTimes++;
+      // 📚 Otherwise it's a normal study time!
       else normalStudyTimes++;
+      // 🚦 Calculate traffic light score! RED = 3, YELLOW = 2, GREEN = 1! 
       if (studyTime.attendance.feedback === "RED") {
-        trafficLightCount += 3;
+        trafficLightCount += 3; // 🔴 Uh oh! Not good!
       } else if (studyTime.attendance.feedback === "YELLOW") {
-        trafficLightCount += 2;
+        trafficLightCount += 2; // 🟡 Could be better!
       } else {
-        trafficLightCount += 1;
+        trafficLightCount += 1; // 🟢 Looking good!
       }
     });
   });
+  // 💾 Get saved study time data! What's in the vault? 🔐
   const savedStudyTimesData = await getSavedNeededStudyTimes(user, cw, year);
   const savedStudyTimes = savedStudyTimesData && savedStudyTimesData.needs ? savedStudyTimesData.needs as Array<string> : [] as Array<string>;
-  const neededStudyTimes = savedStudyTimes.length || 0;
-  return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total };
+  const neededStudyTimes = savedStudyTimes.length || 0; // 📊 How many do you need?
+  return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total }; // 🎁 Here's your stats package!
 }
 
+// 💾 Save study time type! Marking attendance with style! ✨
 export async function saveStudyTimeType(attendance: Attendances, userID: string, type: string) {
   const check = await db.attendances.findMany({
     where: {

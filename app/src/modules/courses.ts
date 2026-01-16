@@ -1,53 +1,59 @@
+// 📚 COURSES MODULE! Managing all those classes! 🎓
 "use server";
 
-import { Attendances, User } from "@prisma/client";
-import { getSessionUser } from "./auth/cookieManager";
-import db from "./db";
-import { getCurrentWeek, checkDate } from "./date";
-import { getCourseTypeFromName } from "./data/courses";
-import { TeacherPerEvent } from "./eventUtilities";
-import { getUserPerID } from "./userUtilities";
+// 🎪 Import party! Bringing in the essentials! 🎭
+import { Attendances, User } from "@prisma/client"; // 🎯 Prisma types!
+import { getSessionUser } from "./auth/cookieManager"; // 🍪 Cookie monster's helper!
+import db from "./db"; // 🗄️ Database central!
+import { getCurrentWeek, checkDate } from "./date"; // 📅 Date utilities!
+import { getCourseTypeFromName } from "./data/courses"; // 🎓 Course type finder!
+import { TeacherPerEvent } from "./eventUtilities"; // 👨‍🏫 Teacher tracking!
+import { getUserPerID } from "./userUtilities"; // 👤 User getter!
 
+// 🎓 Get all students in a course! Time to take attendance! 📋
 export async function getStudentsPerCourse(courseID: string): Promise<User[]> {
-    // Check if user is allowed to get this data
+    // 🛡️ Check if user is allowed to get this data! Security first! 🔐
     const user = await getSessionUser();
-    if (user.permission < 1) return [];
+    if (user.permission < 1) return []; // 🚫 Not a teacher? No access!
+    // 🔍 Make sure the teacher actually teaches this course! No snooping! 👀
     if (user.permission !== 2 && user.courses.find(course => course === courseID) == undefined) return [];
 
-    // Get all students in course
+    // 🎯 Get all students in course! Fetch the class roster! 📜
     const data = db.user.findMany({
         where: {
             AND: [
-                { permission: 0 },
-                { courses: { has: courseID } }
+                { permission: 0 }, // 👨‍🎓 Only students! permission: 0
+                { courses: { has: courseID } } // 🎯 Must be enrolled in this course!
             ]
         }
     });
 
-    return data;
+    return data; // 🎁 Here's your list of students!
 }
 
+// 📊 Type for courses per user! Dictionary time! 📚
 export type CoursesPerUser = { [course: string]: number };
 
+// 🎓 Get courses for the logged-in user! What do YOU teach? 👨‍🏫
 export async function getCoursesForSessionUser(): Promise<CoursesPerUser> {
-    // Get user data from session & check if user is allowed to get this data
+    // 🍪 Get user data from session & check if user is allowed to get this data!
     const user = await getSessionUser();
-    if (user.permission < 1) return {};
+    if (user.permission < 1) return {}; // 🚫 Not a teacher? Empty object for you!
 
-    // Initialize object to store course data
+    // 📦 Initialize object to store course data! 
     const courses: CoursesPerUser = {};
 
-    // Get student count for each course
+    // 🔢 Get student count for each course! Count 'em up! 🧮
     await Promise.all(user.courses.map(async (course) => {
         const students = await db.user.count({
             where: {
                 AND: [
-                    { permission: 0 },
-                    { courses: { has: course } }
+                    { permission: 0 }, // 👨‍🎓 Students only!
+                    { courses: { has: course } } // 🎯 In this specific course!
                 ]
             }
         });
-        courses[course] = students;
+        courses[course] = students; // 💾 Store the count!
     }));
 
     return courses;
