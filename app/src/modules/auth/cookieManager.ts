@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { SessionValidationResult, validateSessionToken } from "./sessionManager";
 import { redirect } from "next/navigation";
+import { Permission } from "@/app/src/constants/permissions";
 
 export async function setSessionTokenCookie(token: string, expiresAt: Date): Promise<void> {
     (await cookies()).set("session", token, {
@@ -31,7 +32,7 @@ export async function getCurrentSession(): Promise<SessionValidationResult> {
     return result;
 }
 
-export async function getSessionUser(permission: number = 0) {
+export async function getSessionUser(permission: Permission = Permission.STUDENT) {
     const { user, session } = await getCurrentSession();
     if(!session) redirect("/login");
     if (user.permission < permission) redirect("/dashboard");

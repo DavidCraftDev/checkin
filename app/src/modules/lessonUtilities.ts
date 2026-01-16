@@ -5,14 +5,15 @@ import isoweek from "dayjs/plugin/isoWeek";
 import { getSessionUser } from "./auth/cookieManager";
 import db from "./db";
 import { Events, User } from "@prisma/client";
+import { Permission, SPECIAL_EVENT_TYPES } from "../constants/permissions";
 
 dayjs.extend(isoweek);
 
 export async function createLesson(lessonType: string): Promise<Events> {
-    const sessionUser = await getSessionUser(1);
+    const sessionUser = await getSessionUser(Permission.TEACHER);
     const data = await db.events.create({
         data: {
-            type: "Unterricht:" + lessonType,
+            type: SPECIAL_EVENT_TYPES.LESSON_PREFIX + lessonType,
             user: sessionUser.id,
             cw: dayjs().isoWeek()
         }
@@ -22,10 +23,10 @@ export async function createLesson(lessonType: string): Promise<Events> {
             courses: {
                 has: lessonType
             },
-            permission: 0
+            permission: Permission.STUDENT
         }
     });
-    Promise.all(user.map(async (user) => {
+    await Promise.all(user.map(async (user) => {
         await db.attendances.create({
             data: {
                 eventID: data.id,

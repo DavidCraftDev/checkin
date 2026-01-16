@@ -15,13 +15,12 @@ function QRScannerComponent(props: {eventID: string}): JSX.Element {
   const errorAudioRef = useRef<HTMLAudioElement>(null);
   const router = useRouter()
 
-  const checkCamera = async () => {
-    if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
-  }
-
   useEffect(() => {
+    const checkCamera = async () => {
+      if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
+    }
     checkCamera();
-  }, [checkCamera]);
+  }, [router, props.eventID]);
 
   const startScanner = useCallback(async () => {
     async function handleScanResult(result: QrScanner.ScanResult) {

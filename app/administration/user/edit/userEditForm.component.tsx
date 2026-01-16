@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import clsx from "clsx";
 import { submitEditHandler } from "./submitEditHandler";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { User } from "@prisma/client";
 
 interface UserEditFormProps {
@@ -16,10 +16,10 @@ interface UserEditFormProps {
     }
 }
 
-let displaynameError = false
-let usernameError = false
-
 function UserEditForm(props: UserEditFormProps) {
+    const [displaynameError, setDisplaynameError] = useState(false);
+    const [usernameError, setUsernameError] = useState(false);
+    
     let config = props.config
     if (props.userData.username.startsWith("local/")) {
         config.use_ldap = false
@@ -27,22 +27,23 @@ function UserEditForm(props: UserEditFormProps) {
         config.ldap_auto_permission = false
         config.ldap_auto_studytime_data = false
     }
+    
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return;
-        displaynameError = false
-        usernameError = false
+        setDisplaynameError(false);
+        setUsernameError(false);
         const formData = new FormData(event.currentTarget);
         const data = await submitEditHandler(formData, props.userData.id)
         if (data === "displayname") {
-            displaynameError = true
+            setDisplaynameError(true);
             toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
         } else if (data === "username") {
-            usernameError = true
+            setUsernameError(true);
             toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
             return
         } else if (data === "exist") {
-            usernameError = true
+            setUsernameError(true);
             toast.error("Der Nutzername ist bereits belegt")
             return
         } else {
@@ -89,4 +90,3 @@ function UserEditForm(props: UserEditFormProps) {
 }
 
 export default UserEditForm;
-;
