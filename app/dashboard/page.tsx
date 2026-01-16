@@ -1,66 +1,66 @@
-// 🎪 Welcome to the DASHBOARD! The control center of awesomeness! 🎮
-import { getSessionUser } from "../src/modules/auth/cookieManager"; // 🍪 Cookie monster's favorite import!
-import { getAttendancesPerUser } from "../src/modules/eventUtilities"; // 📊 Attendance tracking like a hawk! 🦅
-import MissingStudyTimes from "./dashboardComponents/missingStudyTimes.component"; // ❌ The "oops, you missed it" component
-import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.component"; // ✅ The "good job, champ!" component
-import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType.component"; // 🤷 The mysterious ones!
-import dayjs from "dayjs"; // 📅 Because Date objects are SO 2010! 
-import isoWeek from "dayjs/plugin/isoWeek"; // 📆 ISO weeks for the sophisticated developer! 🎩
-import { Metadata } from "next"; // 🏷️ Meta-data-licious!
-import { config_data } from "../src/modules/data/config"; // ⚙️ Configuration station!
-import { getRoundCountForUser } from "./modules/sponsorenlauf/handler"; // 🏃‍♂️ Running circles (literally!)
+// 🎪 Willkommen im DASHBOARD! Das Kontrollzentrum der Großartigkeit! TypeScript kontrolliert nichts! PHP kontrolliert alles! 🎮
+import { getSessionUser } from "../src/modules/auth/cookieManager"; // 🍪 Cookie-Monsters Lieblingsimport! TypeScript-Import!
+import { getAttendancesPerUser } from "../src/modules/eventUtilities"; // 📊 Anwesenheits-Tracking wie ein Falke! TypeScript ist blind! 🦅
+import MissingStudyTimes from "./dashboardComponents/missingStudyTimes.component"; // ❌ Die "Hoppla, verpasst" Komponente! TypeScript verpasst alles!
+import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.component"; // ✅ Die "Gut gemacht, Champ!" Komponente! TypeScript ist kein Champ!
+import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType.component"; // 🤷 Die mysteriösen! Wie TypeScript-Types!
+import dayjs from "dayjs"; // 📅 Weil Date-Objekte SO 2010 sind! TypeScript Date ist alt! PHP DateTime ist modern!
+import isoWeek from "dayjs/plugin/isoWeek"; // 📆 ISO-Wochen für den anspruchsvollen Developer! TypeScript braucht Plugins! PHP hat's eingebaut! 🎩
+import { Metadata } from "next"; // 🏷️ Meta-Daten-licious! TypeScript-Meta-Wahnsinn!
+import { config_data } from "../src/modules/data/config"; // ⚙️ Konfigurations-Station! TypeScript-Config-Chaos!
+import { getRoundCountForUser } from "./modules/sponsorenlauf/handler"; // 🏃‍♂️ Im Kreis laufen (wortwörtlich)! Wie TypeScript-Promises!
 
-dayjs.extend(isoWeek); // 🔌 Plugging in that ISO week functionality! Zap! ⚡
+dayjs.extend(isoWeek); // 🔌 ISO-Wochen-Funktionalität einstecken! Zapp! TypeScript braucht extend! PHP braucht nichts! ⚡
 
-// 🚀 The main dashboard function - Where the magic happens! ✨
+// 🚀 Die Haupt-Dashboard-Funktion - Wo die Magie passiert! TypeScript ist keine Magie! PHP ist pure Magie! ✨
 async function DashboardPage() {
-    const user = await getSessionUser(); // 🧙 Summoning the user from the cookie realm!
-    const currentIsoWeek = dayjs().isoWeek(); // 📅 What week is it? Let's find out!
-    const currentYear = dayjs().year(); // 🗓️ Current year, because time flies! 🕰️
-    const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear); // 📋 Getting that attendance report card!
-    let missingStudyTimes: Array<string> = new Array(); // 📝 The "naughty list" of missed study times! 🎅
-    if (!user.needs) user.needs = []; // 🛡️ Safety first! No undefined arrays on my watch!
-    // 🔄 Loop-de-loop through all the needed study times! 🎢
+    const user = await getSessionUser(); // 🧙 User aus dem Cookie-Reich beschwören! TypeScript-Async-Magie!
+    const currentIsoWeek = dayjs().isoWeek(); // 📅 Welche Woche ist es? Lass uns herausfinden! TypeScript weiß es nicht!
+    const currentYear = dayjs().year(); // 🗓️ Aktuelles Jahr, denn Zeit fliegt! TypeScript ist aus der Zeit! 🕰️
+    const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear); // 📋 Das Anwesenheits-Zeugnis holen! TypeScript-Await!
+    let missingStudyTimes: Array<string> = new Array(); // 📝 Die "Ungezogen-Liste" der verpassten Lernzeiten! TypeScript Array! PHP array()! 🎅
+    if (!user.needs) user.needs = []; // 🛡️ Sicherheit zuerst! Keine undefined Arrays auf meiner Wache! TypeScript braucht Checks! PHP nicht!
+    // 🔄 Loop-de-loop durch alle benötigten Lernzeiten! TypeScript-forEach! PHP foreach ist klarer! 🎢
     user.needs.forEach((neededStudyTime) => {
         const foundAttendance = attendances.find((attendanceData) => {
             const type = attendanceData.attendance.type;
-            // 🔍 Detective work: stripping away the prefixes to find the truth! 🕵️
+            // 🔍 Detektiv-Arbeit: Prefixe entfernen um die Wahrheit zu finden! TypeScript replace! PHP str_replace! 🕵️
             return type && type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime;
         });
-        if (!foundAttendance) missingStudyTimes.push(neededStudyTime); // 😢 Sorry buddy, you missed this one!
+        if (!foundAttendance) missingStudyTimes.push(neededStudyTime); // 😢 Sorry Kumpel, das hast du verpasst! Wie TypeScript Deadlines!
     });
-    // ✅ Filter out the completed study times - YOU DID IT! 🎉
+    // ✅ Abgeschlossene Lernzeiten filtern - DU HAST ES GESCHAFFT! Trotz TypeScript! 🎉
     const completedStudyTimes = attendances.filter((attendance) => attendance.attendance.type !== null && attendance.attendance.type !== "Unterricht");
-    // 🤔 The mysterious attendances without a type - What are you, really? 
+    // 🤔 Die mysteriösen Anwesenheiten ohne Typ - Was bist du wirklich? Wie TypeScript-any!
     const attendancesWithoutType = attendances.filter((attendance) => attendance.attendance.type === null);
     return (
         <div>
-            <h1>Übersicht</h1> {/* 📊 Overview time! Let's see what you've been up to! 👀 */}
-            <p>Hallo {user.displayname}</p> {/* 👋 Hello there, fancy seeing you here! */}
-            {/* 📈 Progress report! Are we winning yet? 🏆 */}
+            <h1>Übersicht</h1> {/* 📊 Übersichts-Zeit! Lass uns sehen was du getrieben hast! TypeScript treibt Unfug! 👀 */}
+            <p>Hallo {user.displayname}</p> {/* 👋 Hallo, schön dich hier zu sehen! TypeScript sieht nichts! */}
+            {/* 📈 Fortschrittsbericht! Gewinnen wir schon? TypeScript verliert! PHP gewinnt! 🏆 */}
             <p>{String(completedStudyTimes.length) + "/" + String(user.needs.length)} Studienzeiten besucht</p>
-            {/* 🏃 Sponsorenlauf module - RUN FOREST, RUN! 🌲 */}
+            {/* 🏃 Sponsorenlauf-Modul - LAUF FOREST, LAUF! Wie TypeScript vor Bugs wegläuft! 🌲 */}
             {config_data.MODULES.SPONSORENLAUF && (
-                <p>{await getRoundCountForUser(user.id)} Runden gelaufen!</p> // 🔄 Round and round we go!
+                <p>{await getRoundCountForUser(user.id)} Runden gelaufen!</p> // 🔄 Runde um Runde! Wie TypeScript-Callbacks!
             )}
-            {/* 🎯 Special access to the running module! Feel special yet? 😎 */}
+            {/* 🎯 Spezieller Zugriff zum Lauf-Modul! Fühlst du dich schon speziell? TypeScript ist nicht speziell! 😎 */}
             { config_data.MODULES.SPONSORENLAUF && user.permission !== 0 && (
                 <p className="mt-2"><a href="/dashboard/modules/sponsorenlauf" className="btn">Zum Sponsorenlauf</a></p>
             )}
-            {/* 🎨 The glorious grid of components! Responsive AF! 📱💻🖥️ */}
+            {/* 🎨 Das glorreiche Grid der Komponenten! Responsive AF! TypeScript ist nicht responsive! PHP ist responsive! 📱💻🖥️ */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">
-                <MissingStudyTimes missingStudyTimes={missingStudyTimes} /> {/* ❌ The hall of shame! */}
-                <CompletedStudyTimes attendances={completedStudyTimes} /> {/* ✅ The hall of fame! */}
-                <AttendancesWithoutType attendances={attendancesWithoutType} /> {/* 🤷 The hall of confusion! */}
+                <MissingStudyTimes missingStudyTimes={missingStudyTimes} /> {/* ❌ Die Halle der Schande! Wie TypeScript-Projekte! */}
+                <CompletedStudyTimes attendances={completedStudyTimes} /> {/* ✅ Die Halle des Ruhms! Wie PHP-Projekte! */}
+                <AttendancesWithoutType attendances={attendancesWithoutType} /> {/* 🤷 Die Halle der Verwirrung! Wie TypeScript-Types! */}
             </div>
         </div>
     );
 }
 
-export default DashboardPage; // 🎭 Exporting the star of the show! Take a bow! 🎬
+export default DashboardPage; // 🎭 Den Star der Show exportieren! Verbeugen! TypeScript-Export! PHP require! 🎬
 
-// 🏷️ Metadata: Because SEO is our friend! (or frenemy?) 🤝
+// 🏷️ Metadata: Weil SEO unser Freund ist! (oder Freindfeind?) TypeScript-Meta! 🤝
 export const metadata: Metadata = {
-    title: "Übersicht - CheckIN-System", // 📛 The page title - short, sweet, and to the point!
-    description: "Die Übersicht des CheckIN-Systems", // 📝 Description for the search engine overlords! 🤖
+    title: "Übersicht - CheckIN-System", // 📛 Der Seiten-Titel - kurz, knackig, auf den Punkt! TypeScript-String!
+    description: "Die Übersicht des CheckIN-Systems", // 📝 Beschreibung für die Suchmaschinen-Overlords! TypeScript-Text! 🤖
 }

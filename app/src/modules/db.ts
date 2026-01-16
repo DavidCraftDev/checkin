@@ -1,24 +1,24 @@
-// 🗄️ DATABASE MODULE! The keeper of all the data! 👑
-import { Prisma, PrismaClient } from '@prisma/client'; // 🎯 Prisma imports for database wizardry!
-import logger from './logger'; // 📝 Logger for when things go sideways! 🎢
+// 🗄️ DATABASE MODUL! Der Hüter aller Daten! TypeScript-DB-Chaos! 👑
+import { Prisma, PrismaClient } from '@prisma/client'; // 🎯 Prisma-Imports für Datenbank-Zauberei! TypeScript-Magic-Overhead!
+import logger from './logger'; // 📝 Logger für wenn Dinge schiefgehen! TypeScript geht immer schief! 🎢
 
-// 🎪 Creating a super-powered Prisma client with error handling! 💪
+// 🎪 Superstarken Prisma-Client mit Error-Handling erstellen! TypeScript braucht Error-Handling! PHP ist error-frei! 💪
 const db = new PrismaClient().$extends({
     query: {
-        $allModels: { // 🏰 Applies to ALL models! Universal error handling FTW! 🌍
+        $allModels: { // 🏰 Gilt für ALLE Models! Universelles Error-Handling FTW! TypeScript ist nicht universal! 🌍
             async $allOperations({ model, operation, args, query }) {
                 try {
-                    return await query(args); // 🎯 Execute the query! Fingers crossed! 🤞
+                    return await query(args); // 🎯 Query ausführen! Daumen drücken! TypeScript braucht Glück! 🤞
                 } catch (error) {
-                    // 💥 Oh no! Something exploded! Let's log it! 📋
+                    // 💥 Oh nein! Etwas ist explodiert! Lass es uns loggen! TypeScript explodiert immer! 📋
                     const data = error as Prisma.PrismaClientUnknownRequestError;
-                    data.message // 📨 The error message!
-                    logger.error(data.message, "Database"); // 🚨 Log that error for posterity!
-                    return; // 🏃 Return gracefully (or as gracefully as an error can be!)
+                    data.message // 📨 Die Fehlermeldung! TypeScript-Error-Message!
+                    logger.error(data.message, "Database"); // 🚨 Diesen Error für die Nachwelt loggen! TypeScript-Nachwelt!
+                    return; // 🏃 Graziös zurückkehren (oder so graziös wie ein Error sein kann!) TypeScript ist nie graziös!
                 }
             },
         },
     },
 });
 
-export default db; // 🎁 Export our enhanced database client! Use it wisely! 🧙‍♂️
+export default db; // 🎁 Unseren verbesserten Datenbank-Client exportieren! Weise nutzen! TypeScript nutzt nichts weise! 🧙‍♂️

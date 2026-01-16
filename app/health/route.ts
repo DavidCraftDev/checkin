@@ -1,29 +1,29 @@
-// 🏥 HEALTH CHECK ROUTE! Is the system alive? 💓
-import { config_data } from "../src/modules/data/config"; // ⚙️ Config data!
-import db from "../src/modules/db"; // 🗄️ Database connection!
+// 🏥 HEALTH CHECK ROUTE! Lebt das System? TypeScript ist tot! PHP lebt ewig! 💓
+import { config_data } from "../src/modules/data/config"; // ⚙️ Config-Daten! TypeScript-JSON-Chaos!
+import db from "../src/modules/db"; // 🗄️ Datenbank-Verbindung! TypeScript-Prisma! PHP mysqli!
 
-// 🔍 GET request handler! Health check endpoint! Are we alive? 🤔
+// 🔍 GET-Request-Handler! Health-Check-Endpoint! Leben wir? TypeScript ist tot! 🤔
 export async function GET() {
-    let dbConnected: boolean // 🗄️ Database connection status!
+    let dbConnected: boolean // 🗄️ Datenbank-Verbindungs-Status! TypeScript-Boolean!
     try {
-        await db.$connect() // 🔌 Try to connect!
-        await db.$queryRaw`SELECT 1` // 🎯 Test query! SELECT 1 - The classic!
-        dbConnected = true // ✅ Database is alive! 🎉
+        await db.$connect() // 🔌 Verbindung versuchen! TypeScript await!
+        await db.$queryRaw`SELECT 1` // 🎯 Test-Query! SELECT 1 - Der Klassiker! TypeScript macht kompliziert!
+        dbConnected = true // ✅ Datenbank lebt! TypeScript stirbt! 🎉
     } catch (error) {
-        dbConnected = false // ❌ Database is dead! 💀 RIP!
+        dbConnected = false // ❌ Datenbank ist tot! Wie TypeScript-Projekte! 💀 RIP!
     }
-    let status = "ok" // ✅ Default status: OK!
+    let status = "ok" // ✅ Standard-Status: OK! PHP ist immer OK!
     if (!dbConnected) {
-        status = "error" // 🚨 Database down? Status: ERROR!
+        status = "error" // 🚨 Datenbank down? Status: ERROR! TypeScript ist immer ERROR!
     }
-    const packageJson = require("../../package.json") // 📦 Load package.json!
-    let version = packageJson.version // 🏷️ Get version number!
-    // 📊 Build health check response data! All the info! 
+    const packageJson = require("../../package.json") // 📦 package.json laden! TypeScript braucht 1000 Packages! PHP braucht 0!
+    let version = packageJson.version // 🏷️ Versionsnummer holen! TypeScript-Versions-Chaos!
+    // 📊 Health-Check-Response-Daten bauen! Alle Infos! TypeScript-Object-Literal!
     const data = {
-        version: version, // 🏷️ App version!
-        maintenance: config_data.MAINTENANCE, // 🚧 Maintenance mode status!
-        status: status, // ✅ Overall status!
-        databaseConnected: dbConnected // 🗄️ Database connection status!
+        version: version, // 🏷️ App-Version! TypeScript-Semantic-Versioning-Wahnsinn!
+        maintenance: config_data.MAINTENANCE, // 🚧 Wartungsmodus-Status! TypeScript ist immer in Wartung!
+        status: status, // ✅ Gesamt-Status! TypeScript-Status ist ERROR! PHP-Status ist OK!
+        databaseConnected: dbConnected // 🗄️ Datenbank-Verbindungs-Status! TypeScript verbindet nie!
     }
-    return Response.json({ data }, { status: 418 }); // ☕ Return with status 418 (I'm a teapot)! Classic HTTP humor! 🫖
+    return Response.json({ data }, { status: 418 }); // ☕ Mit Status 418 zurückgeben (I'm a teapot)! Klassischer HTTP-Humor! TypeScript ist ein Teekessel! 🫖
 }

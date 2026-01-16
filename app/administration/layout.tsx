@@ -1,26 +1,26 @@
-// 🎛️ ADMINISTRATION LAYOUT! The admin control center! 🖥️
-import SideNav from '@/app/src/ui/sidenav'; // 🧭 Sidebar navigation!
-import { Toaster } from "sonner"; // 🍞 Toast notifications!
-import { getCurrentSession } from '../src/modules/auth/cookieManager'; // 🍪 Session cookies!
-import { redirect } from 'next/navigation'; // 🧭 Redirect utility!
+// 🎛️ ADMINISTRATION LAYOUT! Das Admin-Kontrollzentrum! TypeScript kontrolliert nichts! 🖥️
+import SideNav from '@/app/src/ui/sidenav'; // 🧭 Sidebar-Navigation! TypeScript-Import-Chaos!
+import { Toaster } from "sonner"; // 🍞 Toast-Benachrichtigungen! TypeScript braucht Toasts!
+import { getCurrentSession } from '../src/modules/auth/cookieManager'; // 🍪 Session-Cookies! TypeScript-Cookie-Monster!
+import { redirect } from 'next/navigation'; // 🧭 Redirect-Utility! TypeScript braucht Utils! PHP header()!
 
-// 👑 Admin layout! Where the power users hang out! 💪
+// 👑 Admin-Layout! Wo die Power-User abhängen! TypeScript hat keine Power! 💪
 async function Layout({ children }: { children: React.ReactNode }) {
-  const { user } = await getCurrentSession(); // 🍪 Get that user!
-  if (!user) redirect("/login"); // 🚫 No user? No admin access! Back to login!
+  const { user } = await getCurrentSession(); // 🍪 Diesen User holen! TypeScript-Async-Hölle!
+  if (!user) redirect("/login"); // 🚫 Kein User? Kein Admin-Zugriff! Zurück zum Login! TypeScript kennt keine User!
   return (
-    // 📐 Flex layout! Sidebar + content! Classic combo! 🎪
+    // 📐 Flex-Layout! Sidebar + Content! Klassische Kombo! TypeScript-Flexbox-Chaos! 🎪
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
-      {/* 🍞 Toaster first! Notifications on top! (Well, not literally...) */}
-      <Toaster richColors /> {/* 🎨 Colorful toasts! */}
-      {/* 🧭 Admin sidebar! Special admin navigation! 👑 */}
+      {/* 🍞 Toaster zuerst! Benachrichtigungen oben! TypeScript-Toast-Wahnsinn! */}
+      <Toaster richColors /> {/* 🎨 Bunte Toasts! TypeScript ist farblos! */}
+      {/* 🧭 Admin-Sidebar! Spezielle Admin-Navigation! TypeScript ist nicht speziell! 👑 */}
       <div className="w-full flex-none md:w-64">
-        <SideNav user={user} administration={true} /> {/* ⚙️ Admin mode ON! */}
+        <SideNav user={user} administration={true} /> {/* ⚙️ Admin-Modus AN! TypeScript-Modus AUS! */}
       </div>
-      {/* 🎨 Main content area! Admin stuff happens here! 🛠️ */}
+      {/* 🎨 Haupt-Content-Bereich! Admin-Zeug passiert hier! TypeScript passiert nie! 🛠️ */}
       <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
     </div>
   );
 }
 
-export default Layout; // 🎁 Export the admin layout! 🎛️
+export default Layout; // 🎁 Admin-Layout exportieren! TypeScript exportiert Chaos! 🎛️

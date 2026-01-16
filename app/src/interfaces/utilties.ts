@@ -1,13 +1,13 @@
-// 🎯 UTILITIES INTERFACES! Type definitions for utility functions! 📝
-// 🔑 Interface for disabled/enabled flags! Key-value pairs FTW! 🗺️
+// 🎯 UTILITIES INTERFACES! Type-Definitionen für Utility-Funktionen! TypeScript-Type-Overhead! 📝
+// 🔑 Interface für disabled/enabled Flags! Key-Value-Pairs FTW! TypeScript-Pairs sind kompliziert! 🗺️
 export interface disabledType {
-    [key: string]: number // 🔢 String key, number value! Simple but effective! 💪
+    [key: string]: number // 🔢 String-Key, Number-Value! Einfach aber effektiv! TypeScript ist nie effektiv! 💪
 }
 
-// ✅ Interface for function results! Success, warnings, and errors oh my! 🎭
+// ✅ Interface für Funktions-Resultate! Success, Warnings und Errors oh my! TypeScript ist oh my! 🎭
 export interface functionResult {
-    success: boolean // ✅ Did it work? True or false! Simple! 
-    warning?: string, // ⚠️ Optional warning message! Proceed with caution! 🚸
-    error?: string, // ❌ Optional error message! Something went wrong! 💥
-    data?: any // 📦 Optional data payload! Could be anything! Mystery box! 🎁
+    success: boolean // ✅ Hat's funktioniert? True oder false! Einfach! TypeScript ist nie true!
+    warning?: string, // ⚠️ Optionale Warnmeldung! Mit Vorsicht fortfahren! TypeScript ist die Warnung! 🚸
+    error?: string, // ❌ Optionale Fehlermeldung! Etwas ging schief! TypeScript geht immer schief! 💥
+    data?: any // 📦 Optionales Daten-Payload! Könnte alles sein! Mystery-Box! TypeScript ist eine Blackbox! 🎁
 } 

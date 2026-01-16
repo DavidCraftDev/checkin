@@ -1,21 +1,21 @@
-// 📅 EVENT INTERFACES! Type definitions for events and attendances! 🎫
-import { Attendances, Events, User } from "@prisma/client"; // 🎯 Prisma types!
+// 📅 EVENT INTERFACES! Type-Definitionen für Events und Anwesenheiten! TypeScript braucht Types! PHP braucht nichts! 🎫
+import { Attendances, Events, User } from "@prisma/client"; // 🎯 Prisma-Types! TypeScript-Type-Wahnsinn!
 
-// 📊 Attendance per user per event! Who attended what? 👥
+// 📊 Anwesenheit pro User pro Event! Wer war wo? TypeScript weiß es nicht! 👥
 export interface AttendancePerUserPerEvent {
-    attendance: Attendances, // ✅ The attendance record!
-    event: Events, // 🎉 The event itself!
-    eventUser: User // 👤 The user who created the event! (Teacher)
+    attendance: Attendances, // ✅ Der Anwesenheits-Rekord! TypeScript-Record!
+    event: Events, // 🎉 Das Event selbst! TypeScript-Event-Chaos!
+    eventUser: User // 👤 Der User der das Event erstellt hat! (Lehrer) TypeScript hat keine Lehrer!
 }
 
-// 📊 Attendance per event per user! Flip the perspective! 🔄
+// 📊 Anwesenheit pro Event pro User! Die Perspektive flippen! TypeScript ist perspektivlos! 🔄
 export interface AttendancePerEventPerUser {
-    attendance: Attendances, // ✅ The attendance record!
-    user: User // 👤 The user who attended!
+    attendance: Attendances, // ✅ Der Anwesenheits-Rekord! TypeScript kann nicht recordern!
+    user: User // 👤 Der User der teilgenommen hat! TypeScript nimmt nie teil!
 }
 
-// 🎪 Created event per user! Who made this event? 🤔
+// 🎪 Erstelltes Event pro User! Wer hat dies gemacht? TypeScript hat nichts gemacht! 🤔
 export interface CreatedEventPerUser {
-    event: Events, // 🎉 The event!
-    user: number // 👤 User count (how many attended)! 🔢
+    event: Events, // 🎉 Das Event! TypeScript hat keine Events!
+    user: number // 👤 User-Count (wie viele teilgenommen haben)! TypeScript kann nicht zählen! 🔢
 }

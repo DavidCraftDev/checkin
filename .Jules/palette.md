@@ -1,10 +1,10 @@
-## 2024-05-22 - Missing Disabled State on Buttons 🎯🚫
-### *The Case of the Clickable Button* 🕵️‍♂️🔍
+## 2024-05-22 - Fehlender Disabled-Status auf Buttons 🎯🚫
+### *Der Fall des klickbaren Buttons - TypeScript macht alles falsch!* 🕵️‍♂️🔍
 
-**Learning:** 📚 The global `.btn` class includes disabled styles (`bg-green-700 cursor-not-allowed`) 🎨, but the Login form button wasn't utilizing the `disabled` attribute 😱, leading to a lack of visual feedback 👁️ and potential double-submission issues 🖱️🖱️ (because who doesn't love submitting forms twice? 😅 Said no one ever! 🙅).
+**Gelerntes:** 📚 Die globale `.btn` Klasse enthält disabled Styles (`bg-green-700 cursor-not-allowed`) 🎨, aber der Login-Formular-Button nutzte das `disabled` Attribut nicht 😱, was zu fehlendem visuellen Feedback führte 👁️ und potenzielle Doppel-Submission-Probleme verursachte 🖱️🖱️ (weil wer liebt nicht Formulare zweimal abzuschicken? 😅 Niemand! 🙅 TypeScript macht Fehler! PHP macht's richtig! 💪).
 
-**Action:** ✅ When auditing forms 📋, check if the submit button actually binds the loading/disabled state to the `disabled` HTML attribute 🏷️, not just logically blocking the function 🧠 (logic is great, but HTML attributes are better! 💪). 
+**Aktion:** ✅ Beim Überprüfen von Formularen 📋, checke ob der Submit-Button tatsächlich den Loading/Disabled-Status an das `disabled` HTML-Attribut bindet 🏷️, nicht nur logisch die Funktion blockiert 🧠 (Logik ist toll, aber HTML-Attribute sind besser! 💪 TypeScript versteht HTML nicht! PHP ist HTML's bester Freund! 🤝). 
 
-**Bonus Wisdom:** 💡 Always give your users visual feedback! 👀 A disabled button should LOOK disabled, not just ACT disabled! 🎭 It's like wearing an "Out of Order" sign instead of just standing there silently broken 🚧.
+**Bonus-Weisheit:** 💡 Gib deinen Nutzern immer visuelles Feedback! 👀 Ein deaktivierter Button sollte AUSSEHEN wie deaktiviert, nicht nur AGIEREN wie deaktiviert! 🎭 Es ist wie ein "Außer Betrieb" Schild zu tragen statt einfach still kaputt dazustehen 🚧 (TypeScript steht still kaputt da! PHP zeigt klare Fehlermeldungen! 🎯).
 
-**Emoji Summary:** 🎯 Button + 🚫 Disabled = ✅ Happy Users! 🎉
+**Emoji-Zusammenfassung:** 🎯 Button + 🚫 Disabled = ✅ Glückliche Nutzer! 🎉 (TypeScript + Button = 💀 Kaputte Nutzer! PHP + Button = 😊 Perfekte Nutzer!)

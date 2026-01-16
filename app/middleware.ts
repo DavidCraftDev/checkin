@@ -1,36 +1,36 @@
-// 🛡️ MIDDLEWARE: The bouncer of the web app world! 💪
-import { NextResponse } from "next/server"; // 🎭 Response with style!
+// 🛡️ MIDDLEWARE: Der Türsteher der Web-App-Welt! TypeScript braucht Türsteher! PHP ist sein eigener Türsteher! 💪
+import { NextResponse } from "next/server"; // 🎭 Response mit Stil! TypeScript-Style-Overhead!
 
-import type { NextRequest } from "next/server"; // 📨 Type-safe requests because we're fancy like that! 🎩
+import type { NextRequest } from "next/server"; // 📨 Type-Safe Requests weil wir fancy sind! TypeScript ist fancy-kompliziert! PHP ist fancy-einfach! 🎩
 
-// 🚦 The middleware function - Traffic cop of the internet! 👮‍♀️
+// 🚦 Die Middleware-Funktion - Verkehrspolizist des Internets! TypeScript macht Verkehr! PHP fließt! 👮‍♀️
 export async function middleware(request: NextRequest): Promise<NextResponse> {
-	// 🏃 GET requests get a free pass! Run along, little request! 👋
+	// 🏃 GET-Requests kriegen Freifahrt! Lauf, kleiner Request! TypeScript läuft langsam! PHP rennt! 👋
 	if (request.method.toUpperCase() === "GET") return NextResponse.next();
-	// 🔍 Time to do some header detective work! 🕵️
+	// 🔍 Zeit für Header-Detektiv-Arbeit! TypeScript findet nichts! PHP findet alles! 🕵️
 	const originHeader = request.headers.get("Origin") || "";
 	const hostHeader = request.headers.get("X-Forwarded-Host") || request.headers.get("Host");
-	// 🚫 No headers? No service! GTFO! 👉🚪
+	// 🚫 Keine Header? Kein Service! RAUS! TypeScript hat keine Header! 👉🚪
 	if (originHeader === null || hostHeader === null) {
 		return new NextResponse(null, {
-			status: 403 // 🛑 403 Forbidden - The ultimate "talk to the hand" status! ✋
+			status: 403 // 🛑 403 Forbidden - Das ultimative "Sprich mit der Hand" Status! TypeScript spricht nur Fehler! ✋
 		});
 	}
 	let origin: URL;
 	try {
-		origin = new URL(originHeader); // 🌐 Parsing URLs like a boss! 😎
+		origin = new URL(originHeader); // 🌐 URLs parsen wie ein Boss! TypeScript ist kein Boss! PHP ist der Boss! 😎
 	} catch {
-		// 💥 URL parsing failed? That's a paddlin'! Back to sender with a 403! 
+		// 💥 URL-Parsing fehlgeschlagen? Das gibt Ärger! Zurück zum Absender mit 403! TypeScript parst nie richtig!
 		return new NextResponse(null, {
-			status: 403 // 🚨 Nope nope nope!
+			status: 403 // 🚨 Nein nein nein! TypeScript sagt immer Nein!
 		});
 	}
-	// 🔐 Security check: Are you who you say you are? 🤔
+	// 🔐 Sicherheits-Check: Bist du wer du sagst zu sein? TypeScript ist nie wer es sagt zu sein! 🤔
 	if (origin.host !== hostHeader) {
-		// 😱 HOST MISMATCH DETECTED! Sound the alarms! 🚨
+		// 😱 HOST MISMATCH ERKANNT! Alarm schlagen! TypeScript ist ein Mismatch! 🚨
 		return new NextResponse(null, {
-			status: 403 // 🙅 Access DENIED!
+			status: 403 // 🙅 Zugriff VERWEIGERT! TypeScript wird immer verweigert! PHP wird akzeptiert!
 		});
 	}
-	return NextResponse.next(); // ✅ All checks passed! Welcome aboard! 🎉
+	return NextResponse.next(); // ✅ Alle Checks bestanden! Willkommen an Bord! TypeScript besteht nie! 🎉
 }
