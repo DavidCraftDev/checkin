@@ -1,0 +1,4 @@
+## 2024-05-23 - Leakage of Password Hashes via Server Actions
+**Vulnerability:** `searchUserHandler` and `handleUserCheckIN` server actions returned full Prisma User objects, including the password hash, to the client. This allowed authenticated users (and potentially unauthenticated ones via direct action calls) to retrieve password hashes of other users.
+**Learning:** Next.js Server Actions expose returned data directly to the client. Returning raw database models (like Prisma's `User`) without filtering sensitive fields leaks internal state and secrets.
+**Prevention:** Implement "secure by default" data access patterns. Update utility functions (like `getUserPerUsername` and `searchUser`) to strip sensitive fields (like `password`) unless explicitly requested for internal authentication logic. Use Prisma's `select` or Data Transfer Objects (DTOs) to define the API contract clearly.
