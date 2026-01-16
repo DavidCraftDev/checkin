@@ -185,7 +185,8 @@ class ExportController
         
         $filename = 'attendance_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $userData['username']) . '_' . $year . '.csv';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
@@ -245,7 +246,8 @@ class ExportController
         
         $filename = 'group_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $group) . '_KW' . $cw . '_' . $year . '.csv';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
@@ -363,9 +365,10 @@ class ExportController
             [$userID, $cw]
         );
         
-        $filename = 'attended_events' . $cw . '_' . $year . $userID . '.csv';
+        $filename = 'attended_events_' . $cw . '_' . $year . '_' . $userID . '.xlsx';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
@@ -431,9 +434,10 @@ class ExportController
         
         $events = Database::fetchAll($sql . ' ORDER BY created_at DESC', $params);
         
-        $filename = 'created_events_' . $user['username'] . '_' . $year . '.csv';
+        $filename = 'created_events_' . $user['username'] . '_' . $year . '.xlsx';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
@@ -500,9 +504,10 @@ class ExportController
             [$eventID]
         );
         
-        $filename = 'event_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $event['name']) . '.csv';
+        $filename = 'event_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $event['name']) . '.xlsx';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
@@ -566,8 +571,54 @@ class ExportController
             Response::error('Group ID required', 400);
         }
         
-        $_GET['group'] = $groupID;
-        $this->exportGroupXLSX();
+        $cw = (int)($_GET['cw'] ?? date('W'));
+        $year = (int)($_GET['year'] ?? date('Y'));
+        
+        $users = Database::fetchAll(
+            'SELECT id, username, displayname FROM "User" WHERE ? = ANY("group") ORDER BY displayname',
+            [$groupID]
+        );
+        
+        if (empty($users)) {
+            Response::error('No users found in group', 404);
+        }
+        
+        $userIds = array_column($users, 'id');
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $params = array_merge($userIds, [$cw]);
+        
+        $attendances = Database::fetchAll(
+            "SELECT a.*, u.username, u.displayname FROM \"Attendances\" a 
+             JOIN \"User\" u ON a.\"userID\" = u.id 
+             WHERE a.\"userID\" IN ($placeholders) AND a.cw = ?
+             ORDER BY u.displayname, a.created_at",
+            $params
+        );
+        
+        $filename = 'group_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $groupID) . '_KW' . $cw . '_' . $year . '.xlsx';
+        
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+        
+        $output = fopen('php://output', 'w');
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        fputcsv($output, ['Name', 'Benutzername', 'Datum', 'Status', 'Feedback', 'Notizen'], ';');
+        
+        foreach ($attendances as $att) {
+            fputcsv($output, [
+                $att['displayname'],
+                $att['username'],
+                date('d.m.Y H:i', strtotime($att['created_at'])),
+                $att['attended'] ? 'Ja' : 'Nein',
+                $att['feedback'] ?? '',
+                $att['studentNote'] ?? $att['teacherNote'] ?? ''
+            ], ';');
+        }
+        
+        fclose($output);
+        exit;
     }
     
     public function exportGroupJSONById(): void
@@ -603,9 +654,10 @@ class ExportController
             'SELECT DISTINCT unnest("group") as group_name FROM "User" WHERE "group" IS NOT NULL ORDER BY group_name'
         );
         
-        $filename = 'all_groups_' . date('Y-m-d') . '.csv';
+        $filename = 'all_groups_' . date('Y-m-d') . '.xlsx';
         
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // Note: Using CSV format with UTF-8 BOM for Excel compatibility (lightweight alternative to XLSX)
+        header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');

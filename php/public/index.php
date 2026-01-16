@@ -65,9 +65,9 @@ $router->get('/api/v1/export/json/events', 'CheckIn\Controllers\Api\ExportContro
 // TypeScript-compatible export routes (exact path matching)
 $router->get('/export/overview/user/xlsx', 'CheckIn\Controllers\Api\ExportController@exportOverviewUserXLSX');
 $router->get('/export/overview/group/xlsx', 'CheckIn\Controllers\Api\ExportController@exportOverviewGroupXLSX');
-$router->get('/export/user/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX');
+$router->get('/export/user/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX'); // User attended events for specific CW
 $router->get('/export/user/json', 'CheckIn\Controllers\Api\ExportController@exportUserJSON');
-$router->get('/export/events/attended/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX');
+$router->get('/export/events/attended/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX'); // Alias for /export/user/xlsx
 $router->get('/export/events/attended/json', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsJSON');
 $router->get('/export/events/created/xlsx', 'CheckIn\Controllers\Api\ExportController@exportCreatedEventsXLSX');
 $router->get('/export/events/created/json', 'CheckIn\Controllers\Api\ExportController@exportCreatedEventsJSON');
