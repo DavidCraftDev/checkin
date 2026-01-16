@@ -1,0 +1,35 @@
+services:
+  web-php:
+    container_name: checkin-php
+    build: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - TZ=Europe/Berlin
+      - POSTGRES_URL=postgres://postgres:postgres@db:5432/postgres
+      - DEFAULT_LOGIN_USERNAME=admin
+      - DEFAULT_LOGIN_PASSWORD=SecurePassword123!
+      - MAINTENANCE=false
+    ports:
+      - "8080:80"
+    volumes:
+      - "./data:/var/www/html/data"
+
+  db:
+    container_name: checkin-php-db
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - TZ=Europe/Berlin
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - checkin_php_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  checkin_php_pgdata:
+    name: checkin_php_pgdata
