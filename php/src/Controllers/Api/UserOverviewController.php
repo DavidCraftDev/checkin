@@ -39,9 +39,9 @@ class UserOverviewController
              FROM "Attendances" a 
              LEFT JOIN "Events" e ON a."eventID" = e.id 
              WHERE a."userID" = ? 
-             AND ((a.cw >= ? AND a.cw <= ?) OR a.cw BETWEEN ? AND ?)
+             AND a.cw BETWEEN ? AND ?
              ORDER BY a.cw DESC, a.created_at DESC',
-            [$userID, $startCW, $endCW, $startCW, $endCW]
+            [$userID, $startCW, $endCW]
         );
 
         Response::json([

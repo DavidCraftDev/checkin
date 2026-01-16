@@ -51,12 +51,14 @@ class Router
         
         if (!class_exists($class)) {
             Response::error('Controller not found', 500);
+            return;
         }
 
         $controller = new $class();
         
         if (!method_exists($controller, $method)) {
             Response::error('Method not found', 500);
+            return;
         }
 
         $controller->$method();

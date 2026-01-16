@@ -69,9 +69,19 @@ class Config
     {
         $dir = dirname(self::$configPath);
         if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
+            if (!mkdir($dir, 0755, true)) {
+                error_log("Failed to create config directory: {$dir}");
+                return;
+            }
         }
-        file_put_contents(self::$configPath, json_encode(self::$config, JSON_PRETTY_PRINT));
+        $json = json_encode(self::$config, JSON_PRETTY_PRINT);
+        if ($json === false) {
+            error_log("Failed to encode config to JSON: " . json_last_error_msg());
+            return;
+        }
+        if (file_put_contents(self::$configPath, $json) === false) {
+            error_log("Failed to write config file: " . self::$configPath);
+        }
     }
 
     public static function get(string $key, mixed $default = null): mixed

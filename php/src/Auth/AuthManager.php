@@ -42,17 +42,11 @@ class AuthManager
         $session = SessionManager::getCurrentSession();
         
         if (!$session) {
-            http_response_code(401);
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Unauthorized']);
-            exit;
+            \CheckIn\Core\Response::error('Unauthorized', 401);
         }
 
         if ($session['permission'] < $minPermission) {
-            http_response_code(403);
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Forbidden']);
-            exit;
+            \CheckIn\Core\Response::error('Forbidden', 403);
         }
 
         return $session;
