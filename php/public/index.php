@@ -42,5 +42,9 @@ $router->delete('/api/v1/events/*', 'CheckIn\Controllers\Api\EventsController@de
 $router->get('/api/v1/qr/generate/*', 'CheckIn\Controllers\Api\QRCodeController@generate');
 $router->post('/api/v1/qr/validate', 'CheckIn\Controllers\Api\QRCodeController@validate');
 
+// Export routes
+$router->get('/api/v1/export/user', 'CheckIn\Controllers\Api\ExportController@exportUserData');
+$router->get('/api/v1/export/group', 'CheckIn\Controllers\Api\ExportController@exportGroupData');
+
 // Dispatch the request
 $router->dispatch();

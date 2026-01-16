@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="events.html">Veranstaltungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>QR Code Generator</h1>
+
+        <div id="alert-container"></div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">QR Code für Veranstaltung</h2>
+            <div id="qrContent">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="events.html" class="btn btn-secondary">Zurück zu Veranstaltungen</a>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission
+        if (user.permission < 1) {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Get event ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('eventId');
+
+        if (!eventId) {
+            document.getElementById('qrContent').innerHTML = '<p class="alert alert-error">Keine Veranstaltungs-ID angegeben</p>';
+        } else {
+            loadQRCode(eventId);
+        }
+
+        async function loadQRCode(eventId) {
+            const contentDiv = document.getElementById('qrContent');
+            
+            try {
+                const data = await api.generateQRCode(eventId);
+                
+                contentDiv.innerHTML = `
+                    <div class="text-center">
+                        <h3 class="mb-3">QR Code für Veranstaltung</h3>
+                        <p class="text-secondary mb-3">Event ID: ${data.eventId}</p>
+                        <img src="${data.qrCode}" alt="QR Code" style="max-width: 400px; width: 100%; border: 2px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem;">
+                        <div class="mt-3">
+                            <p class="text-secondary" style="font-size: 0.875rem;">Scannen Sie diesen QR Code, um an der Veranstaltung teilzunehmen</p>
+                        </div>
+                        <div class="mt-3">
+                            <button id="downloadBtn" class="btn btn-primary">QR Code herunterladen</button>
+                            <button id="printBtn" class="btn btn-secondary">Drucken</button>
+                        </div>
+                    </div>
+                `;
+
+                // Download button
+                document.getElementById('downloadBtn').addEventListener('click', () => {
+                    const link = document.createElement('a');
+                    link.href = data.qrCode;
+                    link.download = `qr-code-${eventId}.png`;
+                    link.click();
+                });
+
+                // Print button
+                document.getElementById('printBtn').addEventListener('click', () => {
+                    window.print();
+                });
+
+            } catch (error) {
+                console.error('Failed to load QR code:', error);
+                contentDiv.innerHTML = `<p class="alert alert-error">Fehler beim Laden des QR Codes: ${error.message}</p>`;
+            }
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .btn, nav { display: none !important; }
+            .card { border: none; box-shadow: none; }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>QR Code Scanner</h1>
+
+        <div id="alert-container"></div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Manuelle Eingabe</h2>
+            <p class="text-secondary mb-3">Geben Sie den QR Code manuell ein oder scannen Sie ihn mit Ihrer Kamera</p>
+            
+            <form id="manualForm">
+                <div class="form-group">
+                    <label class="form-label">QR Code</label>
+                    <textarea id="qrCodeInput" class="form-input" rows="4" placeholder="QR Code Daten hier einfügen..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Teilnahme bestätigen</button>
+            </form>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Kamera Scanner</h2>
+            <div id="cameraSection">
+                <button id="startCameraBtn" class="btn btn-primary mb-3">Kamera starten</button>
+                <div id="videoContainer" class="hidden">
+                    <video id="video" style="width: 100%; max-width: 500px; border-radius: 0.5rem;" autoplay></video>
+                    <canvas id="canvas" class="hidden"></canvas>
+                    <div class="mt-3">
+                        <button id="captureBtn" class="btn btn-primary">Foto aufnehmen</button>
+                        <button id="stopCameraBtn" class="btn btn-secondary">Kamera stoppen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Manual form submission
+        document.getElementById('manualForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const code = document.getElementById('qrCodeInput').value.trim();
+            
+            if (!code) {
+                utils.showAlert('Bitte geben Sie einen QR Code ein', 'error');
+                return;
+            }
+
+            await validateQRCode(code);
+        });
+
+        // Validate QR code
+        async function validateQRCode(code) {
+            try {
+                const result = await api.validateQRCode(code);
+                
+                if (result.success) {
+                    utils.showAlert(result.message || 'Teilnahme erfolgreich erfasst!', 'success');
+                    document.getElementById('qrCodeInput').value = '';
+                    
+                    // Show event details
+                    const alertContainer = document.getElementById('alert-container');
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'alert alert-success mt-3';
+                    detailsDiv.innerHTML = `
+                        <h3>Teilnahme bestätigt</h3>
+                        <p><strong>Veranstaltung:</strong> ${result.event.type}</p>
+                        <p><strong>KW:</strong> ${result.event.cw}</p>
+                        <p><strong>Teilnahme-ID:</strong> ${result.attendanceId}</p>
+                    `;
+                    alertContainer.appendChild(detailsDiv);
+                    
+                    setTimeout(() => detailsDiv.remove(), 10000);
+                }
+            } catch (error) {
+                utils.showAlert('Fehler: ' + error.message, 'error');
+            }
+        }
+
+        // Camera functionality
+        let stream = null;
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const videoContainer = document.getElementById('videoContainer');
+
+        document.getElementById('startCameraBtn').addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                video.srcObject = stream;
+                videoContainer.classList.remove('hidden');
+                document.getElementById('startCameraBtn').classList.add('hidden');
+            } catch (error) {
+                utils.showAlert('Kamera-Zugriff fehlgeschlagen: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('stopCameraBtn').addEventListener('click', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                videoContainer.classList.add('hidden');
+                document.getElementById('startCameraBtn').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('captureBtn').addEventListener('click', () => {
+            // Capture image from video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            // In a real implementation, you would use a QR code decoder library here
+            // For now, show a message
+            utils.showAlert('Foto aufgenommen. In einer vollständigen Implementierung würde hier der QR Code automatisch dekodiert.', 'warning');
+            utils.showAlert('Bitte verwenden Sie vorerst die manuelle Eingabe.', 'warning');
+        });
+    </script>
+</body>
+</html>
