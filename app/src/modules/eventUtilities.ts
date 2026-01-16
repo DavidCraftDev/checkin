@@ -27,19 +27,39 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
         }
     });
+
+    const eventIDs = dataAttendances
+        .filter(a => a.eventID !== "NOTE")
+        .map(a => a.eventID);
+
+    const events = await db.events.findMany({
+        where: { id: { in: eventIDs } }
+    });
+    const eventsMap = new Map(events.map(e => [e.id, e]));
+
+    const eventOwnerIDs = events.map(e => e.user);
+    const allUserIDsToFetch = Array.from(new Set([...eventOwnerIDs, userID]));
+
+    const users = await db.user.findMany({
+        where: { id: { in: allUserIDsToFetch } }
+    });
+    const usersMap = new Map(users.map(u => [u.id, u]));
+
     const data: AttendancePerUserPerEvent[] = [];
-    await Promise.all(dataAttendances.map(async (attendance) => {
+
+    for (const attendance of dataAttendances) {
         let dataEvent: Events;
-        let dataUserEvent: User;
+        let dataUserEvent: User | undefined;
+
         if (attendance.eventID === "NOTE") {
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
                 logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
-                await db.attendances.deleteMany({
+                await db.attendances.delete({
                     where: {
                         id: attendance.id
                     }
                 });
-                return;
+                continue;
             }
             dataEvent = {
                 id: "NOTE",
@@ -48,19 +68,23 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                 cw: cw,
                 created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
-            dataUserEvent = await getUserPerID(attendance.userID);
+            dataUserEvent = usersMap.get(userID);
         } else {
-            const dataFromEvent = await getEventPerID(attendance.eventID);
-            if (!dataFromEvent) return;
-            dataEvent = dataFromEvent;
-            dataUserEvent = await getUserPerID(dataEvent.user);
+            const fetchedEvent = eventsMap.get(attendance.eventID);
+            if (!fetchedEvent) continue;
+            dataEvent = fetchedEvent;
+            dataUserEvent = usersMap.get(dataEvent.user);
         }
-        data.push({
-            attendance: attendance,
-            event: dataEvent,
-            eventUser: dataUserEvent
-        });
-    }));
+
+        if (dataUserEvent) {
+            data.push({
+                attendance: attendance,
+                event: dataEvent,
+                eventUser: dataUserEvent
+            });
+        }
+    }
+
     data.sort((a, b) => {
         if (a.attendance.created_at > b.attendance.created_at) return -1;
         if (a.attendance.created_at < b.attendance.created_at) return 1;
@@ -75,14 +99,23 @@ export async function getAttendancesPerEvent(eventID: string) {
             eventID: eventID
         }
     });
+
+    const userIDs = dataAttendance.map(a => a.userID);
+    const users = await db.user.findMany({
+        where: { id: { in: userIDs } }
+    });
+    const usersMap = new Map(users.map(u => [u.id, u]));
+
     const data: AttendancePerEventPerUser[] = [];
-    await Promise.all(dataAttendance.map(async (attendance) => {
-        const dataUser = await getUserPerID(attendance.userID);
-        data.push({
-            attendance: attendance,
-            user: dataUser
-        });
-    }));
+    for (const attendance of dataAttendance) {
+        const user = usersMap.get(attendance.userID);
+        if (user) {
+            data.push({
+                attendance: attendance,
+                user: user
+            });
+        }
+    }
     data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
     return data;
 }
@@ -131,26 +164,39 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             }
         }
     });
+
+    const eventIDs = dataEvents.map(e => e.id);
+    const attendanceCounts = await db.attendances.groupBy({
+        by: ['eventID'],
+        where: {
+            eventID: { in: eventIDs }
+        },
+        _count: {
+            userID: true
+        }
+    });
+
+    const countMap = new Map(attendanceCounts.map(ac => [ac.eventID, ac._count.userID]));
+
     const data: CreatedEventPerUser[] = [];
-    await Promise.all(dataEvents.map(async (event) => {
-        const attendedUser = await db.attendances.count({
-            where: {
-                eventID: event.id
-            }
-        });
+
+    for (const event of dataEvents) {
+        const attendedUser = countMap.get(event.id) || 0;
+
         if (attendedUser === 0 && dayjs().diff(dayjs(event.created_at), "hours") > 1) {
             await db.events.delete({
                 where: {
                     id: event.id
                 }
             });
-            return;
+            continue;
         }
         data.push({
             event: event,
             user: attendedUser
         });
-    }));
+    }
+
     data.sort((a, b) => {
         if (a.event.created_at > b.event.created_at) return -1;
         if (a.event.created_at < b.event.created_at) return 1;
@@ -177,20 +223,6 @@ export async function eventExists(eventID: string) {
         }
     });
     return data > 0;
-}
-
-export async function checkINHandler(eventID: string, userID: string) {
-    if (!await existUserPerID(userID)) return "Schüler nicht gefunden"
-    if (await attendanceExists(eventID, userID)) return "Schüler bereits hinzugefügt";
-    await db.attendances.create({
-        data: {
-            eventID: eventID,
-            userID: userID,
-            cw: dayjs().isoWeek(),
-        }
-    });
-    const userData: User = await getUserPerID(userID);
-    return userData;
 }
 
 export async function createTeacherNote(id: string, note: string) {
@@ -237,16 +269,33 @@ export async function getAttendancesWithoutType(userID: string, cw: number, year
             }
         }
     });
+
+    const eventIDs = dataAttendances.map(a => a.eventID);
+    const events = await db.events.findMany({
+        where: { id: { in: eventIDs } }
+    });
+    const eventsMap = new Map(events.map(e => [e.id, e]));
+
+    const ownerIDs = events.map(e => e.user);
+    const owners = await db.user.findMany({
+        where: { id: { in: ownerIDs } }
+    });
+    const ownersMap = new Map(owners.map(u => [u.id, u]));
+
     const data: AttendancePerUserPerEvent[] = [];
-    await Promise.all(dataAttendances.map(async (attendance) => {
-        const dataEvent = await getEventPerID(attendance.eventID);
-        if (!dataEvent) return;
+
+    for (const attendance of dataAttendances) {
+        const dataEvent = eventsMap.get(attendance.eventID);
+        if (!dataEvent) continue;
+        const owner = ownersMap.get(dataEvent.user);
+        if (!owner) continue;
+
         data.push({
             attendance: attendance,
             event: dataEvent,
-            eventUser: await getUserPerID(dataEvent.user)
+            eventUser: owner
         });
-    }));
+    }
     return data;
 }
 
@@ -295,10 +344,26 @@ export async function getTeachersForEvents(eventIDs: string[]): Promise<TeacherP
 
     // Initialize object to store teacher data and get teacher data for each event
     const data: TeacherPerEvent = {};
-    await Promise.all(eventIDs.map(async (eventID) => {
-        const teacher = await getTeacherPerEvent(eventID);
-        if (teacher) data[eventID] = teacher;
-    }));
+
+    // Optimize: fetch all teachers at once
+    // First get all events to get teacher IDs
+    const events = await db.events.findMany({
+        where: { id: { in: eventIDs } },
+        select: { id: true, user: true }
+    });
+
+    const teacherIDs = Array.from(new Set(events.map(e => e.user)));
+    const teachers = await db.user.findMany({
+        where: { id: { in: teacherIDs } }
+    });
+    const teachersMap = new Map(teachers.map(t => [t.id, t]));
+
+    for (const event of events) {
+        const teacher = teachersMap.get(event.user);
+        if (teacher) {
+            data[event.id] = teacher;
+        }
+    }
 
     return data;
 }

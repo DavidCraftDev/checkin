@@ -3,12 +3,16 @@
 import { functionResult } from "@/app/src/interfaces/utilties";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import db from "@/app/src/modules/db";
-import { checkINHandler, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
+import { attendanceExists, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
-import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
+import { getUserPerUsername, searchUser, getUserPerID } from "@/app/src/modules/userUtilities";
 import { Attendances, Events, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import dayjs from "dayjs";
+import isoWeek from "dayjs/plugin/isoWeek";
+
+dayjs.extend(isoWeek);
 
 export async function handleEventDelete(eventID: string): Promise<void> {
     const data = await deleteEmptyEvent(eventID);
@@ -16,29 +20,59 @@ export async function handleEventDelete(eventID: string): Promise<void> {
     if (data) redirect("/dashboard/events/createdEvents");
 }
 
-export async function handleUserCheckIN(username: string, event: Events): Promise<functionResult> {
+export async function handleUserCheckIN(username: string, eventID: string): Promise<functionResult> {
     const sessionUser = await getSessionUser(1);
-    if (!sessionUser || event.user !== sessionUser.id) redirect("/dashboard");
+    if (!sessionUser) return { success: false, error: "Nicht eingeloggt" };
+
+    // Verify event ownership
+    const event = await db.events.findUnique({ where: { id: eventID } });
+    if (!event || event.user !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
+
     const user = await getUserPerUsername(username);
     if (!user) return { success: false, error: "Schüler nicht gefunden" };
-    const data = await checkINHandler(event.id, user.id);
-    if (data && typeof data === "string") return { success: false, error: data };
-    else if (data && typeof data === "object") return { success: true, data: user };
-    return { success: false, error: "Unbekannter Fehler" };
+
+    if (await attendanceExists(eventID, user.id)) {
+        return { success: false, error: "Schüler bereits hinzugefügt" };
+    }
+
+    try {
+        await db.attendances.create({
+            data: {
+                eventID: eventID,
+                userID: user.id,
+                cw: dayjs().isoWeek(),
+            }
+        });
+        return { success: true, data: user };
+    } catch (e) {
+        logger.error("Error creating attendance: " + e, "handleUserCheckIN");
+        return { success: false, error: "Fehler beim Speichern" };
+    }
 }
 
 export async function searchUserHandler(search: string): Promise<User[]> {
-    const users = await searchUser(search);
-    return users;
+    return await searchUser(search);
 }
 
-export async function removeUserHandler(attendance: Attendances, user: User, removeUser: User): Promise<Attendances> {
-    logger.info(user.displayname + " hat " + removeUser.displayname + " aus der Studienzeit mit der ID " + attendance.eventID + " entfernt", "Event");
-    return await db.attendances.delete({
-        where: {
-            id: attendance.id
-        }
+export async function removeUserHandler(attendanceID: string, eventID: string): Promise<functionResult> {
+    const sessionUser = await getSessionUser(1);
+    if (!sessionUser) return { success: false, error: "Nicht eingeloggt" };
+
+    const event = await db.events.findUnique({ where: { id: eventID } });
+    if (!event || event.user !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
+
+    const attendance = await db.attendances.findUnique({ where: { id: attendanceID } });
+    if (!attendance || attendance.eventID !== eventID) return { success: false, error: "Eintrag nicht gefunden" };
+
+    const student = await getUserPerID(attendance.userID);
+    const studentName = student && student.displayname ? student.displayname : "Unbekannt";
+
+    await db.attendances.delete({
+        where: { id: attendanceID }
     });
+
+    logger.info(sessionUser.displayname + " hat " + studentName + " aus der Studienzeit mit der ID " + eventID + " entfernt", "Event");
+    return { success: true };
 }
 
 export async function setTeacherNote(teacherNote: string, attendanceID: string): Promise<functionResult> {
