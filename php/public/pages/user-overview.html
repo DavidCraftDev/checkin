@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Übersicht - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html" class="active">Meine Übersicht</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Meine Übersicht</h1>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Filter</h2>
+            <div class="grid grid-cols-3">
+                <div class="form-group">
+                    <label class="form-label">Start KW</label>
+                    <input type="number" id="startCW" class="form-input" min="1" max="53">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start Jahr</label>
+                    <input type="number" id="startYear" class="form-input" min="2020" max="2030">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">&nbsp;</label>
+                    <button id="filterBtn" class="btn btn-primary" style="width: 100%;">Filtern</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Teilnahmen</h2>
+            <div id="attendanceList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Set default filter values
+        const currentWeek = utils.getCurrentWeek();
+        const currentYear = new Date().getFullYear();
+        document.getElementById('startCW').value = currentWeek;
+        document.getElementById('startYear').value = currentYear;
+
+        // Show permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load attendances
+        async function loadAttendances() {
+            const startCW = parseInt(document.getElementById('startCW').value);
+            const startYear = parseInt(document.getElementById('startYear').value);
+
+            const listDiv = document.getElementById('attendanceList');
+            utils.showLoading(listDiv);
+
+            try {
+                const data = await api.getUserOverview(user.id, startCW, startYear, startCW, startYear);
+
+                if (data.attendances && data.attendances.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>KW</th>
+                                    <th>Typ</th>
+                                    <th>Status</th>
+                                    <th>Feedback</th>
+                                    <th>Notizen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.attendances.map(att => `
+                                    <tr>
+                                        <td>${utils.formatDate(att.created_at)}</td>
+                                        <td>${att.cw}</td>
+                                        <td>${att.type || att.event_type || 'N/A'}</td>
+                                        <td><span class="badge badge-${att.attended ? 'success' : 'danger'}">${att.attended ? 'Teilgenommen' : 'Nicht teilgenommen'}</span></td>
+                                        <td><span class="badge badge-${att.feedback === 'GREEN' ? 'success' : att.feedback === 'YELLOW' ? 'warning' : 'danger'}">${att.feedback || 'N/A'}</span></td>
+                                        <td>${att.studentNote || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Teilnahmen für diesen Zeitraum gefunden</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load attendances:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        }
+
+        // Filter button
+        document.getElementById('filterBtn').addEventListener('click', loadAttendances);
+
+        // Load initial data
+        loadAttendances();
+    </script>
+</body>
+</html>

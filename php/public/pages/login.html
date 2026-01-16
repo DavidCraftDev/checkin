@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="card login-card">
+            <h1 class="text-center mb-3">CheckIN</h1>
+            <p class="text-center text-secondary mb-4">Anwesenheitssystem</p>
+            
+            <div id="alert-container"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Benutzername</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        required 
+                        autofocus
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Passwort</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Anmelden
+                </button>
+            </form>
+            
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loadingDiv = document.getElementById('loading');
+        const alertContainer = document.getElementById('alert-container');
+
+        // Redirect if already logged in
+        if (utils.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Clear previous alerts
+            alertContainer.innerHTML = '';
+            
+            // Show loading
+            loginForm.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            
+            try {
+                const response = await api.login(username, password);
+                
+                if (response.user) {
+                    // Save user data
+                    utils.saveUser(response.user);
+                    
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success';
+                    alert.textContent = 'Login erfolgreich! Weiterleitung...';
+                    alertContainer.appendChild(alert);
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                }
+            } catch (error) {
+                // Show error
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-error';
+                alert.textContent = error.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.';
+                alertContainer.appendChild(alert);
+                
+                // Show form again
+                loginForm.classList.remove('hidden');
+                loadingDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

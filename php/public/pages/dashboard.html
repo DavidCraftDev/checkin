@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html" class="active">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Willkommen, <span id="displayName"></span>!</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="currentWeek">--</div>
+                <div class="stat-label">Aktuelle Kalenderwoche</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" id="attendanceCount">--</div>
+                <div class="stat-label">Teilnahmen diese Woche</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value" id="eventsCount">--</div>
+                <div class="stat-label">Kommende Veranstaltungen</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 mt-4">
+            <div class="card">
+                <h2 class="card-title">Schnellzugriff</h2>
+                <div class="grid">
+                    <a href="user-overview.html" class="btn btn-primary">Meine Übersicht</a>
+                    <a href="qr-scanner.html" class="btn btn-primary">QR-Code scannen</a>
+                    <a href="events.html" id="createEventBtn" class="btn btn-secondary hidden">Veranstaltung erstellen</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Systemstatus</h2>
+                <div id="systemStatus">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <h2 class="card-title">Letzte Aktivitäten</h2>
+            <div id="recentActivities">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        // Check authentication
+        if (!utils.requireAuth()) {
+            // Will redirect to login
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('displayName').textContent = user.displayname || user.username;
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('currentWeek').textContent = utils.getCurrentWeek();
+
+        // Show/hide permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+            document.getElementById('createEventBtn').classList.remove('hidden');
+        }
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout failed:', error);
+                // Clear user anyway and redirect
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Load system status
+                const health = await api.getHealth();
+                const statusDiv = document.getElementById('systemStatus');
+                statusDiv.innerHTML = `
+                    <p><strong>Version:</strong> ${health.data.version}</p>
+                    <p><strong>Status:</strong> <span class="badge badge-${health.data.status === 'ok' ? 'success' : 'danger'}">${health.data.status}</span></p>
+                    <p><strong>Datenbank:</strong> <span class="badge badge-${health.data.databaseConnected ? 'success' : 'danger'}">${health.data.databaseConnected ? 'Verbunden' : 'Getrennt'}</span></p>
+                    ${health.data.maintenance ? '<p><span class="badge badge-warning">Wartungsmodus aktiv</span></p>' : ''}
+                `;
+
+                // Load user overview data
+                const overview = await api.getUserOverview(
+                    user.id,
+                    utils.getCurrentWeek(),
+                    new Date().getFullYear(),
+                    utils.getCurrentWeek(),
+                    new Date().getFullYear()
+                );
+
+                document.getElementById('attendanceCount').textContent = overview.attendances?.length || 0;
+
+                // Show recent activities
+                const activitiesDiv = document.getElementById('recentActivities');
+                if (overview.attendances && overview.attendances.length > 0) {
+                    const recentActivities = overview.attendances.slice(0, 5);
+                    activitiesDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Typ</th>
+                                    <th>KW</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${recentActivities.map(activity => `
+                                    <tr>
+                                        <td>${utils.formatDate(activity.created_at)}</td>
+                                        <td>${activity.event_type || 'N/A'}</td>
+                                        <td>${activity.cw}</td>
+                                        <td><span class="badge badge-${activity.attended ? 'success' : 'danger'}">${activity.attended ? 'Teilgenommen' : 'Nicht teilgenommen'}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    activitiesDiv.innerHTML = '<p class="text-center text-secondary">Keine Aktivitäten gefunden</p>';
+                }
+
+                document.getElementById('eventsCount').textContent = '0'; // Placeholder
+
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-error';
+                alert.textContent = 'Fehler beim Laden der Dashboard-Daten: ' + error.message;
+                document.getElementById('alert-container').appendChild(alert);
+            }
+        }
+
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+</html>
