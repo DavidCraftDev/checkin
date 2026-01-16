@@ -38,5 +38,10 @@ RUN echo "listen = /var/run/php/php-fpm.sock" >> /usr/local/etc/php-fpm.d/www.co
 
 EXPOSE 80
 
-# Start PHP-FPM and nginx
-CMD service php8.2-fpm start && nginx -g 'daemon off;'
+# Create startup script
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php-fpm -D' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
+
+CMD ["/start.sh"]

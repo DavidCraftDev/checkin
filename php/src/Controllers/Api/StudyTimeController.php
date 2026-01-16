@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers\Api;
+namespace CheckIn\Controllers\Api;
 
-use App\Core\Database;
-use App\Core\Response;
-use App\Auth\SessionManager;
+use CheckIn\Core\Database;
+use CheckIn\Core\Response;
+use CheckIn\Auth\SessionManager;
 
 class StudyTimeController
 {
