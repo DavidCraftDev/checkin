@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Gruppen - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="my-groups.html" class="active">Meine Gruppen</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Meine Gruppenmitgliedschaften</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="grid grid-cols-2">
+            <div class="card">
+                <h2 class="card-title">Gruppenstatistiken</h2>
+                <div id="groupStats">
+                    <div class="stat-card">
+                        <div class="stat-label">Mitgliedschaften</div>
+                        <div class="stat-value" id="totalGroups">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Aktive Gruppen</div>
+                        <div class="stat-value" id="activeGroups">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Filter</h2>
+                <div class="form-group">
+                    <label class="form-label">Gruppenstatus</label>
+                    <select id="statusFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="active">Aktiv</option>
+                        <option value="archived">Archiviert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Suche</label>
+                    <input type="text" id="searchFilter" class="form-input" placeholder="Gruppenname suchen...">
+                </div>
+                <button id="applyFilterBtn" class="btn btn-primary" style="width: 100%;">Filter anwenden</button>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Gruppenliste</h2>
+            <div id="groupsList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Group Details Modal -->
+        <div id="detailsModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="card" style="max-width: 600px; width: 90%; margin: 20px; max-height: 80vh; overflow-y: auto;">
+                <h2 class="card-title" id="modalTitle">Gruppendetails</h2>
+                <div id="modalContent">
+                    <div class="spinner"></div>
+                </div>
+                <button id="closeModal" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Schließen</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Show permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+        }
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Modal handlers
+        const detailsModal = document.getElementById('detailsModal');
+        document.getElementById('closeModal').addEventListener('click', () => {
+            detailsModal.classList.add('hidden');
+        });
+
+        // Load user groups
+        async function loadGroups() {
+            const listDiv = document.getElementById('groupsList');
+            utils.showLoading(listDiv);
+
+            try {
+                // Mock data - replace with actual API call when available
+                const mockGroups = [
+                    { id: 1, name: 'Mathematik 12a', members: 25, active: true, joinDate: new Date().toISOString() },
+                    { id: 2, name: 'Informatik LK', members: 18, active: true, joinDate: new Date(Date.now() - 30*24*60*60*1000).toISOString() },
+                    { id: 3, name: 'Physik Grundkurs', members: 20, active: true, joinDate: new Date(Date.now() - 60*24*60*60*1000).toISOString() }
+                ];
+
+                const groups = mockGroups;
+                
+                if (groups.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Gruppenname</th>
+                                    <th>Mitglieder</th>
+                                    <th>Beigetreten am</th>
+                                    <th>Status</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${groups.map(group => `
+                                    <tr>
+                                        <td><strong>${group.name}</strong></td>
+                                        <td>${group.members}</td>
+                                        <td>${utils.formatDate(group.joinDate)}</td>
+                                        <td><span class="badge badge-${group.active ? 'success' : 'secondary'}">${group.active ? 'Aktiv' : 'Archiviert'}</span></td>
+                                        <td>
+                                            <button class="btn btn-primary view-btn" data-id="${group.id}" data-name="${group.name}" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Details</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    document.getElementById('totalGroups').textContent = groups.length;
+                    document.getElementById('activeGroups').textContent = groups.filter(g => g.active).length;
+
+                    // Add view handlers
+                    document.querySelectorAll('.view-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const groupId = e.target.dataset.id;
+                            const groupName = e.target.dataset.name;
+                            await showGroupDetails(groupId, groupName);
+                        });
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Sie sind noch keiner Gruppe zugeordnet</p>';
+                    document.getElementById('totalGroups').textContent = '0';
+                    document.getElementById('activeGroups').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Failed to load groups:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        }
+
+        // Show group details
+        async function showGroupDetails(groupId, groupName) {
+            document.getElementById('modalTitle').textContent = groupName;
+            const modalContent = document.getElementById('modalContent');
+            utils.showLoading(modalContent);
+            detailsModal.classList.remove('hidden');
+
+            try {
+                const currentWeek = utils.getCurrentWeek();
+                const currentYear = new Date().getFullYear();
+                
+                const overview = await api.getGroupOverview(groupId, currentWeek, currentYear);
+
+                modalContent.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Gruppenname</label>
+                        <p><strong>${groupName}</strong></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Aktuelle KW</label>
+                        <p>KW ${currentWeek}, ${currentYear}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teilnahmen</label>
+                        <p>${overview.attendances ? overview.attendances.length : 0}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Letzte Aktivität</label>
+                        ${overview.attendances && overview.attendances.length > 0 ? 
+                            `<table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Benutzer</th>
+                                        <th>Datum</th>
+                                        <th>Typ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${overview.attendances.slice(0, 5).map(a => `
+                                        <tr>
+                                            <td>${a.user_id}</td>
+                                            <td>${utils.formatDate(a.created_at)}</td>
+                                            <td>${a.event_type || 'N/A'}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>` : 
+                            '<p class="text-secondary">Keine Aktivitäten</p>'
+                        }
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Failed to load group details:', error);
+                modalContent.innerHTML = `<p class="alert-error">Fehler beim Laden der Details: ${error.message}</p>`;
+            }
+        }
+
+        // Filter button
+        document.getElementById('applyFilterBtn').addEventListener('click', loadGroups);
+
+        // Load initial data
+        loadGroups();
+    </script>
+</body>
+</html>

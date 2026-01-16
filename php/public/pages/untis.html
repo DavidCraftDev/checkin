@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebUntis Integration - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="untis.html" class="active">WebUntis</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>WebUntis Integration</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="card">
+            <h2 class="card-title">Verbindungsstatus</h2>
+            <div id="connectionStatus">
+                <div class="grid grid-cols-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value"><span id="statusBadge" class="badge badge-warning">Prüfe...</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Letzter Sync</div>
+                        <div class="stat-value" id="lastSync">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Synchronisierte Kurse</div>
+                        <div class="stat-value" id="syncedCourses">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">Synchronisierung</h2>
+                <p class="text-secondary mb-2">Importieren Sie Ihre Stundenplandaten aus WebUntis</p>
+                <div class="grid">
+                    <button id="syncNowBtn" class="btn btn-primary">Jetzt synchronisieren</button>
+                    <button id="autoSyncBtn" class="btn btn-secondary">Auto-Sync aktivieren</button>
+                </div>
+                <div class="form-group mt-2">
+                    <label class="form-label">Sync-Intervall (Minuten)</label>
+                    <input type="number" id="syncInterval" class="form-input" value="60" min="15" max="1440">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">WebUntis Anmeldung</h2>
+                <form id="untisLoginForm">
+                    <div class="form-group">
+                        <label class="form-label">Server</label>
+                        <input type="text" id="untisServer" class="form-input" placeholder="z.B. borys.webuntis.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Schule</label>
+                        <input type="text" id="untisSchool" class="form-input" placeholder="Schulname">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Benutzername</label>
+                        <input type="text" id="untisUsername" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Passwort</label>
+                        <input type="password" id="untisPassword" class="form-input">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Verbinden</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Mein Stundenplan (Diese Woche)</h2>
+            <div class="grid grid-cols-2 mb-2">
+                <div class="form-group">
+                    <label class="form-label">Woche</label>
+                    <input type="number" id="weekNumber" class="form-input" min="1" max="53">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Jahr</label>
+                    <input type="number" id="yearNumber" class="form-input" min="2020" max="2030">
+                </div>
+            </div>
+            <button id="loadTimetableBtn" class="btn btn-secondary" style="width: 100%; margin-bottom: 1rem;">Stundenplan laden</button>
+            <div id="timetableView">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Synchronisierungsprotokoll</h2>
+            <div id="syncLog">
+                <p class="text-secondary text-center">Noch keine Synchronisierung durchgeführt</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Show permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+        }
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Set current week
+        document.getElementById('weekNumber').value = utils.getCurrentWeek();
+        document.getElementById('yearNumber').value = new Date().getFullYear();
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Check connection status
+        async function checkUntisConnection() {
+            try {
+                // Mock status check - replace with actual API call
+                document.getElementById('statusBadge').className = 'badge badge-secondary';
+                document.getElementById('statusBadge').textContent = 'Nicht konfiguriert';
+                document.getElementById('lastSync').textContent = 'Nie';
+                document.getElementById('syncedCourses').textContent = '0';
+            } catch (error) {
+                console.error('Failed to check Untis connection:', error);
+                document.getElementById('statusBadge').className = 'badge badge-danger';
+                document.getElementById('statusBadge').textContent = 'Fehler';
+            }
+        }
+
+        // WebUntis login
+        document.getElementById('untisLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const server = document.getElementById('untisServer').value;
+            const school = document.getElementById('untisSchool').value;
+            const username = document.getElementById('untisUsername').value;
+            const password = document.getElementById('untisPassword').value;
+
+            try {
+                utils.showAlert('WebUntis-Integration wird implementiert. Zugangsdaten würden gespeichert.', 'warning');
+                // Actual implementation would call API to store credentials
+                document.getElementById('statusBadge').className = 'badge badge-success';
+                document.getElementById('statusBadge').textContent = 'Verbunden';
+            } catch (error) {
+                utils.showAlert('Fehler bei der Verbindung: ' + error.message, 'error');
+            }
+        });
+
+        // Sync now
+        document.getElementById('syncNowBtn').addEventListener('click', async () => {
+            const syncLog = document.getElementById('syncLog');
+            const timestamp = new Date().toLocaleString('de-DE');
+            
+            utils.showAlert('Synchronisierung wird gestartet...', 'warning');
+            
+            // Mock sync - replace with actual API call
+            setTimeout(() => {
+                syncLog.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>${timestamp}</strong><br>
+                        Synchronisierung erfolgreich abgeschlossen<br>
+                        - 5 Kurse importiert<br>
+                        - 23 Termine aktualisiert
+                    </div>
+                ` + syncLog.innerHTML;
+                
+                document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('de-DE');
+                document.getElementById('syncedCourses').textContent = '5';
+                utils.showAlert('Synchronisierung erfolgreich', 'success');
+            }, 2000);
+        });
+
+        // Auto sync toggle
+        let autoSyncEnabled = false;
+        document.getElementById('autoSyncBtn').addEventListener('click', () => {
+            autoSyncEnabled = !autoSyncEnabled;
+            const btn = document.getElementById('autoSyncBtn');
+            if (autoSyncEnabled) {
+                btn.textContent = 'Auto-Sync deaktivieren';
+                btn.className = 'btn btn-danger';
+                utils.showAlert('Automatische Synchronisierung aktiviert', 'success');
+            } else {
+                btn.textContent = 'Auto-Sync aktivieren';
+                btn.className = 'btn btn-secondary';
+                utils.showAlert('Automatische Synchronisierung deaktiviert', 'warning');
+            }
+        });
+
+        // Load timetable
+        document.getElementById('loadTimetableBtn').addEventListener('click', async () => {
+            const timetableView = document.getElementById('timetableView');
+            utils.showLoading(timetableView);
+
+            const week = document.getElementById('weekNumber').value;
+            const year = document.getElementById('yearNumber').value;
+
+            try {
+                // Mock timetable data
+                setTimeout(() => {
+                    timetableView.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tag</th>
+                                    <th>Zeit</th>
+                                    <th>Fach</th>
+                                    <th>Raum</th>
+                                    <th>Lehrer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Montag</td>
+                                    <td>08:00 - 09:30</td>
+                                    <td>Mathematik</td>
+                                    <td>R 201</td>
+                                    <td>Müller</td>
+                                </tr>
+                                <tr>
+                                    <td>Montag</td>
+                                    <td>10:00 - 11:30</td>
+                                    <td>Informatik</td>
+                                    <td>R 305</td>
+                                    <td>Schmidt</td>
+                                </tr>
+                                <tr>
+                                    <td>Dienstag</td>
+                                    <td>08:00 - 09:30</td>
+                                    <td>Physik</td>
+                                    <td>R 102</td>
+                                    <td>Weber</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-center text-secondary">
+                                        <em>Demo-Daten - WebUntis Integration wird implementiert</em>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                }, 1000);
+            } catch (error) {
+                console.error('Failed to load timetable:', error);
+                timetableView.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        });
+
+        // Initialize
+        checkUntisConnection();
+        document.getElementById('loadTimetableBtn').click();
+    </script>
+</body>
+</html>

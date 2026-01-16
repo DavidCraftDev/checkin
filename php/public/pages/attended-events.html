@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Besuchte Veranstaltungen - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="attended-events.html" class="active">Besuchte Veranstaltungen</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Besuchte Veranstaltungen</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="card">
+            <h2 class="card-title">Kalenderwoche Navigation</h2>
+            <div class="grid grid-cols-3" style="align-items: center;">
+                <button id="prevWeekBtn" class="btn btn-secondary">← Vorherige Woche</button>
+                <div style="text-align: center;">
+                    <h3 id="currentWeekDisplay">KW --</h3>
+                    <p id="currentYearDisplay">----</p>
+                </div>
+                <button id="nextWeekBtn" class="btn btn-secondary">Nächste Woche →</button>
+            </div>
+            <div class="grid grid-cols-2 mt-2">
+                <div class="form-group">
+                    <label class="form-label">Kalenderwoche</label>
+                    <input type="number" id="manualCW" class="form-input" min="1" max="53">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Jahr</label>
+                    <input type="number" id="manualYear" class="form-input" min="2020" max="2030">
+                </div>
+            </div>
+            <button id="goToWeekBtn" class="btn btn-primary" style="width: 100%;">Zu Woche springen</button>
+        </div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">Wochenstatistik</h2>
+                <div id="weekStats">
+                    <div class="stat-card">
+                        <div class="stat-label">Teilnahmen</div>
+                        <div class="stat-value" id="weekAttendances">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Verschiedene Typen</div>
+                        <div class="stat-value" id="weekTypes">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Export</h2>
+                <div class="grid">
+                    <button id="exportWeekBtn" class="btn btn-secondary">Woche exportieren (CSV)</button>
+                    <button id="exportAllBtn" class="btn btn-secondary">Alle exportieren (CSV)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Veranstaltungen</h2>
+            <div id="eventsList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Show permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+        }
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Calendar week navigation
+        let currentCW = utils.getCurrentWeek();
+        let currentYear = new Date().getFullYear();
+
+        function updateDisplay() {
+            document.getElementById('currentWeekDisplay').textContent = `KW ${currentCW}`;
+            document.getElementById('currentYearDisplay').textContent = currentYear;
+            document.getElementById('manualCW').value = currentCW;
+            document.getElementById('manualYear').value = currentYear;
+        }
+
+        document.getElementById('prevWeekBtn').addEventListener('click', () => {
+            currentCW--;
+            if (currentCW < 1) {
+                currentCW = 52;
+                currentYear--;
+            }
+            updateDisplay();
+            loadEvents();
+        });
+
+        document.getElementById('nextWeekBtn').addEventListener('click', () => {
+            currentCW++;
+            if (currentCW > 52) {
+                currentCW = 1;
+                currentYear++;
+            }
+            updateDisplay();
+            loadEvents();
+        });
+
+        document.getElementById('goToWeekBtn').addEventListener('click', () => {
+            currentCW = parseInt(document.getElementById('manualCW').value);
+            currentYear = parseInt(document.getElementById('manualYear').value);
+            updateDisplay();
+            loadEvents();
+        });
+
+        // Load attended events
+        async function loadEvents() {
+            const listDiv = document.getElementById('eventsList');
+            utils.showLoading(listDiv);
+
+            try {
+                const overview = await api.getUserOverview(
+                    user.id,
+                    currentCW,
+                    currentYear,
+                    currentCW,
+                    currentYear
+                );
+
+                if (overview.attendances && overview.attendances.length > 0) {
+                    const attendances = overview.attendances.filter(a => a.attended);
+                    
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Uhrzeit</th>
+                                    <th>Typ</th>
+                                    <th>KW</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${attendances.map(attendance => `
+                                    <tr>
+                                        <td>${utils.formatDate(attendance.created_at)}</td>
+                                        <td>${utils.formatTime(attendance.created_at)}</td>
+                                        <td>${attendance.event_type || 'N/A'}</td>
+                                        <td>${attendance.cw}</td>
+                                        <td><span class="badge badge-success">Teilgenommen</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    const uniqueTypes = new Set(attendances.map(a => a.event_type));
+                    document.getElementById('weekAttendances').textContent = attendances.length;
+                    document.getElementById('weekTypes').textContent = uniqueTypes.size;
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Teilnahmen in dieser Woche</p>';
+                    document.getElementById('weekAttendances').textContent = '0';
+                    document.getElementById('weekTypes').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Failed to load attended events:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        }
+
+        // Export functions
+        document.getElementById('exportWeekBtn').addEventListener('click', async () => {
+            try {
+                const overview = await api.getUserOverview(user.id, currentCW, currentYear, currentCW, currentYear);
+                const csv = 'Datum,Uhrzeit,Typ,KW,Status\n' + 
+                    overview.attendances.map(a => 
+                        `${utils.formatDate(a.created_at)},${utils.formatTime(a.created_at)},${a.event_type || 'N/A'},${a.cw},${a.attended ? 'Teilgenommen' : 'Nicht teilgenommen'}`
+                    ).join('\n');
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `teilnahmen_kw${currentCW}_${currentYear}.csv`;
+                a.click();
+            } catch (error) {
+                utils.showAlert('Fehler beim Export: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('exportAllBtn').addEventListener('click', () => {
+            utils.showAlert('Vollständiger Export wird vorbereitet', 'warning');
+        });
+
+        // Initialize
+        updateDisplay();
+        loadEvents();
+    </script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LDAP Konfiguration - CheckIN Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="../dashboard.html">Dashboard</a>
+                    <a href="../admin.html">Admin</a>
+                    <a href="users.html">Benutzer</a>
+                    <a href="ldap.html" class="active">LDAP</a>
+                    <a href="settings.html">Einstellungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>LDAP Konfiguration</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="card">
+            <h2 class="card-title">Verbindungsstatus</h2>
+            <div class="grid grid-cols-3">
+                <div class="stat-card">
+                    <div class="stat-label">LDAP Status</div>
+                    <div class="stat-value"><span id="ldapStatus" class="badge badge-secondary">Nicht konfiguriert</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Letzter Sync</div>
+                    <div class="stat-value" id="lastSync">Nie</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Synchronisierte Benutzer</div>
+                    <div class="stat-value" id="syncedUsers">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">Server-Konfiguration</h2>
+                <form id="ldapServerForm">
+                    <div class="form-group">
+                        <label class="form-label">LDAP Server*</label>
+                        <input type="text" id="ldapHost" class="form-input" placeholder="ldap://ldap.example.com" required>
+                        <small class="text-secondary">z.B. ldap://192.168.1.100 oder ldaps://ldap.school.de</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Port*</label>
+                        <input type="number" id="ldapPort" class="form-input" value="389" min="1" max="65535" required>
+                        <small class="text-secondary">Standard: 389 (LDAP) oder 636 (LDAPS)</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Base DN*</label>
+                        <input type="text" id="ldapBaseDN" class="form-input" placeholder="dc=school,dc=local" required>
+                        <small class="text-secondary">Der Stammknoten für LDAP-Abfragen</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bind DN</label>
+                        <input type="text" id="ldapBindDN" class="form-input" placeholder="cn=admin,dc=school,dc=local">
+                        <small class="text-secondary">Benutzer für LDAP-Bindung (optional)</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bind Passwort</label>
+                        <input type="password" id="ldapBindPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="ldapUseTLS"> TLS/SSL verwenden
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="ldapVerifyCert" checked> Zertifikat verifizieren
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Benutzer-Mapping</h2>
+                <form id="ldapMappingForm">
+                    <div class="form-group">
+                        <label class="form-label">Benutzername Attribut*</label>
+                        <input type="text" id="ldapUserAttr" class="form-input" value="uid" required>
+                        <small class="text-secondary">z.B. uid, sAMAccountName, cn</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">E-Mail Attribut</label>
+                        <input type="text" id="ldapEmailAttr" class="form-input" value="mail">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Anzeigename Attribut</label>
+                        <input type="text" id="ldapDisplayNameAttr" class="form-input" value="displayName">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gruppen Attribut</label>
+                        <input type="text" id="ldapGroupAttr" class="form-input" value="memberOf">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Benutzer Filter</label>
+                        <input type="text" id="ldapUserFilter" class="form-input" placeholder="(objectClass=person)">
+                        <small class="text-secondary">LDAP-Filter für Benutzersuche</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gruppen Filter</label>
+                        <input type="text" id="ldapGroupFilter" class="form-input" placeholder="(objectClass=group)">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Synchronisierungs-Optionen</h2>
+            <form id="ldapSyncForm">
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="ldapAutoSync" checked> Automatische Synchronisation
+                        </label>
+                        <small class="text-secondary">Synchronisiert Benutzer beim Login</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="ldapSyncGroups"> Gruppen synchronisieren
+                        </label>
+                        <small class="text-secondary">Importiert LDAP-Gruppen als CheckIN-Gruppen</small>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Sync-Intervall (Stunden)</label>
+                        <input type="number" id="ldapSyncInterval" class="form-input" value="24" min="1" max="168">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Standard-Berechtigung</label>
+                        <select id="ldapDefaultPermission" class="form-input">
+                            <option value="0" selected>Student (0)</option>
+                            <option value="1">Lehrer (1)</option>
+                            <option value="2">Admin (2)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="ldapCreateUsers" checked> Neue Benutzer automatisch erstellen
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="ldapUpdateUsers" checked> Bestehende Benutzer aktualisieren
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+            </form>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Rollen-Mapping</h2>
+            <p class="text-secondary mb-2">Weisen Sie LDAP-Gruppen CheckIN-Berechtigungen zu</p>
+            <form id="ldapRoleMappingForm">
+                <div class="form-group">
+                    <label class="form-label">Admin-Gruppen (DN)</label>
+                    <textarea id="ldapAdminGroups" class="form-input" rows="2" placeholder="cn=admins,ou=groups,dc=school,dc=local&#10;cn=it,ou=groups,dc=school,dc=local"></textarea>
+                    <small class="text-secondary">Eine Gruppe pro Zeile</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Lehrer-Gruppen (DN)</label>
+                    <textarea id="ldapTeacherGroups" class="form-input" rows="2" placeholder="cn=teachers,ou=groups,dc=school,dc=local"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Studenten-Gruppen (DN)</label>
+                    <textarea id="ldapStudentGroups" class="form-input" rows="2" placeholder="cn=students,ou=groups,dc=school,dc=local"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+            </form>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Verbindungstest & Aktionen</h2>
+            <div class="grid grid-cols-2">
+                <div>
+                    <h3>Verbindung testen</h3>
+                    <button id="testConnectionBtn" class="btn btn-primary" style="width: 100%;">Verbindung testen</button>
+                    <div id="testResult" class="mt-2"></div>
+                </div>
+                <div>
+                    <h3>Synchronisierung</h3>
+                    <button id="syncNowBtn" class="btn btn-secondary" style="width: 100%;">Jetzt synchronisieren</button>
+                    <button id="viewSyncLogBtn" class="btn btn-secondary mt-1" style="width: 100%;">Sync-Log anzeigen</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Synchronisierungsprotokoll</h2>
+            <div id="syncLog">
+                <p class="text-center text-secondary">Noch keine Synchronisierung durchgeführt</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - admin only
+        if (user.permission < 2) {
+            window.location.href = '../dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = '../login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // Form handlers
+        document.getElementById('ldapServerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('LDAP Server-Konfiguration wird gespeichert...', 'success');
+            document.getElementById('ldapStatus').className = 'badge badge-warning';
+            document.getElementById('ldapStatus').textContent = 'Konfiguriert';
+        });
+
+        document.getElementById('ldapMappingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('LDAP Mapping-Konfiguration wird gespeichert...', 'success');
+        });
+
+        document.getElementById('ldapSyncForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('LDAP Sync-Optionen werden gespeichert...', 'success');
+        });
+
+        document.getElementById('ldapRoleMappingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('LDAP Rollen-Mapping wird gespeichert...', 'success');
+        });
+
+        // Test connection
+        document.getElementById('testConnectionBtn').addEventListener('click', async () => {
+            const testResult = document.getElementById('testResult');
+            testResult.innerHTML = '<div class="spinner"></div>';
+
+            setTimeout(() => {
+                testResult.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>✓ Verbindung erfolgreich</strong><br>
+                        Server: ${document.getElementById('ldapHost').value}<br>
+                        Port: ${document.getElementById('ldapPort').value}<br>
+                        Base DN: ${document.getElementById('ldapBaseDN').value}<br>
+                        <em>Demo-Modus: LDAP-Integration wird implementiert</em>
+                    </div>
+                `;
+                document.getElementById('ldapStatus').className = 'badge badge-success';
+                document.getElementById('ldapStatus').textContent = 'Verbunden';
+            }, 2000);
+        });
+
+        // Sync now
+        document.getElementById('syncNowBtn').addEventListener('click', async () => {
+            const syncLog = document.getElementById('syncLog');
+            const timestamp = new Date().toLocaleString('de-DE');
+            
+            utils.showAlert('LDAP-Synchronisierung wird gestartet...', 'warning');
+            
+            setTimeout(() => {
+                syncLog.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>${timestamp}</strong><br>
+                        Synchronisierung erfolgreich abgeschlossen<br>
+                        - 142 Benutzer gefunden<br>
+                        - 15 neue Benutzer erstellt<br>
+                        - 127 Benutzer aktualisiert<br>
+                        - 8 Gruppen synchronisiert<br>
+                        <em>Demo-Daten - LDAP-Integration wird implementiert</em>
+                    </div>
+                ` + syncLog.innerHTML;
+                
+                document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('de-DE');
+                document.getElementById('syncedUsers').textContent = '142';
+                utils.showAlert('Synchronisierung erfolgreich', 'success');
+            }, 3000);
+        });
+
+        // View sync log
+        document.getElementById('viewSyncLogBtn').addEventListener('click', () => {
+            utils.showAlert('Detailliertes Sync-Log wird angezeigt...', 'warning');
+        });
+    </script>
+</body>
+</html>

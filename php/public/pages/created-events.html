@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine erstellten Veranstaltungen - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="created-events.html" class="active">Meine Veranstaltungen</a>
+                    <a href="events.html">Alle Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <div class="header-content mb-3">
+            <h1>Meine erstellten Veranstaltungen</h1>
+            <button id="createEventBtn" class="btn btn-primary">+ Neue Veranstaltung</button>
+        </div>
+        
+        <div id="alert-container"></div>
+
+        <!-- Create Event Modal -->
+        <div id="createModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="card" style="max-width: 500px; width: 90%; margin: 20px;">
+                <h2 class="card-title">Neue Veranstaltung erstellen</h2>
+                <form id="createEventForm">
+                    <div class="form-group">
+                        <label class="form-label">Typ</label>
+                        <input type="text" id="eventType" class="form-input" required placeholder="z.B. Studienzeit, Workshop">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kalenderwoche</label>
+                        <input type="number" id="eventCW" class="form-input" min="1" max="53" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Jahr</label>
+                        <input type="number" id="eventYear" class="form-input" min="2020" max="2030" required>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <button type="button" id="cancelCreate" class="btn btn-secondary">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary">Erstellen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+            <div class="card">
+                <h2 class="card-title">Statistiken</h2>
+                <div id="eventStats">
+                    <div class="stat-card">
+                        <div class="stat-label">Gesamt erstellt</div>
+                        <div class="stat-value" id="totalEvents">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Diese Woche</div>
+                        <div class="stat-value" id="thisWeekEvents">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Teilnahmen</div>
+                        <div class="stat-value" id="totalAttendances">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Filter</h2>
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Kalenderwoche</label>
+                        <input type="number" id="filterCW" class="form-input" min="1" max="53">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Jahr</label>
+                        <input type="number" id="filterYear" class="form-input" min="2020" max="2030">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Typ</label>
+                    <input type="text" id="filterType" class="form-input" placeholder="Alle Typen">
+                </div>
+                <button id="applyFilterBtn" class="btn btn-primary" style="width: 100%;">Filter anwenden</button>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Veranstaltungsliste</h2>
+            <div id="eventsList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - teacher only
+        if (user.permission < 1) {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Show admin link
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Set default values
+        const currentWeek = utils.getCurrentWeek();
+        const currentYear = new Date().getFullYear();
+        document.getElementById('filterCW').value = currentWeek;
+        document.getElementById('filterYear').value = currentYear;
+        document.getElementById('eventCW').value = currentWeek;
+        document.getElementById('eventYear').value = currentYear;
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Modal handlers
+        const createModal = document.getElementById('createModal');
+        document.getElementById('createEventBtn').addEventListener('click', () => {
+            createModal.classList.remove('hidden');
+        });
+
+        document.getElementById('cancelCreate').addEventListener('click', () => {
+            createModal.classList.add('hidden');
+            document.getElementById('createEventForm').reset();
+        });
+
+        document.getElementById('createEventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const type = document.getElementById('eventType').value;
+            const cw = parseInt(document.getElementById('eventCW').value);
+
+            try {
+                await api.createEvent({ type, cw });
+                utils.showAlert('Veranstaltung erfolgreich erstellt', 'success');
+                createModal.classList.add('hidden');
+                document.getElementById('createEventForm').reset();
+                loadEvents();
+            } catch (error) {
+                utils.showAlert('Fehler beim Erstellen: ' + error.message, 'error');
+            }
+        });
+
+        // Load events
+        async function loadEvents() {
+            const listDiv = document.getElementById('eventsList');
+            utils.showLoading(listDiv);
+
+            const cw = document.getElementById('filterCW').value;
+            const year = document.getElementById('filterYear').value;
+            const type = document.getElementById('filterType').value;
+
+            try {
+                const filters = { user: user.id };
+                if (cw) filters.cw = cw;
+                if (year) filters.year = year;
+                if (type) filters.type = type;
+
+                const data = await api.getEvents(filters);
+
+                if (data.events && data.events.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Typ</th>
+                                    <th>KW</th>
+                                    <th>Erstellt am</th>
+                                    <th>QR Code</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.events.map(event => `
+                                    <tr>
+                                        <td><strong>${event.type}</strong></td>
+                                        <td>KW ${event.cw}</td>
+                                        <td>${utils.formatDate(event.created_at)}</td>
+                                        <td><a href="qr-generator.html?eventId=${event.id}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">QR anzeigen</a></td>
+                                        <td>
+                                            <button class="btn btn-primary view-btn" data-id="${event.id}" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Teilnehmer</button>
+                                            <button class="btn btn-danger delete-btn" data-id="${event.id}" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Löschen</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    document.getElementById('totalEvents').textContent = data.events.length;
+                    const thisWeek = data.events.filter(e => e.cw === currentWeek).length;
+                    document.getElementById('thisWeekEvents').textContent = thisWeek;
+
+                    // Add event handlers
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const eventId = e.target.dataset.id;
+                            if (confirm('Möchten Sie diese Veranstaltung wirklich löschen?')) {
+                                try {
+                                    await api.deleteEvent(eventId);
+                                    utils.showAlert('Veranstaltung gelöscht', 'success');
+                                    loadEvents();
+                                } catch (error) {
+                                    utils.showAlert('Fehler beim Löschen: ' + error.message, 'error');
+                                }
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.view-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            utils.showAlert('Teilnehmerliste wird implementiert', 'warning');
+                        });
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Veranstaltungen gefunden</p>';
+                    document.getElementById('totalEvents').textContent = '0';
+                    document.getElementById('thisWeekEvents').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Failed to load events:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        }
+
+        // Filter button
+        document.getElementById('applyFilterBtn').addEventListener('click', loadEvents);
+
+        // Load initial data
+        loadEvents();
+    </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruppenverwaltung - CheckIN Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="../dashboard.html">Dashboard</a>
+                    <a href="../admin.html">Admin</a>
+                    <a href="users.html">Benutzer</a>
+                    <a href="groups-management.html" class="active">Gruppen</a>
+                    <a href="settings.html">Einstellungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <div class="header-content mb-3">
+            <h1>Gruppenverwaltung</h1>
+            <button id="createGroupBtn" class="btn btn-primary">+ Neue Gruppe</button>
+        </div>
+        
+        <div id="alert-container"></div>
+
+        <!-- Create/Edit Group Modal -->
+        <div id="groupModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="card" style="max-width: 600px; width: 90%; margin: 20px; max-height: 80vh; overflow-y: auto;">
+                <h2 class="card-title" id="modalTitle">Gruppe erstellen</h2>
+                <form id="groupForm">
+                    <input type="hidden" id="groupId">
+                    <div class="form-group">
+                        <label class="form-label">Gruppenname*</label>
+                        <input type="text" id="groupName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Beschreibung</label>
+                        <textarea id="groupDescription" class="form-input" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Typ</label>
+                        <select id="groupType" class="form-input">
+                            <option value="class">Klasse</option>
+                            <option value="course">Kurs</option>
+                            <option value="project">Projekt</option>
+                            <option value="other">Sonstiges</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="groupActive" checked> Aktiv
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <button type="button" id="cancelGroup" class="btn btn-secondary">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Members Modal -->
+        <div id="membersModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="card" style="max-width: 800px; width: 90%; margin: 20px; max-height: 80vh; overflow-y: auto;">
+                <h2 class="card-title" id="membersModalTitle">Mitglieder verwalten</h2>
+                <div class="grid grid-cols-2">
+                    <div>
+                        <h3>Verfügbare Benutzer</h3>
+                        <input type="text" id="searchAvailable" class="form-input mb-2" placeholder="Suchen...">
+                        <div id="availableUsers" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 0.5rem;">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Gruppenmitglieder</h3>
+                        <input type="text" id="searchMembers" class="form-input mb-2" placeholder="Suchen...">
+                        <div id="groupMembers" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 0.5rem;">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="closeMembersModal" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Schließen</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3">
+            <div class="stat-card">
+                <div class="stat-label">Gesamtgruppen</div>
+                <div class="stat-value" id="totalGroups">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Aktive Gruppen</div>
+                <div class="stat-value" id="activeGroups">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Mitglieder gesamt</div>
+                <div class="stat-value" id="totalMembers">0</div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Filter & Suche</h2>
+            <div class="grid grid-cols-3">
+                <div class="form-group">
+                    <label class="form-label">Suche</label>
+                    <input type="text" id="searchInput" class="form-input" placeholder="Gruppenname...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Typ</label>
+                    <select id="typeFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="class">Klassen</option>
+                        <option value="course">Kurse</option>
+                        <option value="project">Projekte</option>
+                        <option value="other">Sonstiges</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="statusFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="active">Aktiv</option>
+                        <option value="inactive">Inaktiv</option>
+                    </select>
+                </div>
+            </div>
+            <button id="applyFilterBtn" class="btn btn-primary">Filter anwenden</button>
+            <button id="resetFilterBtn" class="btn btn-secondary">Zurücksetzen</button>
+        </div>
+
+        <div class="card mt-3">
+            <div class="header-content mb-2">
+                <h2 class="card-title">Gruppenliste</h2>
+                <div>
+                    <button id="exportCSVBtn" class="btn btn-secondary">CSV Export</button>
+                    <button id="syncUntisBtn" class="btn btn-secondary">Aus Untis importieren</button>
+                </div>
+            </div>
+            <div id="groupsList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - admin only
+        if (user.permission < 2) {
+            window.location.href = '../dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = '../login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // Modal handlers
+        const groupModal = document.getElementById('groupModal');
+        const groupForm = document.getElementById('groupForm');
+        const membersModal = document.getElementById('membersModal');
+        let isEditMode = false;
+        let currentGroupId = null;
+
+        document.getElementById('createGroupBtn').addEventListener('click', () => {
+            isEditMode = false;
+            document.getElementById('modalTitle').textContent = 'Neue Gruppe';
+            groupForm.reset();
+            groupModal.classList.remove('hidden');
+        });
+
+        document.getElementById('cancelGroup').addEventListener('click', () => {
+            groupModal.classList.add('hidden');
+            groupForm.reset();
+        });
+
+        document.getElementById('closeMembersModal').addEventListener('click', () => {
+            membersModal.classList.add('hidden');
+        });
+
+        groupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const groupData = {
+                name: document.getElementById('groupName').value,
+                description: document.getElementById('groupDescription').value,
+                type: document.getElementById('groupType').value,
+                active: document.getElementById('groupActive').checked
+            };
+
+            try {
+                if (isEditMode) {
+                    utils.showAlert('Gruppen-Update wird implementiert', 'warning');
+                } else {
+                    utils.showAlert('Gruppen-Erstellung wird implementiert', 'warning');
+                }
+                groupModal.classList.add('hidden');
+                groupForm.reset();
+                loadGroups();
+            } catch (error) {
+                utils.showAlert('Fehler: ' + error.message, 'error');
+            }
+        });
+
+        // Load groups
+        async function loadGroups() {
+            const listDiv = document.getElementById('groupsList');
+            utils.showLoading(listDiv);
+
+            try {
+                // Mock data
+                const mockGroups = [
+                    { id: 1, name: 'Mathematik 12a', description: 'Leistungskurs Mathematik', type: 'course', members: 25, active: true },
+                    { id: 2, name: 'Informatik LK', description: 'Leistungskurs Informatik', type: 'course', members: 18, active: true },
+                    { id: 3, name: 'Klasse 11b', description: 'Klassenverband', type: 'class', members: 28, active: true },
+                    { id: 4, name: 'Web-Projekt 2024', description: 'Projektgruppe Webentwicklung', type: 'project', members: 12, active: true },
+                    { id: 5, name: 'Physik GK alt', description: 'Archiviert', type: 'course', members: 0, active: false }
+                ];
+
+                const groups = mockGroups;
+
+                if (groups.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Beschreibung</th>
+                                    <th>Typ</th>
+                                    <th>Mitglieder</th>
+                                    <th>Status</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${groups.map(g => `
+                                    <tr>
+                                        <td>${g.id}</td>
+                                        <td><strong>${g.name}</strong></td>
+                                        <td>${g.description}</td>
+                                        <td><span class="badge badge-secondary">${g.type}</span></td>
+                                        <td>${g.members}</td>
+                                        <td><span class="badge badge-${g.active ? 'success' : 'secondary'}">${g.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+                                        <td>
+                                            <button class="btn btn-primary members-btn" data-id="${g.id}" data-name="${g.name}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Mitglieder</button>
+                                            <button class="btn btn-secondary edit-btn" data-id="${g.id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Bearbeiten</button>
+                                            <button class="btn btn-danger delete-btn" data-id="${g.id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Löschen</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    document.getElementById('totalGroups').textContent = groups.length;
+                    document.getElementById('activeGroups').textContent = groups.filter(g => g.active).length;
+                    document.getElementById('totalMembers').textContent = groups.reduce((sum, g) => sum + g.members, 0);
+
+                    // Add event handlers
+                    document.querySelectorAll('.members-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const groupId = e.target.dataset.id;
+                            const groupName = e.target.dataset.name;
+                            showMembers(groupId, groupName);
+                        });
+                    });
+
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const groupId = e.target.dataset.id;
+                            const groupData = groups.find(g => g.id == groupId);
+                            editGroup(groupData);
+                        });
+                    });
+
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const groupId = e.target.dataset.id;
+                            if (confirm('Gruppe wirklich löschen?')) {
+                                utils.showAlert('Gruppen-Löschung wird implementiert', 'warning');
+                                loadGroups();
+                            }
+                        });
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Gruppen gefunden</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load groups:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler: ${error.message}</p>`;
+            }
+        }
+
+        // Edit group
+        function editGroup(groupData) {
+            isEditMode = true;
+            document.getElementById('modalTitle').textContent = 'Gruppe bearbeiten';
+            document.getElementById('groupId').value = groupData.id;
+            document.getElementById('groupName').value = groupData.name;
+            document.getElementById('groupDescription').value = groupData.description;
+            document.getElementById('groupType').value = groupData.type;
+            document.getElementById('groupActive').checked = groupData.active;
+            groupModal.classList.remove('hidden');
+        }
+
+        // Show members management
+        function showMembers(groupId, groupName) {
+            currentGroupId = groupId;
+            document.getElementById('membersModalTitle').textContent = `Mitglieder: ${groupName}`;
+            
+            // Mock data
+            const mockAvailable = [
+                { id: 6, username: 'student3', displayname: 'Lisa Test' },
+                { id: 7, username: 'student4', displayname: 'Tom Demo' }
+            ];
+            const mockMembers = [
+                { id: 3, username: 'student1', displayname: 'Max Mustermann' },
+                { id: 5, username: 'student2', displayname: 'Anna Beispiel' }
+            ];
+
+            document.getElementById('availableUsers').innerHTML = mockAvailable.map(u => 
+                `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                    ${u.displayname} (${u.username})
+                    <button class="btn btn-primary add-member" data-user-id="${u.id}" style="float: right; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Hinzufügen</button>
+                </div>`
+            ).join('');
+
+            document.getElementById('groupMembers').innerHTML = mockMembers.map(u => 
+                `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                    ${u.displayname} (${u.username})
+                    <button class="btn btn-danger remove-member" data-user-id="${u.id}" style="float: right; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Entfernen</button>
+                </div>`
+            ).join('');
+
+            // Add/remove handlers
+            document.querySelectorAll('.add-member').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    utils.showAlert('Mitglied hinzufügen wird implementiert', 'warning');
+                });
+            });
+
+            document.querySelectorAll('.remove-member').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    utils.showAlert('Mitglied entfernen wird implementiert', 'warning');
+                });
+            });
+
+            membersModal.classList.remove('hidden');
+        }
+
+        // Filter and export handlers
+        document.getElementById('applyFilterBtn').addEventListener('click', loadGroups);
+        document.getElementById('resetFilterBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            loadGroups();
+        });
+
+        document.getElementById('exportCSVBtn').addEventListener('click', () => {
+            utils.showAlert('CSV-Export wird implementiert', 'warning');
+        });
+
+        document.getElementById('syncUntisBtn').addEventListener('click', () => {
+            utils.showAlert('Untis-Import wird implementiert', 'warning');
+        });
+
+        // Load initial data
+        loadGroups();
+    </script>
+</body>
+</html>

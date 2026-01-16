@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Kurse - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="user-overview.html">Meine Übersicht</a>
+                    <a href="courses.html" class="active">Kurse</a>
+                    <a href="events.html" id="eventsLink" class="hidden">Veranstaltungen</a>
+                    <a href="groups.html" id="groupsLink" class="hidden">Gruppen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Meine Kurse</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="card">
+            <h2 class="card-title">Kursliste</h2>
+            <div id="coursesList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">Kursstatistiken</h2>
+                <div id="courseStats">
+                    <div class="stat-card">
+                        <div class="stat-label">Aktive Kurse</div>
+                        <div class="stat-value" id="activeCourses">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Gesamtteilnahmen</div>
+                        <div class="stat-value" id="totalAttendances">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Durchschnitt</div>
+                        <div class="stat-value" id="avgAttendance">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Filter</h2>
+                <div class="form-group">
+                    <label class="form-label">Semester</label>
+                    <select id="semesterFilter" class="form-input">
+                        <option value="">Alle Semester</option>
+                        <option value="current">Aktuelles Semester</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="statusFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="active">Aktiv</option>
+                        <option value="archived">Archiviert</option>
+                    </select>
+                </div>
+                <button id="applyFilterBtn" class="btn btn-primary" style="width: 100%;">Filter anwenden</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Show permission-based links
+        if (user.permission >= 1) {
+            document.getElementById('eventsLink').classList.remove('hidden');
+        }
+        if (user.permission >= 2) {
+            document.getElementById('groupsLink').classList.remove('hidden');
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load courses
+        async function loadCourses() {
+            const listDiv = document.getElementById('coursesList');
+            utils.showLoading(listDiv);
+
+            try {
+                // Fetch user overview which may include course information
+                const overview = await api.getUserOverview(
+                    user.id,
+                    1,
+                    new Date().getFullYear(),
+                    53,
+                    new Date().getFullYear()
+                );
+
+                // Extract unique courses from attendances
+                const coursesMap = new Map();
+                if (overview.attendances) {
+                    overview.attendances.forEach(attendance => {
+                        const courseKey = attendance.event_type || 'Allgemein';
+                        if (!coursesMap.has(courseKey)) {
+                            coursesMap.set(courseKey, {
+                                name: courseKey,
+                                attendances: 0,
+                                lastActivity: attendance.created_at
+                            });
+                        }
+                        const course = coursesMap.get(courseKey);
+                        course.attendances++;
+                        if (new Date(attendance.created_at) > new Date(course.lastActivity)) {
+                            course.lastActivity = attendance.created_at;
+                        }
+                    });
+                }
+
+                const courses = Array.from(coursesMap.values());
+                
+                if (courses.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Kursname</th>
+                                    <th>Teilnahmen</th>
+                                    <th>Letzte Aktivität</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${courses.map(course => `
+                                    <tr>
+                                        <td><strong>${course.name}</strong></td>
+                                        <td>${course.attendances}</td>
+                                        <td>${utils.formatDate(course.lastActivity)}</td>
+                                        <td><span class="badge badge-success">Aktiv</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    document.getElementById('activeCourses').textContent = courses.length;
+                    const total = courses.reduce((sum, c) => sum + c.attendances, 0);
+                    document.getElementById('totalAttendances').textContent = total;
+                    document.getElementById('avgAttendance').textContent = 
+                        courses.length > 0 ? Math.round(total / courses.length) : 0;
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Kurse gefunden</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler beim Laden: ${error.message}</p>`;
+            }
+        }
+
+        // Filter button
+        document.getElementById('applyFilterBtn').addEventListener('click', loadCourses);
+
+        // Load initial data
+        loadCourses();
+    </script>
+</body>
+</html>

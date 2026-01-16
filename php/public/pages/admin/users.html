@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benutzerverwaltung - CheckIN Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="../dashboard.html">Dashboard</a>
+                    <a href="../admin.html">Admin</a>
+                    <a href="users.html" class="active">Benutzer</a>
+                    <a href="groups-management.html">Gruppen</a>
+                    <a href="settings.html">Einstellungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <div class="header-content mb-3">
+            <h1>Benutzerverwaltung</h1>
+            <button id="createUserBtn" class="btn btn-primary">+ Neuer Benutzer</button>
+        </div>
+        
+        <div id="alert-container"></div>
+
+        <!-- Create/Edit User Modal -->
+        <div id="userModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="card" style="max-width: 600px; width: 90%; margin: 20px;">
+                <h2 class="card-title" id="modalTitle">Benutzer erstellen</h2>
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    <div class="grid grid-cols-2">
+                        <div class="form-group">
+                            <label class="form-label">Benutzername*</label>
+                            <input type="text" id="userUsername" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Anzeigename*</label>
+                            <input type="text" id="userDisplayname" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <div class="form-group">
+                            <label class="form-label">E-Mail</label>
+                            <input type="email" id="userEmail" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Berechtigungsstufe*</label>
+                            <select id="userPermission" class="form-input" required>
+                                <option value="0">Student (0)</option>
+                                <option value="1">Lehrer (1)</option>
+                                <option value="2">Admin (2)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="passwordGroup">
+                        <label class="form-label">Passwort*</label>
+                        <input type="password" id="userPassword" class="form-input">
+                        <small class="text-secondary">Mindestens 8 Zeichen</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="userActive" checked> Aktiv
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <button type="button" id="cancelUser" class="btn btn-secondary">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3">
+            <div class="stat-card">
+                <div class="stat-label">Gesamtbenutzer</div>
+                <div class="stat-value" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Aktive Benutzer</div>
+                <div class="stat-value" id="activeUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Admins</div>
+                <div class="stat-value" id="adminUsers">0</div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Filter & Suche</h2>
+            <div class="grid grid-cols-3">
+                <div class="form-group">
+                    <label class="form-label">Suche</label>
+                    <input type="text" id="searchInput" class="form-input" placeholder="Benutzername oder E-Mail...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Berechtigung</label>
+                    <select id="permissionFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="0">Studenten</option>
+                        <option value="1">Lehrer</option>
+                        <option value="2">Admins</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="statusFilter" class="form-input">
+                        <option value="">Alle</option>
+                        <option value="active">Aktiv</option>
+                        <option value="inactive">Inaktiv</option>
+                    </select>
+                </div>
+            </div>
+            <button id="applyFilterBtn" class="btn btn-primary">Filter anwenden</button>
+            <button id="resetFilterBtn" class="btn btn-secondary">Zurücksetzen</button>
+        </div>
+
+        <div class="card mt-3">
+            <div class="header-content mb-2">
+                <h2 class="card-title">Benutzerliste</h2>
+                <div>
+                    <button id="exportCSVBtn" class="btn btn-secondary">CSV Export</button>
+                    <button id="bulkImportBtn" class="btn btn-secondary">Bulk Import</button>
+                </div>
+            </div>
+            <div id="usersList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - admin only
+        if (user.permission < 2) {
+            window.location.href = '../dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = '../login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // Modal handlers
+        const userModal = document.getElementById('userModal');
+        const userForm = document.getElementById('userForm');
+        let isEditMode = false;
+
+        document.getElementById('createUserBtn').addEventListener('click', () => {
+            isEditMode = false;
+            document.getElementById('modalTitle').textContent = 'Neuer Benutzer';
+            document.getElementById('passwordGroup').classList.remove('hidden');
+            userForm.reset();
+            userModal.classList.remove('hidden');
+        });
+
+        document.getElementById('cancelUser').addEventListener('click', () => {
+            userModal.classList.add('hidden');
+            userForm.reset();
+        });
+
+        userForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userData = {
+                username: document.getElementById('userUsername').value,
+                displayname: document.getElementById('userDisplayname').value,
+                email: document.getElementById('userEmail').value,
+                permission: parseInt(document.getElementById('userPermission').value),
+                active: document.getElementById('userActive').checked
+            };
+
+            if (!isEditMode) {
+                userData.password = document.getElementById('userPassword').value;
+            }
+
+            try {
+                if (isEditMode) {
+                    const userId = document.getElementById('userId').value;
+                    utils.showAlert('Benutzer-Update wird implementiert', 'warning');
+                    // await api.updateUser(userId, userData);
+                } else {
+                    utils.showAlert('Benutzer-Erstellung wird implementiert', 'warning');
+                    // await api.createUser(userData);
+                }
+                userModal.classList.add('hidden');
+                userForm.reset();
+                loadUsers();
+            } catch (error) {
+                utils.showAlert('Fehler: ' + error.message, 'error');
+            }
+        });
+
+        // Load users
+        async function loadUsers() {
+            const listDiv = document.getElementById('usersList');
+            utils.showLoading(listDiv);
+
+            try {
+                // Mock data - replace with actual API call
+                const mockUsers = [
+                    { id: 1, username: 'admin', displayname: 'Administrator', email: 'admin@school.de', permission: 2, active: true, created_at: new Date().toISOString() },
+                    { id: 2, username: 'teacher1', displayname: 'Herr Müller', email: 'mueller@school.de', permission: 1, active: true, created_at: new Date().toISOString() },
+                    { id: 3, username: 'student1', displayname: 'Max Mustermann', email: 'max@school.de', permission: 0, active: true, created_at: new Date().toISOString() },
+                    { id: 4, username: 'teacher2', displayname: 'Frau Schmidt', email: 'schmidt@school.de', permission: 1, active: true, created_at: new Date().toISOString() },
+                    { id: 5, username: 'student2', displayname: 'Anna Beispiel', email: 'anna@school.de', permission: 0, active: false, created_at: new Date().toISOString() }
+                ];
+
+                const users = mockUsers;
+
+                if (users.length > 0) {
+                    listDiv.innerHTML = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Benutzername</th>
+                                    <th>Anzeigename</th>
+                                    <th>E-Mail</th>
+                                    <th>Berechtigung</th>
+                                    <th>Status</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(u => `
+                                    <tr>
+                                        <td>${u.id}</td>
+                                        <td><strong>${u.username}</strong></td>
+                                        <td>${u.displayname}</td>
+                                        <td>${u.email || '-'}</td>
+                                        <td>
+                                            <span class="badge badge-${u.permission === 2 ? 'danger' : u.permission === 1 ? 'warning' : 'secondary'}">
+                                                ${u.permission === 2 ? 'Admin' : u.permission === 1 ? 'Lehrer' : 'Student'}
+                                            </span>
+                                        </td>
+                                        <td><span class="badge badge-${u.active ? 'success' : 'secondary'}">${u.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+                                        <td>
+                                            <button class="btn btn-primary edit-btn" data-id="${u.id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Bearbeiten</button>
+                                            <button class="btn btn-danger delete-btn" data-id="${u.id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Löschen</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Update statistics
+                    document.getElementById('totalUsers').textContent = users.length;
+                    document.getElementById('activeUsers').textContent = users.filter(u => u.active).length;
+                    document.getElementById('adminUsers').textContent = users.filter(u => u.permission === 2).length;
+
+                    // Add event handlers
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const userId = e.target.dataset.id;
+                            const userData = users.find(u => u.id == userId);
+                            editUser(userData);
+                        });
+                    });
+
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const userId = e.target.dataset.id;
+                            if (confirm('Benutzer wirklich löschen?')) {
+                                try {
+                                    utils.showAlert('Benutzer-Löschung wird implementiert', 'warning');
+                                    // await api.deleteUser(userId);
+                                    loadUsers();
+                                } catch (error) {
+                                    utils.showAlert('Fehler beim Löschen: ' + error.message, 'error');
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    listDiv.innerHTML = '<p class="text-center text-secondary">Keine Benutzer gefunden</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                listDiv.innerHTML = `<p class="text-center alert-error">Fehler: ${error.message}</p>`;
+            }
+        }
+
+        // Edit user
+        function editUser(userData) {
+            isEditMode = true;
+            document.getElementById('modalTitle').textContent = 'Benutzer bearbeiten';
+            document.getElementById('passwordGroup').classList.add('hidden');
+            document.getElementById('userId').value = userData.id;
+            document.getElementById('userUsername').value = userData.username;
+            document.getElementById('userDisplayname').value = userData.displayname;
+            document.getElementById('userEmail').value = userData.email || '';
+            document.getElementById('userPermission').value = userData.permission;
+            document.getElementById('userActive').checked = userData.active;
+            userModal.classList.remove('hidden');
+        }
+
+        // Filter and export handlers
+        document.getElementById('applyFilterBtn').addEventListener('click', loadUsers);
+        document.getElementById('resetFilterBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('permissionFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            loadUsers();
+        });
+
+        document.getElementById('exportCSVBtn').addEventListener('click', () => {
+            utils.showAlert('CSV-Export wird implementiert', 'warning');
+        });
+
+        document.getElementById('bulkImportBtn').addEventListener('click', () => {
+            utils.showAlert('Bulk-Import wird implementiert', 'warning');
+        });
+
+        // Load initial data
+        loadUsers();
+    </script>
+</body>
+</html>

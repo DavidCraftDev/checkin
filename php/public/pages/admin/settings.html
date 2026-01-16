@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systemeinstellungen - CheckIN Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="../dashboard.html">Dashboard</a>
+                    <a href="../admin.html">Admin</a>
+                    <a href="users.html">Benutzer</a>
+                    <a href="groups-management.html">Gruppen</a>
+                    <a href="settings.html" class="active">Einstellungen</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Systemeinstellungen</h1>
+        
+        <div id="alert-container"></div>
+
+        <div class="grid grid-cols-2">
+            <div class="card">
+                <h2 class="card-title">Allgemeine Einstellungen</h2>
+                <form id="generalSettingsForm">
+                    <div class="form-group">
+                        <label class="form-label">Schulname</label>
+                        <input type="text" id="schoolName" class="form-input" value="Mustergymnasium">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Systemsprache</label>
+                        <select id="systemLanguage" class="form-input">
+                            <option value="de" selected>Deutsch</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zeitzone</label>
+                        <select id="timezone" class="form-input">
+                            <option value="Europe/Berlin" selected>Europe/Berlin (MEZ/MESZ)</option>
+                            <option value="UTC">UTC</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="maintenanceMode"> Wartungsmodus
+                        </label>
+                        <small class="text-secondary">Sperrt den Zugang für normale Benutzer</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Sicherheitseinstellungen</h2>
+                <form id="securitySettingsForm">
+                    <div class="form-group">
+                        <label class="form-label">Session-Timeout (Minuten)</label>
+                        <input type="number" id="sessionTimeout" class="form-input" value="60" min="5" max="1440">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max. Login-Versuche</label>
+                        <input type="number" id="maxLoginAttempts" class="form-input" value="5" min="3" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Passwort Mindestlänge</label>
+                        <input type="number" id="minPasswordLength" class="form-input" value="8" min="6" max="20">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="requireStrongPassword" checked> Starke Passwörter erzwingen
+                        </label>
+                        <small class="text-secondary">Groß-/Kleinbuchstaben, Zahlen, Sonderzeichen</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="enable2FA"> Zwei-Faktor-Authentifizierung aktivieren
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">QR-Code Einstellungen</h2>
+                <form id="qrSettingsForm">
+                    <div class="form-group">
+                        <label class="form-label">QR-Code Gültigkeit (Minuten)</label>
+                        <input type="number" id="qrValidity" class="form-input" value="5" min="1" max="60">
+                        <small class="text-secondary">Nach dieser Zeit läuft der QR-Code ab</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">QR-Code Größe</label>
+                        <select id="qrSize" class="form-input">
+                            <option value="small">Klein (200x200)</option>
+                            <option value="medium" selected>Mittel (400x400)</option>
+                            <option value="large">Groß (600x600)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="qrAutoRefresh" checked> Automatische Aktualisierung
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">E-Mail Einstellungen</h2>
+                <form id="emailSettingsForm">
+                    <div class="form-group">
+                        <label class="form-label">SMTP Server</label>
+                        <input type="text" id="smtpServer" class="form-input" placeholder="smtp.example.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SMTP Port</label>
+                        <input type="number" id="smtpPort" class="form-input" value="587" min="1" max="65535">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SMTP Benutzername</label>
+                        <input type="text" id="smtpUsername" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SMTP Passwort</label>
+                        <input type="password" id="smtpPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Absender E-Mail</label>
+                        <input type="email" id="senderEmail" class="form-input" placeholder="noreply@school.de">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="smtpSSL" checked> SSL/TLS verwenden
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <button type="button" id="testEmailBtn" class="btn btn-secondary">Test-E-Mail</button>
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Datenschutz & DSGVO</h2>
+            <form id="privacySettingsForm">
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Datenlöschung nach Inaktivität (Tage)</label>
+                        <input type="number" id="dataRetention" class="form-input" value="365" min="30" max="3650">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Log-Aufbewahrung (Tage)</label>
+                        <input type="number" id="logRetention" class="form-input" value="90" min="7" max="365">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="enableAuditLog" checked> Audit-Logging aktivieren
+                    </label>
+                    <small class="text-secondary">Protokolliert alle administrativen Aktionen</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="enableDataExport" checked> Benutzerdatenexport erlauben
+                    </label>
+                    <small class="text-secondary">Benutzer können ihre Daten als CSV exportieren</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="enableCookieConsent"> Cookie-Zustimmung anzeigen
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+            </form>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Integration & API</h2>
+            <form id="apiSettingsForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="enableAPI" checked> REST API aktivieren
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">API Rate Limit (Anfragen/Minute)</label>
+                    <input type="number" id="apiRateLimit" class="form-input" value="60" min="10" max="1000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">API Schlüssel</label>
+                    <div class="grid grid-cols-2">
+                        <input type="text" id="apiKey" class="form-input" value="***************************" readonly>
+                        <button type="button" id="regenerateApiKey" class="btn btn-secondary">Neu generieren</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="enableWebhooks"> Webhooks aktivieren
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Speichern</button>
+            </form>
+        </div>
+
+        <div class="card mt-3" style="border: 2px solid #dc3545;">
+            <h2 class="card-title" style="color: #dc3545;">Gefahrenzone</h2>
+            <p class="text-secondary">Diese Aktionen können nicht rückgängig gemacht werden!</p>
+            <div class="grid grid-cols-2 mt-2">
+                <button id="resetSettingsBtn" class="btn btn-secondary">Einstellungen zurücksetzen</button>
+                <button id="clearCacheBtn" class="btn btn-secondary">Cache leeren</button>
+                <button id="clearLogsBtn" class="btn btn-secondary">Logs löschen</button>
+                <button id="resetDatabaseBtn" class="btn btn-danger">Datenbank zurücksetzen</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - admin only
+        if (user.permission < 2) {
+            window.location.href = '../dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = '../login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // Form handlers
+        document.getElementById('generalSettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('Allgemeine Einstellungen werden gespeichert...', 'warning');
+        });
+
+        document.getElementById('securitySettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('Sicherheitseinstellungen werden gespeichert...', 'warning');
+        });
+
+        document.getElementById('qrSettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('QR-Code Einstellungen werden gespeichert...', 'warning');
+        });
+
+        document.getElementById('emailSettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('E-Mail Einstellungen werden gespeichert...', 'warning');
+        });
+
+        document.getElementById('privacySettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('Datenschutzeinstellungen werden gespeichert...', 'warning');
+        });
+
+        document.getElementById('apiSettingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            utils.showAlert('API Einstellungen werden gespeichert...', 'warning');
+        });
+
+        // Test email
+        document.getElementById('testEmailBtn').addEventListener('click', () => {
+            utils.showAlert('Test-E-Mail wird gesendet...', 'warning');
+        });
+
+        // Regenerate API key
+        document.getElementById('regenerateApiKey').addEventListener('click', () => {
+            if (confirm('API-Schlüssel wirklich neu generieren? Alte Schlüssel werden ungültig!')) {
+                const newKey = 'ck_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                document.getElementById('apiKey').value = newKey;
+                utils.showAlert('Neuer API-Schlüssel generiert', 'success');
+            }
+        });
+
+        // Danger zone
+        document.getElementById('resetSettingsBtn').addEventListener('click', () => {
+            if (confirm('Alle Einstellungen auf Standardwerte zurücksetzen?')) {
+                utils.showAlert('Einstellungen werden zurückgesetzt...', 'warning');
+            }
+        });
+
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            if (confirm('Cache wirklich löschen?')) {
+                utils.showAlert('Cache wird geleert...', 'warning');
+            }
+        });
+
+        document.getElementById('clearLogsBtn').addEventListener('click', () => {
+            if (confirm('Alle Logs wirklich löschen?')) {
+                utils.showAlert('Logs werden gelöscht...', 'warning');
+            }
+        });
+
+        document.getElementById('resetDatabaseBtn').addEventListener('click', () => {
+            const confirmation = prompt('WARNUNG: Dies löscht ALLE Daten! Geben Sie "RESET" ein, um fortzufahren:');
+            if (confirmation === 'RESET') {
+                utils.showAlert('Datenbank wird zurückgesetzt...', 'error');
+            }
+        });
+    </script>
+</body>
+</html>
