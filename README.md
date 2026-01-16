@@ -7,6 +7,10 @@
 Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.
 Die Studienzeit ist ein Konzept über dass selbstständigen Lernen in der Oberstufe.
 
+## PHP Implementation
+
+A PHP backend implementation is now available in the [`php/`](php/) directory. This provides API-compatible backend functionality using PHP 8.1+ and PostgreSQL. See [php/README.md](php/README.md) for details.
+
 ## Installation
 
 ### Über Docker Compose:
