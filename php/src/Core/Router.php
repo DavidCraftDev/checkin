@@ -16,6 +16,11 @@ class Router
         $this->addRoute('POST', $path, $handler);
     }
 
+    public function delete(string $path, string $handler): void
+    {
+        $this->addRoute('DELETE', $path, $handler);
+    }
+
     private function addRoute(string $method, string $path, string $handler): void
     {
         $this->routes[] = [
@@ -42,7 +47,20 @@ class Router
 
     private function matchPath(string $routePath, string $requestPath): bool
     {
-        return $routePath === $requestPath;
+        // Exact match
+        if ($routePath === $requestPath) {
+            return true;
+        }
+        
+        // Wildcard match (e.g., /api/v1/events/* matches /api/v1/events/123)
+        if (strpos($routePath, '*') !== false) {
+            $pattern = str_replace('/', '\/', $routePath);
+            $pattern = str_replace('*', '.*', $pattern);
+            $pattern = '/^' . $pattern . '$/';
+            return preg_match($pattern, $requestPath) === 1;
+        }
+        
+        return false;
     }
 
     private function callHandler(string $handler): void
