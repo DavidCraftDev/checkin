@@ -9,6 +9,7 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next/types";
 import { CheckinForm } from "./forms";
+import { DATE_FORMATS, SPECIAL_EVENT_TYPES } from "@/app/src/constants/permissions";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -16,13 +17,13 @@ dayjs.extend(isLeapYear);
 
 async function EventPage(props: { searchParams: Promise<SearchParams> }) {
     const searchParams = await props.searchParams;
-    const user = await getSessionUser(1);
+    const user = await getSessionUser();
     const eventID = searchParams.id;
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);
     if (!event) notFound();
     if (event.user !== user.id) redirect("/dashboard/");
-    if (event.type.startsWith("Unterricht:")) redirect("/dashboard/events/lesson/" + eventID);
+    if (event.type.startsWith(SPECIAL_EVENT_TYPES.LESSON_PREFIX)) redirect(`/dashboard/events/lesson/${eventID}`);
     const attendances = await getAttendancesPerEvent(eventID);
     const addable = event.cw === dayjs().isoWeek() && dayjs(event.created_at).year() === dayjs().year();
     return (
@@ -30,7 +31,7 @@ async function EventPage(props: { searchParams: Promise<SearchParams> }) {
             <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
                 <div>
                     <h1>Studienzeit {event.type} {user.displayname}</h1>
-                    <p>erstellt am {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")} in Kalenderwoche {event.cw}</p>
+                    <p>erstellt am {dayjs(event.created_at).format(DATE_FORMATS.DATE_TIME_FULL)} in Kalenderwoche {event.cw}</p>
                     <p>{attendances.length} anwesende Schüler</p>
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}

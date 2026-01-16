@@ -71,7 +71,18 @@ export async function updateUser(id: string, name: string, displayname: string, 
     if (username > 0) return "exist";
   }
 
-  let data: any = {
+  interface UserUpdateData {
+    username: string;
+    displayname: string;
+    permission: number;
+    group: string[];
+    needs: string[];
+    competence: string[];
+    pwdLastSet: Date;
+    password?: string;
+  }
+
+  const data: UserUpdateData = {
     username: name.toLowerCase(),
     displayname: displayname,
     permission: permission,

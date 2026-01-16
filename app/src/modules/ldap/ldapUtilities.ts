@@ -41,7 +41,7 @@ async function updateUserData(ldapData: Entry[]) {
     if (lastUpdate && dayjs().diff(lastUpdate, "minute") < 1) return;
     lastUpdate = dayjs();
     const dbData = await db.user.findMany({ where: { password: null } })
-    const existUser: Array<string> = new Array()
+    const existUser: string[] = [];
     await Promise.all(dbData.map(async (entry) => {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
@@ -76,7 +76,17 @@ async function updateUserData(ldapData: Entry[]) {
         existUser.push(user.id)
     }))
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
-    const createData: any[] = new Array();
+    const createData: Array<{
+        id: string;
+        username: string;
+        displayname: string;
+        permission?: number;
+        group?: string[];
+        needs?: string[];
+        competence?: string[];
+        courses?: string[];
+        pwdLastSet: Date;
+    }> = [];
     newUser.map(async (entry) => {
         let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
@@ -113,7 +123,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
         else permission = { permission: 0 }
     } else permission = {}
 
-    let groups: Array<string> = new Array<string>
+    let groups: string[] = [];
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.GROUPS.ENABLE) {
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
@@ -122,12 +132,12 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
         })
     }
 
-    let needs = { needs: [] as any[] }
-    let competence = { competence: [] as any[] }
-    let coursesData = { courses: [] as any[] }
+    let needs = { needs: [] as string[] }
+    let competence = { competence: [] as string[] }
+    let coursesData = { courses: [] as string[] }
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
-        let memberData = new Set()
-        let coursesArray = new Array()
+        let memberData = new Set<string>()
+        let coursesArray: string[] = [];
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")

@@ -5,6 +5,7 @@ import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
 import { User } from "@prisma/client";
 import { DeleteEventButton, RemoveUserButton, TrafficLightSelect } from "./forms";
+import { DATE_FORMATS } from "@/app/src/constants/permissions";
 
 interface EventTableProps {
     attendances: AttendancePerEventPerUser[],
@@ -39,7 +40,7 @@ function EventTable(props: EventTableProps) {
                                 {props.addable ? <TeacherNote attendance={attendance.attendance} /> : <td>{attendance.attendance.teacherNote}</td>}
                                 <td><TrafficLightSelect attendance={attendance.attendance} /></td>
                                 <td>{attendance.attendance.selfReflection || "❓"}</td>
-                                <td>{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
+                                <td>{dayjs(attendance.attendance.created_at).format(DATE_FORMATS.DATE_TIME_SHORT)}</td>
                                 {props.addable ? <RemoveUserButton user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
                         ))}

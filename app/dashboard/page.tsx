@@ -8,6 +8,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { Metadata } from "next";
 import { config_data } from "../src/modules/data/config";
 import { getRoundCountForUser } from "./modules/sponsorenlauf/handler";
+import { Permission } from "../src/constants/permissions";
 
 dayjs.extend(isoWeek);
 
@@ -16,7 +17,7 @@ async function DashboardPage() {
     const currentIsoWeek = dayjs().isoWeek();
     const currentYear = dayjs().year();
     const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear);
-    let missingStudyTimes: Array<string> = new Array();
+    const missingStudyTimes: string[] = [];
     if (!user.needs) user.needs = [];
     user.needs.forEach((neededStudyTime) => {
         const foundAttendance = attendances.find((attendanceData) => {
@@ -31,11 +32,11 @@ async function DashboardPage() {
         <div>
             <h1>Übersicht</h1>
             <p>Hallo {user.displayname}</p>
-            <p>{String(completedStudyTimes.length) + "/" + String(user.needs.length)} Studienzeiten besucht</p>
+            <p>{`${completedStudyTimes.length}/${user.needs.length}`} Studienzeiten besucht</p>
             {config_data.MODULES.SPONSORENLAUF && (
                 <p>{await getRoundCountForUser(user.id)} Runden gelaufen!</p>
             )}
-            { config_data.MODULES.SPONSORENLAUF && user.permission !== 0 && (
+            { config_data.MODULES.SPONSORENLAUF && user.permission !== Permission.STUDENT && (
                 <p className="mt-2"><a href="/dashboard/modules/sponsorenlauf" className="btn">Zum Sponsorenlauf</a></p>
             )}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">
