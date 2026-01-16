@@ -21,6 +21,16 @@ class Router
         $this->addRoute('DELETE', $path, $handler);
     }
 
+    public function put(string $path, string $handler): void
+    {
+        $this->addRoute('PUT', $path, $handler);
+    }
+
+    public function patch(string $path, string $handler): void
+    {
+        $this->addRoute('PATCH', $path, $handler);
+    }
+
     private function addRoute(string $method, string $path, string $handler): void
     {
         $this->routes[] = [

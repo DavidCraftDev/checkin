@@ -12,6 +12,23 @@ services:
       # IMPORTANT: Change DEFAULT_LOGIN_PASSWORD for any non-development (production/staging) deployment.
       - DEFAULT_LOGIN_PASSWORD=CHANGE_ME_IN_PRODUCTION
       - MAINTENANCE=false
+      # LDAP Configuration (optional)
+      - LDAP_URI=ldap://ldap.example.com
+      - LDAP_BASE_DN=dc=example,dc=com
+      - LDAP_BIND_DN=cn=admin,dc=example,dc=com
+      - LDAP_BIND_PASSWORD=
+      # WebUntis Configuration (optional)
+      - UNTIS_SERVER=webuntis.example.com
+      - UNTIS_SCHOOL=
+      - UNTIS_USERNAME=
+      - UNTIS_PASSWORD=
+      # Email Configuration (optional)
+      - EMAIL_SMTP_HOST=smtp.gmail.com
+      - EMAIL_SMTP_PORT=587
+      - EMAIL_SMTP_USER=
+      - EMAIL_SMTP_PASSWORD=
+      - EMAIL_SMTP_SECURE=true
+      - EMAIL_FROM=noreply@school.edu
     ports:
       - "8080:80"
     volumes:
@@ -19,7 +36,7 @@ services:
 
   db:
     container_name: checkin-php-db
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     restart: always
     environment:
       - TZ=Europe/Berlin

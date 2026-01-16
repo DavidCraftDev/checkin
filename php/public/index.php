@@ -50,9 +50,32 @@ $router->delete('/api/v1/events/*', 'CheckIn\Controllers\Api\EventsController@de
 $router->get('/api/v1/qr/generate/*', 'CheckIn\Controllers\Api\QRCodeController@generate');
 $router->post('/api/v1/qr/validate', 'CheckIn\Controllers\Api\QRCodeController@validate');
 
-// Export routes
+// Export routes (CSV)
 $router->get('/api/v1/export/user', 'CheckIn\Controllers\Api\ExportController@exportUserData');
 $router->get('/api/v1/export/group', 'CheckIn\Controllers\Api\ExportController@exportGroupData');
+
+// Export routes (XLSX) - for TypeScript compatibility
+$router->get('/api/v1/export/xlsx/user', 'CheckIn\Controllers\Api\ExportController@exportUserXLSX');
+$router->get('/api/v1/export/xlsx/group', 'CheckIn\Controllers\Api\ExportController@exportGroupXLSX');
+
+// Export routes (JSON) - for TypeScript compatibility
+$router->get('/api/v1/export/json/events', 'CheckIn\Controllers\Api\ExportController@exportEventsJSON');
+
+// Courses routes
+$router->get('/api/v1/courses', 'CheckIn\Controllers\Api\CoursesController@list');
+$router->get('/api/v1/courses/*', 'CheckIn\Controllers\Api\CoursesController@get');
+
+// Attendances routes
+$router->get('/api/v1/attendances', 'CheckIn\Controllers\Api\AttendancesController@list');
+$router->post('/api/v1/attendances', 'CheckIn\Controllers\Api\AttendancesController@create');
+$router->get('/api/v1/attendances/*', 'CheckIn\Controllers\Api\AttendancesController@get');
+$router->put('/api/v1/attendances/*', 'CheckIn\Controllers\Api\AttendancesController@update');
+$router->delete('/api/v1/attendances/*', 'CheckIn\Controllers\Api\AttendancesController@delete');
+
+// Study time routes
+$router->get('/api/v1/studytime', 'CheckIn\Controllers\Api\StudyTimeController@list');
+$router->post('/api/v1/studytime', 'CheckIn\Controllers\Api\StudyTimeController@create');
+$router->get('/api/v1/studytime/*', 'CheckIn\Controllers\Api\StudyTimeController@get');
 
 // Advanced features routes
 $router->post('/api/v1/advanced/email', 'CheckIn\Controllers\Api\AdvancedController@sendEmail');
