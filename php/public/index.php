@@ -39,6 +39,7 @@ $router->get('/api/v1/overview/user', 'CheckIn\Controllers\Api\UserOverviewContr
 $router->get('/api/v1/overview/group', 'CheckIn\Controllers\Api\GroupOverviewController@get');
 $router->post('/login', 'CheckIn\Controllers\AuthController@login');
 $router->post('/logout', 'CheckIn\Controllers\AuthController@logout');
+$router->get('/logout', 'CheckIn\Controllers\AuthController@logout'); // TypeScript uses GET
 
 // Event routes
 $router->get('/api/v1/events', 'CheckIn\Controllers\Api\EventsController@list');
@@ -60,6 +61,22 @@ $router->get('/api/v1/export/xlsx/group', 'CheckIn\Controllers\Api\ExportControl
 
 // Export routes (JSON) - for TypeScript compatibility
 $router->get('/api/v1/export/json/events', 'CheckIn\Controllers\Api\ExportController@exportEventsJSON');
+
+// TypeScript-compatible export routes (exact path matching)
+$router->get('/export/overview/user/xlsx', 'CheckIn\Controllers\Api\ExportController@exportOverviewUserXLSX');
+$router->get('/export/overview/group/xlsx', 'CheckIn\Controllers\Api\ExportController@exportOverviewGroupXLSX');
+$router->get('/export/user/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX');
+$router->get('/export/user/json', 'CheckIn\Controllers\Api\ExportController@exportUserJSON');
+$router->get('/export/events/attended/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsXLSX');
+$router->get('/export/events/attended/json', 'CheckIn\Controllers\Api\ExportController@exportAttendedEventsJSON');
+$router->get('/export/events/created/xlsx', 'CheckIn\Controllers\Api\ExportController@exportCreatedEventsXLSX');
+$router->get('/export/events/created/json', 'CheckIn\Controllers\Api\ExportController@exportCreatedEventsJSON');
+$router->get('/export/events/event/xlsx', 'CheckIn\Controllers\Api\ExportController@exportEventXLSX');
+$router->get('/export/events/event/json', 'CheckIn\Controllers\Api\ExportController@exportEventJSON');
+$router->get('/export/groups/group/xlsx', 'CheckIn\Controllers\Api\ExportController@exportGroupXLSXById');
+$router->get('/export/groups/group/json', 'CheckIn\Controllers\Api\ExportController@exportGroupJSONById');
+$router->get('/export/groups/groups/xlsx', 'CheckIn\Controllers\Api\ExportController@exportAllGroupsXLSX');
+$router->get('/export/groups/groups/json', 'CheckIn\Controllers\Api\ExportController@exportAllGroupsJSON');
 
 // Courses routes
 $router->get('/api/v1/courses', 'CheckIn\Controllers\Api\CoursesController@list');
