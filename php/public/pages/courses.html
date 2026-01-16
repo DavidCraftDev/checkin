@@ -49,8 +49,8 @@
                         <div class="stat-value" id="totalAttendances">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Durchschnitt</div>
-                        <div class="stat-value" id="avgAttendance">0%</div>
+                        <div class="stat-label">⌀ Teilnahmen/Kurs</div>
+                        <div class="stat-value" id="avgAttendance">0</div>
                     </div>
                 </div>
             </div>
@@ -172,8 +172,9 @@
                     document.getElementById('activeCourses').textContent = courses.length;
                     const total = courses.reduce((sum, c) => sum + c.attendances, 0);
                     document.getElementById('totalAttendances').textContent = total;
-                    document.getElementById('avgAttendance').textContent = 
-                        courses.length > 0 ? Math.round(total / courses.length) : 0;
+                    // Show average attendances per course
+                    const avg = courses.length > 0 ? Math.round(total / courses.length) : 0;
+                    document.getElementById('avgAttendance').textContent = avg;
                 } else {
                     listDiv.innerHTML = '<p class="text-center text-secondary">Keine Kurse gefunden</p>';
                 }

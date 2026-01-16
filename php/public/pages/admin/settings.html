@@ -320,9 +320,13 @@
         });
 
         document.getElementById('resetDatabaseBtn').addEventListener('click', () => {
-            const confirmation = prompt('WARNUNG: Dies löscht ALLE Daten! Geben Sie "RESET" ein, um fortzufahren:');
-            if (confirmation === 'RESET') {
-                utils.showAlert('Datenbank wird zurückgesetzt...', 'error');
+            if (confirm('WARNUNG: Dies löscht ALLE Daten unwiderruflich!')) {
+                if (confirm('Sind Sie ABSOLUT SICHER? Diese Aktion kann nicht rückgängig gemacht werden!')) {
+                    if (confirm('LETZTE WARNUNG: Alle Benutzer, Gruppen, Veranstaltungen und Logs werden gelöscht!')) {
+                        utils.showAlert('Datenbank-Reset wird implementiert...', 'error');
+                        // Actual implementation would call API endpoint
+                    }
+                }
             }
         });
     </script>

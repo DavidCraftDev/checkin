@@ -344,14 +344,14 @@
             ];
 
             document.getElementById('availableUsers').innerHTML = mockAvailable.map(u => 
-                `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                `<div class="member-item">
                     ${u.displayname} (${u.username})
                     <button class="btn btn-primary add-member" data-user-id="${u.id}" style="float: right; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Hinzufügen</button>
                 </div>`
             ).join('');
 
             document.getElementById('groupMembers').innerHTML = mockMembers.map(u => 
-                `<div style="padding: 0.5rem; border-bottom: 1px solid #eee;">
+                `<div class="member-item">
                     ${u.displayname} (${u.username})
                     <button class="btn btn-danger remove-member" data-user-id="${u.id}" style="float: right; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Entfernen</button>
                 </div>`

@@ -128,8 +128,10 @@
         document.getElementById('prevWeekBtn').addEventListener('click', () => {
             currentCW--;
             if (currentCW < 1) {
-                currentCW = 52;
                 currentYear--;
+                // Get max weeks in previous year (52 or 53)
+                const lastDayOfYear = new Date(currentYear, 11, 31);
+                currentCW = utils.getCurrentWeek.call({ getFullYear: () => currentYear, getTime: () => lastDayOfYear.getTime() }) || 52;
             }
             updateDisplay();
             loadEvents();
@@ -137,7 +139,8 @@
 
         document.getElementById('nextWeekBtn').addEventListener('click', () => {
             currentCW++;
-            if (currentCW > 52) {
+            const maxWeeks = 53; // ISO 8601 allows up to 53 weeks
+            if (currentCW > maxWeeks) {
                 currentCW = 1;
                 currentYear++;
             }

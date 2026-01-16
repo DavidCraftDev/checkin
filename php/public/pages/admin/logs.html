@@ -229,7 +229,7 @@
                                         <td><span class="badge badge-secondary">${log.type}</span></td>
                                         <td><span class="badge badge-${log.severity === 'error' ? 'danger' : log.severity === 'warning' ? 'warning' : 'success'}">${log.severity}</span></td>
                                         <td>${log.user}</td>
-                                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${log.message}</td>
+                                        <td>${log.message}</td>
                                         <td style="font-size: 0.85rem;">${log.ip}</td>
                                         <td>
                                             <button class="btn btn-primary view-log-btn" data-id="${log.id}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Details</button>

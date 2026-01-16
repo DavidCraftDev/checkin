@@ -348,3 +348,10 @@ body {
     background: #fee2e2;
     color: #991b1b;
 }
+
+/* Member item for groups management */
+.member-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
