@@ -5,10 +5,11 @@ import CalendarWeek from "@/app/src/ui/calendarweek";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import StudyTimeTable from "./studyTimesTable.component";
+import { Permission } from "@/app/src/constants/permissions";
 
 async function CoursePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     // Check if the user is logged in and has permission to view this page
-    await getSessionUser(1);
+    await getSessionUser(Permission.TEACHER);
 
     // Decode the course ID from the URL and get the calendar week and year from the search parameters
     const courseID = decodeURIComponent((await params).slug);

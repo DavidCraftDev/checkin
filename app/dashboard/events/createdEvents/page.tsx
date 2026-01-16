@@ -10,6 +10,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next";
+import { Permission } from "@/app/src/constants/permissions";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -17,8 +18,8 @@ dayjs.extend(isLeapYear);
 
 async function CreatedEventsPage(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
-  const sessionUser = await getSessionUser(1);
-  if (!sessionUser || sessionUser.permission < 1) redirect("/dashboard");
+  const sessionUser = await getSessionUser(Permission.TEACHER);
+  if (!sessionUser || sessionUser.permission < Permission.TEACHER) redirect("/dashboard");
 
   const currentWeek = dayjs().isoWeek();
   const currentYear = dayjs().year();

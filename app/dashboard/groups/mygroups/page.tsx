@@ -2,9 +2,10 @@ import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getGroupsFromUser } from "@/app/src/modules/groupUtilities";
 import GroupsTable from "./myGroupsTable.component";
 import { redirect } from "next/navigation";
+import { Permission } from "@/app/src/constants/permissions";
 
 async function GroupsPage() {
-  const user = await getSessionUser(1);
+  const user = await getSessionUser(Permission.TEACHER);
 
   const groups = await getGroupsFromUser(user);
   const groupCount = groups.length;

@@ -56,8 +56,8 @@ function LoginPage() {
     fetchPasswordResetURL();
   }, []);
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-200">
-      <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4">
+      <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md w-full max-w-md">
         <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
           <span className="text-xl font-semibold text-white md:text-2xl">
             CheckIN
@@ -66,14 +66,36 @@ function LoginPage() {
         <div className="flex flex-col space-y-4">
           <h1>Anmelden</h1>
           <label htmlFor="username" className="font-bold text-gray-600">Nutzername</label>
-          <input type="text" name="username" id="username" placeholder="Nutzername" className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required/>
+          <input 
+            type="text" 
+            name="username" 
+            id="username" 
+            placeholder="Nutzername" 
+            aria-invalid={usernameError}
+            aria-describedby={usernameError ? "username-error" : undefined}
+            className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": usernameError })} 
+            required
+          />
+          {usernameError && <span id="username-error" className="text-red-600 text-sm ml-4" role="alert">Bitte einen Nutzernamen eingeben</span>}
 
           <label htmlFor="password" className="font-bold text-gray-600">Passwort</label>
-          <input type="password" name="password" id="password" placeholder="Passwort" className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": passwordError })} required/>
+          <input 
+            type="password" 
+            name="password" 
+            id="password" 
+            placeholder="Passwort" 
+            aria-invalid={passwordError}
+            aria-describedby={passwordError ? "password-error" : undefined}
+            className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": passwordError })} 
+            required
+          />
+          {passwordError && <span id="password-error" className="text-red-600 text-sm ml-4" role="alert">Bitte ein Passwort eingeben</span>}
 
           {passwordResetURL ? <a href={passwordResetURL} className="text-gray-400 text-xs ml-5 hover:underline" style={{ marginTop: "-3px" }}>Passwort vergessen?</a> : null}
 
-          <button type="submit" className="btn">Anmelden</button>
+          <button type="submit" className="btn" disabled={disabled} aria-busy={disabled}>
+            {disabled ? "Anmelden..." : "Anmelden"}
+          </button>
         </div>
       </form>
       <Toaster richColors />

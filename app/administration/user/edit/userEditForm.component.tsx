@@ -56,10 +56,34 @@ function UserEditForm(props: UserEditFormProps) {
             <form onSubmit={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
-                    <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
+                    <input 
+                        type="text" 
+                        name="displayname" 
+                        id="displayname" 
+                        placeholder="Max Mustermann" 
+                        defaultValue={userData.displayname} 
+                        disabled={config.use_ldap} 
+                        aria-invalid={displaynameError}
+                        aria-describedby={displaynameError ? "displayname-error" : undefined}
+                        className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} 
+                        required 
+                    />
+                    {displaynameError && <span id="displayname-error" className="text-red-600 text-sm block ml-4" role="alert">Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten</span>}
                     <br />
                     <label htmlFor="username">Nutzername*</label><br />
-                    <input type="text" name="username" id="username" placeholder="max.mustermann" defaultValue={userData.username.replace("local/", "")} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": usernameError })} required />
+                    <input 
+                        type="text" 
+                        name="username" 
+                        id="username" 
+                        placeholder="max.mustermann" 
+                        defaultValue={userData.username.replace("local/", "")} 
+                        disabled={config.use_ldap} 
+                        aria-invalid={usernameError}
+                        aria-describedby={usernameError ? "username-error" : undefined}
+                        className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": usernameError })} 
+                        required 
+                    />
+                    {usernameError && <span id="username-error" className="text-red-600 text-sm block ml-4" role="alert">Ungültiger Nutzername oder bereits belegt</span>}
                     <br />
                     <label htmlFor="permission">Rechte*</label><br />
                     <select name="permission" id="permission" defaultValue={userData.permission} disabled={config.ldap_auto_permission} className="rounded-full p-2 m-4 border-2 bg-white border-gray-200">
