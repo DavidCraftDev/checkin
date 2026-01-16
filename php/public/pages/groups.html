@@ -146,11 +146,14 @@
             }
         }
 
-        // Export functionality (placeholder)
+        // Export functionality
         document.getElementById('exportBtn').addEventListener('click', () => {
             const groupName = document.getElementById('groupName').value;
             const cw = document.getElementById('groupCW').value;
-            utils.showAlert(`Export-Funktion für Gruppe "${groupName}" (KW ${cw}) wird implementiert`, 'warning');
+            const year = new Date().getFullYear();
+            
+            // Trigger download
+            window.location.href = `/api/v1/export/group?group=${encodeURIComponent(groupName)}&cw=${cw}&year=${year}`;
         });
     </script>
 </body>

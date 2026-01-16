@@ -45,10 +45,10 @@ class ExportController
         );
         
         // Generate CSV
-        $filename = 'attendance_' . $userData['username'] . '_' . $year . '.csv';
+        $filename = 'attendance_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $userData['username']) . '_' . $year . '.csv';
         
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         header('Pragma: no-cache');
         header('Expires: 0');
         
@@ -123,10 +123,10 @@ class ExportController
         );
         
         // Generate CSV
-        $filename = 'group_' . preg_replace('/[^a-zA-Z0-9]/', '_', $group) . '_KW' . $cw . '_' . $year . '.csv';
+        $filename = 'group_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $group) . '_KW' . $cw . '_' . $year . '.csv';
         
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
         
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));

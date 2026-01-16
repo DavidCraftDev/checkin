@@ -9,9 +9,17 @@ use CheckIn\Core\Router;
 use CheckIn\Core\Database;
 use CheckIn\Core\Config;
 use CheckIn\Core\Response;
+use CheckIn\Core\SecurityHeaders;
+use CheckIn\Core\RateLimiter;
+
+// Apply security headers
+SecurityHeaders::apply();
 
 // Initialize configuration
 Config::init();
+
+// Rate limiting for all requests
+RateLimiter::requireLimit(RateLimiter::getClientIdentifier());
 
 // Initialize database connection
 try {

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - CheckIN</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="dashboard.html" class="logo">CheckIN</a>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="events.html">Veranstaltungen</a>
+                    <a href="groups.html">Gruppen</a>
+                    <a href="admin.html" class="active">Admin</a>
+                    <span id="username"></span>
+                    <a href="#" id="logoutBtn" class="btn btn-secondary">Abmelden</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mt-4">
+        <h1>Administrationsbereich</h1>
+
+        <div id="alert-container"></div>
+
+        <div class="grid grid-cols-2 mt-3">
+            <div class="card">
+                <h2 class="card-title">Systemstatus</h2>
+                <div id="systemStatus">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Statistiken</h2>
+                <div id="statistics">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Sicherheit & Limits</h2>
+            <div class="grid grid-cols-3">
+                <div class="stat-card">
+                    <div class="stat-label">CSRF Protection</div>
+                    <div class="stat-value"><span class="badge badge-success">Aktiv</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Rate Limiting</div>
+                    <div class="stat-value"><span class="badge badge-success">Aktiv</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Security Headers</div>
+                    <div class="stat-value"><span class="badge badge-success">Aktiv</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Konfiguration</h2>
+            <table class="table">
+                <tr>
+                    <td><strong>LDAP Authentication</strong></td>
+                    <td id="ldapStatus"><span class="badge badge-warning">Lädt...</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Wartungsmodus</strong></td>
+                    <td id="maintenanceStatus"><span class="badge badge-warning">Lädt...</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Schulname</strong></td>
+                    <td id="schoolName">Lädt...</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card mt-3">
+            <h2 class="card-title">Schnellaktionen</h2>
+            <div class="grid grid-cols-2">
+                <button id="clearCacheBtn" class="btn btn-secondary">Cache leeren</button>
+                <button id="exportAllBtn" class="btn btn-secondary">Alle Daten exportieren</button>
+                <button id="syncLDAPBtn" class="btn btn-secondary">LDAP Sync</button>
+                <button id="viewLogsBtn" class="btn btn-secondary">Logs anzeigen</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script>
+        if (!utils.requireAuth()) {
+            // Will redirect
+        }
+
+        const user = utils.getCurrentUser();
+        document.getElementById('username').textContent = user.username;
+
+        // Check permission - admin only
+        if (user.permission < 2) {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await api.logout();
+                utils.clearUser();
+                window.location.href = 'login.html';
+            } catch (error) {
+                utils.clearUser();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const health = await api.getHealth();
+                
+                document.getElementById('systemStatus').innerHTML = `
+                    <p><strong>Version:</strong> ${health.data.version}</p>
+                    <p><strong>Status:</strong> <span class="badge badge-${health.data.status === 'ok' ? 'success' : 'danger'}">${health.data.status.toUpperCase()}</span></p>
+                    <p><strong>Datenbank:</strong> <span class="badge badge-${health.data.databaseConnected ? 'success' : 'danger'}">${health.data.databaseConnected ? 'Verbunden' : 'Getrennt'}</span></p>
+                `;
+
+                document.getElementById('ldapStatus').innerHTML = `<span class="badge badge-${health.data.maintenance ? 'success' : 'secondary'}">Konfiguriert</span>`;
+                document.getElementById('maintenanceStatus').innerHTML = `<span class="badge badge-${health.data.maintenance ? 'warning' : 'success'}">${health.data.maintenance ? 'Aktiv' : 'Inaktiv'}</span>`;
+                
+            } catch (error) {
+                console.error('Failed to load system status:', error);
+            }
+        }
+
+        // Load statistics (placeholder)
+        document.getElementById('statistics').innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">Gesamtbenutzer</div>
+                <div class="stat-value">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Aktive Sitzungen</div>
+                <div class="stat-value">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Veranstaltungen (Monat)</div>
+                <div class="stat-value">--</div>
+            </div>
+        `;
+
+        // Quick actions (placeholders)
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            utils.showAlert('Cache-Funktion wird implementiert', 'warning');
+        });
+
+        document.getElementById('exportAllBtn').addEventListener('click', () => {
+            utils.showAlert('Vollständiger Export wird vorbereitet', 'warning');
+        });
+
+        document.getElementById('syncLDAPBtn').addEventListener('click', () => {
+            utils.showAlert('LDAP Synchronisation wird gestartet', 'warning');
+        });
+
+        document.getElementById('viewLogsBtn').addEventListener('click', () => {
+            utils.showAlert('Log-Ansicht wird implementiert', 'warning');
+        });
+
+        // Load on page load
+        loadSystemStatus();
+    </script>
+</body>
+</html>
