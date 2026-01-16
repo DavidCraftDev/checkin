@@ -54,5 +54,11 @@ $router->post('/api/v1/qr/validate', 'CheckIn\Controllers\Api\QRCodeController@v
 $router->get('/api/v1/export/user', 'CheckIn\Controllers\Api\ExportController@exportUserData');
 $router->get('/api/v1/export/group', 'CheckIn\Controllers\Api\ExportController@exportGroupData');
 
+// Advanced features routes
+$router->post('/api/v1/advanced/email', 'CheckIn\Controllers\Api\AdvancedController@sendEmail');
+$router->get('/api/v1/advanced/untis', 'CheckIn\Controllers\Api\AdvancedController@syncUntis');
+$router->get('/api/v1/advanced/pdf', 'CheckIn\Controllers\Api\AdvancedController@exportPDF');
+$router->get('/api/v1/advanced/report', 'CheckIn\Controllers\Api\AdvancedController@getAdvancedReport');
+
 // Dispatch the request
 $router->dispatch();
