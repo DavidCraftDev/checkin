@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckIN - Übersicht</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .btn {
+            @apply font-bold py-2 px-4 rounded-full;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        .card {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
+        <!-- Sidenav -->
+        <div class="w-full flex-none md:w-64 bg-gray-50 border-r border-gray-200">
+            <div class="flex h-full flex-col px-3 py-4 md:px-2">
+                <div class="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
+                    <div class="w-32 text-white md:w-40">
+                        <span class="text-xl font-semibold">CheckIN</span>
+                    </div>
+                </div>
+                <div class="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+                    <a href="dashboard.html" class="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-100 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+                        <span class="hidden md:block">Übersicht</span>
+                    </a>
+                    <div class="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
+                    <button id="logoutBtn" class="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+                        <span class="hidden md:block">Abmelden</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="grow p-6 md:overflow-y-auto md:p-12">
+            <div id="loading" class="text-center">Laden...</div>
+            <div id="content" class="hidden">
+                <h1 class="text-2xl font-bold mb-4">Übersicht</h1>
+                <p class="text-lg mb-2">Hallo <span id="displayName" class="font-semibold"></span></p>
+                <p class="mb-4"><span id="completedCount"></span>/<span id="totalNeeds"></span> Studienzeiten besucht</p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">
+                    <!-- Missing Study Times -->
+                    <div class="card border border-red-200 bg-red-50">
+                        <h2 class="font-bold text-red-700 mb-2">Fehlende Studienzeiten</h2>
+                        <ul id="missingList" class="list-disc list-inside text-red-600"></ul>
+                        <p id="noMissing" class="hidden text-green-600">Alles erledigt!</p>
+                    </div>
+
+                    <!-- Completed Study Times -->
+                    <div class="card border border-green-200 bg-green-50">
+                        <h2 class="font-bold text-green-700 mb-2">Besuchte Studienzeiten</h2>
+                        <ul id="completedList" class="space-y-2"></ul>
+                    </div>
+
+                    <!-- Other Attendances -->
+                    <div class="card">
+                        <h2 class="font-bold text-gray-700 mb-2">Sonstige Anwesenheiten</h2>
+                        <ul id="otherList" class="space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

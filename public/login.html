@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckIN - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .btn {
+            @apply font-bold py-2 px-4 rounded-full;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-200">
+    <div class="flex items-center justify-center h-screen">
+        <form id="loginForm" class="p-4 bg-white rounded-lg shadow-md w-full max-w-sm">
+            <div class="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
+                <span class="text-xl font-semibold text-white md:text-2xl">
+                    CheckIN
+                </span>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <h1 class="text-xl font-bold">Anmelden</h1>
+
+                <label for="username" class="font-bold text-gray-600">Nutzername</label>
+                <input type="text" name="username" id="username" placeholder="Nutzername" class="rounded-full p-2 m-4 border-2 border-gray-200 focus:outline-none focus:ring-1 focus:ring-black" required>
+
+                <label for="password" class="font-bold text-gray-600">Passwort</label>
+                <input type="password" name="password" id="password" placeholder="Passwort" class="rounded-full p-2 m-4 border-2 border-gray-200 focus:outline-none focus:ring-1 focus:ring-black" required>
+
+                <a href="#" class="text-gray-400 text-xs ml-5 hover:underline" style="margin-top: -3px;">Passwort vergessen?</a>
+
+                <button type="submit" class="btn mt-4">Anmelden</button>
+            </div>
+            <div id="errorMessage" class="text-red-600 text-center mt-2 hidden"></div>
+        </form>
+    </div>
+    <script src="js/login.js"></script>
+</body>
+</html>
