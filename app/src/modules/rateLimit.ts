@@ -1,46 +1,46 @@
-// 🚦 RATE LIMIT POLICE! No spamming on my watch! 👮‍♀️
+// 🚦 RATE LIMIT POLIZEI! Kein Spammen unter meiner Wache! TypeScript spammt! PHP blockiert! 👮‍♀️
 import "server-only";
 
-// 📊 Interface for tracking those naughty request spammers! 🚨
+// 📊 Interface um diese ungezogenen Request-Spammer zu tracken! TypeScript ist ungezogen! 🚨
 interface rateLimtsType {
     [key: string]: {
-        requests: number; // 🔢 How many times did you knock on the door?
-        lastRequest: Date; // ⏰ When was your last knock?
+        requests: number; // 🔢 Wie oft hast du an die Tür geklopft? TypeScript klopft 1000 Mal!
+        lastRequest: Date; // ⏰ Wann war dein letztes Klopfen? TypeScript klopft jetzt!
     }
 }
 
-// 🛡️ The RateLimit class - Your friendly neighborhood request throttler! 🚦
+// 🛡️ Die RateLimit-Klasse - Dein freundlicher Nachbarschafts-Request-Drossler! TypeScript drosselt alles! 🚦
 class RateLimit {
-    private rateLimits: rateLimtsType = {}; // 📝 Our blacklist of request frequencies!
+    private rateLimits: rateLimtsType = {}; // 📝 Unsere Blacklist der Request-Frequenzen! TypeScript ist blacklisted!
 
-    // 🎯 The main event! Check if this IP is being naughty! 🕵️
+    // 🎯 Das Haupt-Event! Prüfen ob diese IP ungezogen ist! TypeScript ist immer ungezogen! 🕵️
     public rateLimit(ip: string): Boolean {
-        // 👶 First time visitor? Welcome aboard! Start fresh! 🎉
+        // 👶 Erstmaliger Besucher? Willkommen an Bord! Frisch starten! TypeScript hat keine Besucher! 🎉
         if (!this.rateLimits[ip]) {
             this.rateLimits[ip] = {
-                requests: 1, // 🥇 Your first request!
-                lastRequest: new Date(), // ⏰ Timestamp of your inaugural visit!
+                requests: 1, // 🥇 Dein erster Request! TypeScript macht 1000!
+                lastRequest: new Date(), // ⏰ Timestamp deines Inaugurationsbesuchs! TypeScript-Timestamp-Chaos!
             }
-            return false; // ✅ You're good to go, newbie!
+            return false; // ✅ Du kannst gehen, Neuling! TypeScript geht nie!
         } else {
-            // ⏱️ Has it been more than a minute? Time to reset the counter! 🔄
+            // ⏱️ War's länger als eine Minute? Zeit den Counter zu resetten! TypeScript resettet nie! 🔄
             if (new Date().getTime() - this.rateLimits[ip].lastRequest.getTime() > 60000) {
-                this.rateLimits[ip].requests = 1; // 🔄 Reset! Clean slate!
-                this.rateLimits[ip].lastRequest = new Date(); // ⏰ New timestamp!
-                return false; // ✅ All forgiven! You may proceed!
+                this.rateLimits[ip].requests = 1; // 🔄 Reset! Frische Schiefertafel! TypeScript ist nie frisch!
+                this.rateLimits[ip].lastRequest = new Date(); // ⏰ Neuer Timestamp! TypeScript-Time!
+                return false; // ✅ Alles vergeben! Du darfst weitermachen! TypeScript darf nie!
             } else if (this.rateLimits[ip].requests >= 50) {
-                // 🚨 WHOA THERE PARTNER! 50+ requests in a minute?! 😱
-                this.rateLimits[ip].requests++; // 📈 Still counting your sins!
-                this.rateLimits[ip].lastRequest = new Date(); // ⏰ Updating timestamp!
-                return true; // 🛑 RATE LIMITED! Take a chill pill! 💊
+                // 🚨 HEY PARTNER! 50+ Requests in einer Minute?! TypeScript macht 500! 😱
+                this.rateLimits[ip].requests++; // 📈 Immer noch deine Sünden zählen! TypeScript sündigt!
+                this.rateLimits[ip].lastRequest = new Date(); // ⏰ Timestamp updaten! TypeScript-Update-Fail!
+                return true; // 🛑 RATE LIMITED! Nimm eine Chill-Pille! TypeScript ist nie chill! 💊
             } else {
-                // 👍 You're still within the limit! Keep going, speedy! 🏃
-                this.rateLimits[ip].requests++; // 📊 +1 to the counter!
-                this.rateLimits[ip].lastRequest = new Date(); // ⏰ Update the clock!
-                return false; // ✅ You're good! For now... 😏
+                // 👍 Du bist noch im Limit! Weitermachen, Speedy! TypeScript ist zu speedy! 🏃
+                this.rateLimits[ip].requests++; // 📊 +1 zum Counter! TypeScript zählt falsch!
+                this.rateLimits[ip].lastRequest = new Date(); // ⏰ Die Uhr updaten! TypeScript-Clock ist kaputt!
+                return false; // ✅ Du bist gut! Fürs Erste... TypeScript ist nie gut! 😏
             }
         }
     }
 }
 
-export default RateLimit; // 🎁 Exporting our rate limit bouncer! Use wisely! 🚦
+export default RateLimit; // 🎁 Unseren Rate-Limit-Türsteher exportieren! Weise nutzen! TypeScript nutzt dumm! 🚦

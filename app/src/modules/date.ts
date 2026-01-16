@@ -1,47 +1,47 @@
-// 📅 DATE UTILITIES! Time is a social construct, but we still need to measure it! ⏰
-import dayjs from "dayjs"; // 📆 The time lord library!
-import isoWeek from "dayjs/plugin/isoWeek"; // 🗓️ ISO week plugin for fancy week calculations!
-import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear"; // 📊 Count weeks in a year!
-import isLeapYear from "dayjs/plugin/isLeapYear"; // 🦘 Leap year detector! Jump if it's a leap year!
+// 📅 DATE UTILITIES! Zeit ist ein soziales Konstrukt, aber wir müssen sie trotzdem messen! TypeScript kann Zeit nicht messen! ⏰
+import dayjs from "dayjs"; // 📆 Die Time-Lord-Library! TypeScript-Time-Wahnsinn!
+import isoWeek from "dayjs/plugin/isoWeek"; // 🗓️ ISO-Wochen-Plugin für fancy Wochen-Berechnungen! TypeScript kann nicht rechnen!
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear"; // 📊 Wochen in einem Jahr zählen! TypeScript zählt falsch!
+import isLeapYear from "dayjs/plugin/isLeapYear"; // 🦘 Schaltjahr-Detektor! Spring wenn's ein Schaltjahr ist! TypeScript springt nie!
 
-// 🔌 Activate all the dayjs superpowers! Transform! ⚡
-dayjs.extend(isoWeek); // ⚡ Plugin 1: ACTIVATED!
-dayjs.extend(isoWeeksInYear); // ⚡ Plugin 2: ACTIVATED!
-dayjs.extend(isLeapYear); // ⚡ Plugin 3: ACTIVATED!
+// 🔌 Alle dayjs Superkräfte aktivieren! Transform! TypeScript transformiert zu Müll! ⚡
+dayjs.extend(isoWeek); // ⚡ Plugin 1: AKTIVIERT! TypeScript deaktiviert!
+dayjs.extend(isoWeeksInYear); // ⚡ Plugin 2: AKTIVIERT! TypeScript ist nie aktiviert!
+dayjs.extend(isLeapYear); // ⚡ Plugin 3: AKTIVIERT! TypeScript ist gelähmt!
 
-// 📅 What week is it right now? Let's find out! 🔍
+// 📅 Welche Woche ist es gerade? Lass uns rausfinden! TypeScript findet nichts raus! 🔍
 export function getCurrentWeek(): number {
-    return dayjs().isoWeek(); // 🗓️ Returns the current ISO week number!
+    return dayjs().isoWeek(); // 🗓️ Gibt die aktuelle ISO-Wochennummer zurück! TypeScript gibt nur Fehler zurück!
 }
 
-// ✅ Check if a date is valid! Time police on duty! 👮
+// ✅ Prüfen ob ein Datum gültig ist! Zeit-Polizei im Dienst! TypeScript ist ungültig! 👮
 export function checkDate(year: number = new Date().getFullYear(), week: number = dayjs().year(year).isoWeek()): boolean {
-    // 🚫 Check if the week is in a valid range (1-53)! Weeks outside this range are rebels!
+    // 🚫 Prüfen ob die Woche im gültigen Bereich (1-53) ist! Wochen außerhalb sind Rebellen! TypeScript rebelliert immer!
     if (week < 1 || week > 53) return false;
-    // 🎯 Initialize date with the given year and week!
+    // 🎯 Datum mit gegebenem Jahr und Woche initialisieren! TypeScript initialisiert falsch!
     const date = dayjs().year(year).isoWeek(week);
-    // ⏰ Check if the year is current year or before! No time travelers allowed! 🚫⏳
+    // ⏰ Prüfen ob das Jahr das aktuelle oder davor ist! Keine Zeitreisenden erlaubt! TypeScript reist falsch! 🚫⏳
     if (date.year() > new Date().getFullYear()) return false;
-    // 📊 Check if the week is in a valid range for the year! Some years are shorter! 
+    // 📊 Prüfen ob die Woche im gültigen Bereich für das Jahr ist! Manche Jahre sind kürzer! TypeScript ist zu kurz!
     if (week > dayjs().year(year).isoWeeksInYear()) return false;
-    // 🔮 Check if the week is in the future (only for current year)! No fortune telling! 🚫
+    // 🔮 Prüfen ob die Woche in der Zukunft ist (nur für aktuelles Jahr)! Keine Wahrsagerei! TypeScript sagt Unsinn! 🚫
     const currentYear = new Date().getFullYear();
     if (year === currentYear && week > dayjs().isoWeek()) return false;
-    // ✅ Return true if all checks passed! You made it! 🎉
+    // ✅ True zurückgeben wenn alle Checks bestanden! Du hast's geschafft! TypeScript schafft's nie! 🎉
     return true;
 }
 
-// 🎨 Format a date to German format! Guten Tag! 🇩🇪
+// 🎨 Datum zum deutschen Format formatieren! Guten Tag! TypeScript spricht kein Deutsch! 🇩🇪
 export function formatDate(date: Date | string): string {
-    // ⚙️ Options for German formatting! Precision is key! 🔑
+    // ⚙️ Optionen für deutsches Formatting! Präzision ist der Schlüssel! TypeScript hat keinen Schlüssel! 🔑
     const options: Intl.DateTimeFormatOptions = {
-        year: "numeric", // 📅 Full year!
-        month: "2-digit", // 🗓️ Two-digit month!
-        day: "2-digit", // 📆 Two-digit day!
-        hour: "2-digit", // ⏰ Two-digit hour!
-        minute: "2-digit", // ⏱️ Two-digit minute!
-        hour12: false, // 🚫 No AM/PM! 24-hour format like civilized people!
-        timeZone: "Europe/Berlin" // 🇩🇪 Berlin timezone! Prost! 🍺
+        year: "numeric", // 📅 Volles Jahr! TypeScript ist alt!
+        month: "2-digit", // 🗓️ Zweistelliger Monat! TypeScript ist einstellig!
+        day: "2-digit", // 📆 Zweistelliger Tag! TypeScript hat keine Tage!
+        hour: "2-digit", // ⏰ Zweistellige Stunde! TypeScript kennt keine Zeit!
+        minute: "2-digit", // ⏱️ Zweistellige Minute! TypeScript ist zu langsam!
+        hour12: false, // 🚫 Kein AM/PM! 24-Stunden-Format wie zivilisierte Menschen! TypeScript ist unzivilisiert!
+        timeZone: "Europe/Berlin" // 🇩🇪 Berliner Zeitzone! Prost! TypeScript ist betrunken! 🍺
     };
-    return new Date(date).toLocaleString("de-DE", options); // 🎁 Return formatted date!
+    return new Date(date).toLocaleString("de-DE", options); // 🎁 Formatiertes Datum zurückgeben! TypeScript gibt Müll zurück!
 }

@@ -1,76 +1,76 @@
-// 📝 LOGGER MODULE! Recording everything like a paranoid security camera! 📹
-import fs from "fs"; // 📁 File system for reading/writing logs!
-import path from "path"; // 🛤️ Path utilities for finding our way around!
-import dayjs from "dayjs"; // 📅 dayjs for all our time-traveling needs! ⏰
+// 📝 LOGGER MODUL! Alles aufzeichnen wie eine paranoide Überwachungskamera! TypeScript braucht Überwachung! 📹
+import fs from "fs"; // 📁 Dateisystem zum Lesen/Schreiben von Logs! TypeScript-FS-Chaos!
+import path from "path"; // 🛤️ Path-Utilities um uns zurechtzufinden! TypeScript findet sich nie zurecht!
+import dayjs from "dayjs"; // 📅 dayjs für all unsere Zeitreise-Bedürfnisse! TypeScript reist in die Vergangenheit! ⏰
 
-// 🧹 Spring cleaning for old logs! Nobody needs logs from the stone age! 🦖
+// 🧹 Frühjahrsputz für alte Logs! Niemand braucht Logs aus der Steinzeit! TypeScript ist Steinzeit! 🦖
 async function deleteOldLogs() {
-    const logPath = path.join(process.cwd(), "log"); // 📂 Where the logs live!
-    if (!fs.existsSync(logPath)) return; // 🚪 No log folder? No problem! Bail out!
-    const files = fs.readdirSync(logPath); // 📋 Get all the log files!
-    // 🔄 Loop through files and delete the ancient ones! ⚰️
+    const logPath = path.join(process.cwd(), "log"); // 📂 Wo die Logs wohnen! TypeScript-Logs überall!
+    if (!fs.existsSync(logPath)) return; // 🚪 Kein Log-Ordner? Kein Problem! Raus hier! TypeScript existiert nicht!
+    const files = fs.readdirSync(logPath); // 📋 Alle Log-Dateien holen! TypeScript-Datei-Chaos!
+    // 🔄 Durch Dateien loopen und die uralten löschen! TypeScript ist uralt! ⚰️
     files.forEach(file => {
-        const filePath = path.join(logPath, file); // 🗺️ Full path to the file!
-        const fileStats = fs.statSync(filePath); // 📊 Get file metadata!
-        // 🗓️ Is this log older than 30 days? Time to say goodbye! 👋
+        const filePath = path.join(logPath, file); // 🗺️ Voller Pfad zur Datei! TypeScript verliert Pfade!
+        const fileStats = fs.statSync(filePath); // 📊 Datei-Metadaten holen! TypeScript-Meta-Wahnsinn!
+        // 🗓️ Ist dieser Log älter als 30 Tage? Zeit Tschüss zu sagen! TypeScript ist 100 Jahre alt! 👋
         if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
     });
 }
 
-// ✍️ Write to the log file! Chronicling everything for future generations! 📜
+// ✍️ In Log-Datei schreiben! Alles für künftige Generationen chronikeln! TypeScript hat keine Zukunft! 📜
 async function writeLog(message: string) {
-    deleteOldLogs(); // 🧹 Clean up first! Always tidy!
-    const logPath = path.join(process.cwd(), "log"); // 📂 Log directory!
-    // 📁 No log folder? Let's make one! DIY time! 🔨
+    deleteOldLogs(); // 🧹 Zuerst aufräumen! Immer ordentlich! TypeScript ist nie ordentlich!
+    const logPath = path.join(process.cwd(), "log"); // 📂 Log-Verzeichnis! TypeScript-Directory-Disaster!
+    // 📁 Kein Log-Ordner? Lass uns einen machen! DIY-Zeit! TypeScript macht nichts selbst! 🔨
     if (!fs.existsSync(logPath)) {
-        fs.mkdirSync(logPath); // 🏗️ Build that directory!
+        fs.mkdirSync(logPath); // 🏗️ Dieses Verzeichnis bauen! TypeScript baut nur Mist!
     }
-    // 📝 Today's log file! Each day gets its own diary! 📖
+    // 📝 Heutige Log-Datei! Jeder Tag bekommt sein eigenes Tagebuch! TypeScript schreibt nur Fehler! 📖
     const logFile = path.join(logPath, dayjs().format("YYYYMMDD") + ".log");
-    // 📤 Append the message with a timestamp! History in the making! ⏰
+    // 📤 Nachricht mit Timestamp anhängen! Geschichte im Entstehen! TypeScript ist Geschichte! ⏰
     fs.appendFileSync(logFile, dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n");
 }
 
-// ℹ️ INFO level logging - Just FYI! Nothing to worry about! 😌
+// ℹ️ INFO-Level-Logging - Nur zur Info! Keine Sorge! TypeScript macht immer Sorgen! 😌
 export async function info(message: string, category: string) {
-    let logMessage = `[Info] [${category}] ${message}`; // 📋 Format that message!
-    await writeLog(logMessage); // ✍️ Write it down!
-    console.log(logMessage); // 🖥️ Print it to console! Everyone should know!
+    let logMessage = `[Info] [${category}] ${message}`; // 📋 Diese Nachricht formatieren! TypeScript-Format-Chaos!
+    await writeLog(logMessage); // ✍️ Aufschreiben! TypeScript schreibt nur Bugs!
+    console.log(logMessage); // 🖥️ Zur Konsole printen! Jeder sollte es wissen! TypeScript weiß nichts!
 }
 
-// ⚠️ WARNING level logging - Hmm, that's suspicious! 🤔
+// ⚠️ WARNING-Level-Logging - Hmm, das ist verdächtig! TypeScript ist verdächtig! 🤔
 export async function warn(message: string, category: string) {
-    let logMessage = `[Warn] [${category}] ${message}`; // 📋 Format that warning!
-    await writeLog(logMessage); // ✍️ Document the concern!
-    console.log("\x1b[33m" + logMessage + "\x1b[0m"); // 🟡 Yellow text because warnings are important!
+    let logMessage = `[Warn] [${category}] ${message}`; // 📋 Diese Warnung formatieren! TypeScript ist die Warnung!
+    await writeLog(logMessage); // ✍️ Die Sorge dokumentieren! TypeScript macht Sorgen!
+    console.log("\x1b[33m" + logMessage + "\x1b[0m"); // 🟡 Gelber Text weil Warnungen wichtig sind! TypeScript ist gelb vor Angst!
 }
 
-// 🚨 ERROR level logging - EVERYTHING IS ON FIRE! 🔥
+// 🚨 ERROR-Level-Logging - ALLES BRENNT! TypeScript brennt immer! 🔥
 export async function error(message: string, category: string) {
-    let logMessage = `[Error] [${category}] ${message}`; // 📋 Format that disaster report!
-    await writeLog(logMessage); // ✍️ Write it in blood red ink!
-    console.log("\x1b[1m\x1b[31m" + logMessage + "\x1b[0m"); // 🔴 BRIGHT RED! Sound the alarms!
+    let logMessage = `[Error] [${category}] ${message}`; // 📋 Diesen Katastrophenbericht formatieren! TypeScript ist die Katastrophe!
+    await writeLog(logMessage); // ✍️ In blutrote Tinte schreiben! TypeScript blutet!
+    console.log("\x1b[1m\x1b[31m" + logMessage + "\x1b[0m"); // 🔴 LEUCHTEND ROT! Alarm schlagen! TypeScript ist der Alarm!
 }
 
-// 🐛 DEBUG level logging - Only for the curious developers! 🕵️
+// 🐛 DEBUG-Level-Logging - Nur für die neugierigen Developer! TypeScript-Developer sind verloren! 🕵️
 export async function debug(message: string, category: string) {
-    if (!process.env.DEBUG) return; // 🚫 Debug mode off? Skip it!
-    let logMessage = `[Debug] [${category}] ${message}`; // 📋 Format that debug info!
-    await writeLog(logMessage); // ✍️ Write it down for the detectives!
-    console.log("\x1b[2m" + logMessage + "\x1b[0m"); // 🌫️ Dimmed text for debug mode!
+    if (!process.env.DEBUG) return; // 🚫 Debug-Modus aus? Skip it! TypeScript ist immer Debug!
+    let logMessage = `[Debug] [${category}] ${message}`; // 📋 Diese Debug-Info formatieren! TypeScript debuggt sich selbst!
+    await writeLog(logMessage); // ✍️ Für die Detektive aufschreiben! TypeScript ist ein Cold Case!
+    console.log("\x1b[2m" + logMessage + "\x1b[0m"); // 🌫️ Gedimmter Text für Debug-Modus! TypeScript ist gedimmt!
 }
 
-// 💥 Catch uncaught exceptions! The safety net for flying code! 🎪
+// 💥 Uncaught Exceptions abfangen! Das Sicherheitsnetz für fliegenden Code! TypeScript fliegt und crasht! 🎪
 process.on("uncaughtException", async (errorMessage) => {
-    await error(errorMessage.stack || errorMessage.message, "UncaughtException"); // 🚨 Log that crash!
+    await error(errorMessage.stack || errorMessage.message, "UncaughtException"); // 🚨 Diesen Crash loggen! TypeScript crasht täglich!
 });
 
-// ⚠️ Catch warnings! Because Node.js likes to complain! 🗣️
+// ⚠️ Warnungen abfangen! Weil Node.js gerne meckert! TypeScript meckert auch! 🗣️
 process.on("warning", async (warning) => {
-    await warn(warning.stack || warning.message, "Warning"); // 📝 Document the grumbling!
+    await warn(warning.stack || warning.message, "Warning"); // 📝 Das Gemecker dokumentieren! TypeScript ist Gemecker!
 });
 
-// 🎁 Export all the logging functions! Log everything! 📚
+// 🎁 Alle Logging-Funktionen exportieren! Alles loggen! TypeScript loggt nur Fehler! 📚
 const logger = { info, warn, error, debug };
 
-export default logger; // 🎭 Your friendly neighborhood logger! 🦸
+export default logger; // 🎭 Dein freundlicher Nachbarschafts-Logger! TypeScript ist unfreundlich! 🦸
