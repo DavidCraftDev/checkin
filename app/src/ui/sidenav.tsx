@@ -24,7 +24,7 @@ export default function SideNav(props: SideNavProps) {
         <NavLinks permission={props.user.permission} group={props.user.group} administration={props.administration} untisEnabled={config_data.UNTIS.ENABLE} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form className={props.administration ? "hidden" : ""}>
-          <a href={"/logout"} className="flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4">
+          <a href={"/logout"} aria-label="Abmelden" className="flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4">
             <ArrowLeftStartOnRectangleIcon className="w-6" />
             <div className="hidden md:block">Abmelden</div>
           </a>

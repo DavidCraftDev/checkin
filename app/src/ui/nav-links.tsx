@@ -71,6 +71,7 @@ export default function NavLinks(props: NavLinkProps) {
           <Link
             key={label}
             href={href}
+            aria-label={label}
             className={clsx(
               'flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
               {
