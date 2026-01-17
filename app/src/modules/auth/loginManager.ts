@@ -13,6 +13,9 @@ import { config_data } from "../data/config";
 
 const rateLimit = new RateLimit();
 
+// Dummy hash for timing attack mitigation (cost 12)
+const DUMMY_HASH = "$2b$12$fNlgQb5/7eojbPoGV3yDJOt7bTBXPfgbKX5exsadZQK28nCxf/xlm";
+
 export async function login(username: string, password: string): Promise<boolean> {
     if (!username || !password || username === "" || password === "") return false;
     const header = await headers();
@@ -20,6 +23,8 @@ export async function login(username: string, password: string): Promise<boolean
     const userData = await getUserPerUsername(username);
     if (!userData) {
         logger.warn("User " + username + " not found in Database" + " IP:" + header.get("x-forwarded-for"), "Auth");
+        // Mitigate timing attack by performing a dummy comparison
+        await compare(password, DUMMY_HASH);
         return false;
     }
     if (config_data.LDAP.ENABLE && !username.startsWith("local/")) {
