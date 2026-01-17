@@ -2,7 +2,7 @@ import "server-only";
 
 import { Attendances, Events, User } from "@prisma/client";
 import db from "./db";
-import { existUserPerID, getUserPerID } from "./userUtilities";
+import { existUserPerID, getUserPerID, getUsersPerIDs } from "./userUtilities";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -27,19 +27,41 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
         }
     });
+
+    // ⚡ Bolt Optimization: Batch fetch all events and users to prevent N+1 query problem
+    // Pre-fetch the student user once
+    const studentUser = await getUserPerID(userID);
+
+    // Identify all needed event IDs
+    const eventIDs = [...new Set(dataAttendances
+        .filter(a => a.eventID !== "NOTE")
+        .map(a => a.eventID))];
+
+    // Batch fetch events
+    const events = await db.events.findMany({
+        where: { id: { in: eventIDs } }
+    });
+    const eventMap = new Map(events.map(e => [e.id, e]));
+
+    // Identify all needed teacher IDs from events
+    const teacherIDs = [...new Set(events.map(e => e.user))];
+
+    // Batch fetch teachers
+    const teachers = await getUsersPerIDs(teacherIDs);
+    const teacherMap = new Map(teachers.map(t => [t.id, t]));
+
     const data: AttendancePerUserPerEvent[] = [];
-    await Promise.all(dataAttendances.map(async (attendance) => {
+    const attendancesToDelete: string[] = [];
+
+    for (const attendance of dataAttendances) {
         let dataEvent: Events;
         let dataUserEvent: User;
+
         if (attendance.eventID === "NOTE") {
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
                 logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
-                await db.attendances.deleteMany({
-                    where: {
-                        id: attendance.id
-                    }
-                });
-                return;
+                attendancesToDelete.push(attendance.id);
+                continue;
             }
             dataEvent = {
                 id: "NOTE",
@@ -48,19 +70,30 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                 cw: cw,
                 created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
-            dataUserEvent = await getUserPerID(attendance.userID);
+            dataUserEvent = studentUser;
         } else {
-            const dataFromEvent = await getEventPerID(attendance.eventID);
-            if (!dataFromEvent) return;
-            dataEvent = dataFromEvent;
-            dataUserEvent = await getUserPerID(dataEvent.user);
+            const foundEvent = eventMap.get(attendance.eventID);
+            if (!foundEvent) continue;
+            dataEvent = foundEvent;
+
+            const foundTeacher = teacherMap.get(dataEvent.user);
+            dataUserEvent = foundTeacher || ({} as User);
         }
         data.push({
             attendance: attendance,
             event: dataEvent,
             eventUser: dataUserEvent
         });
-    }));
+    }
+
+    if (attendancesToDelete.length > 0) {
+        await db.attendances.deleteMany({
+            where: {
+                id: { in: attendancesToDelete }
+            }
+        });
+    }
+
     data.sort((a, b) => {
         if (a.attendance.created_at > b.attendance.created_at) return -1;
         if (a.attendance.created_at < b.attendance.created_at) return 1;
