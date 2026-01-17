@@ -21,7 +21,7 @@
     "bcryptjs": "3.0.3",
     "clsx": "2.1.1",
     "dayjs": "1.11.19",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "eslint-config-next": "15.5.9",
     "ldapts": "8.0.20",
     "next": "15.5.9",
