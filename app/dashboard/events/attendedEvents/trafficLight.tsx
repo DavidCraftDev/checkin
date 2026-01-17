@@ -1,18 +1,13 @@
-export default function TrafficLight({ status }: { status: "GREEN" | "YELLOW" | "RED" }) {
-    let colorClass = "";
-    switch (status) {
-        case "GREEN":
-        colorClass = "bg-green-500";
-        break;
-        case "YELLOW":
-        colorClass = "bg-yellow-500";
-        break;
-        case "RED":
-        colorClass = "bg-red-500";
-        break;
+import { ExclamationCircleIcon, CheckCircleIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
+
+function TrafficLight(props: { status: "GREEN" | "YELLOW" | "RED" }) {
+    if (props.status === "GREEN") {
+        return <CheckCircleIcon className="w-6 h-6 text-green-500 inline-block" title="Grün - Anwesend" />
+    } else if (props.status === "YELLOW") {
+        return <MinusCircleIcon className="w-6 h-6 text-yellow-500 inline-block" title="Gelb - Verspätet/Teilweise" />
+    } else {
+        return <ExclamationCircleIcon className="w-6 h-6 text-red-500 inline-block" title="Rot - Abwesend/Störend" />
     }
-    
-    return (
-        <div className={`w-4 h-4 rounded-full ${colorClass} inline-block`}></div>
-    );
 }
+
+export default TrafficLight;

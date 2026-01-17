@@ -1,59 +1,41 @@
-"use server";
-
-import StudentNote from "./studentNote.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
-import dayjs from "dayjs";
-import { SelfReflectionEmojiSelect, StudyTimeSelect } from "./forms";
-import TeacherNote from "../event/teacherNote.component";
-import TrafficLight from "./trafficLight";
+import AttendedEventRow from "./attendedEventsRow.component";
 
 interface AttendedEventTableProps {
-    attendances: AttendancePerUserPerEvent[];
-    isEditable: boolean;
-    studyTimeTypes: Record<string, string[]>;
-    isTeacher: boolean;
+    attendances: AttendancePerUserPerEvent[],
+    isEditable: boolean,
+    studyTimeTypes: Record<string, string[]>,
+    isTeacher: boolean
 }
 
 function AttendedEventTable(props: AttendedEventTableProps) {
-    function getTeacherDisplayName(name: string): string {
-        const parts = name.split(" ");
-        if (parts.length === 1) return name;
-        // Return first letter of first name and full last name
-        return parts[0][0] + "." + parts[1]
-    }
     return (
-        <div className="overflow-x-auto">
-            <div className="table">
-                <table>
-                    <thead>
+        <div className="w-full mt-6 bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-max">
+                    <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th>Stammfach</th>
-                            <th>Lehrer</th>
-                            <th>Fach</th>
-                            <th>Schüler Notiz</th>
-                            <th>Lehrer Notiz</th>
-                            <th>Selbstreflexion</th>
-                            <th>Ampel</th>
-                            <th>Zeitpunkt</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Studienzeit</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Leitung</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider text-center">Ampel</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Fach</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Notiz</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Selbstreflexion</th>
+                            <th className="py-4 px-6 font-semibold text-gray-700 text-xs uppercase tracking-wider">Zeit</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {props.attendances.map((attendances: AttendancePerUserPerEvent) => (
-                            <tr key={attendances.attendance.id}>
-                                <td>{attendances.event.type}</td>
-                                <td>{getTeacherDisplayName(attendances.eventUser.displayname)}</td>
-                                {props.isEditable ? <StudyTimeSelect attendance={attendances.attendance} studyTimeTypes={props.studyTimeTypes[attendances.attendance.id]} /> : attendances.attendance.type ? <td>{attendances.attendance.type}</td> : <span className={"italic"}>Keine Studienzeit ausgewählt</span>}
-                                {props.isEditable ? <StudentNote attendance={attendances.attendance} /> : <td>{attendances.attendance.studentNote}</td>}
-                                {props.isTeacher ? <TeacherNote attendance={attendances.attendance} /> : <td>{attendances.attendance.teacherNote}</td>}
-                                {props.isEditable ? <td><SelfReflectionEmojiSelect attendance={attendances.attendance} /></td> : <td>{attendances.attendance.selfReflection || "❓"}</td>}
-                                <td><TrafficLight status={attendances.attendance.feedback} /></td>
-                                <td>{dayjs(attendances.attendance.created_at).format("DD.MM. HH:mm")}</td>
-                            </tr>
+                    <tbody className="divide-y divide-gray-200">
+                        {props.attendances.map((attendance: AttendancePerUserPerEvent) => (
+                            <AttendedEventRow key={attendance.attendance.id} event={attendance} isEditable={props.isEditable} studyTimeTypes={props.studyTimeTypes} isTeacher={props.isTeacher} />
                         ))}
                     </tbody>
                 </table>
-                {props.attendances.length === 0 ? <p className="text-center italic m-2">An keiner Studienzeit teilgenommen</p> : null}
             </div>
+            {props.attendances.length === 0 && (
+                 <div className="text-center py-12 bg-gray-50 flex flex-col items-center justify-center">
+                    <p className="text-gray-500 text-lg">Keine Studienzeiten besucht</p>
+                </div>
+            )}
         </div>
     )
 }

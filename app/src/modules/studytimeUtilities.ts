@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getAttendancesPerUser } from "./eventUtilities";
-import { Attendances, StudyTimeData, User } from "@prisma/client";
+import { Attendance, StudyTimeData, User } from "@prisma/client";
 import db from "./db";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -46,20 +46,20 @@ export async function getAttendedStudyTimesCount(user: User, cw: number, year: n
   return { normalStudyTimes, parallelStudyTimes, notedStudyTimes, neededStudyTimes, trafficLightCount, total };
 }
 
-export async function saveStudyTimeType(attendance: Attendances, userID: string, type: string) {
-  const check = await db.attendances.findMany({
+export async function saveStudyTimeType(attendance: Attendance, userID: string, type: string) {
+  const check = await db.attendance.findMany({
     where: {
       type: type,
       cw: attendance.cw,
-      userID: userID,
-      created_at: {
-        gte: dayjs(attendance.created_at).startOf("week").toISOString(),
-        lte: dayjs(attendance.created_at).endOf("week").toISOString()
+      userId: userID,
+      createdAt: {
+        gte: dayjs(attendance.createdAt).startOf("week").toDate(),
+        lte: dayjs(attendance.createdAt).endOf("week").toDate()
       }
     }
   });
   if (check.length > 0) return false;
-  const data = await db.attendances.update({
+  const data = await db.attendance.update({
     where: { id: attendance.id },
     data: { type: type }
   });
@@ -73,33 +73,33 @@ export async function createUserStudyTimeNote(userID: string, cw: number = dayjs
     if (sessionUser.permission === 0 || sessionUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
   }
   if (sessionUser.permission !== 0 && (cw !== dayjs().isoWeek() || year !== dayjs().year())) {
-    const note = await db.attendances.create({
+    const note = await db.attendance.create({
       data: {
-        userID: userID,
-        eventID: "NOTE",
+        userId: userID,
+        eventId: "NOTE",
         teacherNote: "Nachträglich erstellte Notiz von " + sessionUser.displayname,
         cw: Number(cw),
-        created_at: dayjs().year(year).isoWeek(cw).toISOString(),
+        createdAt: dayjs().year(year).isoWeek(cw).toDate(),
       }
     });
-    return note.eventID === "NOTE";
+    return note.eventId === "NOTE";
   }
   if (cw !== dayjs().isoWeek()) return false;
-  const note = await db.attendances.create({
+  const note = await db.attendance.create({
     data: {
-      userID: userID,
-      eventID: "NOTE",
+      userId: userID,
+      eventId: "NOTE",
       cw: Number(cw),
     }
   });
-  return note.eventID === "NOTE";
+  return note.eventId === "NOTE";
 }
 
 export async function saveNeededStudyTimes(user: User) {
   if (lastSaveStudyTimeData[user.id] && lastSaveStudyTimeData[user.id] + 900000 > Date.now()) return;
   const data = await db.studyTimeData.findFirst({
     where: {
-      userID: user.id,
+      userId: user.id,
       cw: dayjs().isoWeek(),
       year: dayjs().year()
     }
@@ -115,7 +115,7 @@ export async function saveNeededStudyTimes(user: User) {
     });
   } else await db.studyTimeData.create({
     data: {
-      userID: user.id,
+      userId: user.id,
       cw: dayjs().isoWeek(),
       year: dayjs().year(),
       needs: user.needs as string[] || []
@@ -128,7 +128,7 @@ export async function getSavedNeededStudyTimes(user: User, cw: number, year: num
   if (!(lastSaveStudyTimeData[user.id] && lastSaveStudyTimeData[user.id] + 900000 > Date.now())) await saveNeededStudyTimes(user);
   const data = await db.studyTimeData.findMany({
     where: {
-      userID: user.id,
+      userId: user.id,
       cw: Number(cw),
       year: Number(year)
     }

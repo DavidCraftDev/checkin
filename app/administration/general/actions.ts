@@ -65,8 +65,8 @@ export async function deleteData(): Promise<void> {
     await Promise.all([
         db.studyTimeData.deleteMany(),
         db.session.deleteMany(),
-        db.events.deleteMany(),
-        db.attendances.deleteMany()
+        db.event.deleteMany(),
+        db.attendance.deleteMany()
     ]);
     await logger.info("All data deleted by " + user.username + " (" + user.id + ")", "Administration");
     redirect("/");

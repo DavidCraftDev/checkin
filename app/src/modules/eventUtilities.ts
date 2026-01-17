@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Attendances, Events, User } from "@prisma/client";
+import { Attendance, Event, User } from "@prisma/client";
 import db from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
@@ -16,179 +16,171 @@ dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
 
-export async function getAttendancesPerUser(userID: string, cw: number, year: number) {
-    const dataAttendances = await db.attendances.findMany({
+export async function getAttendancesPerUser(userId: string, cw: number, year: number) {
+    const dataAttendances = await db.attendance.findMany({
         where: {
-            userID: userID,
+            userId: userId,
             cw: cw,
-            created_at: {
+            createdAt: {
                 gte: new Date(String(year) + "-01-01"),
                 lte: new Date(String(year) + "-12-31")
             }
+        },
+        include: {
+            event: true,
+            user: true
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
     });
-
-    const eventIDs = dataAttendances
-        .filter(a => a.eventID !== "NOTE")
-        .map(a => a.eventID);
-
-    const events = await db.events.findMany({
-        where: { id: { in: eventIDs } }
-    });
-    const eventsMap = new Map(events.map(e => [e.id, e]));
-
-    const eventOwnerIDs = events.map(e => e.user);
-    const allUserIDsToFetch = Array.from(new Set([...eventOwnerIDs, userID]));
-
-    const users = await db.user.findMany({
-        where: { id: { in: allUserIDsToFetch } }
-    });
-    const usersMap = new Map(users.map(u => [u.id, u]));
 
     const data: AttendancePerUserPerEvent[] = [];
 
-    for (const attendance of dataAttendances) {
-        let dataEvent: Events;
-        let dataUserEvent: User | undefined;
+    // We need to fetch event owners. The `event` relation is already fetched, but we need the owner of that event.
+    // Optimizing: extract event IDs and fetch their owners if needed, OR just include event.user?
+    // Prisma allows nested include: include: { event: { include: { user: true } } }
+    // Let's refactor the query above to be more efficient.
 
-        if (attendance.eventID === "NOTE") {
-            if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
-                logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
-                await db.attendances.delete({
-                    where: {
-                        id: attendance.id
-                    }
-                });
+    // Re-query with better includes
+    const richAttendances = await db.attendance.findMany({
+        where: {
+            userId: userId,
+            cw: cw,
+            createdAt: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31")
+            }
+        },
+        include: {
+            event: {
+                include: {
+                    user: true // The owner of the event
+                }
+            },
+            user: true // The student (self)
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+
+    for (const attendance of richAttendances) {
+        if (attendance.eventId === "NOTE") {
+             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.createdAt), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
+                logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userId + " wurde gelöscht", "Event");
+                await db.attendance.delete({ where: { id: attendance.id } });
                 continue;
             }
-            dataEvent = {
+            // For notes, we simulate an event
+            const noteEvent: Event = {
                 id: "NOTE",
                 type: "Notiz",
-                user: userID,
+                userId: userId,
                 cw: cw,
-                created_at: dayjs().year(year).isoWeek(cw).toDate()
-            } as Events;
-            dataUserEvent = usersMap.get(userID);
-        } else {
-            const fetchedEvent = eventsMap.get(attendance.eventID);
-            if (!fetchedEvent) continue;
-            dataEvent = fetchedEvent;
-            dataUserEvent = usersMap.get(dataEvent.user);
-        }
-
-        if (dataUserEvent) {
+                createdAt: dayjs().year(year).isoWeek(cw).toDate()
+            };
             data.push({
                 attendance: attendance,
-                event: dataEvent,
-                eventUser: dataUserEvent
+                event: noteEvent,
+                eventUser: attendance.user // Self is the owner of the note
+            });
+        } else if (attendance.event && attendance.event.user) {
+            data.push({
+                attendance: attendance,
+                event: attendance.event,
+                eventUser: attendance.event.user
             });
         }
     }
 
-    data.sort((a, b) => {
-        if (a.attendance.created_at > b.attendance.created_at) return -1;
-        if (a.attendance.created_at < b.attendance.created_at) return 1;
-        return 0;
-    });
     return data;
 }
 
-export async function getAttendancesPerEvent(eventID: string) {
-    const dataAttendance = await db.attendances.findMany({
+export async function getAttendancesPerEvent(eventId: string) {
+    const dataAttendance = await db.attendance.findMany({
         where: {
-            eventID: eventID
-        }
-    });
-
-    const userIDs = dataAttendance.map(a => a.userID);
-    const users = await db.user.findMany({
-        where: { id: { in: userIDs } }
-    });
-    const usersMap = new Map(users.map(u => [u.id, u]));
-
-    const data: AttendancePerEventPerUser[] = [];
-    for (const attendance of dataAttendance) {
-        const user = usersMap.get(attendance.userID);
-        if (user) {
-            data.push({
-                attendance: attendance,
-                user: user
-            });
-        }
-    }
-    data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
-    return data;
-}
-
-export async function getAttendanceCountPerUser(userID: string, cw: number, year: number) {
-    const data = await db.attendances.count({
-        where: {
-            userID: userID,
-            cw: cw,
-            created_at: {
-                gte: new Date(String(year) + "-01-01"),
-                lte: new Date(String(year) + "-12-31")
-            }
-        }
-    });
-    return data;
-}
-
-export async function attendanceExists(eventID: string, userID: string) {
-    const data = await db.attendances.count({
-        where: {
-            eventID: eventID,
-            userID: userID
-        }
-    });
-    return data > 0;
-}
-
-export async function getEventPerID(eventID: string) {
-    const data = await db.events.findUnique({
-        where: {
-            id: eventID
-        }
-    });
-    return data;
-}
-
-export async function getCreatedEventsPerUser(userID: string, cw: number, year: number) {
-    const dataEvents = await db.events.findMany({
-        where: {
-            user: userID,
-            cw: cw,
-            created_at: {
-                gte: new Date(String(year) + "-01-01"),
-                lte: new Date(String(year) + "-12-31")
-            }
-        }
-    });
-
-    const eventIDs = dataEvents.map(e => e.id);
-    const attendanceCounts = await db.attendances.groupBy({
-        by: ['eventID'],
-        where: {
-            eventID: { in: eventIDs }
+            eventId: eventId
         },
-        _count: {
-            userID: true
+        include: {
+            user: true
+        },
+        orderBy: {
+            user: {
+                displayname: 'asc'
+            }
         }
     });
 
-    const countMap = new Map(attendanceCounts.map(ac => [ac.eventID, ac._count.userID]));
+    const data: AttendancePerEventPerUser[] = dataAttendance.map(a => ({
+        attendance: a,
+        user: a.user
+    }));
+
+    return data;
+}
+
+export async function getAttendanceCountPerUser(userId: string, cw: number, year: number) {
+    return await db.attendance.count({
+        where: {
+            userId: userId,
+            cw: cw,
+            createdAt: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31")
+            }
+        }
+    });
+}
+
+export async function attendanceExists(eventId: string, userId: string) {
+    const count = await db.attendance.count({
+        where: {
+            eventId: eventId,
+            userId: userId
+        }
+    });
+    return count > 0;
+}
+
+export async function getEventPerID(eventId: string) {
+    return await db.event.findUnique({
+        where: {
+            id: eventId
+        },
+        include: {
+            user: true
+        }
+    });
+}
+
+export async function getCreatedEventsPerUser(userId: string, cw: number, year: number) {
+    const dataEvents = await db.event.findMany({
+        where: {
+            userId: userId,
+            cw: cw,
+            createdAt: {
+                gte: new Date(String(year) + "-01-01"),
+                lte: new Date(String(year) + "-12-31")
+            }
+        },
+        include: {
+            _count: {
+                select: { attendances: true }
+            }
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
 
     const data: CreatedEventPerUser[] = [];
 
     for (const event of dataEvents) {
-        const attendedUser = countMap.get(event.id) || 0;
+        const attendedUser = event._count.attendances;
 
-        if (attendedUser === 0 && dayjs().diff(dayjs(event.created_at), "hours") > 1) {
-            await db.events.delete({
-                where: {
-                    id: event.id
-                }
-            });
+        if (attendedUser === 0 && dayjs().diff(dayjs(event.createdAt), "hours") > 1) {
+            await db.event.delete({ where: { id: event.id } });
             continue;
         }
         data.push({
@@ -196,174 +188,135 @@ export async function getCreatedEventsPerUser(userID: string, cw: number, year: 
             user: attendedUser
         });
     }
-
-    data.sort((a, b) => {
-        if (a.event.created_at > b.event.created_at) return -1;
-        if (a.event.created_at < b.event.created_at) return 1;
-        return 0;
-    });
     return data;
 }
 
-export async function createEvent(type: string, userID: string) {
-    const data = await db.events.create({
+export async function createEvent(type: string, userId: string) {
+    return await db.event.create({
         data: {
             type: type,
-            user: userID,
+            userId: userId,
             cw: dayjs().isoWeek()
         }
     });
-    return data;
 }
 
-export async function eventExists(eventID: string) {
-    const data = await db.events.count({
+export async function eventExists(eventId: string) {
+    const count = await db.event.count({
         where: {
-            id: eventID
+            id: eventId
         }
     });
-    return data > 0;
+    return count > 0;
+}
+
+export async function checkINHandler(eventId: string, userId: string) {
+    // Legacy function, can be removed or kept for API compatibility if needed.
+    // Re-implementing just in case.
+    if (!await existUserPerID(userId)) return "Schüler nicht gefunden"
+    if (await attendanceExists(eventId, userId)) return "Schüler bereits hinzugefügt";
+    await db.attendance.create({
+        data: {
+            eventId: eventId,
+            userId: userId,
+            cw: dayjs().isoWeek(),
+        }
+    });
+    return await getUserPerID(userId);
 }
 
 export async function createTeacherNote(id: string, note: string) {
-    const data = await db.attendances.update({
-        where: {
-            id: id
-        },
-        data: {
-            teacherNote: note
-        }
+    return await db.attendance.update({
+        where: { id: id },
+        data: { teacherNote: note }
     });
-    return data;
 }
 
-export async function createStudentNote(attendance: Attendances, note: string) {
+export async function createStudentNote(attendance: Attendance, note: string) {
     const user = await getSessionUser();
-    if (user.id !== attendance.userID) {
-        const attendanceUser = await getUserPerID(attendance.userID);
+    if (user.id !== attendance.userId) {
+        // Permission check
+        const attendanceUser = await getUserPerID(attendance.userId);
         if (attendanceUser.group.filter(value => user.group.includes(value)).length === 0) redirect("/dashboard");
     }
-    const data = await db.attendances.update({
-        where: {
-            id: attendance.id
-        },
-        data: {
-            studentNote: note
-        }
+    return await db.attendance.update({
+        where: { id: attendance.id },
+        data: { studentNote: note }
     });
-    return data;
 }
 
-export async function getAttendancesWithoutType(userID: string, cw: number, year: number) {
-    const dataAttendances = await db.attendances.findMany({
+export async function getAttendancesWithoutType(userId: string, cw: number, year: number) {
+    const dataAttendances = await db.attendance.findMany({
         where: {
-            userID: userID,
+            userId: userId,
             cw: cw,
-            created_at: {
+            createdAt: {
                 gte: new Date(String(year) + "-01-01"),
                 lte: new Date(String(year) + "-12-31"),
             },
             type: null,
             NOT: {
-                eventID: "NOTE"
+                eventId: "NOTE"
+            }
+        },
+        include: {
+            event: {
+                include: {
+                    user: true
+                }
             }
         }
     });
 
-    const eventIDs = dataAttendances.map(a => a.eventID);
-    const events = await db.events.findMany({
-        where: { id: { in: eventIDs } }
-    });
-    const eventsMap = new Map(events.map(e => [e.id, e]));
-
-    const ownerIDs = events.map(e => e.user);
-    const owners = await db.user.findMany({
-        where: { id: { in: ownerIDs } }
-    });
-    const ownersMap = new Map(owners.map(u => [u.id, u]));
-
     const data: AttendancePerUserPerEvent[] = [];
 
     for (const attendance of dataAttendances) {
-        const dataEvent = eventsMap.get(attendance.eventID);
-        if (!dataEvent) continue;
-        const owner = ownersMap.get(dataEvent.user);
-        if (!owner) continue;
-
-        data.push({
-            attendance: attendance,
-            event: dataEvent,
-            eventUser: owner
-        });
+        if (attendance.event && attendance.event.user) {
+            data.push({
+                attendance: attendance,
+                event: attendance.event,
+                eventUser: attendance.event.user
+            });
+        }
     }
     return data;
 }
 
-export async function deleteEmptyEvent(eventID: string) {
-    const data = await getAttendancesPerEvent(eventID);
-    if (data.length === 0) {
-        await db.events.delete({
-            where: {
-                id: eventID
-            }
-        });
-        logger.info("Studienzeit mit der ID " + eventID + " wurde gelöscht", "Event");
+export async function deleteEmptyEvent(eventId: string) {
+    const count = await db.attendance.count({ where: { eventId: eventId } });
+    if (count === 0) {
+        await db.event.delete({ where: { id: eventId } });
+        logger.info("Studienzeit mit der ID " + eventId + " wurde gelöscht", "Event");
         return true;
     }
     return false;
 }
 
-export async function getTeacherPerEvent(eventID: string): Promise<User | null> {
-    // Check if the user is allowed to get this data
+export async function getTeacherPerEvent(eventId: string): Promise<User | null> {
     const sessionUser = await getSessionUser();
     if (sessionUser.permission < 1) return null;
 
-    // Get the event data
-    const data = await db.events.findUnique({
-        where: {
-            id: eventID
-        },
-        select: {
-            user: true
-        }
+    const event = await db.event.findUnique({
+        where: { id: eventId },
+        include: { user: true }
     });
-    if (!data) return null;
-
-    // Get the data of the teacher
-    const teacher = await getUserPerID(data.user);
-
-    return teacher;
+    return event?.user || null;
 }
 
-export type TeacherPerEvent = { [eventID: string]: User };
+export type TeacherPerEvent = { [eventId: string]: User };
 
 export async function getTeachersForEvents(eventIDs: string[]): Promise<TeacherPerEvent> {
-    // Check if the user is allowed to get this data
     const sessionUser = await getSessionUser();
     if (sessionUser.permission < 1) return {} as TeacherPerEvent;
 
-    // Initialize object to store teacher data and get teacher data for each event
-    const data: TeacherPerEvent = {};
-
-    // Optimize: fetch all teachers at once
-    // First get all events to get teacher IDs
-    const events = await db.events.findMany({
+    const events = await db.event.findMany({
         where: { id: { in: eventIDs } },
-        select: { id: true, user: true }
+        include: { user: true }
     });
 
-    const teacherIDs = Array.from(new Set(events.map(e => e.user)));
-    const teachers = await db.user.findMany({
-        where: { id: { in: teacherIDs } }
-    });
-    const teachersMap = new Map(teachers.map(t => [t.id, t]));
-
+    const data: TeacherPerEvent = {};
     for (const event of events) {
-        const teacher = teachersMap.get(event.user);
-        if (teacher) {
-            data[event.id] = teacher;
-        }
+        data[event.id] = event.user;
     }
-
     return data;
 }

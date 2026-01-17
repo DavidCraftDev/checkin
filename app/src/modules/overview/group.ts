@@ -1,11 +1,11 @@
 "use server";
 
-import { Attendances, StudyTimeData } from "@prisma/client";
+import { Attendance, StudyTimeData } from "@prisma/client";
 import { getSessionUser } from "../auth/cookieManager";
 import { getGroupUsers } from "../group";
 import { Categories, getUserOverviewData, mergeUserDataPerCW, OverviewUserDataPerCW, SortedData, sortUserOverviewDataIntoCaterogies } from "./user";
 
-type UserAttendances = { [key: string]: Attendances[] };
+type UserAttendances = { [key: string]: Attendance[] };
 type UserStudyTimeData = { [key: string]: StudyTimeData[] };
 
 export async function getGroupOverviewData(groupID: string, startCW: number, startYear: number, endCW: number, endYear: number) {
@@ -20,7 +20,13 @@ export async function getGroupOverviewData(groupID: string, startCW: number, sta
     // Get all attendances between start and end week (inclusive year) for all users in group
     const userAttendances: UserAttendances = {};
     const userStudyTimeData: UserStudyTimeData = {}
-    await Promise.all(groupUsers.map(async user => {
+
+    // Optimize: fetch all data at once instead of per user
+    // However, existing `getUserOverviewData` logic might be complex.
+    // For now, update types and keep logic to ensure correctness during migration.
+    // If performance is critical, we should refactor `getUserOverviewData` to be batch-capable.
+
+    for (const user of groupUsers) {
         const userData = await getUserOverviewData(user.id, startCW, startYear, endCW, endYear);
         // If user has no data, set empty array
         if (!userData) {
@@ -31,7 +37,7 @@ export async function getGroupOverviewData(groupID: string, startCW: number, sta
             userAttendances[user.id] = attendances;
             userStudyTimeData[user.id] = studyTimeData;
         }
-    }));
+    }
 
     return { userAttendances, userStudyTimeData };
 }
@@ -45,7 +51,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
     const data: OverviewGroupDataPerCW = {};
 
     // Get data per user
-    await Promise.all(Object.keys(userAttendances).map(async key => {
+    for (const key of Object.keys(userAttendances)) {
         const attendances = userAttendances[key];
         const studyTimeData = userStudyTimeData[key];
 
@@ -54,7 +60,7 @@ export async function mergeDataPerCW(userAttendances: UserAttendances, userStudy
 
         // Add userData to data
         data[key] = userData;
-    }));
+    }
 
     return data;
 }
@@ -71,7 +77,7 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
     const categoriesPerUser: { [key: string]: SortedData } = {};
 
     // Sort data into categories
-    await Promise.all(Object.keys(data).map(async key => {
+    for (const key of Object.keys(data)) {
         const userData = data[key];
         const userOverviewCaterogieData = await sortUserOverviewDataIntoCaterogies(userData);
         const userCaterogies = userOverviewCaterogieData.categories;
@@ -85,7 +91,7 @@ export async function sortGroupOverviewDataIntoCaterogies(data: OverviewGroupDat
 
         // Initialize categories for this user
         categoriesPerUser[key] = userOverviewCaterogieData
-    }));
+    }
 
     return { categories, categoriesPerUser };
 }

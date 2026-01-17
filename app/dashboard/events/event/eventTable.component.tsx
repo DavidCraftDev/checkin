@@ -46,7 +46,7 @@ function EventTable(props: EventTableProps) {
                                 </td>
                                 <td className="py-3 px-6 text-center"><TrafficLightSelect attendance={attendance.attendance} /></td>
                                 <td className="py-3 px-6 text-gray-600 text-sm max-w-xs truncate" title={attendance.attendance.selfReflection || ""}>{attendance.attendance.selfReflection || "-"}</td>
-                                <td className="py-3 px-6 text-gray-500 text-sm whitespace-nowrap">{dayjs(attendance.attendance.created_at).format("DD.MM. HH:mm")}</td>
+                                <td className="py-3 px-6 text-gray-500 text-sm whitespace-nowrap">{dayjs(attendance.attendance.createdAt).format("DD.MM. HH:mm")}</td>
                                 {props.addable ? <RemoveUserButton user={props.user} attendance={attendance.attendance} removeUser={attendance.user} /> : null}
                             </tr>
                         ))}

@@ -1,17 +1,17 @@
-import { Attendances, Events, User } from "@prisma/client";
+import { Attendance, Event, User } from "@prisma/client";
 
 export interface AttendancePerUserPerEvent {
-    attendance: Attendances,
-    event: Events,
+    attendance: Attendance,
+    event: Event,
     eventUser: User
 }
 
 export interface AttendancePerEventPerUser {
-    attendance: Attendances,
+    attendance: Attendance,
     user: User
 }
 
 export interface CreatedEventPerUser {
-    event: Events,
+    event: Event,
     user: number
 }

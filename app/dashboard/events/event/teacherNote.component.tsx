@@ -1,11 +1,11 @@
 "use client";
 
-import { Attendances } from "@prisma/client";
+import { Attendance } from "@prisma/client";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { setTeacherNote } from "./actions";
 
-function TeacherNote(props: { attendance: Attendances }) {
+function TeacherNote(props: { attendance: Attendance }) {
     const [note, setNote] = useState<string>(props.attendance.teacherNote || "");
     const [debouncedNote, setDebouncedNote] = useState<string>(note);
     const changed = useRef(false);

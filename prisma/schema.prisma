@@ -14,10 +14,58 @@ enum TrafficLightFeedback {
   RED
 }
 
-model Attendances {
-  id             String               @id @unique @default(cuid())
-  userID         String
-  eventID        String
+model User {
+  id            String          @id @default(cuid())
+  username      String          @unique
+  displayname   String
+  permission    Int             @default(0)
+  password      String?
+  // We keep group as string[] for now as requested/implied simpler migration
+  group         String[]        @default([])
+  needs         String[]        @default([])
+  competence    String[]        @default([])
+  courses       String[]
+  pwdLastSet    DateTime        @default(now())
+
+  sessions      Session[]
+  events        Event[]         @relation("CreatedEvents")
+  attendances   Attendance[]    @relation("StudentAttendances")
+  studyTimeData StudyTimeData[]
+
+  @@index([username])
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Event {
+  id          String       @id @default(cuid())
+  type        String
+  userId      String
+  cw          Int
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  user        User         @relation("CreatedEvents", fields: [userId], references: [id], onDelete: Cascade)
+  attendances Attendance[]
+
+  @@index([userId])
+  @@index([cw])
+  @@map("Events") // Keep table name if possible, or migrate. Let's assume migration to new names.
+                  // Wait, "Events" is plural, Prisma defaults to that.
+                  // But let's map it to ensure we know what we are doing.
+                  // Actually, better to just let Prisma handle it and assume a fresh start/migration script.
+}
+
+model Attendance {
+  id             String               @id @default(cuid())
+  userId         String
+  eventId        String
   cw             Int
   teacherNote    String?
   studentNote    String?
@@ -25,47 +73,32 @@ model Attendances {
   feedback       TrafficLightFeedback @default(GREEN)
   selfReflection String?
   attended       Boolean              @default(true)
-  created_at     DateTime             @default(now())
-}
+  createdAt      DateTime             @default(now()) @map("created_at")
 
-model Events {
-  id         String   @id @unique @default(cuid())
-  type       String
-  user       String
-  cw         Int
-  created_at DateTime @default(now())
+  user           User                 @relation("StudentAttendances", fields: [userId], references: [id], onDelete: Cascade)
+  event          Event                @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([cw])
+  @@map("Attendances")
 }
 
 model StudyTimeData {
-  id     String   @id @unique @default(cuid())
-  userID String
+  id     String   @id @default(cuid())
+  userId String
   needs  String[] @default([])
   cw     Int
   year   Int
+
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
-model User {
-  id          String    @id @unique @default(cuid())
-  username    String    @unique
-  displayname String
-  permission  Int       @default(0)
-  password    String?
-  group       String[]  @default([])
-  needs       String[]  @default([])
-  competence  String[]  @default([])
-  courses     String[]
-  pwdLastSet  DateTime  @default(now())
-  sessions    Session[]
-}
+model ClosedStudyTime {
+  lessonId String @id @unique @default(cuid())
+  courseId String
 
-model Session {
-  id        String   @id @unique
-  userID    String
-  expiresAt DateTime
-  user      User     @relation(references: [id], fields: [userID], onDelete: Cascade)
-}
-
-model ClosedStudyTimes {
-  lessonID String @id @unique @default(cuid())
-  courseID String
+  @@map("ClosedStudyTimes")
 }

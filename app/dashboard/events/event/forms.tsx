@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { handleEventDelete, handleUserCheckIN, removeUserHandler, saveSelectedStudyTimeFeedback } from "./actions";
-import { Attendances, Events, User } from "@prisma/client";
+import { Attendance, Event, User } from "@prisma/client";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { toast } from "sonner";
@@ -28,16 +28,16 @@ export function DeleteEventButton(props: { eventID: string }) {
     )
 }
 
-export function RemoveUserButton(props: { attendance: Attendances, user: User, removeUser: User }) {
+export function RemoveUserButton(props: { attendance: Attendance, user: User, removeUser: User }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
     async function removeUserManager() {
-        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
+        if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.createdAt).year() !== dayjs().year()) return router.refresh();
         if (!confirm("Möchtest du " + props.removeUser.displayname + " wirklich entfernen?")) return;
 
         startTransition(async () => {
-            const data = await removeUserHandler(props.attendance.id, props.attendance.eventID);
+            const data = await removeUserHandler(props.attendance.id, props.attendance.eventId);
             if (data && data.success) {
                 toast.success(props.removeUser.displayname + " erfolgreich entfernt");
                 router.refresh();
@@ -60,11 +60,11 @@ export function RemoveUserButton(props: { attendance: Attendances, user: User, r
     );
 }
 
-export function CheckinForm(props: { event: Events }) {
+export function CheckinForm(props: { event: Event }) {
     const router = useRouter();
 
     async function eventHandler(formData: FormData) {
-        if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.created_at).year() !== dayjs().year()) {
+        if (props.event.cw !== dayjs().isoWeek() || dayjs(props.event.createdAt).year() !== dayjs().year()) {
             router.refresh();
             return;
         }
@@ -108,13 +108,13 @@ export function CheckinForm(props: { event: Events }) {
     )
 }
 
-export function TrafficLightSelect(props: { attendance: Attendances }) {
+export function TrafficLightSelect(props: { attendance: Attendance }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
     async function submitTrafficLightSelect(feedback: string): Promise<void> {
         startTransition(async () => {
-            const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
+            const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userId);
             if (data && data.success) {
                 toast.success("Feedback gespeichert");
                 router.refresh();

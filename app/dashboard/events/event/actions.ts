@@ -6,7 +6,7 @@ import db from "@/app/src/modules/db";
 import { attendanceExists, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
 import { getUserPerUsername, searchUser, getUserPerID } from "@/app/src/modules/userUtilities";
-import { Attendances, Events, User } from "@prisma/client";
+import { Attendance, Event, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import dayjs from "dayjs";
@@ -25,8 +25,8 @@ export async function handleUserCheckIN(username: string, eventID: string): Prom
     if (!sessionUser) return { success: false, error: "Nicht eingeloggt" };
 
     // Verify event ownership
-    const event = await db.events.findUnique({ where: { id: eventID } });
-    if (!event || event.user !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
+    const event = await db.event.findUnique({ where: { id: eventID } });
+    if (!event || event.userId !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
 
     const user = await getUserPerUsername(username);
     if (!user) return { success: false, error: "Schüler nicht gefunden" };
@@ -36,10 +36,10 @@ export async function handleUserCheckIN(username: string, eventID: string): Prom
     }
 
     try {
-        await db.attendances.create({
+        await db.attendance.create({
             data: {
-                eventID: eventID,
-                userID: user.id,
+                eventId: eventID,
+                userId: user.id,
                 cw: dayjs().isoWeek(),
             }
         });
@@ -58,16 +58,16 @@ export async function removeUserHandler(attendanceID: string, eventID: string): 
     const sessionUser = await getSessionUser(1);
     if (!sessionUser) return { success: false, error: "Nicht eingeloggt" };
 
-    const event = await db.events.findUnique({ where: { id: eventID } });
-    if (!event || event.user !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
+    const event = await db.event.findUnique({ where: { id: eventID } });
+    if (!event || event.userId !== sessionUser.id) return { success: false, error: "Nicht autorisiert" };
 
-    const attendance = await db.attendances.findUnique({ where: { id: attendanceID } });
-    if (!attendance || attendance.eventID !== eventID) return { success: false, error: "Eintrag nicht gefunden" };
+    const attendance = await db.attendance.findUnique({ where: { id: attendanceID } });
+    if (!attendance || attendance.eventId !== eventID) return { success: false, error: "Eintrag nicht gefunden" };
 
-    const student = await getUserPerID(attendance.userID);
+    const student = await getUserPerID(attendance.userId);
     const studentName = student && student.displayname ? student.displayname : "Unbekannt";
 
-    await db.attendances.delete({
+    await db.attendance.delete({
         where: { id: attendanceID }
     });
 
@@ -87,7 +87,7 @@ export async function saveSelectedStudyTimeFeedback(attendanceID: string, status
     if (!sessionUser || sessionUser.permission === 0) {
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
-    const data = await db.attendances.update({
+    const data = await db.attendance.update({
         where: { id: attendanceID },
         data: { feedback: status }
     });

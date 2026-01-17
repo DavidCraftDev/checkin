@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { Attendances, StudyTimeData } from "@prisma/client";
+import { Attendance, StudyTimeData } from "@prisma/client";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -25,10 +25,10 @@ export async function getUserOverviewData(userID: string, startCW: number, start
     // Get all attendances between start and end week (inclusive year)
     const startDate = dayjs().year(startYear).isoWeek(startCW).startOf("isoWeek").toDate();
     const endDate = dayjs().year(endYear).isoWeek(endCW).endOf("isoWeek").toDate();
-    const attendances = await db.attendances.findMany({
+    const attendances = await db.attendance.findMany({
         where: {
-            userID: userID,
-            created_at: {
+            userId: userID,
+            createdAt: {
                 gte: startDate,
                 lte: endDate
             },
@@ -42,7 +42,7 @@ export async function getUserOverviewData(userID: string, startCW: number, start
     // Get needed study times in this period
     const studyTimeData = await db.studyTimeData.findMany({
         where: {
-            userID: userID,
+            userId: userID,
             year: {
                 gte: startYear,
                 lte: endYear
@@ -58,26 +58,26 @@ export async function getUserOverviewData(userID: string, startCW: number, start
 }
 
 export interface OverviewUserDataPerCW {
-    [key: string]: { attendances: Attendances[], studyTimeData: StudyTimeData };
+    [key: string]: { attendances: Attendance[], studyTimeData: StudyTimeData };
 }
 
-export async function mergeUserDataPerCW(attendances: Attendances[], studyTimeData: StudyTimeData[]) {
+export async function mergeUserDataPerCW(attendances: Attendance[], studyTimeData: StudyTimeData[]) {
     // Initialize data
     const data: OverviewUserDataPerCW = {};
 
     // Sort attendances by CW
-    await Promise.all(attendances.map(attendance => {
-        const key = `${attendance.created_at.getFullYear()}-${attendance.cw}`;
-        if (!data[key]) data[key] = { attendances: [], studyTimeData: { id: "", needs: [], userID: attendance.userID, cw: attendance.cw, year: attendance.created_at.getFullYear() } };
+    for (const attendance of attendances) {
+        const key = `${attendance.createdAt.getFullYear()}-${attendance.cw}`;
+        if (!data[key]) data[key] = { attendances: [], studyTimeData: { id: "", needs: [], userId: attendance.userId, cw: attendance.cw, year: attendance.createdAt.getFullYear() } };
         data[key].attendances.push(attendance);
-    }));
+    }
 
     // Sort study time data by CW
-    await Promise.all(studyTimeData.map(studyTime => {
+    for (const studyTime of studyTimeData) {
         const key = `${studyTime.year}-${studyTime.cw}`;
         if (!data[key]) data[key] = { attendances: [], studyTimeData: studyTime };
         else data[key].studyTimeData = studyTime;
-    }));
+    }
 
     return data;
 }
@@ -117,7 +117,7 @@ export async function sortUserOverviewDataIntoCaterogies(data: OverviewUserDataP
         categoriesPerCW[key].total = studyTimeData.needs.length;
         categories.total += studyTimeData.needs.length;
 
-        await Promise.all(studyTimeData.needs.map(async need => {
+        for (const need of studyTimeData.needs) {
             const attendance = attendances.find(attendance => attendance.type && attendance.type.includes(need));
             if (attendance && attendance.type) {
                 let type = attendance.type;
@@ -135,7 +135,7 @@ export async function sortUserOverviewDataIntoCaterogies(data: OverviewUserDataP
                 categories.absent += 1;
                 categoriesPerCW[key].absent += 1;
             }
-        }));
+        }
     }
 
     return { categories, categoriesPerCW };

@@ -21,11 +21,11 @@ async function EventPage(props: { searchParams: Promise<SearchParams> }) {
     if (!eventID) notFound();
     const event = await getEventPerID(eventID);
     if (!event) notFound();
-    if (event.user !== user.id) redirect("/dashboard/");
+    if (event.userId !== user.id) redirect("/dashboard/");
     if (event.type.startsWith("Unterricht:")) redirect("/dashboard/events/lesson/" + eventID);
 
     const attendances = await getAttendancesPerEvent(eventID);
-    const addable = event.cw === dayjs().isoWeek() && dayjs(event.created_at).year() === dayjs().year();
+    const addable = event.cw === dayjs().isoWeek() && dayjs(event.createdAt).year() === dayjs().year();
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -40,7 +40,7 @@ async function EventPage(props: { searchParams: Promise<SearchParams> }) {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0h18M5.25 12h13.5" />
                             </svg>
-                            {dayjs(event.created_at).format("DD.MM.YYYY HH:mm")}
+                            {dayjs(event.createdAt).format("DD.MM.YYYY HH:mm")}
                         </span>
                         <span className="flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

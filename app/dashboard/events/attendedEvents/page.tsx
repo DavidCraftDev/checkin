@@ -13,6 +13,7 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { CreateStudyTimeNote } from "./forms";
 import { Metadata } from "next";
 import TrafficLight from "./trafficLight";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -57,27 +58,29 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     const missingStudyTimes: Array<string> = userNeeds.filter(neededStudyTime => !attendances.find(attendanceData => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
 
     const studyTimeTypes: Record<string, string[]> = {};
-    if (isEditable) await Promise.all(attendances.map(async (event) => {
-        if (event.event.id !== "NOTE") {
-            const vertretung: Array<string> = [];
-            const neededStudyTimesForAttendance: Array<string> = [];
-            missingStudyTimes.forEach((missingStudyTime) => {
-                if (event.eventUser.competence.includes(missingStudyTime)) neededStudyTimesForAttendance.push(missingStudyTime);
-                else vertretung.push(missingStudyTime);
-            });
-            vertretung.forEach((vertretung) => neededStudyTimesForAttendance.push("Vertretung:" + vertretung));
-            neededStudyTimesForAttendance.push("Keine Studienzeit");
-            if(isTeacher) neededStudyTimesForAttendance.push("Löschen");
-            studyTimeTypes[event.attendance.id] = neededStudyTimesForAttendance;
-        } else {
-            const neededStudyTimesForNotes: Array<string> = [];
-            missingStudyTimes.forEach((missingStudyTime) => {
-                neededStudyTimesForNotes.push("Notiz:" + missingStudyTime);
-            });
-            neededStudyTimesForNotes.push("Notiz:Löschen");
-            studyTimeTypes[event.attendance.id] = neededStudyTimesForNotes;
+    if (isEditable) {
+        for (const event of attendances) {
+             if (event.event.id !== "NOTE") {
+                const vertretung: Array<string> = [];
+                const neededStudyTimesForAttendance: Array<string> = [];
+                missingStudyTimes.forEach((missingStudyTime) => {
+                    if (event.eventUser.competence.includes(missingStudyTime)) neededStudyTimesForAttendance.push(missingStudyTime);
+                    else vertretung.push(missingStudyTime);
+                });
+                vertretung.forEach((vertretung) => neededStudyTimesForAttendance.push("Vertretung:" + vertretung));
+                neededStudyTimesForAttendance.push("Keine Studienzeit");
+                if(isTeacher) neededStudyTimesForAttendance.push("Löschen");
+                studyTimeTypes[event.attendance.id] = neededStudyTimesForAttendance;
+            } else {
+                const neededStudyTimesForNotes: Array<string> = [];
+                missingStudyTimes.forEach((missingStudyTime) => {
+                    neededStudyTimesForNotes.push("Notiz:" + missingStudyTime);
+                });
+                neededStudyTimesForNotes.push("Notiz:Löschen");
+                studyTimeTypes[event.attendance.id] = neededStudyTimesForNotes;
+            }
         }
-    }));
+    }
 
     const length: number = attendances.length;
     let feedback: number = 0;
@@ -88,23 +91,60 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     });
     const feedbackAverage = length > 0 ? Math.round(feedback / length) : 0;
     const status = feedbackAverage === 1 ? "GREEN" : feedbackAverage === 2 ? "YELLOW" : "RED";
+
     return (
-        <div>
-            <div className="grid grid-rows-1 grid-cols-1 md:grid-cols-2">
-                <div>
-                    <h1>Teilgenommene Studienzeiten</h1>
-                    <span>von {userData.displayname} <TrafficLight status={status} /></span>
-                    {userData.needs.length ? <p>{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</p> : null}
-                    {userData.needs.length && missingStudyTimes.length > 0 ? <p>Fehlende Studienzeiten: {missingStudyTimes.join(", ")} ({missingStudyTimes.length})</p> : null}
-                    {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} /> : null}
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+            <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                        <h1 className="text-3xl font-bold text-gray-800">Teilgenommene Studienzeiten</h1>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <span className="text-lg text-gray-600">von <span className="font-semibold text-gray-900">{userData.displayname}</span></span>
+                        <TrafficLight status={status} />
+                    </div>
+
+                    <div className="flex flex-col gap-2 bg-gray-50 p-4 rounded-md border border-gray-200">
+                         {userData.needs.length ? (
+                            <div className="flex items-center gap-2 text-gray-700">
+                                <span className="font-medium">Erledigt:</span>
+                                <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-sm font-semibold">{completedStudyTimesCount} {completedStudyTimesCount == 1 ? "Studienzeit" : "Studienzeiten"}</span>
+                            </div>
+                        ) : null}
+
+                        {userData.needs.length && missingStudyTimes.length > 0 ? (
+                            <div className="flex items-start gap-2 text-red-600 mt-1">
+                                <ExclamationCircleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <span className="font-semibold">Fehlend ({missingStudyTimes.length}): </span>
+                                    <span>{missingStudyTimes.join(", ")}</span>
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {isEditable && userData.needs.length && missingStudyTimes.length > 0 ? (
+                            <div className="mt-2">
+                                <CreateStudyTimeNote userID={userData.id} cw={cw} year={year} />
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
-                <CalendarWeek />
+                <div className="w-full lg:w-auto">
+                    <CalendarWeek />
+                </div>
             </div>
+
             <AttendedEventTable attendances={attendances} isEditable={isEditable} studyTimeTypes={studyTimeTypes} isTeacher={isTeacher} />
-            <p>Exportieren als:
-                <a href={`/export/events/attended/json?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.json`} className="hover:underline mx-1">JSON</a>
-                <a href={`/export/events/attended/xlsx?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.xlsx`} className="hover:underline mx-1">XLSX</a>
-            </p>
+
+            <div className="flex gap-3 flex-wrap mt-8 justify-end">
+                <span className="text-sm text-gray-500 self-center mr-2">Exportieren als:</span>
+                <a href={`/export/events/attended/json?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.json`} className="btn bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-4 py-2 flex items-center rounded-md border border-gray-200 transition-colors">
+                    JSON
+                </a>
+                <a href={`/export/events/attended/xlsx?cw=${cw}&year=${year}&userID=${userData.id}`} download={`attended_events${cw}_${year}${userData.id}.xlsx`} className="btn bg-green-50 hover:bg-green-100 text-green-700 text-sm px-4 py-2 flex items-center rounded-md border border-green-200 transition-colors">
+                    Excel
+                </a>
+            </div>
         </div>
     );
 }

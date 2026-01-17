@@ -13,7 +13,7 @@ export async function setTeacherNote(teacherNote: string, attendanceID: string):
 }
 
 export async function setAttendanceStatus(attendanceID: string, status: boolean): Promise<functionResult> {
-    const data = await db.attendances.update({
+    const data = await db.attendance.update({
         where: {
             id: attendanceID
         },

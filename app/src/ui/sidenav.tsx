@@ -11,20 +11,20 @@ interface SideNavProps {
 
 export default function SideNav(props: SideNavProps) {
   return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2 text-black">
+    <div className="flex h-full flex-col px-3 py-4 md:px-2 text-gray-900 bg-white border-r border-gray-200 shadow-sm">
       <Link
-        className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40"
+        className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40 transition-colors hover:bg-green-700"
         href="/dashboard"
       >
-        <div className="text-xl font-semibold text-white md:text-2xl">
-          CheckIN
+        <div className="text-xl font-semibold text-white md:text-2xl flex items-center gap-2">
+          <span>CheckIN</span>
         </div>
       </Link>
-      <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+      <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2 mt-2">
         <NavLinks permission={props.user.permission} group={props.user.group} administration={props.administration} untisEnabled={config_data.UNTIS.ENABLE} />
-        <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
-        <form className={props.administration ? "hidden" : ""}>
-          <a href={"/logout"} className="flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4">
+        <div className="hidden h-auto w-full grow md:block"></div>
+        <form className={props.administration ? "hidden" : "w-full"}>
+          <a href={"/logout"} className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600 md:justify-start md:px-4 border border-transparent hover:border-red-100">
             <ArrowLeftStartOnRectangleIcon className="w-6" />
             <div className="hidden md:block">Abmelden</div>
           </a>

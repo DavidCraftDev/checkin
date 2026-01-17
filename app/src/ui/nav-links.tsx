@@ -72,9 +72,10 @@ export default function NavLinks(props: NavLinkProps) {
             key={label}
             href={href}
             className={clsx(
-              'flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium transition-all duration-200 transform active:scale-95 hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:px-4',
+              'flex h-12 grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-all duration-200 md:flex-none md:justify-start md:px-4 border border-transparent',
               {
-                'bg-sky-100 text-blue-600': pathname === href,
+                'bg-blue-50 text-blue-600 border-blue-100 font-semibold shadow-sm': pathname === href,
+                'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900': pathname !== href,
                 "hidden md:flex": !isMobileVisible,
               },
             )}

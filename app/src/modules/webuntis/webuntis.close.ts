@@ -14,9 +14,9 @@ import { revalidateTag } from "next/cache";
  * @returns {Promise<boolean>} Returns true if the study time is closed, false otherwise
  */
 export async function isStudyTimeClosed(lessonID: string): Promise<boolean> {
-    const lockedStudyTime = await db.closedStudyTimes.findUnique({
+    const lockedStudyTime = await db.closedStudyTime.findUnique({
         where: {
-            lessonID: lessonID
+            lessonId: lessonID
         }
     });
     return lockedStudyTime !== null;
@@ -39,9 +39,9 @@ export async function closeStudyTime(lessonID: string, courseID: string): Promis
     }
 
     // Check limit per course (max 6)
-    const lockCount = await db.closedStudyTimes.count({
+    const lockCount = await db.closedStudyTime.count({
         where: {
-            courseID: courseID
+            courseId: courseID
         }
     });
     if (lockCount >= 6) {
@@ -49,17 +49,17 @@ export async function closeStudyTime(lessonID: string, courseID: string): Promis
     }
 
     // Lock the study time lesson
-    const result = await db.closedStudyTimes.create({
+    const result = await db.closedStudyTime.create({
         data: {
-            lessonID: lessonID,
-            courseID: courseID
+            lessonId: lessonID,
+            courseId: courseID
         }
     });
 
     // Revalidate cache
     revalidateTag("lessonCloseStatus");
 
-    if (result.courseID === courseID && result.lessonID === lessonID) {
+    if (result.courseId === courseID && result.lessonId === lessonID) {
         return 'SUCCESS';
     }
     return 'ERROR';

@@ -4,20 +4,20 @@ import dayjs from "dayjs";
 import isoweek from "dayjs/plugin/isoWeek";
 import { getSessionUser } from "./auth/cookieManager";
 import db from "./db";
-import { Events, User } from "@prisma/client";
+import { Event, User } from "@prisma/client";
 
 dayjs.extend(isoweek);
 
-export async function createLesson(lessonType: string): Promise<Events> {
+export async function createLesson(lessonType: string): Promise<Event> {
     const sessionUser = await getSessionUser(1);
-    const data = await db.events.create({
+    const data = await db.event.create({
         data: {
             type: "Unterricht:" + lessonType,
-            user: sessionUser.id,
+            userId: sessionUser.id,
             cw: dayjs().isoWeek()
         }
     });
-    const user = await db.user.findMany({
+    const users = await db.user.findMany({
         where: {
             courses: {
                 has: lessonType
@@ -25,31 +25,35 @@ export async function createLesson(lessonType: string): Promise<Events> {
             permission: 0
         }
     });
-    Promise.all(user.map(async (user) => {
-        await db.attendances.create({
-            data: {
-                eventID: data.id,
-                userID: user.id,
+
+    // Batch create attendances if possible, otherwise Promise.all is fine for creation here
+    // But createMany is better
+    if (users.length > 0) {
+        await db.attendance.createMany({
+            data: users.map(user => ({
+                eventId: data.id,
+                userId: user.id,
                 attended: false,
                 type: "Unterricht",
                 cw: dayjs().isoWeek()
-            }
+            }))
         });
-    }));
+    }
+
     return data;
 }
 
-export async function setAttendanceStatus(eventID: string, userID: string, status: boolean): Promise<string | User> {
-    const attendance = await db.attendances.findFirst({
+export async function setAttendanceStatus(eventId: string, userId: string, status: boolean): Promise<string | User> {
+    const attendance = await db.attendance.findFirst({
         where: {
             AND: {
-                eventID: eventID,
-                userID: userID
+                eventId: eventId,
+                userId: userId
             }
         }
     });
     if (attendance === null) return "Schüler gehört nicht zum Kurs";
-    const data = await db.attendances.update({
+    const data = await db.attendance.update({
         where: {
             id: attendance.id
         },
@@ -60,7 +64,7 @@ export async function setAttendanceStatus(eventID: string, userID: string, statu
     if (data.attended === status) {
         const user = await db.user.findFirst({
             where: {
-                id: userID
+                id: userId
             }
         });
         if (!user) return "Schüler nicht gefunden";
