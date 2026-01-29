@@ -4,7 +4,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import logger from './logger';
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const connectionString = `${process.env.POSTGRES_URL}`;
 
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
