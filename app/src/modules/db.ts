@@ -1,10 +1,10 @@
-import 'dotenv/config';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import logger from './logger';
+import { config_data } from './data/config';
 
-const connectionString = `${process.env.POSTGRES_URL}`;
+const connectionString = config_data.POSTGRES_URL;
 
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
@@ -21,7 +21,6 @@ const db = new PrismaClient({
 
 // Set up logging for Prisma events
 db.$on('warn', (e: Prisma.LogEvent) => {
-    e.target
     logger.warn(e.message, "Database");
 });
 

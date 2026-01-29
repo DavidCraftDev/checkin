@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import path from "path"
 import fs from "fs"
 import logger from "../logger"
@@ -6,6 +7,7 @@ import crypto from "crypto"
 interface Config {
     MAINTENANCE: boolean;
     SCHOOL_NAME: string;
+    POSTGRES_URL: string;
     DEFAULT_LOGIN: {
         USERNAME: string;
         PASSWORD: string;
@@ -53,6 +55,7 @@ interface Config {
 const defaultConfig: Config = {
     MAINTENANCE: false,
     SCHOOL_NAME: "",
+    POSTGRES_URL: "",
     DEFAULT_LOGIN: {
         USERNAME: "Own.Username",
         PASSWORD: "",
@@ -143,6 +146,7 @@ function applyEnvOverrides() {
     const env = process.env;
     if (env.MAINTENANCE) config_data.MAINTENANCE = env.MAINTENANCE === "true";
     if (env.SCHOOL_NAME) config_data.SCHOOL_NAME = env.SCHOOL_NAME;
+    if (env.POSTGRES_URL) config_data.POSTGRES_URL = env.POSTGRES_URL;
     if (env.DEFAULT_LOGIN_USERNAME) config_data.DEFAULT_LOGIN.USERNAME = env.DEFAULT_LOGIN_USERNAME;
     if (env.DEFAULT_LOGIN_PASSWORD) config_data.DEFAULT_LOGIN.PASSWORD = env.DEFAULT_LOGIN_PASSWORD;
     if (env.USE_LDAP) config_data.LDAP.ENABLE = env.USE_LDAP === "true";
