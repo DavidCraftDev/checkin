@@ -1,10 +1,18 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import 'dotenv/config';
+import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import logger from './logger';
 
-const db = new PrismaClient().$extends({
+const connectionString = `${process.env.DATABASE_URL}`;
+
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+
+const db = new PrismaClient({ adapter }).$extends({
     query: {
         $allModels: {
-            async $allOperations({ model, operation, args, query }) {
+            async $allOperations({ model, operation, args, query }: any) {
                 try {
                     return await query(args);
                 } catch (error) {
