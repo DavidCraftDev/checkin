@@ -66,8 +66,8 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
                 else vertretung.push(missingStudyTime);
             });
             vertretung.forEach((vertretung) => neededStudyTimesForAttendance.push("Vertretung:" + vertretung));
-            neededStudyTimesForAttendance.push("Zusätzliche Studienzeit");
-            if(isTeacher) neededStudyTimesForAttendance.push("Löschen");
+            if (event.attendance.type !== "Zusätzliche Studienzeit") neededStudyTimesForAttendance.push("Zusätzliche Studienzeit");
+            if (isTeacher) neededStudyTimesForAttendance.push("Löschen");
             studyTimeTypes[event.attendance.id] = neededStudyTimesForAttendance;
         } else {
             const neededStudyTimesForNotes: Array<string> = [];
@@ -82,9 +82,9 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     const length: number = attendances.length;
     let feedback: number = 0;
     attendances.forEach((attendance) => {
-        if(attendance.attendance.feedback === "GREEN") feedback++;
-        else if(attendance.attendance.feedback === "YELLOW") feedback += 2;
-        else if(attendance.attendance.feedback === "RED") feedback += 3;
+        if (attendance.attendance.feedback === "GREEN") feedback++;
+        else if (attendance.attendance.feedback === "YELLOW") feedback += 2;
+        else if (attendance.attendance.feedback === "RED") feedback += 3;
     });
     const feedbackAverage = length > 0 ? Math.round(feedback / length) : 0;
     const status = feedbackAverage === 1 ? "GREEN" : feedbackAverage === 2 ? "YELLOW" : "RED";
