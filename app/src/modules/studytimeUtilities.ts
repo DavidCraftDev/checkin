@@ -47,18 +47,20 @@ export async function getAttendedStudyTimesCount(user: User, cw: number, year: n
 }
 
 export async function saveStudyTimeType(attendance: Attendances, userID: string, type: string) {
-  const check = await db.attendances.findMany({
-    where: {
-      type: type,
-      cw: attendance.cw,
-      userID: userID,
-      created_at: {
-        gte: dayjs(attendance.created_at).startOf("week").toISOString(),
-        lte: dayjs(attendance.created_at).endOf("week").toISOString()
+  if (type !== "Zusätzliche Studienzeit") {
+    const check = await db.attendances.findMany({
+      where: {
+        type: type,
+        cw: attendance.cw,
+        userID: userID,
+        created_at: {
+          gte: dayjs(attendance.created_at).startOf("week").toISOString(),
+          lte: dayjs(attendance.created_at).endOf("week").toISOString()
+        }
       }
-    }
-  });
-  if (check.length > 0) return false;
+    });
+    if (check.length > 0) return false;
+  }
   const data = await db.attendances.update({
     where: { id: attendance.id },
     data: { type: type }
