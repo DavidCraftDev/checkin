@@ -66,7 +66,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
                 else vertretung.push(missingStudyTime);
             });
             vertretung.forEach((vertretung) => neededStudyTimesForAttendance.push("Vertretung:" + vertretung));
-            neededStudyTimesForAttendance.push("Zusätzliche Studienzeit");
+            if(event.attendance.type !== "Zusätzliche Studienzeit") neededStudyTimesForAttendance.push("Zusätzliche Studienzeit");
             if(isTeacher) neededStudyTimesForAttendance.push("Löschen");
             studyTimeTypes[event.attendance.id] = neededStudyTimesForAttendance;
         } else {
