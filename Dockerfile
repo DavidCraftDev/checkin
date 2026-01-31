@@ -17,7 +17,7 @@ RUN apk upgrade --no-cache -a && \
 
 FROM node:24.11.1-alpine3.23
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY --from=strip --chown=nobody:nobody /app                  /app
+COPY --from=build --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache tzdata tini openssl
 USER nobody
