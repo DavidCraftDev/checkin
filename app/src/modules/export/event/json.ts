@@ -1,7 +1,7 @@
 import "server-only";
 
-import { Events, User } from "@prisma/client"
 import { getAttendancesPerEvent } from "../../eventUtilities"
+import { Events, User } from "../../db";
 
 async function getEventDataJSON(event: Events, user: User) {
     const attendances = await getAttendancesPerEvent(event.id)

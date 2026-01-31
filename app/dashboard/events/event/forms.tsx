@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { handleEventDelete, handleUserCheckIN, removeUserHandler, saveSelectedStudyTimeFeedback } from "./actions";
-import { Attendances, Events, User } from "@prisma/client";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { toast } from "sonner";
 import SearchBar from "./search.component";
 import { SubmitButton } from "@/app/src/ui/submitButton";
 import TrafficLight from "../attendedEvents/trafficLight";
+import { Attendances, Events, User } from "@/app/src/modules/db";
 
 dayjs.extend(isoWeek);
 

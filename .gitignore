@@ -51,3 +51,6 @@ next-env.d.ts
 
 # Ignore .vscode folder
 .vscode/
+
+# Ignore generated prisma client
+/generated/prisma/

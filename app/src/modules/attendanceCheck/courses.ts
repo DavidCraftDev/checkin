@@ -1,8 +1,7 @@
 "use server";
 
-import { Events, User } from "@prisma/client";
 import { checkDate, getCurrentWeek } from "../date";
-import db from "../db";
+import db, { Events, User } from "../db";
 import { getSessionUser } from "../auth/cookieManager";
 import { getUserPerID } from "../userUtilities";
 
@@ -29,7 +28,7 @@ export async function getCreatedAttendanceChecks(courseID: string, calendarWeek:
     // Get teacher data for each attendance check
     const teacherIDs = new Set<string>();
     const teachersPerAttendanceCheck: { [key: string]: User } = {};
-    
+
     attendanceChecks.forEach(check => teacherIDs.add(check.user));
     await Promise.all(Array.from(teacherIDs).map(async (teacherID) => {
         const teacher = await getUserPerID(teacherID);

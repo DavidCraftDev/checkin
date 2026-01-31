@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { createStudyTimeNote, saveSelectedStudyTimeType, saveSelfReflection } from "./actions";
 import { SubmitButton } from "@/app/src/ui/submitButton";
-import { Attendances } from '@prisma/client';
 import { toast } from 'sonner';
+import { Attendances } from '@/app/src/modules/db';
 
 export function CreateStudyTimeNote(props: { userID: string, cw: number, year: number }) {
     const router = useRouter();

@@ -3,8 +3,8 @@ import UserEditForm from "./userEditForm.component";
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getUserPerID } from "@/app/src/modules/userUtilities";
 import { notFound } from "next/navigation";
-import { User } from "@prisma/client";
 import { config_data } from "@/app/src/modules/data/config";
+import { User } from "@/app/src/modules/db";
 
 async function userEdit(searchParams: { searchParams: Promise<SearchParams> }) {
     await getSessionUser(2);

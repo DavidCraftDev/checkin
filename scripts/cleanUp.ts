@@ -1,5 +1,5 @@
+import { PrismaClient } from "../app/src/modules/db";
 import logger from "../app/src/modules/logger";
-import { PrismaClient } from "@prisma/client";
 
 export async function cleanUpData(prisma: PrismaClient) {
     logger.info("Running cleanup script", "Seed")

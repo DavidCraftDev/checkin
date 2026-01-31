@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { seedLdapData } from "./ldapSeed";
 import { seedDefaultData } from "./defaultSeed";
 import logger from "../app/src/modules/logger";
 import { cleanUpData } from "./cleanUp";
 import { config_data } from "../app/src/modules/data/config";
+import db from "@/app/src/modules/db";
 
-const prisma = new PrismaClient();
+const prisma = db;
 
 async function main() {
   if (config_data.LDAP.ENABLE) {

@@ -1,6 +1,6 @@
+import { PrismaClient } from "../app/src/modules/db";
 import { config_data } from "../app/src/modules/data/config";
 import logger from "../app/src/modules/logger";
-import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
 
 export async function seedDefaultData(prisma: PrismaClient) {
@@ -11,7 +11,7 @@ export async function seedDefaultData(prisma: PrismaClient) {
     });
     if (adminCount < 1) {
         let default_username = config_data.DEFAULT_LOGIN.USERNAME;
-        if(config_data.LDAP.ENABLE) default_username = "local/" + default_username;
+        if (config_data.LDAP.ENABLE) default_username = "local/" + default_username;
         const usernameCount = await prisma.user.count({
             where: {
                 username: default_username.toLowerCase()

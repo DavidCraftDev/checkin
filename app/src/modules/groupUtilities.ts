@@ -1,9 +1,8 @@
 import "server-only";
 
-import db from "./db";
+import db, { User } from "./db";
 import { getAttendanceCountPerUser } from "./eventUtilities";
 import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
-import { User } from "@prisma/client";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";

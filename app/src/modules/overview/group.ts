@@ -1,7 +1,7 @@
 "use server";
 
-import { Attendances, StudyTimeData } from "@prisma/client";
 import { getSessionUser } from "../auth/cookieManager";
+import { Attendances, StudyTimeData } from "../db";
 import { getGroupUsers } from "../group";
 import { Categories, getUserOverviewData, mergeUserDataPerCW, OverviewUserDataPerCW, SortedData, sortUserOverviewDataIntoCaterogies } from "./user";
 

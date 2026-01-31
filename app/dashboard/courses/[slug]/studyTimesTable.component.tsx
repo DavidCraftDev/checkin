@@ -3,10 +3,10 @@
 import { CourseStudyTimes } from "@/app/src/modules/courses";
 import { formatDate } from "@/app/src/modules/date";
 import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
-import { User } from "@prisma/client";
 import { Suspense } from "react";
 import { use } from "react";
 import TrafficLight from "../../events/attendedEvents/trafficLight";
+import { User } from "@/app/src/modules/db";
 
 export default function StudyTimeTable({ students, studyTimesPromise }: { students: User[], studyTimesPromise: Promise<{ studyTimes: CourseStudyTimes, teacherPerEvent: TeacherPerEvent }> }) {
     return (

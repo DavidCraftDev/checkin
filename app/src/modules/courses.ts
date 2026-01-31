@@ -1,8 +1,7 @@
 "use server";
 
-import { Attendances, User } from "@prisma/client";
 import { getSessionUser } from "./auth/cookieManager";
-import db from "./db";
+import db, { Attendances, User } from "./db";
 import { getCurrentWeek, checkDate } from "./date";
 import { getCourseTypeFromName } from "./data/courses";
 import { TeacherPerEvent } from "./eventUtilities";

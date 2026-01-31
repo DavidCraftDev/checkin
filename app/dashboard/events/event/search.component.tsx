@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, ChangeEvent, useEffect } from 'react';
-import { User } from '@prisma/client';
 import { searchUserHandler } from './actions';
+import { User } from '@/app/src/modules/db';
 
 function UserSearchBar() {
     const [query, setQuery] = useState("");

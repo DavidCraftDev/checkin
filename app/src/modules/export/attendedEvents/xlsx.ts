@@ -1,9 +1,9 @@
 import "server-only";
 
-import { User } from "@prisma/client";
 import { getAttendancesPerUser } from "../../eventUtilities";
 import { Columns, SheetData } from "write-excel-file";
 import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
+import { User } from "../../db";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     const sheetData: SheetData = []

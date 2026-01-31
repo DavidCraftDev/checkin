@@ -1,8 +1,7 @@
 import "server-only";
 
 import { getAttendancesPerUser } from "./eventUtilities";
-import { Attendances, StudyTimeData, User } from "@prisma/client";
-import db from "./db";
+import db, { Attendances, StudyTimeData, User } from "./db";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";

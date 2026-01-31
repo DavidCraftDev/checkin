@@ -1,6 +1,6 @@
 "use server";
 
-import { User } from "@prisma/client";
+import { User } from "@/app/src/modules/db";
 
 const permissionMap: { [key: number]: string } = {
     0: "Schüler",

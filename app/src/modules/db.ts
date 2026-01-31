@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '../../../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import logger from './logger';
@@ -35,5 +35,14 @@ db.$on('error', (e: Prisma.LogEvent) => {
 db.$on('query', (e: Prisma.QueryEvent) => {
     logger.debug(`Prisma query: ${e.query} (params: ${e.params}) - took ${e.duration}ms`, "Database");
 });
+
+// Export types
+export type { PrismaClient, Prisma };
+export type Attendances = Prisma.AttendancesModel
+export type Events = Prisma.EventsModel
+export type StudyTimeData = Prisma.StudyTimeDataModel
+export type User = Prisma.UserModel
+export type Session = Prisma.SessionModel
+export type ClosedStudyTimes = Prisma.ClosedStudyTimesModel
 
 export default db;
