@@ -1,18 +1,16 @@
 # syntax=docker/dockerfile:labs
-FROM node:24.11.1-alpine3.23 AS build
+FROM --platform="$BUILDPLATFORM" node:24.11.1-alpine3.23 AS build
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
     NODE_ENV=production
 WORKDIR /app
 RUN apk upgrade --no-cache -a
-RUN apk add --no-cache openssl binutils file
 RUN npm clean-install
 RUN npx prisma generate
 RUN npx next build
 RUN npm cache clean --force
 RUN find node_modules -type f -name "*.map" -delete
-RUN find /app/node_modules -name "*.node" -type f -exec strip -s {} \;
-RUN find /app/node_modules -name "*.node" -type f -exec file {} \;
+RUN find /app/node_modules -name "*.node" -type f -delete
 
 FROM node:24.11.1-alpine3.23
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
