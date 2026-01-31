@@ -44,11 +44,6 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Export types
 export type { PrismaClient, Prisma };
-export type Attendances = Prisma.AttendancesModel
-export type Events = Prisma.EventsModel
-export type StudyTimeData = Prisma.StudyTimeDataModel
-export type User = Prisma.UserModel
-export type Session = Prisma.SessionModel
-export type ClosedStudyTimes = Prisma.ClosedStudyTimesModel
+export type { Attendances, Events, StudyTimeData, User, Session, ClosedStudyTimes } from '../../../generated/prisma/client';
 
 export default db;
