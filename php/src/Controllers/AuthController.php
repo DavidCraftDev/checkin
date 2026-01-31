@@ -11,14 +11,26 @@ class AuthController
     public function login(): void
     {
         $rawBody = file_get_contents('php://input');
+        
+        // Log for debugging (remove in production)
+        error_log("Login attempt - Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
+        error_log("Login attempt - Body: " . substr($rawBody, 0, 200));
+        
+        // Handle empty body
+        if (empty($rawBody)) {
+            Response::error('Request body is empty', 400);
+        }
+        
         $input = json_decode($rawBody, true);
 
-        if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
+        // Check for JSON parsing errors
+        if (json_last_error() !== JSON_ERROR_NONE) {
             Response::error('Invalid JSON in request body: ' . json_last_error_msg(), 400);
         }
 
+        // Validate input is an array
         if (!is_array($input)) {
-            Response::error('Invalid request body format', 400);
+            Response::error('Invalid request body format - expected JSON object', 400);
         }
 
         $username = $input['username'] ?? '';
