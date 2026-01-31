@@ -7,7 +7,12 @@ import { config_data } from './data/config';
 // Initialize PostgreSQL prisma client
 const connectionString = config_data.POSTGRES_URL;
 
-const pool = new pg.Pool({ connectionString });
+const pool = new pg.Pool({
+    connectionString,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+});
 const adapter = new PrismaPg(pool);
 
 const db = new PrismaClient({
