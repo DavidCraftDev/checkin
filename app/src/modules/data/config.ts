@@ -120,6 +120,11 @@ export function readConfig(writeBack: boolean = true) {
         logger.error("Error reading or parsing config file:" + error, "Config");
     }
 
+    // Check if the POSTGRES_URL is set
+    if (!config_data.POSTGRES_URL || config_data.POSTGRES_URL === "") {
+        logger.error("No POSTGRES_URL set in config file. Please set it before running the application.", "Config");
+    }
+
     // Check if a password is set for the default login
     // If not, generate a random password and log a warning
     if (!config_data.DEFAULT_LOGIN.PASSWORD || config_data.DEFAULT_LOGIN.PASSWORD === "") {
