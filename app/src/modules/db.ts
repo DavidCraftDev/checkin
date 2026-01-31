@@ -4,6 +4,7 @@ import pg from 'pg';
 import logger from './logger';
 import { config_data } from './data/config';
 
+// Initialize PostgreSQL prisma client
 const connectionString = config_data.POSTGRES_URL;
 
 const pool = new pg.Pool({ connectionString });
@@ -35,6 +36,11 @@ db.$on('error', (e: Prisma.LogEvent) => {
 db.$on('query', (e: Prisma.QueryEvent) => {
     logger.debug(`Prisma query: ${e.query} (params: ${e.params}) - took ${e.duration}ms`, "Database");
 });
+
+// Ensure a single instance of PrismaClient in development
+const globalForPrisma = global as unknown as { prisma: typeof db }
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Export types
 export type { PrismaClient, Prisma };
