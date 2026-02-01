@@ -10,40 +10,49 @@ class AuthController
 {
     public function login(): void
     {
-        $rawBody = file_get_contents('php://input');
+        // Start output buffering to catch any accidental output
+        ob_start();
         
-        // Log for debugging (remove in production)
-        error_log("Login attempt - Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
-        error_log("Login attempt - Body: " . substr($rawBody, 0, 200));
+        $rawBody = file_get_contents('php://input');
         
         // Handle empty body
         if (empty($rawBody)) {
+            ob_end_clean();
             Response::error('Request body is empty', 400);
+            return;
         }
         
         $input = json_decode($rawBody, true);
 
         // Check for JSON parsing errors
         if (json_last_error() !== JSON_ERROR_NONE) {
+            ob_end_clean();
             Response::error('Invalid JSON in request body: ' . json_last_error_msg(), 400);
+            return;
         }
 
         // Validate input is an array
         if (!is_array($input)) {
+            ob_end_clean();
             Response::error('Invalid request body format - expected JSON object', 400);
+            return;
         }
 
         $username = $input['username'] ?? '';
         $password = $input['password'] ?? '';
 
         if (empty($username) || empty($password)) {
+            ob_end_clean();
             Response::error('Username and password required', 400);
+            return;
         }
 
         $user = AuthManager::authenticate($username, $password);
 
         if (!$user) {
+            ob_end_clean();
             Response::error('Invalid credentials', 401);
+            return;
         }
 
         $sessionId = SessionManager::createSession($user['id']);
@@ -51,6 +60,7 @@ class AuthController
 
         SessionManager::setSessionCookie($sessionId, $expiresAt);
 
+        ob_end_clean();
         Response::json([
             'message' => 'Login successful',
             'user' => [
