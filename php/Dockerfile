@@ -6,21 +6,29 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libldap2-dev \
     libgd-dev \
+    unzip \
+    git \
     && docker-php-ext-configure ldap \
     && docker-php-ext-install pdo pdo_pgsql ldap gd \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy application files
-COPY . /var/www/html/
+# Install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy composer files first
+COPY composer.json composer.lock* ./
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy application files
+COPY . /var/www/html/
+
+# Regenerate autoloader with application files
+RUN composer dump-autoload --optimize --no-dev
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/sites-available/default
