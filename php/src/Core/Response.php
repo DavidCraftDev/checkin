@@ -6,8 +6,18 @@ class Response
 {
     public static function json(mixed $data, int $status = 200): void
     {
-        http_response_code($status);
-        header('Content-Type: application/json');
+        // Clear any output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        
+        // Remove any headers that might have been set
+        if (!headers_sent()) {
+            header_remove();
+            http_response_code($status);
+            header('Content-Type: application/json');
+        }
+        
         $json = json_encode($data);
         if ($json === false) {
             // Fallback to plain text if JSON encoding fails

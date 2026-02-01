@@ -3,6 +3,37 @@
  * CheckIN PHP - Main entry point
  */
 
+// Enable error reporting for debugging (disable in production)
+error_reporting(E_ALL);
+ini_set('display_errors', '0'); // Don't display errors in output
+ini_set('log_errors', '1'); // Log errors
+
+// Set up global error handler to return JSON errors
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Internal server error',
+        'message' => $errstr,
+        'file' => basename($errfile),
+        'line' => $errline
+    ]);
+    exit;
+});
+
+// Set up global exception handler to return JSON errors
+set_exception_handler(function($exception) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => 'Internal server error',
+        'message' => $exception->getMessage(),
+        'file' => basename($exception->getFile()),
+        'line' => $exception->getLine()
+    ]);
+    exit;
+});
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use CheckIn\Core\Router;
