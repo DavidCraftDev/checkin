@@ -31,10 +31,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p /var/run/php \
     && chown www-data:www-data /var/run/php
 
-# Configure PHP-FPM
-RUN echo "listen = /var/run/php/php-fpm.sock" >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo "listen.owner = www-data" >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/www.conf
+# Configure PHP-FPM to listen on TCP
+RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/www.conf
 
 EXPOSE 80
 

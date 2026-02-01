@@ -18,16 +18,29 @@ class API {
         try {
             const response = await fetch(url, config);
             
+            // Log response details for debugging
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+            
             // Get the response text first
             const text = await response.text();
+            console.log('Response text length:', text.length);
+            console.log('Response text (first 200 chars):', text.substring(0, 200));
+            
+            // Check if response is empty
+            if (!text || text.trim() === '') {
+                console.error('Server returned empty response');
+                throw new Error('Server returned empty response');
+            }
             
             // Try to parse as JSON
             let data;
             try {
                 data = JSON.parse(text);
             } catch (parseError) {
-                console.error('Failed to parse JSON response:', text);
-                throw new Error('Server returned invalid JSON: ' + text.substring(0, 100));
+                console.error('Failed to parse JSON response. Full text:', text);
+                console.error('Parse error:', parseError);
+                throw new Error('Server returned invalid JSON. Check console for details.');
             }
 
             if (!response.ok) {
