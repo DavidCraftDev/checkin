@@ -3,75 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CheckIN</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <title>CheckIN - Anmelden</title>
+    <link rel="stylesheet" href="../assets/css/tailwind.css">
 </head>
-<body>
-    <div class="login-container">
-        <div class="card login-card">
-            <h1 class="text-center mb-3">CheckIN</h1>
-            <p class="text-center text-secondary mb-4">Anwesenheitssystem</p>
-            
-            <div id="alert-container"></div>
-            
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username" class="form-label">Benutzername</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        class="form-input" 
-                        required 
-                        autofocus
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">Passwort</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        class="form-input" 
-                        required
-                    >
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    Anmelden
-                </button>
-            </form>
-            
-            <div id="loading" class="hidden">
-                <div class="spinner"></div>
-            </div>
+<body class="flex items-center justify-center h-screen bg-gray-200">
+    <form id="loginForm" class="p-4 bg-white rounded-lg shadow-md">
+        <!-- CheckIN Header -->
+        <div class="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
+            <span class="text-xl font-semibold text-white md:text-2xl">
+                CheckIN
+            </span>
         </div>
-    </div>
+
+        <!-- Form Content -->
+        <div class="flex flex-col space-y-4">
+            <h1>Anmelden</h1>
+            
+            <!-- Alert Container -->
+            <div id="alert-container"></div>
+
+            <!-- Username Field -->
+            <label for="username" class="font-bold text-gray-600">Nutzername</label>
+            <input 
+                type="text" 
+                name="username" 
+                id="username" 
+                placeholder="Nutzername" 
+                class="rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1"
+                required
+                autofocus
+            >
+
+            <!-- Password Field -->
+            <label for="password" class="font-bold text-gray-600">Passwort</label>
+            <input 
+                type="password" 
+                name="password" 
+                id="password" 
+                placeholder="Passwort" 
+                class="rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black focus:outline-hidden focus:ring-1"
+                required
+            >
+
+            <!-- Password Reset Link (if LDAP enabled) -->
+            <a id="passwordResetLink" href="#" class="text-gray-400 text-xs ml-5 hover:underline hidden" style="margin-top: -3px;">
+                Passwort vergessen?
+            </a>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn">Anmelden</button>
+        </div>
+    </form>
 
     <script src="../assets/js/api.js"></script>
     <script>
         const loginForm = document.getElementById('loginForm');
-        const loadingDiv = document.getElementById('loading');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
         const alertContainer = document.getElementById('alert-container');
+        const passwordResetLink = document.getElementById('passwordResetLink');
+
+        let errorCount = 0;
 
         // Redirect if already logged in
         if (utils.isAuthenticated()) {
             window.location.href = 'dashboard.html';
         }
 
+        // Check for LDAP password reset URL
+        async function loadPasswordResetURL() {
+            try {
+                const config = await api.getConfig();
+                if (config && config.LDAP && config.LDAP.ENABLE && config.LDAP.PASSWORD_RESET_URL) {
+                    passwordResetLink.href = config.LDAP.PASSWORD_RESET_URL;
+                    passwordResetLink.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load password reset URL:', error);
+            }
+        }
+        loadPasswordResetURL();
+
+        function showAlert(message, isError = false) {
+            alertContainer.innerHTML = '';
+            const alert = document.createElement('div');
+            alert.className = isError 
+                ? 'p-3 rounded-md bg-red-600 text-white text-sm mb-2' 
+                : 'p-3 rounded-md bg-green-600 text-white text-sm mb-2';
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+        }
+
+        function setFieldError(input, hasError) {
+            if (hasError) {
+                input.classList.add('border-red-600', 'ring-red-600');
+            } else {
+                input.classList.remove('border-red-600', 'ring-red-600');
+            }
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
             
-            // Clear previous alerts
+            // Clear previous errors
             alertContainer.innerHTML = '';
+            setFieldError(usernameInput, false);
+            setFieldError(passwordInput, false);
             
-            // Show loading
-            loginForm.classList.add('hidden');
-            loadingDiv.classList.remove('hidden');
+            // Validation
+            if (!username) {
+                setFieldError(usernameInput, true);
+                showAlert('Bitte einen Nutzernamen eingeben', true);
+                return;
+            }
+            
+            if (!password) {
+                setFieldError(passwordInput, true);
+                showAlert('Bitte ein Passwort eingeben', true);
+                return;
+            }
+
+            // Disable form during submission
+            const submitButton = loginForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
             
             try {
                 const response = await api.login(username, password);
@@ -81,22 +138,26 @@
                     utils.saveUser(response.user);
                     
                     // Show success message
-                    const alert = document.createElement('div');
-                    alert.className = 'alert alert-success';
-                    alert.textContent = 'Login erfolgreich! Weiterleitung...';
-                    alertContainer.appendChild(alert);
+                    showAlert('Login erfolgreich! Weiterleitung...');
                     
                     // Redirect to dashboard
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
-                    }, 1000);
+                    }, 500);
                 }
             } catch (error) {
                 // Show error
-                const alert = document.createElement('div');
-                alert.className = 'alert alert-error';
-                alert.textContent = error.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.';
-                alertContainer.appendChild(alert);
+                showAlert(error.message || 'Falscher Nutzername oder Passwort', true);
+                errorCount++;
+                
+                // Redirect to limit page after 10 errors (matching TypeScript behavior)
+                if (errorCount >= 10) {
+                    window.location.href = 'login-limit.html';
+                }
+                
+                submitButton.disabled = false;
+            }
+        });
                 
                 // Show form again
                 loginForm.classList.remove('hidden');

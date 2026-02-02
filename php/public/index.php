@@ -79,6 +79,9 @@ $router->post('/login', 'CheckIn\Controllers\AuthController@login');
 $router->post('/logout', 'CheckIn\Controllers\AuthController@logout');
 $router->get('/logout', 'CheckIn\Controllers\AuthController@logout'); // TypeScript uses GET
 
+// Config route (public config only)
+$router->get('/api/v1/config', 'CheckIn\Controllers\ConfigController@getPublicConfig');
+
 // Event routes
 $router->get('/api/v1/events', 'CheckIn\Controllers\Api\EventsController@list');
 $router->post('/api/v1/events', 'CheckIn\Controllers\Api\EventsController@create');

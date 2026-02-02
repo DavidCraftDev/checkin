@@ -90,6 +90,11 @@ class API {
         return this.request('/health');
     }
 
+    // Config endpoint
+    async getConfig() {
+        return this.request('/api/v1/config');
+    }
+
     // Event endpoints
     async createEvent(eventData) {
         return this.request('/api/v1/events', {
