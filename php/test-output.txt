@@ -1,0 +1,70 @@
+==========================================================
+Database & Configuration Test Script
+==========================================================
+
+TEST 1: Configuration Loading
+-----------------------------------------------------------
+✅ Config initialized successfully
+   School Name: 
+   Maintenance Mode: false
+   Default Username: admin
+   LDAP Enabled: false
+   LDAP URI: 
+
+TEST 2: Environment Variable Overrides
+-----------------------------------------------------------
+After setting environment variables:
+   MAINTENANCE=true ✅
+   SCHOOL_NAME=Test School via ENV ✅
+   LDAP.ENABLE=true ✅
+   LDAP.URI=ldap://test.example.com ✅
+
+TEST 3: Database Connection
+-----------------------------------------------------------
+POSTGRES_URL: Not Set
+Connected to SQLite database: /home/runner/work/checkin/checkin/php/data/database.sqlite
+✅ Database connected successfully
+   Driver: sqlite
+   Using: SQLite ✅ (fallback)
+   Location: data/database.sqlite
+   Connection Test: ✅ Active
+
+TEST 4: Database Schema Creation
+-----------------------------------------------------------
+[2026-02-02 16:40:09] [INFO] [Seed] Starting database schema initialization (driver: sqlite)...
+[2026-02-02 16:40:09] [SUCCESS] [Seed] Database schema initialized successfully
+[2026-02-02 16:40:10] [INFO] [Seed] New default admin created because no admins were found in the database.
+[2026-02-02 16:40:10] [INFO] [Seed] Username: local/admin
+✅ Schema initialized successfully
+   Tables created: 6/6
+   ✅ Attendances
+   ✅ ClosedStudyTimes
+   ✅ Events
+   ✅ Session
+   ✅ StudyTimeData
+   ✅ User
+
+   Users in database: 1
+   Admin users: 1
+   Default Admin:
+      Username: local/admin
+      Displayname: Default Admin
+      Permission: 2
+
+TEST 5: CUID Generation
+-----------------------------------------------------------
+✅ Generated CUID: ca1aab188d2b29f01ab0889c5
+   Length: 25 ✅
+   Starts with 'c': ✅
+   Test data cleaned up
+
+==========================================================
+Test Summary
+==========================================================
+✅ Configuration: File loading + Environment overrides
+✅ Database: sqlite connection
+✅ Schema: All tables created
+✅ User Creation: Default admin created
+✅ CUID: Auto-generation working
+
+All tests completed!
