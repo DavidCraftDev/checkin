@@ -62,6 +62,7 @@ class Database
         }
 
         $dbPath = $dataDir . '/database.sqlite';
+        $isNewDb = !file_exists($dbPath);
         $dsn = "sqlite:{$dbPath}";
 
         try {
@@ -72,10 +73,24 @@ class Database
             ]);
             self::$driver = 'sqlite';
             
+            // For new databases, set auto_vacuum before creating any tables
+            if ($isNewDb) {
+                self::$connection->exec('PRAGMA auto_vacuum = FULL');
+            }
+            
+            // Enable WAL (Write-Ahead Logging) for better concurrency
+            self::$connection->exec('PRAGMA journal_mode = WAL');
+            
             // Enable foreign keys for SQLite
             self::$connection->exec('PRAGMA foreign_keys = ON');
             
+            // Optimize SQLite settings
+            self::$connection->exec('PRAGMA synchronous = NORMAL');
+            self::$connection->exec('PRAGMA cache_size = -20000'); // 20MB cache
+            self::$connection->exec('PRAGMA temp_store = MEMORY');
+            
             error_log('Connected to SQLite database: ' . $dbPath);
+            error_log('SQLite optimizations: WAL mode, auto_vacuum ' . ($isNewDb ? 'FULL' : '(existing db)') . ', foreign keys ON');
         } catch (PDOException $e) {
             throw new \Exception('SQLite connection failed: ' . $e->getMessage());
         }

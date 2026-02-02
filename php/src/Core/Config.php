@@ -19,20 +19,46 @@ class Config
             'MAINTENANCE' => false,
             'SCHOOL_NAME' => '',
             'DEFAULT_LOGIN' => [
-                'USERNAME' => 'admin',
+                'USERNAME' => 'Own.Username',  // Match TypeScript default
                 'PASSWORD' => self::generateSecurePassword()
             ],
             'LDAP' => [
                 'ENABLE' => false,
                 'URI' => '',
                 'TLS_REJECT_UNAUTHORIZED' => false,
-                'BIND_CREDENTIALS' => [
+                'BIND_CREADENTIALS' => [  // Note: Typo matches TypeScript exactly!
                     'DN' => '',
                     'PASSWORD' => ''
                 ],
                 'SEARCH_BASE' => '',
                 'USER_SEARCH_FILTER' => '',
-                'PASSWORD_RESET_URL' => ''
+                'PASSWORD_RESET_URL' => '',
+                'AUTOMATIC_DATA_DETECTION' => [
+                    'PERMISSION' => [
+                        'ENABLE' => false,
+                        'TEACHER_GROUP' => '',
+                        'ADMIN_GROUP' => ''
+                    ],
+                    'GROUPS' => [
+                        'ENABLE' => false,
+                        'GROUP_OU' => ''
+                    ],
+                    'STUDYTIME_DATA' => [
+                        'ENABLE' => false,
+                        'STUDYTIME_OU' => ''
+                    ]
+                ]
+            ],
+            'UNTIS' => [
+                'ENABLE' => false,
+                'SCHOOL' => '',
+                'USERNAME' => '',
+                'PASSWORD' => '',
+                'BASE_URL' => '',
+                'CLASS_IDS' => []
+            ],
+            'MODULES' => [
+                'SPONSORENLAUF' => false
             ]
         ];
 
@@ -79,6 +105,10 @@ class Config
         }
         
         // LDAP configuration
+        // Support both USE_LDAP (TypeScript) and LDAP_ENABLE (alternative)
+        if (getenv('USE_LDAP') !== false) {
+            self::$config['LDAP']['ENABLE'] = getenv('USE_LDAP') === 'true';
+        }
         if (getenv('LDAP_ENABLE') !== false) {
             self::$config['LDAP']['ENABLE'] = getenv('LDAP_ENABLE') === 'true';
         }
@@ -88,11 +118,12 @@ class Config
         if (getenv('LDAP_TLS_REJECT_UNAUTHORIZED') !== false) {
             self::$config['LDAP']['TLS_REJECT_UNAUTHORIZED'] = getenv('LDAP_TLS_REJECT_UNAUTHORIZED') === 'true';
         }
+        // Note: BIND_CREADENTIALS matches TypeScript typo exactly
         if (getenv('LDAP_BIND_DN') !== false) {
-            self::$config['LDAP']['BIND_CREDENTIALS']['DN'] = getenv('LDAP_BIND_DN');
+            self::$config['LDAP']['BIND_CREADENTIALS']['DN'] = getenv('LDAP_BIND_DN');
         }
         if (getenv('LDAP_BIND_PASSWORD') !== false) {
-            self::$config['LDAP']['BIND_CREDENTIALS']['PASSWORD'] = getenv('LDAP_BIND_PASSWORD');
+            self::$config['LDAP']['BIND_CREADENTIALS']['PASSWORD'] = getenv('LDAP_BIND_PASSWORD');
         }
         if (getenv('LDAP_SEARCH_BASE') !== false) {
             self::$config['LDAP']['SEARCH_BASE'] = getenv('LDAP_SEARCH_BASE');
@@ -102,6 +133,55 @@ class Config
         }
         if (getenv('LDAP_PASSWORD_RESET_URL') !== false) {
             self::$config['LDAP']['PASSWORD_RESET_URL'] = getenv('LDAP_PASSWORD_RESET_URL');
+        }
+        
+        // LDAP Automatic Data Detection - Permission
+        if (getenv('LDAP_AUTO_PERMISSION') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['PERMISSION']['ENABLE'] = getenv('LDAP_AUTO_PERMISSION') === 'true';
+        }
+        if (getenv('LDAP_AUTO_PERMISSION_TEACHER_GROUP') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['PERMISSION']['TEACHER_GROUP'] = getenv('LDAP_AUTO_PERMISSION_TEACHER_GROUP');
+        }
+        if (getenv('LDAP_AUTO_PERMISSION_ADMIN_GROUP') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['PERMISSION']['ADMIN_GROUP'] = getenv('LDAP_AUTO_PERMISSION_ADMIN_GROUP');
+        }
+        
+        // LDAP Automatic Data Detection - Groups
+        if (getenv('LDAP_AUTO_GROUPS_DETECTION') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['GROUPS']['ENABLE'] = getenv('LDAP_AUTO_GROUPS_DETECTION') === 'true';
+        }
+        if (getenv('LDAP_AUTO_GROUPS_OU') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['GROUPS']['GROUP_OU'] = getenv('LDAP_AUTO_GROUPS_OU');
+        }
+        
+        // LDAP Automatic Data Detection - Study Time Data
+        if (getenv('LDAP_AUTO_STUDYTIME_DATA') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['STUDYTIME_DATA']['ENABLE'] = getenv('LDAP_AUTO_STUDYTIME_DATA') === 'true';
+        }
+        if (getenv('LDAP_AUTO_STUDYTIME_DATA_OU') !== false) {
+            self::$config['LDAP']['AUTOMATIC_DATA_DETECTION']['STUDYTIME_DATA']['STUDYTIME_OU'] = getenv('LDAP_AUTO_STUDYTIME_DATA_OU');
+        }
+        
+        // UNTIS configuration
+        if (getenv('UNTIS_ENABLE') !== false) {
+            self::$config['UNTIS']['ENABLE'] = getenv('UNTIS_ENABLE') === 'true';
+        }
+        if (getenv('UNTIS_SCHOOL') !== false) {
+            self::$config['UNTIS']['SCHOOL'] = getenv('UNTIS_SCHOOL');
+        }
+        if (getenv('UNTIS_USERNAME') !== false) {
+            self::$config['UNTIS']['USERNAME'] = getenv('UNTIS_USERNAME');
+        }
+        if (getenv('UNTIS_PASSWORD') !== false) {
+            self::$config['UNTIS']['PASSWORD'] = getenv('UNTIS_PASSWORD');
+        }
+        if (getenv('UNTIS_BASE_URL') !== false) {
+            self::$config['UNTIS']['BASE_URL'] = getenv('UNTIS_BASE_URL');
+        }
+        
+        // MODULES configuration
+        if (getenv('MODULE_SPONSORENLAUF') !== false) {
+            self::$config['MODULES']['SPONSORENLAUF'] = getenv('MODULE_SPONSORENLAUF') === 'true';
         }
     }
 
