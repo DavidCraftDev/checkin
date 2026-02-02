@@ -33,6 +33,9 @@ class DatabaseSchema
             $db->commit();
             
             error_log('Database schema initialized successfully');
+            
+            // Create default admin user if configured
+            self::createDefaultUser();
         } catch (PDOException $e) {
             if ($db->inTransaction()) {
                 $db->rollBack();
@@ -267,6 +270,57 @@ class DatabaseSchema
             return $result && $result['count'] == 4;
         } catch (PDOException $e) {
             return false;
+        }
+    }
+    
+    /**
+     * Create default admin user from environment variables
+     */
+    private static function createDefaultUser(): void
+    {
+        try {
+            $username = Config::get('DEFAULT_LOGIN.USERNAME');
+            $password = Config::get('DEFAULT_LOGIN.PASSWORD');
+            
+            // Only create if both username and password are configured
+            if (empty($username) || empty($password)) {
+                error_log('Default login credentials not configured - skipping default user creation');
+                return;
+            }
+            
+            // Check if user already exists
+            $existingUser = Database::fetchOne(
+                'SELECT id FROM "User" WHERE username = ?',
+                [$username]
+            );
+            
+            if ($existingUser) {
+                error_log("Default user '$username' already exists - skipping creation");
+                return;
+            }
+            
+            // Create admin user
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            
+            Database::query(
+                'INSERT INTO "User" (username, displayname, permission, password, "group", needs, competence, courses) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    $username,
+                    'Administrator',
+                    999, // Admin permission level
+                    $hashedPassword,
+                    '{}', // Empty group array
+                    '{}', // Empty needs array
+                    '{}', // Empty competence array
+                    '{}', // Empty courses array
+                ]
+            );
+            
+            error_log("Default admin user '$username' created successfully");
+        } catch (\Exception $e) {
+            error_log('Failed to create default user: ' . $e->getMessage());
+            // Don't throw - this is not critical for schema initialization
         }
     }
 }
