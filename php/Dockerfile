@@ -21,8 +21,8 @@ WORKDIR /var/www/html
 # Copy all files first (simpler and more reliable)
 COPY . /var/www/html/
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies (run composer even with no dependencies to generate autoloader)
+RUN composer install --no-dev --optimize-autoloader --no-scripts || composer dump-autoload --optimize
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/sites-available/default
