@@ -66,7 +66,7 @@ class DatabaseSchema
     {
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "User" (
-            id TEXT PRIMARY KEY,
+            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
             username TEXT UNIQUE NOT NULL,
             displayname TEXT NOT NULL,
             permission INTEGER DEFAULT 0 NOT NULL,
@@ -136,7 +136,7 @@ class DatabaseSchema
     {
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "Events" (
-            id TEXT PRIMARY KEY,
+            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
             type TEXT NOT NULL,
             "user" TEXT NOT NULL,
             cw INTEGER NOT NULL,
@@ -165,7 +165,7 @@ class DatabaseSchema
     {
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "Attendances" (
-            id TEXT PRIMARY KEY,
+            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
             "userID" TEXT NOT NULL,
             "eventID" TEXT NOT NULL,
             cw INTEGER NOT NULL,
@@ -200,7 +200,7 @@ class DatabaseSchema
     {
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "StudyTimeData" (
-            id TEXT PRIMARY KEY,
+            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
             "userID" TEXT NOT NULL,
             needs TEXT[] DEFAULT '{}',
             cw INTEGER NOT NULL,
@@ -229,7 +229,7 @@ class DatabaseSchema
     {
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "ClosedStudyTimes" (
-            "lessonID" TEXT PRIMARY KEY,
+            "lessonID" TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
             "courseID" TEXT NOT NULL
         );
         
