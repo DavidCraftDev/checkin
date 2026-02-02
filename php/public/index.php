@@ -38,6 +38,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use CheckIn\Core\Router;
 use CheckIn\Core\Database;
+use CheckIn\Core\DatabaseSchema;
 use CheckIn\Core\Config;
 use CheckIn\Core\Response;
 use CheckIn\Core\SecurityHeaders;
@@ -55,8 +56,14 @@ RateLimiter::requireLimit(RateLimiter::getClientIdentifier());
 // Initialize database connection
 try {
     Database::connect();
+    
+    // Auto-initialize database schema if tables don't exist
+    if (!DatabaseSchema::schemaExists()) {
+        error_log('Database schema not found, initializing...');
+        DatabaseSchema::initialize();
+    }
 } catch (Exception $e) {
-    Response::json(['error' => 'Database connection failed'], 500);
+    Response::json(['error' => 'Database connection failed', 'message' => $e->getMessage()], 500);
     exit;
 }
 
