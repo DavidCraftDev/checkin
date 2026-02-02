@@ -275,6 +275,7 @@ class DatabaseSchema
     
     /**
      * Create default admin user from environment variables
+     * Matches TypeScript implementation in scripts/defaultSeed.ts
      */
     private static function createDefaultUser(): void
     {
@@ -282,45 +283,90 @@ class DatabaseSchema
             $username = Config::get('DEFAULT_LOGIN.USERNAME');
             $password = Config::get('DEFAULT_LOGIN.PASSWORD');
             
-            // Only create if both username and password are configured
-            if (empty($username) || empty($password)) {
-                error_log('Default login credentials not configured - skipping default user creation');
+            // Auto-generate password if empty (matching TypeScript behavior)
+            if (empty($password)) {
+                $password = self::generateSecurePassword();
+                error_log("WARNING: No default password configured. Auto-generated password: $password");
+                error_log("IMPORTANT: Please change this password immediately after first login!");
+            }
+            
+            if (empty($username)) {
+                error_log('Default login username not configured - skipping default user creation');
                 return;
             }
             
-            // Check if user already exists
+            // Add LDAP prefix if LDAP is enabled (matching TypeScript behavior)
+            $ldapEnabled = Config::get('LDAP.ENABLE');
+            if ($ldapEnabled) {
+                $username = 'local/' . $username;
+            }
+            
+            // Lowercase username (matching TypeScript behavior)
+            $username = strtolower($username);
+            
+            // Check if any admin user exists (permission = 2)
+            // Matching TypeScript: creates user only if no admins exist
+            $adminCount = Database::fetchOne(
+                'SELECT COUNT(*) as count FROM "User" WHERE permission = 2'
+            );
+            
+            if ($adminCount && $adminCount['count'] > 0) {
+                error_log('Admin user already exists - skipping default user creation');
+                return;
+            }
+            
+            // Check if username already exists
             $existingUser = Database::fetchOne(
                 'SELECT id FROM "User" WHERE username = ?',
                 [$username]
             );
             
             if ($existingUser) {
-                error_log("Default user '$username' already exists - skipping creation");
+                error_log("ERROR: Default admin username '$username' already exists but no admin user found!");
+                error_log("Please provide a different username in the config file.");
                 return;
             }
             
-            // Create admin user
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            // Create admin user with bcrypt cost 12 (matching TypeScript)
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
             
             Database::query(
                 'INSERT INTO "User" (username, displayname, permission, password, "group", needs, competence, courses) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $username,
-                    'Administrator',
-                    999, // Admin permission level
+                    'Default Admin',  // Matching TypeScript
+                    2,                // Matching TypeScript permission level
                     $hashedPassword,
-                    '{}', // Empty group array
-                    '{}', // Empty needs array
-                    '{}', // Empty competence array
-                    '{}', // Empty courses array
+                    '{}',
+                    '{}',
+                    '{}',
+                    '{}'
                 ]
             );
             
-            error_log("Default admin user '$username' created successfully");
+            error_log("New default admin created because no admins were found in the database.");
+            error_log("Username: $username");
         } catch (\Exception $e) {
             error_log('Failed to create default user: ' . $e->getMessage());
             // Don't throw - this is not critical for schema initialization
         }
+    }
+    
+    /**
+     * Generate a secure random password
+     * Matches TypeScript implementation in app/src/modules/data/config.ts
+     */
+    private static function generateSecurePassword(): string
+    {
+        $length = 16;
+        $charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+[]{}|;:,.<>?';
+        $password = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $charset[random_int(0, strlen($charset) - 1)];
+        }
+        
+        return $password;
     }
 }
