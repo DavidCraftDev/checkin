@@ -6,6 +6,8 @@
         "php": ">=8.1",
         "ext-pdo": "*",
         "ext-pgsql": "*",
+        "ext-sqlite3": "*",
+        "ext-pdo_sqlite": "*",
         "ext-json": "*",
         "ext-gd": "*",
         "ext-ldap": "*"

@@ -10,19 +10,23 @@ class DatabaseSchema
     /**
      * Initialize database schema - creates all tables if they don't exist
      * Matches TypeScript/Prisma schema exactly - 100% compatibility
+     * Supports both PostgreSQL and SQLite
      */
     public static function initialize(): void
     {
         $db = Database::getConnection();
+        $driver = Database::getDriver();
         
         try {
-            self::log('INFO', 'Starting database schema initialization...');
+            self::log('INFO', "Starting database schema initialization (driver: {$driver})...");
             
             // Start transaction
             $db->beginTransaction();
             
-            // Create ENUM type for TrafficLightFeedback
-            self::createEnumType($db);
+            // Create ENUM type for TrafficLightFeedback (PostgreSQL only)
+            if (Database::isPostgreSQL()) {
+                self::createEnumType($db);
+            }
             
             // Create tables in order (respecting foreign key dependencies)
             self::createUserTable($db);
@@ -50,7 +54,7 @@ class DatabaseSchema
     }
     
     /**
-     * Create TrafficLightFeedback ENUM type
+     * Create TrafficLightFeedback ENUM type (PostgreSQL only)
      */
     private static function createEnumType(PDO $db): void
     {
@@ -67,44 +71,98 @@ class DatabaseSchema
     }
     
     /**
+     * Get CUID default expression for the current database driver
+     */
+    private static function getCuidDefault(): string
+    {
+        if (Database::isPostgreSQL()) {
+            return "DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24))";
+        } else {
+            // SQLite - use hex of random blob
+            return "DEFAULT ('c' || substr(lower(hex(randomblob(12))), 1, 24))";
+        }
+    }
+    
+    /**
+     * Get array field type for the current database driver
+     */
+    private static function getArrayType(): string
+    {
+        if (Database::isPostgreSQL()) {
+            return "TEXT[]";
+        } else {
+            // SQLite - use TEXT (will store JSON)
+            return "TEXT";
+        }
+    }
+    
+    /**
+     * Get feedback field definition for the current database driver
+     */
+    private static function getFeedbackField(): string
+    {
+        if (Database::isPostgreSQL()) {
+            return 'feedback "TrafficLightFeedback" DEFAULT \'GREEN\' NOT NULL';
+        } else {
+            // SQLite - use TEXT with CHECK constraint
+            return "feedback TEXT DEFAULT 'GREEN' NOT NULL CHECK (feedback IN ('GREEN', 'YELLOW', 'RED'))";
+        }
+    }
+    
+    /**
+     * Add unique constraint (PostgreSQL uses DO blocks, SQLite uses CREATE UNIQUE INDEX)
+     */
+    private static function addUniqueConstraint(PDO $db, string $table, string $column, string $constraintName): void
+    {
+        if (Database::isPostgreSQL()) {
+            $sql = <<<SQL
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint 
+                    WHERE conname = '{$constraintName}'
+                ) THEN
+                    ALTER TABLE "{$table}" ADD CONSTRAINT "{$constraintName}" UNIQUE ({$column});
+                END IF;
+            END$$;
+            SQL;
+            $db->exec($sql);
+        } else {
+            // SQLite - CREATE UNIQUE INDEX IF NOT EXISTS
+            $sql = "CREATE UNIQUE INDEX IF NOT EXISTS \"{$constraintName}\" ON \"{$table}\" ({$column})";
+            $db->exec($sql);
+        }
+    }
+    
+    /**
      * Create User table
      */
     private static function createUserTable(PDO $db): void
     {
+        $cuidDefault = self::getCuidDefault();
+        $arrayType = self::getArrayType();
+        $arrayDefault = Database::isPostgreSQL() ? "'{}'" : "'{}'";
+        
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "User" (
-            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
+            id TEXT PRIMARY KEY {$cuidDefault},
             username TEXT UNIQUE NOT NULL,
             displayname TEXT NOT NULL,
             permission INTEGER DEFAULT 0 NOT NULL,
             password TEXT,
-            "group" TEXT[] DEFAULT '{}',
-            needs TEXT[] DEFAULT '{}',
-            competence TEXT[] DEFAULT '{}',
-            courses TEXT[] NOT NULL DEFAULT '{}',
+            "group" {$arrayType} DEFAULT {$arrayDefault},
+            needs {$arrayType} DEFAULT {$arrayDefault},
+            competence {$arrayType} DEFAULT {$arrayDefault},
+            courses {$arrayType} NOT NULL DEFAULT {$arrayDefault},
             "pwdLastSet" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'User_id_key'
-            ) THEN
-                ALTER TABLE "User" ADD CONSTRAINT "User_id_key" UNIQUE (id);
-            END IF;
-            
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'User_username_key'
-            ) THEN
-                ALTER TABLE "User" ADD CONSTRAINT "User_username_key" UNIQUE (username);
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraints
+        self::addUniqueConstraint($db, 'User', 'id', 'User_id_key');
+        self::addUniqueConstraint($db, 'User', 'username', 'User_username_key');
     }
     
     /**
@@ -120,20 +178,12 @@ class DatabaseSchema
             CONSTRAINT "Session_userID_fkey" FOREIGN KEY ("userID") 
                 REFERENCES "User"(id) ON DELETE CASCADE
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'Session_id_key'
-            ) THEN
-                ALTER TABLE "Session" ADD CONSTRAINT "Session_id_key" UNIQUE (id);
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraint
+        self::addUniqueConstraint($db, 'Session', 'id', 'Session_id_key');
     }
     
     /**
@@ -141,28 +191,22 @@ class DatabaseSchema
      */
     private static function createEventsTable(PDO $db): void
     {
+        $cuidDefault = self::getCuidDefault();
+        
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "Events" (
-            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
+            id TEXT PRIMARY KEY {$cuidDefault},
             type TEXT NOT NULL,
             "user" TEXT NOT NULL,
             cw INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'Events_id_key'
-            ) THEN
-                ALTER TABLE "Events" ADD CONSTRAINT "Events_id_key" UNIQUE (id);
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraint
+        self::addUniqueConstraint($db, 'Events', 'id', 'Events_id_key');
     }
     
     /**
@@ -170,34 +214,29 @@ class DatabaseSchema
      */
     private static function createAttendancesTable(PDO $db): void
     {
+        $cuidDefault = self::getCuidDefault();
+        $feedbackField = self::getFeedbackField();
+        
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "Attendances" (
-            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
+            id TEXT PRIMARY KEY {$cuidDefault},
             "userID" TEXT NOT NULL,
             "eventID" TEXT NOT NULL,
             cw INTEGER NOT NULL,
             "teacherNote" TEXT,
             "studentNote" TEXT,
             type TEXT,
-            feedback "TrafficLightFeedback" DEFAULT 'GREEN' NOT NULL,
+            {$feedbackField},
             "selfReflection" TEXT,
             attended BOOLEAN DEFAULT true NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'Attendances_id_key'
-            ) THEN
-                ALTER TABLE "Attendances" ADD CONSTRAINT "Attendances_id_key" UNIQUE (id);
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraint
+        self::addUniqueConstraint($db, 'Attendances', 'id', 'Attendances_id_key');
     }
     
     /**
@@ -205,28 +244,24 @@ class DatabaseSchema
      */
     private static function createStudyTimeDataTable(PDO $db): void
     {
+        $cuidDefault = self::getCuidDefault();
+        $arrayType = self::getArrayType();
+        $arrayDefault = Database::isPostgreSQL() ? "'{}'" : "'{}'";
+        
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "StudyTimeData" (
-            id TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
+            id TEXT PRIMARY KEY {$cuidDefault},
             "userID" TEXT NOT NULL,
-            needs TEXT[] DEFAULT '{}',
+            needs {$arrayType} DEFAULT {$arrayDefault},
             cw INTEGER NOT NULL,
             year INTEGER NOT NULL
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'StudyTimeData_id_key'
-            ) THEN
-                ALTER TABLE "StudyTimeData" ADD CONSTRAINT "StudyTimeData_id_key" UNIQUE (id);
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraint
+        self::addUniqueConstraint($db, 'StudyTimeData', 'id', 'StudyTimeData_id_key');
     }
     
     /**
@@ -234,25 +269,19 @@ class DatabaseSchema
      */
     private static function createClosedStudyTimesTable(PDO $db): void
     {
+        $cuidDefault = self::getCuidDefault();
+        
         $sql = <<<SQL
         CREATE TABLE IF NOT EXISTS "ClosedStudyTimes" (
-            "lessonID" TEXT PRIMARY KEY DEFAULT ('c' || substr(md5(random()::text || clock_timestamp()::text), 1, 24)),
+            "lessonID" TEXT PRIMARY KEY {$cuidDefault},
             "courseID" TEXT NOT NULL
         );
-        
-        -- Create unique constraint if not exists
-        DO $$
-        BEGIN
-            IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint 
-                WHERE conname = 'ClosedStudyTimes_lessonID_key'
-            ) THEN
-                ALTER TABLE "ClosedStudyTimes" ADD CONSTRAINT "ClosedStudyTimes_lessonID_key" UNIQUE ("lessonID");
-            END IF;
-        END$$;
         SQL;
         
         $db->exec($sql);
+        
+        // Add unique constraint
+        self::addUniqueConstraint($db, 'ClosedStudyTimes', '"lessonID"', 'ClosedStudyTimes_lessonID_key');
     }
     
     /**

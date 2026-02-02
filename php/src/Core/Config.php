@@ -62,17 +62,46 @@ class Config
 
     private static function applyEnvOverrides(): void
     {
+        // Application settings
         if (getenv('MAINTENANCE') !== false) {
             self::$config['MAINTENANCE'] = getenv('MAINTENANCE') === 'true';
         }
         if (getenv('SCHOOL_NAME') !== false) {
             self::$config['SCHOOL_NAME'] = getenv('SCHOOL_NAME');
         }
+        
+        // Default login credentials
         if (getenv('DEFAULT_LOGIN_USERNAME') !== false) {
             self::$config['DEFAULT_LOGIN']['USERNAME'] = getenv('DEFAULT_LOGIN_USERNAME');
         }
         if (getenv('DEFAULT_LOGIN_PASSWORD') !== false) {
             self::$config['DEFAULT_LOGIN']['PASSWORD'] = getenv('DEFAULT_LOGIN_PASSWORD');
+        }
+        
+        // LDAP configuration
+        if (getenv('LDAP_ENABLE') !== false) {
+            self::$config['LDAP']['ENABLE'] = getenv('LDAP_ENABLE') === 'true';
+        }
+        if (getenv('LDAP_URI') !== false) {
+            self::$config['LDAP']['URI'] = getenv('LDAP_URI');
+        }
+        if (getenv('LDAP_TLS_REJECT_UNAUTHORIZED') !== false) {
+            self::$config['LDAP']['TLS_REJECT_UNAUTHORIZED'] = getenv('LDAP_TLS_REJECT_UNAUTHORIZED') === 'true';
+        }
+        if (getenv('LDAP_BIND_DN') !== false) {
+            self::$config['LDAP']['BIND_CREDENTIALS']['DN'] = getenv('LDAP_BIND_DN');
+        }
+        if (getenv('LDAP_BIND_PASSWORD') !== false) {
+            self::$config['LDAP']['BIND_CREDENTIALS']['PASSWORD'] = getenv('LDAP_BIND_PASSWORD');
+        }
+        if (getenv('LDAP_SEARCH_BASE') !== false) {
+            self::$config['LDAP']['SEARCH_BASE'] = getenv('LDAP_SEARCH_BASE');
+        }
+        if (getenv('LDAP_USER_SEARCH_FILTER') !== false) {
+            self::$config['LDAP']['USER_SEARCH_FILTER'] = getenv('LDAP_USER_SEARCH_FILTER');
+        }
+        if (getenv('LDAP_PASSWORD_RESET_URL') !== false) {
+            self::$config['LDAP']['PASSWORD_RESET_URL'] = getenv('LDAP_PASSWORD_RESET_URL');
         }
     }
 

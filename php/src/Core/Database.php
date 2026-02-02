@@ -8,6 +8,7 @@ use PDOException;
 class Database
 {
     private static ?PDO $connection = null;
+    private static ?string $driver = null;
 
     public static function connect(): void
     {
@@ -16,10 +17,17 @@ class Database
         }
 
         $dbUrl = getenv('POSTGRES_URL');
-        if (!$dbUrl) {
-            throw new \Exception('POSTGRES_URL environment variable not set');
+        
+        // Try PostgreSQL first, fallback to SQLite
+        if ($dbUrl && $dbUrl !== 'false' && $dbUrl !== '') {
+            self::connectPostgreSQL($dbUrl);
+        } else {
+            self::connectSQLite();
         }
+    }
 
+    private static function connectPostgreSQL(string $dbUrl): void
+    {
         // Parse PostgreSQL URL: postgres://user:pass@host:port/dbname
         $parts = parse_url($dbUrl);
         $host = $parts['host'] ?? 'localhost';
@@ -36,8 +44,40 @@ class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false
             ]);
+            self::$driver = 'pgsql';
+            error_log('Connected to PostgreSQL database');
         } catch (PDOException $e) {
-            throw new \Exception('Database connection failed: ' . $e->getMessage());
+            error_log('PostgreSQL connection failed: ' . $e->getMessage() . ' - Falling back to SQLite');
+            self::connectSQLite();
+        }
+    }
+
+    private static function connectSQLite(): void
+    {
+        $dataDir = dirname(__DIR__, 2) . '/data';
+        if (!is_dir($dataDir)) {
+            if (!mkdir($dataDir, 0755, true)) {
+                throw new \Exception('Failed to create data directory');
+            }
+        }
+
+        $dbPath = $dataDir . '/database.sqlite';
+        $dsn = "sqlite:{$dbPath}";
+
+        try {
+            self::$connection = new PDO($dsn, null, null, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]);
+            self::$driver = 'sqlite';
+            
+            // Enable foreign keys for SQLite
+            self::$connection->exec('PRAGMA foreign_keys = ON');
+            
+            error_log('Connected to SQLite database: ' . $dbPath);
+        } catch (PDOException $e) {
+            throw new \Exception('SQLite connection failed: ' . $e->getMessage());
         }
     }
 
@@ -47,6 +87,24 @@ class Database
             self::connect();
         }
         return self::$connection;
+    }
+
+    public static function getDriver(): string
+    {
+        if (self::$driver === null) {
+            self::connect();
+        }
+        return self::$driver ?? 'unknown';
+    }
+
+    public static function isPostgreSQL(): bool
+    {
+        return self::getDriver() === 'pgsql';
+    }
+
+    public static function isSQLite(): bool
+    {
+        return self::getDriver() === 'sqlite';
     }
 
     public static function query(string $sql, array $params = []): \PDOStatement
