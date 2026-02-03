@@ -25,7 +25,7 @@
     "dayjs": "1.11.19",
     "dotenv": "17.2.3",
     "eslint": "9.39.2",
-    "eslint-config-next": "15.5.11",
+    "eslint-config-next": "16.1.6",
     "ldapts": "8.1.5",
     "next": "15.5.10",
     "papaparse": "5.5.3",
