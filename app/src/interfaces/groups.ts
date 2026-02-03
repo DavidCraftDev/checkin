@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "../modules/db";
 import { AttendancePerUserPerEvent } from "./events";
 
 export interface GroupMember {

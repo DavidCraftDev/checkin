@@ -3,8 +3,7 @@
 import dayjs from "dayjs";
 import isoweek from "dayjs/plugin/isoWeek";
 import { getSessionUser } from "./auth/cookieManager";
-import db from "./db";
-import { Events, User } from "@prisma/client";
+import db, { Events, User } from "./db";
 
 dayjs.extend(isoweek);
 

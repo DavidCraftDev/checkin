@@ -3,8 +3,8 @@
 import TeacherNote from "./teacherNote.component";
 import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
-import { User } from "@prisma/client";
 import { DeleteEventButton, RemoveUserButton, TrafficLightSelect } from "./forms";
+import { User } from "@/app/src/modules/db";
 
 interface EventTableProps {
     attendances: AttendancePerEventPerUser[],

@@ -1,4 +1,4 @@
-import { Attendances, Events, User } from "@prisma/client";
+import { Attendances, Events, User } from "../modules/db"
 
 export interface AttendancePerUserPerEvent {
     attendance: Attendances,

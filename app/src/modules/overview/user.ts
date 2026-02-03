@@ -1,13 +1,12 @@
 "use server";
 
 import { getSessionUser } from "../auth/cookieManager";
-import db from "../db";
+import db, { Attendances, StudyTimeData } from "../db";
 import { getUserPerID } from "../userUtilities";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { Attendances, StudyTimeData } from "@prisma/client";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);

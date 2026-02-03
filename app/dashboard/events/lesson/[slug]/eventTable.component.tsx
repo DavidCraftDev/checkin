@@ -2,8 +2,8 @@
 
 import TeacherNote from "./teacherNote.component";
 import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
-import { User } from "@prisma/client";
 import { StudentAttendButton } from "./forms";
+import { User } from "@/app/src/modules/db";
 
 interface EventTableProps {
     attendances: AttendancePerEventPerUser[],

@@ -4,19 +4,19 @@ import React, { useCallback, useEffect, useRef, type JSX } from 'react';
 import QrScanner from 'qr-scanner';
 import { submitHandler } from './submitHandler';
 import { toast } from 'sonner';
-import { User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { User } from '@/app/src/modules/db';
 
 let lastResult: string
 
-function QRScannerComponent(props: {eventID: string}): JSX.Element {
+function QRScannerComponent(props: { eventID: string }): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
   const successAudioRef = useRef<HTMLAudioElement>(null);
   const errorAudioRef = useRef<HTMLAudioElement>(null);
   const router = useRouter()
 
   const checkCamera = async () => {
-    if(!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
+    if (!(await QrScanner.hasCamera())) router.push("/dashboard/events/lesson/" + props.eventID)
   }
 
   useEffect(() => {

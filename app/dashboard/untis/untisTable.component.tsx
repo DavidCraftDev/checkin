@@ -1,11 +1,11 @@
 "use client";
 
 import { LessonUnit } from "@/app/src/modules/webuntis/webuntis.types";
-import { User } from "@prisma/client";
 import React, { useState } from "react";
 import { LockButtonComponent } from "./lockButton.component";
 import { Timegrid } from "webuntis";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { User } from "@/app/src/modules/db";
 
 interface UntisTableProps {
     timetable: Record<string, Record<string, LessonUnit[]>>;

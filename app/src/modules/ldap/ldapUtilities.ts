@@ -2,9 +2,8 @@
 
 import { Entry } from 'ldapts';
 import courses from '../data/courses';
-import db from '../db';
+import db, { User } from '../db';
 import LDAP from './ldap';
-import { User } from '@prisma/client';
 import dayjs from 'dayjs';
 import { config_data } from '../data/config';
 import logger from '../logger';
@@ -137,7 +136,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
                     if (courses[splitedName[1].toUpperCase()]) memberData.add(courses[splitedName[1].toUpperCase()] as string)
                 }
                 const course = data[0].replace("CN=", "").replace("cn=", "")
-                if(course.startsWith("EF") || course.startsWith("Q1") || course.startsWith("Q2")) {
+                if (course.startsWith("EF") || course.startsWith("Q1") || course.startsWith("Q2")) {
                     coursesArray.push(course);
                 }
             }

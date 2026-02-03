@@ -2,11 +2,10 @@
 
 import { disabledType, functionResult } from "@/app/src/interfaces/utilties";
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
+import db, { Attendances } from "@/app/src/modules/db";
 import { createStudentNote } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
 import { createUserStudyTimeNote, saveStudyTimeType } from "@/app/src/modules/studytimeUtilities";
-import { Attendances } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function setStudentNote(studentNote: string, attendance: Attendances): Promise<functionResult> {

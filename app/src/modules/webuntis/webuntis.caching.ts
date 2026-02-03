@@ -4,8 +4,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import WebUntisService from "./webuntis.service";
 import logger from "../logger";
-import db from "../db";
-import { User } from "@prisma/client";
+import db, { User } from "../db";
 import { config_data } from "../data/config";
 import { isStudyTimeClosed } from "./webuntis.close";
 

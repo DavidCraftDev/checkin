@@ -1,9 +1,9 @@
 import "server-only";
 
-import { Events, User } from "@prisma/client";
 import dayjs from "dayjs";
 import { Columns, SheetData } from "write-excel-file";
 import { getAttendancesPerEvent } from "../../eventUtilities";
+import { Events, User } from "../../db";
 
 async function getEventXLSX(user: User, event: Events, cw: number, year: number) {
     let sheetData: SheetData = new Array()

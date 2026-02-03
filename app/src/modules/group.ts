@@ -1,8 +1,7 @@
 "use server";
 
-import { User } from "@prisma/client";
 import { getSessionUser } from "./auth/cookieManager";
-import db from "./db";
+import db, { User } from "./db";
 
 export async function getGroupUsers(groupID: string): Promise<User[]> {
     // Get session user & check if user is allowed to get this data

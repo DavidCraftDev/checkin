@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import clsx from "clsx";
 import { submitEditHandler } from "./submitEditHandler";
 import { FormEvent } from "react";
-import { User } from "@prisma/client";
+import { User } from "@/app/src/modules/db";
 
 interface UserEditFormProps {
     userData: User,

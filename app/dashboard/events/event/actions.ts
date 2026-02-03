@@ -2,11 +2,10 @@
 
 import { functionResult } from "@/app/src/interfaces/utilties";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import db from "@/app/src/modules/db";
+import db, { Attendances, Events, User } from "@/app/src/modules/db";
 import { checkINHandler, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
 import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
-import { Attendances, Events, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { User } from "@prisma/client";
 import { toast } from "sonner";
 import { createLessonHandler, createStudyTimeHandler } from "./actions";
+import { User } from "@/app/src/modules/db";
 
 function CreateEventForm(props: { user: User }) {
     async function createStudyTime(formData: FormData): Promise<void> {

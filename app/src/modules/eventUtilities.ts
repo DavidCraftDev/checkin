@@ -1,7 +1,6 @@
 import "server-only";
 
-import { Attendances, Events, User } from "@prisma/client";
-import db from "./db";
+import db, { Attendances, Events, User } from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
 import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
 import dayjs from "dayjs";

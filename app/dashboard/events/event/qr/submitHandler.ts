@@ -2,10 +2,9 @@
 
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
-import { User } from "@prisma/client";
 import dayjs from "dayjs";
 import { saveSelectedStudyTimeFeedback } from "../actions";
-import db from "@/app/src/modules/db";
+import db, { User } from "@/app/src/modules/db";
 
 export async function checkinUserHandler(userID: string, eventID: string) {
     const sessionUser: User = await getSessionUser(1);
