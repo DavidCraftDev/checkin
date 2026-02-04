@@ -6,8 +6,8 @@ import { getAttendancesPerEvent } from "@/app/src/modules/eventUtilities";
 import { Events, User } from "@/app/src/modules/db";
 
 async function getEventXLSX(user: User, event: Events, cw: number, year: number) {
-    let sheetData: SheetData = new Array()
-    let columnData: Columns = []
+    const sheetData: SheetData = []
+    const columnData: Columns = []
 
     const attendances = await getAttendancesPerEvent(event.id)
     sheetData.push([{
