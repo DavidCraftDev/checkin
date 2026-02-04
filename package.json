@@ -26,7 +26,7 @@
     "dotenv": "17.2.3",
     "eslint": "9.39.2",
     "eslint-config-next": "16.1.6",
-    "ldapts": "8.1.5",
+    "ldapts": "8.1.6",
     "next": "16.1.6",
     "papaparse": "5.5.3",
     "pg": "8.18.0",
