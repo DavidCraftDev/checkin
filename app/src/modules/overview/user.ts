@@ -1,8 +1,8 @@
 "use server";
 
-import { getSessionUser } from "../auth/cookieManager";
-import db, { Attendances, StudyTimeData } from "../db";
-import { getUserPerID } from "../userUtilities";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import db, { Attendances, StudyTimeData } from "@/app/src/modules/db";
+import { getUserPerID } from "@/app/src/modules/userUtilities";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";

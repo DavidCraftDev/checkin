@@ -1,5 +1,6 @@
-import { config_data } from "../src/modules/data/config";
-import db from "../src/modules/db";
+import { config_data } from "@/app/src/modules/data/config";
+import db from "@/app/src/modules/db";
+import packageJson from "@/package.json";
 
 export async function GET() {
     let dbConnected: boolean
@@ -14,8 +15,7 @@ export async function GET() {
     if (!dbConnected) {
         status = "error"
     }
-    const packageJson = require("../../package.json")
-    let version = packageJson.version
+    const version = packageJson.version
     const data = {
         version: version,
         maintenance: config_data.MAINTENANCE,

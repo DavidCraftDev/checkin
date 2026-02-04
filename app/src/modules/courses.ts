@@ -1,9 +1,9 @@
 "use server";
 
-import { getSessionUser } from "./auth/cookieManager";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import db, { Attendances, User } from "./db";
 import { getCurrentWeek, checkDate } from "./date";
-import { getCourseTypeFromName } from "./data/courses";
+import { getCourseTypeFromName } from "@/app/src/modules/data/courses";
 import { TeacherPerEvent } from "./eventUtilities";
 import { getUserPerID } from "./userUtilities";
 

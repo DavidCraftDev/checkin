@@ -1,5 +1,5 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
-import { readData } from "../../handler";
+import { readData } from "@/app/dashboard/modules/sponsorenlauf/handler";
 import { NextResponse } from "next/server";
 
 export async function GET() {

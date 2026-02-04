@@ -1,7 +1,7 @@
 /** @file Provides functions to get and manage locked study times from our database */
 
 import "server-only";
-import db from "../db";
+import db from "@/app/src/modules/db";
 import { CloseStudyTimeResult } from "./webuntis.types";
 import { revalidateTag } from "next/cache";
 

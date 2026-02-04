@@ -1,6 +1,6 @@
-import { PrismaClient } from "../app/src/modules/db";
-import { config_data } from "../app/src/modules/data/config";
-import logger from "../app/src/modules/logger";
+import { PrismaClient } from "@/app/src/modules/db";
+import { config_data } from "@/app/src/modules/data/config";
+import logger from "@/app/src/modules/logger";
 import { hash } from "bcryptjs";
 
 export async function seedDefaultData(prisma: PrismaClient) {

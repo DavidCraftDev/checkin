@@ -1,4 +1,4 @@
-import { User } from "../modules/db";
+import { User } from "@/app/src/modules/db";
 import { AttendancePerUserPerEvent } from "./events";
 
 export interface GroupMember {

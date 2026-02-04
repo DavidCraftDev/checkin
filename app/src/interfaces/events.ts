@@ -1,4 +1,4 @@
-import { Attendances, Events, User } from "../modules/db"
+import { Attendances, Events, User } from "@/app/src/modules/db"
 
 export interface AttendancePerUserPerEvent {
     attendance: Attendances,

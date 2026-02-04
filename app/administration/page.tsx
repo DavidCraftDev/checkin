@@ -1,8 +1,8 @@
 "use server";
 
-import { config_data } from "../src/modules/data/config";
-import { DefaultPasswordForm, DefaultUsernameForm, DeleteAllDataForm, DeleteAllSessionsForm, MaintanceModeForm, SchoolNameForm } from "./general/forms";
-import { GeneralNotifications } from "./general/notifications";
+import { config_data } from "@/app/src/modules/data/config";
+import { DefaultPasswordForm, DefaultUsernameForm, DeleteAllDataForm, DeleteAllSessionsForm, MaintanceModeForm, SchoolNameForm } from "@/app/administration/general/forms";
+import { GeneralNotifications } from "@/app/administration/general/notifications";
 
 async function GeneralPage() {
     return (

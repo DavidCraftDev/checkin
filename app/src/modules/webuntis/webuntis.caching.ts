@@ -3,9 +3,9 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import WebUntisService from "./webuntis.service";
-import logger from "../logger";
-import db, { User } from "../db";
-import { config_data } from "../data/config";
+import logger from "@/app/src/modules/logger";
+import db, { User } from "@/app/src/modules/db";
+import { config_data } from "@/app/src/modules/data/config";
 import { isStudyTimeClosed } from "./webuntis.close";
 
 /**

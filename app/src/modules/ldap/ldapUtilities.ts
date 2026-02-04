@@ -1,13 +1,13 @@
 "use server";
 
 import { Entry } from 'ldapts';
-import courses from '../data/courses';
-import db, { User } from '../db';
+import courses from '@/app/src/modules/data/courses';
+import db, { User } from '@/app/src/modules/db';
 import LDAP from './ldap';
 import dayjs from 'dayjs';
-import { config_data } from '../data/config';
-import logger from '../logger';
-import { existsTeacherCompetenceFile, getTeacherCompetenceFile } from '../data/competences';
+import { config_data } from '@/app/src/modules/data/config';
+import logger from '@/app/src/modules/logger';
+import { existsTeacherCompetenceFile, getTeacherCompetenceFile } from '@/app/src/modules/data/competences';
 
 let client: LDAP
 

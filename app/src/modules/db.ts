@@ -1,8 +1,8 @@
-import { Prisma, PrismaClient } from '../../../generated/prisma/client';
+import { Prisma, PrismaClient } from '@/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import logger from './logger';
-import { config_data } from './data/config';
+import { config_data } from '@/app/src/modules/data/config';
 
 // Initialize PostgreSQL prisma client
 const connectionString = config_data.POSTGRES_URL;
@@ -49,6 +49,6 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Export types
 export type { PrismaClient, Prisma };
-export type { Attendances, Events, StudyTimeData, User, Session, ClosedStudyTimes } from '../../../generated/prisma/client';
+export type { Attendances, Events, StudyTimeData, User, Session, ClosedStudyTimes } from '@/generated/prisma/client';
 
 export default db;

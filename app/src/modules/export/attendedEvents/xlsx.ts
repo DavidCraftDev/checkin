@@ -1,9 +1,9 @@
 import "server-only";
 
-import { getAttendancesPerUser } from "../../eventUtilities";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
 import { Columns, SheetData } from "write-excel-file";
-import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
-import { User } from "../../db";
+import { getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { User } from "@/app/src/modules/db";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     const sheetData: SheetData = []

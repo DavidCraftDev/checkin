@@ -2,9 +2,9 @@
 
 import { existsSync, readFileSync } from "fs";
 import { Client, Entry } from "ldapts";
-import logger from "../logger"
+import logger from "@/app/src/modules/logger"
 import path from "path";
-import { config_data } from "../data/config";
+import { config_data } from "@/app/src/modules/data/config";
 
 class LDAP {
     public readonly client: Client;

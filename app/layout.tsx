@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { config_data } from "./src/modules/data/config";
+import { config_data } from "@/app/src/modules/data/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   if (config_data.MAINTENANCE) {
     return (
-      <html lang="en">
+      <html lang="de">
         <body className={inter.className}>
           <div className="flex items-center justify-center h-screen bg-gray-200">
             <div className="p-4 bg-white rounded-lg shadow-md">
@@ -33,7 +33,7 @@ export default function RootLayout({
     );
   }
   return (
-    <html lang="en">
+    <html lang="de">
       <body className={inter.className}>{children}</body>
     </html>
   );

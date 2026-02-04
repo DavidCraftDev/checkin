@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import isoweek from "dayjs/plugin/isoWeek";
-import { getSessionUser } from "./auth/cookieManager";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import db, { Events, User } from "./db";
 
 dayjs.extend(isoweek);

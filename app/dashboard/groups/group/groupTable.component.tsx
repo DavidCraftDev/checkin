@@ -1,5 +1,5 @@
 
-import TrafficLight from "../../events/attendedEvents/trafficLight";
+import TrafficLight from "@/app/dashboard/events/attendedEvents/trafficLight";
 import AttendedStudyTimes from "./attenedStudyTimes.component";
 import { GroupMember } from "@/app/src/interfaces/groups";
 

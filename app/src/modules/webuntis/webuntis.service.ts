@@ -1,6 +1,6 @@
 import "server-only";
 import { Teacher, Timegrid, WebAPITimetable, WebUntis, WebUntisElementType } from "webuntis";
-import logger from "../logger";
+import logger from "@/app/src/modules/logger";
 
 /**  Class to interact with Untis API and hold authentication state */
 export default class WebUntisService {

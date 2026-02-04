@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { FormEvent, useEffect, useState } from "react";
 import getPasswordResetURL from "./passwordReset";
 import React from "react";
-import { login } from "../src/modules/auth/loginManager";
+import { login } from "@/app/src/modules/auth/loginManager";
 
 function LoginPage() {
   const router = useRouter();

@@ -1,15 +1,15 @@
 "use server";
 
-import LDAP from "../ldap/ldap";
-import { getUserPerUsername } from "../userUtilities";
-import { getAllUsers } from "../ldap/ldapUtilities";
-import logger from "../logger";
+import LDAP from "@/app/src/modules/ldap/ldap";
+import { getUserPerUsername } from "@/app/src/modules/userUtilities";
+import { getAllUsers } from "@/app/src/modules/ldap/ldapUtilities";
+import logger from "@/app/src/modules/logger";
 import { createSession, generateSessionToken } from "./sessionManager";
 import { setSessionTokenCookie } from "./cookieManager";
 import { compare } from "bcryptjs";
-import RateLimit from "../rateLimit";
+import RateLimit from "@/app/src/modules/rateLimit";
 import { headers } from "next/headers";
-import { config_data } from "../data/config";
+import { config_data } from "@/app/src/modules/data/config";
 
 const rateLimit = new RateLimit();
 

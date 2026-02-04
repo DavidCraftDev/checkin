@@ -2,9 +2,9 @@
 
 import "server-only";
 import { LessonUnit, TimetableMapping } from "./webuntis.types";
-import courses from "../data/courses";
+import courses from "@/app/src/modules/data/courses";
 import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable, lastTimetableRefresh } from "./webuntis.caching";
-import { config_data } from "../data/config";
+import { config_data } from "@/app/src/modules/data/config";
 import { WebAPITimetable } from "webuntis";
 
 /**

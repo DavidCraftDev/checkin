@@ -1,10 +1,10 @@
 import path from "path";
 import fs from "fs";
-import { functionResult } from "../../interfaces/utilties";
-import logger from "../logger";
+import { functionResult } from "@/app/src/interfaces/utilties";
+import logger from "@/app/src/modules/logger";
 import { config_data } from "./config";
-import { getAllUsers } from "../ldap/ldapUtilities";
-import db from "../db";
+import { getAllUsers } from "@/app/src/modules/ldap/ldapUtilities";
+import db from "@/app/src/modules/db";
 
 export async function saveTeacherCompetenceFile(file: File): Promise<functionResult> {
     if (!file) return { success: false, error: "Keine Datei hochgeladen" };

@@ -1,8 +1,8 @@
 "use server";
 
-import { getSessionUser } from "../auth/cookieManager";
-import { Attendances, StudyTimeData } from "../db";
-import { getGroupUsers } from "../group";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { Attendances, StudyTimeData } from "@/app/src/modules/db";
+import { getGroupUsers } from "@/app/src/modules/group";
 import { Categories, getUserOverviewData, mergeUserDataPerCW, OverviewUserDataPerCW, SortedData, sortUserOverviewDataIntoCaterogies } from "./user";
 
 type UserAttendances = { [key: string]: Attendances[] };

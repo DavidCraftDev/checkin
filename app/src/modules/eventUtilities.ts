@@ -2,12 +2,12 @@ import "server-only";
 
 import db, { Attendances, Events, User } from "./db";
 import { existUserPerID, getUserPerID } from "./userUtilities";
-import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "../interfaces/events";
+import { AttendancePerEventPerUser, AttendancePerUserPerEvent, CreatedEventPerUser } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { getSessionUser } from "./auth/cookieManager";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { redirect } from "next/navigation";
 import logger from "./logger";
 
