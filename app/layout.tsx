@@ -33,7 +33,7 @@ export default function RootLayout({
     );
   }
   return (
-    <html lang="en">
+    <html lang="de">
       <body className={inter.className}>{children}</body>
     </html>
   );
