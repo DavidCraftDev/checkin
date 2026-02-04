@@ -7,7 +7,6 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { toast } from "sonner";
 import SearchBar from "./search.component";
 import { SubmitButton } from "@/app/src/ui/submitButton";
-import TrafficLight from "@/app/dashboard/events/attendedEvents/trafficLight";
 import { Attendances, Events, User } from "@/app/src/modules/db";
 
 dayjs.extend(isoWeek);
