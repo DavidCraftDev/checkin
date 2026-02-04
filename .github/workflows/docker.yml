@@ -43,7 +43,7 @@ jobs:
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
-        run: echo "pr=$(echo pr-${{ steps.sanitized_ref.outputs.ref_name_sanitized }})" >> $GITHUB_OUTPUT
+        run: echo "pr=pr-${{ github.event.number }}" >> $GITHUB_OUTPUT
       - name: Build (PR)
         uses: docker/build-push-action@v6
         if: ${{ github.event_name == 'pull_request' }}
