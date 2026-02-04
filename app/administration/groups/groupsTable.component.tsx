@@ -1,4 +1,3 @@
-"use server";
 
 import { Groups } from "@/app/src/interfaces/groups";
 

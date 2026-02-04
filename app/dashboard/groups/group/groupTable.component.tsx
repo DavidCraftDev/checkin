@@ -1,4 +1,3 @@
-"use server";
 
 import TrafficLight from "../../events/attendedEvents/trafficLight";
 import AttendedStudyTimes from "./attenedStudyTimes.component";

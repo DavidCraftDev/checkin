@@ -57,7 +57,7 @@ export async function closeStudyTime(lessonID: string, courseID: string): Promis
     });
 
     // Revalidate cache
-    revalidateTag("lessonCloseStatus");
+    revalidateTag("lessonCloseStatus", "max");
 
     if (result.courseID === courseID && result.lessonID === lessonID) {
         return 'SUCCESS';
