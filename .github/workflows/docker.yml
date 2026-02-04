@@ -8,6 +8,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Sanitize ref_name
+        id: sanitized_ref
+        run: echo "ref_name_sanitized=$(echo "${{ github.ref_name }}" | tr '/' '-')" >> $GITHUB_OUTPUT
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -36,11 +39,11 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64 #,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4 #,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
+          tags: ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ steps.sanitized_ref.outputs.ref_name_sanitized }}
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
-        run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
+        run: echo "pr=$(echo pr-${{ steps.sanitized_ref.outputs.ref_name_sanitized }})" >> $GITHUB_OUTPUT
       - name: Build (PR)
         uses: docker/build-push-action@v6
         if: ${{ github.event_name == 'pull_request' }}
