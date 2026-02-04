@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import path from "path"
 import fs from "fs"
-import logger from "../logger"
+import logger from "@/app/src/modules/logger"
 import crypto from "crypto"
 
 interface Config {

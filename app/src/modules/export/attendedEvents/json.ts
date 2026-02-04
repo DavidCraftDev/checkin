@@ -1,8 +1,8 @@
 import "server-only";
 
-import { getAttendancesPerUser } from "../../eventUtilities"
-import { getSavedNeededStudyTimes } from "../../studytimeUtilities";
-import { User } from "../../db";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities"
+import { getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
+import { User } from "@/app/src/modules/db";
 
 async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number) {
     const attendances = await getAttendancesPerUser(userData.id, cw, year)

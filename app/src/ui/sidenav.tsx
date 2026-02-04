@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import NavLinks from '@/app/src/ui/nav-links';
 import { ArrowLeftStartOnRectangleIcon } from '@heroicons/react/24/outline';
-import { config_data } from '../modules/data/config';
-import { User } from '../modules/db';
+import { config_data } from '@/app/src/modules/data/config';
+import { User } from '@/app/src/modules/db';
 
 interface SideNavProps {
   user: User;

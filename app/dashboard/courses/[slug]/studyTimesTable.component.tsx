@@ -5,7 +5,7 @@ import { formatDate } from "@/app/src/modules/date";
 import { TeacherPerEvent } from "@/app/src/modules/eventUtilities";
 import { Suspense } from "react";
 import { use } from "react";
-import TrafficLight from "../../events/attendedEvents/trafficLight";
+import TrafficLight from "@/app/dashboard/events/attendedEvents/trafficLight";
 import { User } from "@/app/src/modules/db";
 
 export default function StudyTimeTable({ students, studyTimesPromise }: { students: User[], studyTimesPromise: Promise<{ studyTimes: CourseStudyTimes, teacherPerEvent: TeacherPerEvent }> }) {

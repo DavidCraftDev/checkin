@@ -1,6 +1,6 @@
 "use server";
 
-import { getSessionUser } from "./auth/cookieManager";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import db, { User } from "./db";
 
 export async function getGroupUsers(groupID: string): Promise<User[]> {

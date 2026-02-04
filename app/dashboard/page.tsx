@@ -1,13 +1,13 @@
-import { getSessionUser } from "../src/modules/auth/cookieManager";
-import { getAttendancesPerUser } from "../src/modules/eventUtilities";
-import MissingStudyTimes from "./dashboardComponents/missingStudyTimes.component";
-import CompletedStudyTimes from "./dashboardComponents/completedStudyTimes.component";
-import AttendancesWithoutType from "./dashboardComponents/attendancesWithoutType.component";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
+import MissingStudyTimes from "@/app/dashboard/dashboardComponents/missingStudyTimes.component";
+import CompletedStudyTimes from "@/app/dashboard/dashboardComponents/completedStudyTimes.component";
+import AttendancesWithoutType from "@/app/dashboard/dashboardComponents/attendancesWithoutType.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { Metadata } from "next";
-import { config_data } from "../src/modules/data/config";
-import { getRoundCountForUser } from "./modules/sponsorenlauf/handler";
+import { config_data } from "@/app/src/modules/data/config";
+import { getRoundCountForUser } from "@/app/dashboard/modules/sponsorenlauf/handler";
 
 dayjs.extend(isoWeek);
 

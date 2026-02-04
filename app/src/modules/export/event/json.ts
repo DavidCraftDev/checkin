@@ -1,7 +1,7 @@
 import "server-only";
 
-import { getAttendancesPerEvent } from "../../eventUtilities"
-import { Events, User } from "../../db";
+import { getAttendancesPerEvent } from "@/app/src/modules/eventUtilities"
+import { Events, User } from "@/app/src/modules/db";
 
 async function getEventDataJSON(event: Events, user: User) {
     const attendances = await getAttendancesPerEvent(event.id)

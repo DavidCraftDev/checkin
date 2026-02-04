@@ -7,7 +7,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { getSortedUserOverviewData } from "@/app/src/modules/overview/user";
-import { OverviewChart } from "../../forms";
+import { OverviewChart } from "@/app/dashboard/overview/forms";
 import UserOverviewTable from "./userOverviewTable.component";
 import { Metadata } from "next";
 

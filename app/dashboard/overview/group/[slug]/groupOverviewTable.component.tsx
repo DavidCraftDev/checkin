@@ -1,7 +1,7 @@
 "use client";
 
 import { SortedData } from "@/app/src/modules/overview/user";
-import { TableOverviewChart } from "../../forms";
+import { TableOverviewChart } from "@/app/dashboard/overview/forms";
 import { User } from "@/app/src/modules/db";
 
 function GroupOverviewTable(props: { data: { [key: string]: SortedData }, users: User[], startCW: number, startYear: number, endCW: number, endYear: number }) {

@@ -1,6 +1,6 @@
-import SideNav from "../src/ui/sidenav";
+import SideNav from "@/app/src/ui/sidenav";
 import { Toaster } from "sonner";
-import { getCurrentSession } from "../src/modules/auth/cookieManager";
+import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { redirect } from "next/navigation";
 
 async function Layout({ children }: { children: React.ReactNode }) {

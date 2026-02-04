@@ -1,7 +1,7 @@
 import "server-only";
 
 import { Columns, SheetData } from "write-excel-file";
-import { SortedData } from "../../../overview/user";
+import { SortedData } from "@/app/src/modules/overview/user";
 
 export async function getUserOverviewDataXLSX(userDisplayname: string, sortedData: SortedData, startCW: number, startYear: number, endCW: number, endYear: number) {
     // Initialize data

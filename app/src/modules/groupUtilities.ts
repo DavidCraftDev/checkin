@@ -2,7 +2,7 @@ import "server-only";
 
 import db, { User } from "./db";
 import { getAttendanceCountPerUser } from "./eventUtilities";
-import { GroupMember, Groups, GroupsWithUserData } from "../interfaces/groups";
+import { GroupMember, Groups, GroupsWithUserData } from "@/app/src/interfaces/groups";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";

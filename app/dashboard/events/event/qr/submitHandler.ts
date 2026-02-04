@@ -3,7 +3,7 @@
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { checkINHandler, getEventPerID } from "@/app/src/modules/eventUtilities";
 import dayjs from "dayjs";
-import { saveSelectedStudyTimeFeedback } from "../actions";
+import { saveSelectedStudyTimeFeedback } from "@/app/dashboard/events/event/actions";
 import db, { User } from "@/app/src/modules/db";
 
 export async function checkinUserHandler(userID: string, eventID: string) {

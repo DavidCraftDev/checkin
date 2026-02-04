@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 import Papa from "papaparse";
 import path from "path";
-import logger from "../logger";
+import logger from "@/app/src/modules/logger";
 
 const data: Record<string, string> = {
     "E5": "Englisch",

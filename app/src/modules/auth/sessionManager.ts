@@ -1,6 +1,6 @@
 import "server-only";
 
-import db, { Session, User } from "../db";
+import db, { Session, User } from "@/app/src/modules/db";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 

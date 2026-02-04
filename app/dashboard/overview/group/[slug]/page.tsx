@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { OverviewChart } from "../../forms";
+import { OverviewChart } from "@/app/dashboard/overview/forms";
 import { getGroupUsers } from "@/app/src/modules/group";
 import { getSortedGroupOverviewData } from "@/app/src/modules/overview/group";
 import GroupOverviewTable from "./groupOverviewTable.component";

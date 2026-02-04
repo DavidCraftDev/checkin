@@ -6,10 +6,10 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { disabledType } from "../interfaces/utilties";
+import { disabledType } from "@/app/src/interfaces/utilties";
 import { getUserPerID } from "./userUtilities";
 import { redirect } from "next/navigation";
-import { getSessionUser } from "./auth/cookieManager";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);

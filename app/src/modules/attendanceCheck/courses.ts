@@ -1,9 +1,9 @@
 "use server";
 
-import { checkDate, getCurrentWeek } from "../date";
-import db, { Events, User } from "../db";
-import { getSessionUser } from "../auth/cookieManager";
-import { getUserPerID } from "../userUtilities";
+import { checkDate, getCurrentWeek } from "@/app/src/modules/date";
+import db, { Events, User } from "@/app/src/modules/db";
+import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
+import { getUserPerID } from "@/app/src/modules/userUtilities";
 
 export async function getCreatedAttendanceChecks(courseID: string, calendarWeek: number = getCurrentWeek(), year: number = new Date().getFullYear()): Promise<Events[]> {
     // Check if user is allowed to get this data

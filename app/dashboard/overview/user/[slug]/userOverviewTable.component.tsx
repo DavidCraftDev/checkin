@@ -1,7 +1,7 @@
 "use client";
 
 import { Categories } from "@/app/src/modules/overview/user";
-import { TableOverviewChart } from "../../forms";
+import { TableOverviewChart } from "@/app/dashboard/overview/forms";
 
 function UserOverviewTable(props: { data: { [key: string]: Categories }, userID: string }) {
     return (
