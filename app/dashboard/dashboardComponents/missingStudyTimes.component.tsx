@@ -1,4 +1,3 @@
-"use server";
 
 function MissingStudyTimes(props: { missingStudyTimes: string[] }) {
     // Sort missing study times by name

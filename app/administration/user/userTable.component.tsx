@@ -1,4 +1,3 @@
-"use server";
 
 import { User } from "@/app/src/modules/db";
 

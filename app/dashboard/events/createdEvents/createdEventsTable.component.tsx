@@ -1,4 +1,3 @@
-"use server";
 
 import { CreatedEventPerUser } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";

@@ -1,4 +1,3 @@
-"use server";
 
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 

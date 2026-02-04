@@ -1,4 +1,3 @@
-"use server";
 
 import TeacherNote from "./teacherNote.component";
 import { AttendancePerEventPerUser } from "@/app/src/interfaces/events";
