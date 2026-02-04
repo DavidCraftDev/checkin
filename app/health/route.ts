@@ -15,7 +15,7 @@ export async function GET() {
         status = "error"
     }
     const packageJson = require("@/package.json")
-    let version = packageJson.version
+    const version = packageJson.version
     const data = {
         version: version,
         maintenance: config_data.MAINTENANCE,
