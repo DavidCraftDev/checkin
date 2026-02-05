@@ -87,7 +87,7 @@ const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validat
 
   return (
     <div className="w-full relative">
-      <video ref={videoRef} className="block w-full rounded-lg"></video>
+      <video ref={videoRef} className="block w-full max-h-[70vh] object-cover rounded-lg"></video>
       {cameras.length > 1 && (
         <div className="absolute top-2 right-2">
           <select
