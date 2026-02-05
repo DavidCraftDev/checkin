@@ -80,6 +80,7 @@ const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validat
         <div className="text-center">
           <p className="text-red-500 font-medium text-lg mb-2">Keine Kamera gefunden</p>
           <p className="text-gray-500 dark:text-gray-400 text-sm">Bitte gewähren Sie Zugriff auf die Kamera oder schließen Sie eine Kamera an.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Lade anschließend die Seite neu.</p>
         </div>
       </div>
     );
