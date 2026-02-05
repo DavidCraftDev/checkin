@@ -54,7 +54,7 @@ const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validat
 
   return (
     <div className="w-full">
-      <video ref={videoRef}></video>
+      <video ref={videoRef} className="block w-full rounded-lg"></video>
     </div>
   );
 };

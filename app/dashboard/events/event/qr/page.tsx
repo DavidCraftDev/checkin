@@ -1,7 +1,7 @@
 import { SearchParams } from "@/app/src/interfaces/searchParams";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getEventPerID } from "@/app/src/modules/eventUtilities";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
@@ -17,7 +17,7 @@ dayjs.extend(isLeapYear);
 async function QRScannerPage(props: { searchParams: Promise<SearchParams> }) {
     const searchParams = await props.searchParams;
     const user = await getSessionUser(1);
-    if (!searchParams.id) redirect("/dashboard/");
+    if (!searchParams.id) notFound();
     const event = await getEventPerID(searchParams.id);
     if (!event || !event.id || event.user !== user.id) redirect("/dashboard/");
     if (event.cw !== dayjs().isoWeek() || dayjs(event.created_at).year() !== dayjs().year()) redirect("/dashboard/");
