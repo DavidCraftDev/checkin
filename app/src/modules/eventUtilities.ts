@@ -178,7 +178,7 @@ export async function eventExists(eventID: string) {
     return data > 0;
 }
 
-export async function checkINHandler(eventID: string, userID: string) {
+export async function checkINUser(eventID: string, userID: string) {
     if (!await existUserPerID(userID)) return "Schüler nicht gefunden"
     if (await attendanceExists(eventID, userID)) return "Schüler bereits hinzugefügt";
     await db.attendances.create({

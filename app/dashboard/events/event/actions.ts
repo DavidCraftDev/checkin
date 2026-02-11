@@ -3,7 +3,7 @@
 import { functionResult } from "@/app/src/interfaces/utilties";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import db, { Attendances, Events, User } from "@/app/src/modules/db";
-import { checkINHandler, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
+import { checkINUser, createTeacherNote, deleteEmptyEvent } from "@/app/src/modules/eventUtilities";
 import logger from "@/app/src/modules/logger";
 import { getUserPerUsername, searchUser } from "@/app/src/modules/userUtilities";
 import { revalidatePath } from "next/cache";
@@ -20,7 +20,7 @@ export async function handleUserCheckIN(username: string, event: Events): Promis
     if (!sessionUser || event.user !== sessionUser.id) redirect("/dashboard");
     const user = await getUserPerUsername(username);
     if (!user) return { success: false, error: "Schüler nicht gefunden" };
-    const data = await checkINHandler(event.id, user.id);
+    const data = await checkINUser(event.id, user.id);
     if (data && typeof data === "string") return { success: false, error: data };
     else if (data && typeof data === "object") return { success: true, data: user };
     return { success: false, error: "Unbekannter Fehler" };

@@ -7,7 +7,7 @@ async function Layout({ children }: { children: React.ReactNode }) {
   const { user } = await getCurrentSession();
   if (!user) redirect("/login");
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-white">
+    <div className="flex h-dvh flex-col md:flex-row md:overflow-hidden bg-white">
       <div className="w-full flex-none md:w-64">
         <SideNav user={user} administration={false} />
       </div>
