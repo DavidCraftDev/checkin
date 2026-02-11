@@ -59,7 +59,7 @@ export function CheckinForm(props: { event: Events }) {
             </div>
             <div className="flex">
                 <span className="w-fit m-1"><SubmitButton text="Hinzufügen" /></span>
-                <a className="btn m-1" href={`/dashboard/events/event/qr?id=${props.event.id}`}>QR-Scanner</a>
+                <a className="btn m-1" href={`/dashboard/events/event/${props.event.id}/qr`}>QR-Scanner</a>
             </div>
         </form>
     )

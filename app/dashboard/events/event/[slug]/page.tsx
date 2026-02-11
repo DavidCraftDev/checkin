@@ -1,7 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { getAttendancesPerEvent, getEventPerID } from "@/app/src/modules/eventUtilities";
-import { SearchParams } from "@/app/src/interfaces/searchParams";
 import EventTable from "./eventTable.component";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -14,11 +13,9 @@ dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
-async function EventPage(props: { searchParams: Promise<SearchParams> }) {
-    const searchParams = await props.searchParams;
+async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const user = await getSessionUser(1);
-    const eventID = searchParams.id;
-    if (!eventID) notFound();
+    const eventID = (await params).slug;
     const event = await getEventPerID(eventID);
     if (!event) notFound();
     if (event.user !== user.id) redirect("/dashboard/");

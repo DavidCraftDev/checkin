@@ -3,7 +3,7 @@ import StudentNote from "./studentNote.component";
 import { AttendancePerUserPerEvent } from "@/app/src/interfaces/events";
 import dayjs from "dayjs";
 import { SelfReflectionEmojiSelect, StudyTimeSelect } from "./forms";
-import TeacherNote from "@/app/dashboard/events/event/teacherNote.component";
+import TeacherNote from "@/app/dashboard/events/event/[slug]/teacherNote.component";
 import TrafficLight from "./trafficLight";
 
 interface AttendedEventTableProps {

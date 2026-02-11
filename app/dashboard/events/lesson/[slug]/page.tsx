@@ -19,7 +19,7 @@ async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const event = await getEventPerID(eventID);
     if (!event) notFound();
     if (event.user !== user.id) redirect("/dashboard/");
-    if (!event.type.startsWith("Unterricht:")) redirect("/dashboard/events/event?id=" + eventID);
+    if (!event.type.startsWith("Unterricht:")) redirect("/dashboard/events/event/" + eventID);
     const attendances = await getAttendancesPerEvent(eventID);
     const attendedStudents = attendances.filter(attendance => attendance.attendance.attended === true).length;
     const notAttendedStudents = attendances.filter(attendance => attendance.attendance.attended === false).length;

@@ -17,7 +17,7 @@ export async function createStudyTimeHandler(studyTimeType: string): Promise<fun
         const data = await createEvent(studyTimeType.replace("parallel", "Vertretung"), sessionUser.id);
         if (data.id) {
             logger.info(`Studienzeit für ${sessionUser.displayname} erstellt (ID: ${data.id} Fach: ${data.type})`, "createStudyTimeHandler");
-            redirect(`/dashboard/events/event?id=${data.id}`)
+            redirect(`/dashboard/events/event/${data.id}`)
         }
         else {
             logger.error(`Studienzeit für ${sessionUser.displayname} konnte nicht erstellt werden`, "createStudyTimeHandler");
