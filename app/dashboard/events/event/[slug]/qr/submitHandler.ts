@@ -3,7 +3,7 @@
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
 import { checkINUser, getEventPerID } from "@/app/src/modules/eventUtilities";
 import dayjs from "dayjs";
-import { saveSelectedStudyTimeFeedback } from "@/app/dashboard/events/event/actions";
+import { saveSelectedStudyTimeFeedback } from "@/app/dashboard/events/event/[slug]/actions";
 import db, { User } from "@/app/src/modules/db";
 
 export async function addUserToStudyTime(userID: string, eventID: string) {

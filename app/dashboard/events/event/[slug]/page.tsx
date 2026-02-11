@@ -14,11 +14,9 @@ dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
 dayjs.extend(isLeapYear);
 
-async function EventPage(props: { searchParams: Promise<SearchParams> }) {
-    const searchParams = await props.searchParams;
+async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
     const user = await getSessionUser(1);
-    const eventID = searchParams.id;
-    if (!eventID) notFound();
+    const eventID = (await params).slug;
     const event = await getEventPerID(eventID);
     if (!event) notFound();
     if (event.user !== user.id) redirect("/dashboard/");

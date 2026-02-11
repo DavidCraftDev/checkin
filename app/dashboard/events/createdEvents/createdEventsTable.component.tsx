@@ -21,7 +21,7 @@ function CreatedEventTable(props: { events: CreatedEventPerUser[] }) {
                                 <td>{event.event.type}</td>
                                 <td>{event.user}</td>
                                 <td>{dayjs(event.event.created_at).format("DD.MM. HH:mm")}</td>
-                                <td><a href={`/dashboard/events/event?id=${event.event.id}`} className="hover:underline">Anzeigen</a></td>
+                                <td><a href={`/dashboard/events/event/${event.event.id}`} className="hover:underline">Anzeigen</a></td>
                             </tr>
                         ))}
                     </tbody>
