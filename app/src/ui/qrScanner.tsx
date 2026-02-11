@@ -1,14 +1,44 @@
 "use client";
+/** @file Provides a QR scanner component optimized for mobile and desktop devices */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
 
+/**
+ * Defines the expected props for the QRScannerComponent.
+ *
+ * @interface QRScannerProps
+ */
 interface QRScannerProps {
+  /**
+   * Callback function invoked when a QR code is successfully scanned.
+   *
+   * @type {(data: string) => void}
+   */
   onScan: (data: string) => void;
+  /**
+   * Callback function invoked when an error occurs during scanning.
+   *
+   * @type {?(error: Error) => void}
+   */
   onError?: (error: Error) => void;
+  /**
+   * Callback function to validate the scanned QR code data.
+   *
+   * @type {?(data: string) => boolean}
+   */
   validate?: (data: string) => boolean;
 }
 
+/**
+ * QR scanner optimized for mobile and desktop devices.
+ *
+ * @param {QRScannerProps} props - The props for the QRScannerComponent.
+ * @param {function} props.onScan - Callback function invoked when a QR code is successfully scanned.
+ * @param {function} [props.onError] - Optional callback function invoked when an error occurs during scanning.
+ * @param {function} [props.validate] - Optional callback function to validate the scanned QR code data.
+ * @returns {JSX.Element} The rendered QRScannerComponent.
+ */
 const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validate }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerRef = useRef<QrScanner | null>(null);
@@ -89,6 +119,7 @@ const QRScannerComponent: React.FC<QRScannerProps> = ({ onScan, onError, validat
   return (
     <div className="w-full relative">
       <video ref={videoRef} className="block w-full h-auto rounded-lg"></video>
+      { /* Show camera selector if multiple cameras are available */}
       {cameras.length > 1 && (
         <div className="absolute top-2 right-2">
           <select
