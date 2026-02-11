@@ -3,31 +3,29 @@
 import { toast } from "sonner";
 import { submitCreateHandler } from "./submitCreateHandler";
 import clsx from "clsx";
-import { FormEvent } from "react";
-
-let displaynameError = false;
-let usernameError = false;
-let passwordError = false;
+import { useState } from "react";
 
 function UserCreateForm() {
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        displaynameError = false
-        usernameError = false
-        passwordError = false
-        const formData = new FormData(event.currentTarget);
+    const [displaynameError, setDisplaynameError] = useState(false);
+    const [usernameError, setUsernameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+
+    async function handleSubmit(formData: FormData) {
+        setDisplaynameError(false)
+        setUsernameError(false)
+        setPasswordError(false)
         const data = await submitCreateHandler(formData)
         if (data === "displayname") {
-            displaynameError = true
+            setDisplaynameError(true)
             toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
         } else if (data === "username") {
-            usernameError = true
+            setUsernameError(true)
             toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
         } else if (data === "password") {
-            passwordError = true
+            setPasswordError(true)
             toast.error("Bitte ein Passwort eingeben")
         } else if (data === "exist") {
-            usernameError = true
+            setUsernameError(true)
             toast.error("Der Nutzername ist bereits belegt")
         } else {
             toast.success("Nutzer erstellt")
@@ -35,7 +33,7 @@ function UserCreateForm() {
     }
     return (
         <div>
-            <form onSubmit={handleSubmit} className="p-2">
+            <form action={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
                     <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />

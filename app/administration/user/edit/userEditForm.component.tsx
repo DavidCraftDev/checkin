@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import clsx from "clsx";
 import { submitEditHandler } from "./submitEditHandler";
-import { FormEvent } from "react";
+import { useState } from "react";
 import { User } from "@/app/src/modules/db";
 
 interface UserEditFormProps {
@@ -16,10 +16,10 @@ interface UserEditFormProps {
     }
 }
 
-let displaynameError = false
-let usernameError = false
-
 function UserEditForm(props: UserEditFormProps) {
+    const [displaynameError, setDisplaynameError] = useState(false);
+    const [usernameError, setUsernameError] = useState(false);
+
     let config = props.config
     if (props.userData.username.startsWith("local/")) {
         config.use_ldap = false
@@ -27,22 +27,20 @@ function UserEditForm(props: UserEditFormProps) {
         config.ldap_auto_permission = false
         config.ldap_auto_studytime_data = false
     }
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    async function handleSubmit(formData: FormData) {
         if (config.use_ldap && config.ldap_auto_groups && config.ldap_auto_permission && config.ldap_auto_studytime_data) return;
-        displaynameError = false
-        usernameError = false
-        const formData = new FormData(event.currentTarget);
+        setDisplaynameError(false)
+        setUsernameError(false)
         const data = await submitEditHandler(formData, props.userData.id)
         if (data === "displayname") {
-            displaynameError = true
+            setDisplaynameError(true)
             toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
         } else if (data === "username") {
-            usernameError = true
+            setUsernameError(true)
             toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
             return
         } else if (data === "exist") {
-            usernameError = true
+            setUsernameError(true)
             toast.error("Der Nutzername ist bereits belegt")
             return
         } else {
@@ -52,7 +50,7 @@ function UserEditForm(props: UserEditFormProps) {
     const userData = props.userData
     return (
         <div>
-            <form onSubmit={handleSubmit} className="p-2">
+            <form action={handleSubmit} className="p-2">
                 <div>
                     <label htmlFor="displayname">Name*</label><br />
                     <input type="text" name="displayname" id="displayname" placeholder="Max Mustermann" defaultValue={userData.displayname} disabled={config.use_ldap} className={clsx("rounded-full p-2 m-4 border-2 border-gray-200 ring-0 ring-black-600 focus:outline-hidden focus:ring-1", { "border-red-600 ring-red-600": displaynameError })} required />
@@ -89,4 +87,3 @@ function UserEditForm(props: UserEditFormProps) {
 }
 
 export default UserEditForm;
-;
