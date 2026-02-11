@@ -3,7 +3,7 @@
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import getPasswordResetURL from "./passwordReset";
 import { login } from "@/app/src/modules/auth/loginManager";
 import { SubmitButton } from "../src/ui/submitButton";
@@ -12,39 +12,43 @@ function LoginPage() {
   const router = useRouter();
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [disabled, setDisabled] = useState(false);
   const [errorCount, setErrorCount] = useState(0);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (disabled) return;
-    setDisabled(true);
-    const formData = new FormData(event.currentTarget);
+  useEffect(() => {
+    if (errorCount >= 10) {
+      router.push("/login/limit");
+    }
+  }, [errorCount, router]);
+
+  async function handleLogin(formData: FormData) {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
+
     setUsernameError(false);
     setPasswordError(false);
+
+    let hasError = false;
+
     if (!username) {
       setUsernameError(true);
       toast.error("Bitte einen Nutzernamen eingeben");
-      setDisabled(false);
-      return;
-    } else if (!password) {
+      hasError = true;
+    }
+
+    if (!password) {
       setPasswordError(true);
       toast.error("Bitte ein Passwort eingeben");
-      setDisabled(false);
-      return
+      hasError = true;
     }
+
+    if (hasError) return;
+
     const result = await login(username.trim(), password);
     if (result) {
       router.push("/dashboard");
     } else {
       toast.error("Falscher Nutzername oder Passwort");
-      setErrorCount((prevErrorCount) => prevErrorCount + 1);
-      setDisabled(false);
-      if (errorCount >= 10) {
-        router.push("/login/limit");
-      }
+      setErrorCount((prev) => prev + 1);
     }
   }
 
@@ -57,7 +61,7 @@ function LoginPage() {
   }, []);
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
-      <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-md">
+      <form action={handleLogin} className="p-4 bg-white rounded-lg shadow-md">
         <div className="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
           <span className="text-xl font-semibold text-white md:text-2xl">
             CheckIN
