@@ -13,6 +13,9 @@ import { config_data } from "@/app/src/modules/data/config";
 
 const rateLimit = new RateLimit();
 
+// Dummy hash for timing attack mitigation
+const DUMMY_HASH = "$2b$12$fNlgQb5/7eojbPoGV4yDJOt7bTBXPfdgbKX5exsadZQK28nCxf/flm";
+
 export async function login(username: string, password: string): Promise<boolean> {
     if (!username || !password || username === "" || password === "") return false;
     const header = await headers();
@@ -20,6 +23,8 @@ export async function login(username: string, password: string): Promise<boolean
     const userData = await getUserPerUsername(username, true);
     if (!userData) {
         logger.warn("User " + username + " not found in Database" + " IP:" + header.get("x-forwarded-for"), "Auth");
+        // Compare with dummy hash to mitigate timing attacks
+        await compare(password, DUMMY_HASH);
         return false;
     }
     if (config_data.LDAP.ENABLE && !username.startsWith("local/")) {
@@ -28,6 +33,8 @@ export async function login(username: string, password: string): Promise<boolean
         const ldapUser = ldapUserData.find(entry => entry.sAMAccountName.toString().toLowerCase() === username.toLowerCase());
         if (!ldapUser) {
             logger.warn("User " + username + " not found in LDAP-Data", "Auth");
+            // Compare with dummy hash to mitigate timing attacks
+            await compare(password, DUMMY_HASH);
             return false;
         }
         if (ldapUser.objectGUID !== userData.id) {
@@ -48,6 +55,8 @@ export async function login(username: string, password: string): Promise<boolean
     } else {
         if (!userData.password) {
             logger.info("User " + username + " has no password set", "Auth");
+            // Compare with dummy hash to mitigate timing attacks
+            await compare(password, DUMMY_HASH);
             return false;
         }
         if (await compare(password, userData.password)) {
