@@ -26,12 +26,18 @@ export async function existUserPerID(id: string) {
   return user > 0;
 }
 
-export async function getUserPerUsername(name: string) {
+export async function getUserPerUsername(name: string, auth: boolean = false) {
   const user = await db.user.findUnique({
     where: {
       username: name.toLowerCase()
     }
   });
+  if (!auth) {
+    if (user) {
+      user.password = "";
+      user.pwdLastSet = new Date();
+    }
+  }
   return user;
 }
 

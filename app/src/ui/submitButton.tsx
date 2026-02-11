@@ -6,7 +6,7 @@ export function SubmitButton(props: { text: string }) {
     const { pending } = useFormStatus()
     return (
         <button type="submit" disabled={pending} className="btn w-full">
-            {props.text}
+            {props.text + (pending ? "..." : "")}
         </button>
     )
 }
