@@ -2,25 +2,39 @@ import fs from "fs";
 import path from "path";
 import dayjs from "dayjs";
 
+let lastCleanup = 0;
+
 async function deleteOldLogs() {
-    const logPath = path.join(process.cwd(), "log");
-    if (!fs.existsSync(logPath)) return;
-    const files = fs.readdirSync(logPath);
-    files.forEach(file => {
-        const filePath = path.join(logPath, file);
-        const fileStats = fs.statSync(filePath);
-        if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
-    });
+    try {
+        const logPath = path.join(process.cwd(), "log");
+        if (!fs.existsSync(logPath)) return;
+        const files = fs.readdirSync(logPath);
+        files.forEach(file => {
+            const filePath = path.join(logPath, file);
+            const fileStats = fs.statSync(filePath);
+            if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
+        });
+    } catch (e) {
+        logger.error("Failed to clean up old log files: " + e, "Logger");
+    }
 }
 
 async function writeLog(message: string) {
-    deleteOldLogs();
+    if (Date.now() - lastCleanup > 86400000) { // Run cleanup once every 24 hours
+        // Fire and forget
+        deleteOldLogs();
+        lastCleanup = Date.now();
+    }
+
     const logPath = path.join(process.cwd(), "log");
     if (!fs.existsSync(logPath)) {
         fs.mkdirSync(logPath);
     }
     const logFile = path.join(logPath, dayjs().format("YYYYMMDD") + ".log");
-    fs.appendFileSync(logFile, dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n");
+    // Use async appendFile to avoid blocking the event loop
+    fs.appendFile(logFile, dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n", (err) => {
+        if (err) console.error("Failed to write to log file", err);
+    });
 }
 
 export async function info(message: string, category: string) {
