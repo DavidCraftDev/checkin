@@ -128,12 +128,15 @@ export async function getStudyTimesDataForAllCourseMembers(courseID: string, stu
         },
     });
 
+    // Create a map for faster lookup
+    const attendanceMap = new Map(allAttendances.map(a => [a.userID, a]));
+
     students.forEach((student) => {
         if (student.courses.find(c => c === courseID) == undefined) {
             studyTimes[student.id] = {} as Attendances;
             return;
         }
-        const data = allAttendances.find(a => a.userID === student.id);
+        const data = attendanceMap.get(student.id);
         studyTimes[student.id] = data || {} as Attendances;
     });
 
