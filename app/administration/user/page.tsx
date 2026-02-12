@@ -5,8 +5,12 @@ import { config_data } from "@/app/src/modules/data/config";
 
 async function UserPage() {
     await getSessionUser(2);
-    const users = await db.user.findMany() || [];
-    users.sort((a, b) => a.username.localeCompare(b.username));
+    const users = await db.user.findMany({
+        orderBy: {
+            username: 'asc'
+        }
+    }) || [];
+
     return (
         <div>
             <div className="grid grid-rows-1 grid-cols-2">
