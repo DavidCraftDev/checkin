@@ -25,6 +25,11 @@ model Attendances {
   selfReflection String?
   attended       Boolean              @default(true)
   created_at     DateTime             @default(now())
+
+  @@index([userID])
+  @@index([eventID])
+  @@index([cw])
+  @@index([userID, cw])
 }
 
 model Events {
@@ -33,6 +38,9 @@ model Events {
   user       String
   cw         Int
   created_at DateTime @default(now())
+
+  @@index([user])
+  @@index([cw])
 }
 
 model StudyTimeData {
@@ -41,6 +49,9 @@ model StudyTimeData {
   needs  String[] @default([])
   cw     Int
   year   Int
+
+  @@index([userID])
+  @@index([cw])
 }
 
 model User {
