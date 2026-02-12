@@ -17,6 +17,21 @@ export async function getUserPerID(id: string, auth: boolean = false) {
   return user;
 }
 
+export async function getUsersByID(ids: string[]) {
+  const users = await db.user.findMany({
+    where: {
+      id: {
+        in: ids
+      }
+    }
+  });
+  for (const user of users) {
+    user.password = "";
+    user.pwdLastSet = new Date();
+  }
+  return users;
+}
+
 export async function existUserPerID(id: string) {
   const user = await db.user.count({
     where: {

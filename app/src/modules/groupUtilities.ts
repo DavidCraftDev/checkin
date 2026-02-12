@@ -45,18 +45,19 @@ export async function getGroupMemberCount(groupID: string) {
 
 export async function getGroups() {
     const users = await db.user.findMany();
-    const groups = new Set<string>();
-    users.forEach((user) => user.group.forEach((group) => groups.add(group)));
-    const groupArray = Array.from(groups);
-    const data: Groups[] = new Array();
-    await Promise.all(groupArray.map(async (group) => {
-        const dataMembers = await getGroupMemberCount(group);
-        data.push({
-            group: group || "Keine Gruppe",
-            members: dataMembers
+    const groupCounts = new Map<string, number>();
+
+    users.forEach((user) => {
+        user.group.forEach((group) => {
+            groupCounts.set(group, (groupCounts.get(group) || 0) + 1);
         });
-    }
-    ));
+    });
+
+    const data: Groups[] = Array.from(groupCounts.entries()).map(([group, count]) => ({
+        group: group || "Keine Gruppe",
+        members: count
+    }));
+
     data.sort((a, b) => a.group.localeCompare(b.group));
     return data;
 }

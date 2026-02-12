@@ -3,7 +3,7 @@
 import { checkDate, getCurrentWeek } from "@/app/src/modules/date";
 import db, { Events, User } from "@/app/src/modules/db";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getUserPerID, getUsersByID } from "@/app/src/modules/userUtilities";
 
 export async function getCreatedAttendanceChecks(courseID: string, calendarWeek: number = getCurrentWeek(), year: number = new Date().getFullYear()): Promise<Events[]> {
     // Check if user is allowed to get this data
@@ -30,11 +30,11 @@ export async function getCreatedAttendanceChecks(courseID: string, calendarWeek:
     const teachersPerAttendanceCheck: { [key: string]: User } = {};
 
     attendanceChecks.forEach(check => teacherIDs.add(check.user));
-    await Promise.all(Array.from(teacherIDs).map(async (teacherID) => {
-        const teacher = await getUserPerID(teacherID);
-        if (!teacher) return;
-        teachersPerAttendanceCheck[teacherID] = teacher;
-    }));
+    await getUsersByID(Array.from(teacherIDs)).then(users => {
+        users.forEach(user => {
+            teachersPerAttendanceCheck[user.id] = user;
+        });
+    });
 
     return attendanceChecks;
 }
