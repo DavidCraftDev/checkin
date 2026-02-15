@@ -1,6 +1,6 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { readData } from "@/app/dashboard/modules/sponsorenlauf/handler";
-import { getUserPerID, getUsersByID } from "@/app/src/modules/userUtilities";
+import { getUsersByID } from "@/app/src/modules/userUtilities";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 import { NextResponse } from "next/server";

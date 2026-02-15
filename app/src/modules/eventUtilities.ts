@@ -1,4 +1,4 @@
-/** @file Provides Provides helper functions to get and mutate data related to events */
+/** @file Provides helper functions to get and mutate data related to events */
 
 import "server-only";
 
@@ -16,6 +16,19 @@ import logger from "./logger";
 dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
+
+const deletedUser: User = {
+    id: "DELETED_USER",
+    username: "DELETED_USER",
+    displayname: "Gelöschter Benutzer",
+    permission: 0,
+    password: "",
+    courses: [],
+    group: [],
+    competence: [],
+    needs: [],
+    pwdLastSet: new Date(),
+};
 
 export async function getAttendancesPerUser(userID: string, cw: number, year: number) {
     // Fetch all attendances of the user in the given week and year
@@ -43,6 +56,18 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
     });
     const usersMap = new Map(users.map(user => [user.id, user]));
 
+    // Get all events which have an attendance of the user in this week to avoid multiple queries in the loop, filter out notes
+    const eventSet: Set<string> = new Set();
+    userAttendances.forEach(attendance => {
+        if (attendance.eventID !== "NOTE") eventSet.add(attendance.eventID);
+    });
+    const events = await db.events.findMany({
+        where: {
+            id: { in: Array.from(eventSet) }
+        }
+    });
+    const eventsMap = new Map(events.map(event => [event.id, event]));
+
     const data: AttendancePerUserPerEvent[] = [];
     for (const attendance of userAttendances) {
         let dataEvent: Events;
@@ -66,12 +91,14 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                 cw: cw,
                 created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
-            dataUserEvent = usersMap.get(attendance.userID)!;
+            dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
+            dataUserEvent.id = attendance.userID;
         } else {
-            const dataFromEvent = await getEventPerID(attendance.eventID);
+            const dataFromEvent = eventsMap.get(attendance.eventID);
             if (!dataFromEvent) continue;
             dataEvent = dataFromEvent;
-            dataUserEvent = usersMap.get(dataFromEvent.user)!;
+            dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
+            dataUserEvent.id = attendance.userID;
         }
         data.push({
             attendance: attendance,
@@ -95,7 +122,7 @@ export async function getAttendancesPerEvent(eventID: string) {
         }
     });
 
-    // Get all users which have an attendance in this week to avoid multiple queries in the loop
+    // Get all users which have an attendance for this event to avoid multiple queries in the loop
     const userSet: Set<string> = new Set();
     dataAttendance.forEach(attendance => {
         userSet.add(attendance.userID);
@@ -109,7 +136,8 @@ export async function getAttendancesPerEvent(eventID: string) {
 
     const data: AttendancePerEventPerUser[] = [];
     for (const attendance of dataAttendance) {
-        const dataUser = usersMap.get(attendance.userID)!;
+        const dataUser = usersMap.get(attendance.userID);
+        if (!dataUser) continue;
         data.push({
             attendance: attendance,
             user: dataUser

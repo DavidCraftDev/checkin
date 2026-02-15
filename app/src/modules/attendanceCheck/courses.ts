@@ -3,7 +3,7 @@
 import { checkDate, getCurrentWeek } from "@/app/src/modules/date";
 import db, { Events, User } from "@/app/src/modules/db";
 import { getSessionUser } from "@/app/src/modules/auth/cookieManager";
-import { getUserPerID, getUsersByID } from "@/app/src/modules/userUtilities";
+import { getUsersByID } from "@/app/src/modules/userUtilities";
 
 export async function getCreatedAttendanceChecks(courseID: string, calendarWeek: number = getCurrentWeek(), year: number = new Date().getFullYear()): Promise<Events[]> {
     // Check if user is allowed to get this data

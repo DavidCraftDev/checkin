@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 
 let lastCleanup = 0;
 
+const logger = { info, warn, error, debug };
+
 async function deleteOldLogs() {
     try {
         const logPath = path.join(process.cwd(), "log");
@@ -31,10 +33,15 @@ async function writeLog(message: string) {
         fs.mkdirSync(logPath);
     }
     const logFile = path.join(logPath, dayjs().format("YYYYMMDD") + ".log");
-    // Use async appendFile to avoid blocking the event loop
-    fs.appendFile(logFile, dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n", (err) => {
-        if (err) console.error("Failed to write to log file", err);
-    });
+    // Use async appendFile to avoid blocking the event loop and await its completion
+    try {
+        await fs.promises.appendFile(
+            logFile,
+            dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n"
+        );
+    } catch (err) {
+        console.error("Failed to write to log file", err);
+    }
 }
 
 export async function info(message: string, category: string) {
@@ -69,7 +76,5 @@ process.on("uncaughtException", async (errorMessage) => {
 process.on("warning", async (warning) => {
     await warn(warning.stack || warning.message, "Warning");
 });
-
-const logger = { info, warn, error, debug };
 
 export default logger;

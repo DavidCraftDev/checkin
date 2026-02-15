@@ -63,10 +63,10 @@ export async function deleteData(): Promise<void> {
     if (!user) redirect("/login");
     if (user.permission !== 2) redirect("/dashboard");
     await Promise.all([
-        await db.studyTimeData.deleteMany(),
-        await db.session.deleteMany(),
-        await db.events.deleteMany(),
-        await db.attendances.deleteMany()
+        db.studyTimeData.deleteMany(),
+        db.session.deleteMany(),
+        db.events.deleteMany(),
+        db.attendances.deleteMany()
     ]);
     await logger.info("All data deleted by " + user.username + " (" + user.id + ")", "Administration");
     redirect("/");
