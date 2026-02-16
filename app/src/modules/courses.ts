@@ -86,6 +86,7 @@ export async function getTeachersForEvents(eventIDs: string[]): Promise<TeacherP
     });
 
     // Get all teachers at once
+    if(events.length === 0) return {};
     const teacherIDs = Array.from(new Set(events.map(event => event.user)));
     const teachers = await getUsersByID(teacherIDs);
     const teachersMap = new Map(teachers.map(teacher => [teacher.id, teacher]));

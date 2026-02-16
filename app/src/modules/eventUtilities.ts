@@ -92,7 +92,6 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                 created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
             dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
-            dataUserEvent.id = attendance.userID;
         } else {
             const dataFromEvent = eventsMap.get(attendance.eventID);
             if (!dataFromEvent) continue;

@@ -46,7 +46,7 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
         return { success: false, error: "Keine Berechtigung zum Speichern" };
     }
     if (type === "Löschen" && session.user.permission !== 0) {
-        db.attendances.delete({
+        db.attendances.deleteMany({
             where: {
                 id: attendance.id
             },
