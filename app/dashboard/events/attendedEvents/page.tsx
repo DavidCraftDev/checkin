@@ -57,7 +57,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
     const missingStudyTimes: Array<string> = userNeeds.filter(neededStudyTime => !attendances.find(attendanceData => attendanceData.attendance.type && attendanceData.attendance.type.replace("Vertretung:", "").replace("Notiz:", "") === neededStudyTime));
 
     const studyTimeTypes: Record<string, string[]> = {};
-    if (isEditable) await Promise.all(attendances.map(async (event) => {
+    if (isEditable) for (const event of attendances) {
         if (event.event.id !== "NOTE") {
             const vertretung: Array<string> = [];
             const neededStudyTimesForAttendance: Array<string> = [];
@@ -77,7 +77,7 @@ async function AttendedEventsPage(props: { searchParams: Promise<SearchParams> }
             neededStudyTimesForNotes.push("Notiz:Löschen");
             studyTimeTypes[event.attendance.id] = neededStudyTimesForNotes;
         }
-    }));
+    }
 
     const length: number = attendances.length;
     let feedback: number = 0;

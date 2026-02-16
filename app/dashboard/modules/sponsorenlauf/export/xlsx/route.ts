@@ -1,6 +1,6 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { readData } from "@/app/dashboard/modules/sponsorenlauf/handler";
-import { getUserPerID } from "@/app/src/modules/userUtilities";
+import { getUsersByID } from "@/app/src/modules/userUtilities";
 import { Columns, SheetData } from "write-excel-file";
 import writeXlsxFile from "write-excel-file/node";
 import { NextResponse } from "next/server";
@@ -10,19 +10,31 @@ export async function GET() {
     const { user } = await getCurrentSession();
     if (!user) return new Response("401 Unauthorized", { status: 401 });
     if (user.permission < 1) return new Response("403 Forbidden", { status: 403 });
-    const data = await readData();
+    const fileData = await readData();
     // Get User Data for every userID in the data
-    const userData = await Promise.all(
-        Object.entries(data).map(async ([userID, roundCount]) => {
-            const user = await getUserPerID(userID);
-            return {
+    const userIDs = Object.keys(fileData);
+    const dbUsers = await getUsersByID(userIDs);
+    const userMap = new Map(dbUsers.map((u) => [u.id, u]));
+    const userData: UserData[] = []
+    for (const userID of userIDs) {
+        const user = userMap.get(userID);
+        if (user) {
+            userData.push({
                 userID: userID,
                 displayName: user.displayname,
                 group: user.permission === 0 ? user.group[0] : "Lehrer",
-                roundCount: roundCount,
-            };
-        })
-    );
+                roundCount: fileData[userID],
+            });
+        } else {
+            userData.push({
+                userID: userID,
+                displayName: "Unbekannter Benutzer",
+                group: "Unbekannt",
+                roundCount: fileData[userID],
+            });
+        }
+    }
+
     // Sort by round count descending, then by display name ascending
     userData.sort((a, b) => {
         if (b.roundCount !== a.roundCount) {
@@ -62,7 +74,7 @@ export async function GET() {
             fontWeight: "bold"
         }
     ]);
-    userData.forEach(user => {
+    userData.forEach((user: UserData) => {
         allUserSheetData.push([
             {
                 type: String,
@@ -81,7 +93,7 @@ export async function GET() {
     sheetData.push(allUserSheetData);
     sheetNames.push("Teilnehmer Übersicht");
     columnData.push([
-        { width: 30},
+        { width: 30 },
         { width: 20 },
         { width: 10 }
     ]);
@@ -109,7 +121,7 @@ export async function GET() {
                 fontWeight: "bold"
             }
         ]);
-        userData.filter(user => user.group === group).forEach(user => {
+        userData.filter((user: UserData) => user.group === group).forEach((user: UserData) => {
             groupSheetData.push([
                 {
                     type: String,
@@ -136,4 +148,11 @@ export async function GET() {
             "Content-Disposition": 'attachment; filename="sponsorenlauf_data.xlsx"',
         },
     });
+}
+
+interface UserData {
+    userID: string;
+    displayName: string;
+    group: string;
+    roundCount: number;
 }

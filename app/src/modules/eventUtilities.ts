@@ -1,3 +1,5 @@
+/** @file Provides helper functions to get and mutate data related to events */
+
 import "server-only";
 
 import db, { Attendances, Events, User } from "./db";
@@ -15,8 +17,22 @@ dayjs.extend(isoWeek)
 dayjs.extend(isoWeeksInYear)
 dayjs.extend(isLeapYear)
 
+const deletedUser: User = {
+    id: "DELETED_USER",
+    username: "DELETED_USER",
+    displayname: "Gelöschter Benutzer",
+    permission: 0,
+    password: "",
+    courses: [],
+    group: [],
+    competence: [],
+    needs: [],
+    pwdLastSet: new Date(),
+};
+
 export async function getAttendancesPerUser(userID: string, cw: number, year: number) {
-    const dataAttendances = await db.attendances.findMany({
+    // Fetch all attendances of the user in the given week and year
+    const userAttendances = await db.attendances.findMany({
         where: {
             userID: userID,
             cw: cw,
@@ -26,11 +42,38 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             }
         }
     });
+
+    // Get all events which have an attendance of the user in this week to avoid multiple queries in the loop, filter out notes
+    const eventSet: Set<string> = new Set();
+    userAttendances.forEach(attendance => {
+        if (attendance.eventID !== "NOTE") eventSet.add(attendance.eventID);
+    });
+    const events = await db.events.findMany({
+        where: {
+            id: { in: Array.from(eventSet) }
+        }
+    });
+    const eventsMap = new Map(events.map(event => [event.id, event]));
+
+    // Get all users (teachers) which have an attendance in this week to avoid multiple queries in the loop
+    const userSet: Set<string> = new Set();
+    events.forEach(event => {
+        userSet.add(event.user);
+    });
+    userSet.add(userID);
+    const users = await db.user.findMany({
+        where: {
+            id: { in: Array.from(userSet) }
+        }
+    });
+    const usersMap = new Map(users.map(user => [user.id, user]));
+
     const data: AttendancePerUserPerEvent[] = [];
-    await Promise.all(dataAttendances.map(async (attendance) => {
+    for (const attendance of userAttendances) {
         let dataEvent: Events;
         let dataUserEvent: User;
         if (attendance.eventID === "NOTE") {
+            // Delete notes which are older than 1 minute and have no type or note or have the type "Notiz:Löschen"
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
                 logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
                 await db.attendances.deleteMany({
@@ -38,8 +81,9 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                         id: attendance.id
                     }
                 });
-                return;
+                continue;
             }
+            // Create a fake event for the note to display it in the UI
             dataEvent = {
                 id: "NOTE",
                 type: "Notiz",
@@ -47,19 +91,20 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
                 cw: cw,
                 created_at: dayjs().year(year).isoWeek(cw).toDate()
             } as Events;
-            dataUserEvent = await getUserPerID(attendance.userID);
+            dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
         } else {
-            const dataFromEvent = await getEventPerID(attendance.eventID);
-            if (!dataFromEvent) return;
+            const dataFromEvent = eventsMap.get(attendance.eventID);
+            if (!dataFromEvent) continue;
             dataEvent = dataFromEvent;
-            dataUserEvent = await getUserPerID(dataEvent.user);
+            dataUserEvent = usersMap.get(dataEvent.user) || deletedUser;
         }
         data.push({
             attendance: attendance,
             event: dataEvent,
             eventUser: dataUserEvent
         });
-    }));
+    };
+    // Sort attendances by created_at date
     data.sort((a, b) => {
         if (a.attendance.created_at > b.attendance.created_at) return -1;
         if (a.attendance.created_at < b.attendance.created_at) return 1;
@@ -74,14 +119,28 @@ export async function getAttendancesPerEvent(eventID: string) {
             eventID: eventID
         }
     });
+
+    // Get all users which have an attendance for this event to avoid multiple queries in the loop
+    const userSet: Set<string> = new Set();
+    dataAttendance.forEach(attendance => {
+        userSet.add(attendance.userID);
+    });
+    const users = await db.user.findMany({
+        where: {
+            id: { in: Array.from(userSet) }
+        }
+    });
+    const usersMap = new Map(users.map(user => [user.id, user]));
+
     const data: AttendancePerEventPerUser[] = [];
-    await Promise.all(dataAttendance.map(async (attendance) => {
-        const dataUser = await getUserPerID(attendance.userID);
+    for (const attendance of dataAttendance) {
+        const dataUser = usersMap.get(attendance.userID);
+        if (!dataUser) continue;
         data.push({
             attendance: attendance,
             user: dataUser
         });
-    }));
+    }
     data.sort((a, b) => a.user.displayname.localeCompare(b.user.displayname));
     return data;
 }

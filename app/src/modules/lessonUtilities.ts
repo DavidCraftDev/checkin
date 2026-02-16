@@ -16,7 +16,7 @@ export async function createLesson(lessonType: string): Promise<Events> {
             cw: dayjs().isoWeek()
         }
     });
-    const user = await db.user.findMany({
+    const userData = await db.user.findMany({
         where: {
             courses: {
                 has: lessonType
@@ -24,17 +24,18 @@ export async function createLesson(lessonType: string): Promise<Events> {
             permission: 0
         }
     });
-    Promise.all(user.map(async (user) => {
-        await db.attendances.create({
-            data: {
+    // Create attendance entries for all students in the course
+    if (userData.length > 0) {
+        await db.attendances.createMany({
+            data: userData.map((user) => ({
                 eventID: data.id,
                 userID: user.id,
                 attended: false,
                 type: "Unterricht",
                 cw: dayjs().isoWeek()
-            }
+            }))
         });
-    }));
+    }
     return data;
 }
 
