@@ -8,6 +8,7 @@ import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { Metadata } from "next/types";
 import { CheckinForm } from "./forms";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);
@@ -32,6 +33,23 @@ async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
             </div>
+            {dayjs(event.created_at).diff(dayjs(), "day") !== 0 ? 
+            <div className="rounded-md bg-yellow-50 p-4 mb-4 border-l-4 border-yellow-400">
+                <div className="flex">
+                    <div className="shrink-0">
+                        <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-3">
+                        <h3 className="text-sm font-medium text-yellow-800">Hinweis</h3>
+                        <div className="mt-2 text-sm text-yellow-700">
+                            <p>
+                                Diese Studienzeit wurde nicht heute erstellt. Bitte erstelle für jede Studienzeit-Stunde auch eine eigene Studienzeit im CheckIN, um die Anwesenheit der Schüler zu erfassen.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            : null}
             <EventTable attendances={attendances} user={user} eventID={eventID} addable={addable} />
             <p>Exportieren als:
                 <a href={`/export/events/event/json?eventID=${eventID}`} download={`event${eventID}.json`} className="hover:underline mx-1">JSON</a>
