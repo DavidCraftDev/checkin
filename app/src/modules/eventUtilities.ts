@@ -43,19 +43,6 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         }
     });
 
-    // Get all users which have an attendance in this week to avoid multiple queries in the loop
-    const userSet: Set<string> = new Set();
-    userAttendances.forEach(attendance => {
-        userSet.add(attendance.userID);
-    });
-    userSet.add(userID);
-    const users = await db.user.findMany({
-        where: {
-            id: { in: Array.from(userSet) }
-        }
-    });
-    const usersMap = new Map(users.map(user => [user.id, user]));
-
     // Get all events which have an attendance of the user in this week to avoid multiple queries in the loop, filter out notes
     const eventSet: Set<string> = new Set();
     userAttendances.forEach(attendance => {
@@ -68,6 +55,19 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
     });
     const eventsMap = new Map(events.map(event => [event.id, event]));
 
+    // Get all users (teachers) which have an attendance in this week to avoid multiple queries in the loop
+    const userSet: Set<string> = new Set();
+    events.forEach(event => {
+        userSet.add(event.user);
+    });
+    userSet.add(userID);
+    const users = await db.user.findMany({
+        where: {
+            id: { in: Array.from(userSet) }
+        }
+    });
+    const usersMap = new Map(users.map(user => [user.id, user]));
+
     const data: AttendancePerUserPerEvent[] = [];
     for (const attendance of userAttendances) {
         let dataEvent: Events;
@@ -76,7 +76,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             // Delete notes which are older than 1 minute and have no type or note or have the type "Notiz:Löschen"
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
                 logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
-                await db.attendances.delete({
+                await db.attendances.deleteMany({
                     where: {
                         id: attendance.id
                     }
@@ -96,7 +96,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             const dataFromEvent = eventsMap.get(attendance.eventID);
             if (!dataFromEvent) continue;
             dataEvent = dataFromEvent;
-            dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
+            dataUserEvent = usersMap.get(dataEvent.user) || deletedUser;
         }
         data.push({
             attendance: attendance,
