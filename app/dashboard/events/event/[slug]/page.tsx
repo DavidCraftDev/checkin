@@ -33,7 +33,7 @@ async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
                 </div>
                 {addable ? <CheckinForm event={event} /> : null}
             </div>
-            {dayjs(event.created_at).diff(dayjs(), "day") !== 0 ? 
+            {!dayjs(event.created_at).isSame(dayjs(), "day") ? 
             <div className="rounded-md bg-yellow-50 p-4 mb-4 border-l-4 border-yellow-400">
                 <div className="flex">
                     <div className="shrink-0">
