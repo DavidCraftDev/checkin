@@ -14,9 +14,10 @@ export async function GET() {
     // Get User Data for every userID in the data
     const userIDs = Object.keys(fileData);
     const dbUsers = await getUsersByID(userIDs);
+    const userMap = new Map(dbUsers.map((u) => [u.id, u]));
     const userData: UserData[] = []
     for (const userID of userIDs) {
-        const user = dbUsers.find(u => u.id === userID);
+        const user = userMap.get(userID);
         if (user) {
             userData.push({
                 userID: userID,

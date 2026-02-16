@@ -98,7 +98,6 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
             if (!dataFromEvent) continue;
             dataEvent = dataFromEvent;
             dataUserEvent = usersMap.get(attendance.userID) || deletedUser;
-            dataUserEvent.id = attendance.userID;
         }
         data.push({
             attendance: attendance,
