@@ -12,8 +12,8 @@ function ErrorContent({ error, reset }: { error: Error & { digest?: string }; re
     const isWeekPage = pathname.includes("/events/attendedEvents") || pathname.includes("/groups/group") || pathname.includes("/courses/");
     const isRangePage = pathname.includes("/overview/user") || pathname.includes("/overview/group");
 
-    const hasWeekParams = searchParams.has("cw") || searchParams.has("year") || isWeekPage;
-    const hasRangeParams = searchParams.has("startCW") || searchParams.has("startYear") || searchParams.has("endCW") || searchParams.has("endYear") || isRangePage;
+    const hasWeekParams = (searchParams.has("cw") || searchParams.has("year")) && isWeekPage;
+    const hasRangeParams = (searchParams.has("startCW") || searchParams.has("startYear") || searchParams.has("endCW") || searchParams.has("endYear")) && isRangePage;
 
     return (
         <div className="w-full mt-4 p-2 pb-0 border-gray-200 border-2 rounded-md">
