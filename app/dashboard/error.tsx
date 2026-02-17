@@ -3,9 +3,8 @@
 import CalendarWeek from "../src/ui/calendarweek";
 import CalendarWeekRange from "../src/ui/calendarweekRange";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
-function ErrorContent({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
 
@@ -35,14 +34,6 @@ function ErrorContent({ error, reset }: { error: Error & { digest?: string }; re
                 </div>
             )}
         </div>
-    );
-}
-
-function ErrorComponent(props: { error: Error & { digest?: string }; reset: () => void }) {
-    return (
-        <Suspense fallback={<div>Laden...</div>}>
-            <ErrorContent {...props} />
-        </Suspense>
     );
 }
 
