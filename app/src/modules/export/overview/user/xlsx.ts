@@ -7,10 +7,10 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
     // Initialize data
     const sheetData: SheetData[] = [];
     const sheetName: Array<string> = [];
-    const columnData: Array<{ width: number }[]> = new Array();
+    const columnData: Array<{ width: number }[]> = [];
 
     // Add meta sheet
-    const meta = new Array()
+    const meta: SheetData = [];
     meta.push([{
         "type": String,
         "value": "Übersicht " + userDisplayname,

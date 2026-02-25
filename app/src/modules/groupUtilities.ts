@@ -20,7 +20,7 @@ export async function getGroupMembers(groupID: string, cw: number, year: number)
             }
         }
     });
-    const data: GroupMember[] = new Array();
+    const data: GroupMember[] = [];
     await Promise.all(userData.map(async (user) => {
         const dataAttendance = await getAttendanceCountPerUser(user.id, cw, year);
         data.push({
@@ -64,7 +64,7 @@ export async function getGroups() {
 
 export async function getGroupsWithUserData() {
     const groups = await getGroups();
-    const data: GroupsWithUserData[] = new Array();
+    const data: GroupsWithUserData[] = [];
     await Promise.all(groups.map(async (group) => {
         const dataMembers = await getGroupMembers(group.group, dayjs().isoWeek(), dayjs().year());
         data.push({
@@ -77,7 +77,7 @@ export async function getGroupsWithUserData() {
 }
 
 export async function getGroupsFromUser(user: User) {
-    const data: Groups[] = new Array();
+    const data: Groups[] = [];
     await Promise.all(user.group.map(async (group) => {
         const dataMembers = await getGroupMemberCount(group);
         data.push({

@@ -43,9 +43,9 @@ export async function GET() {
     });
 
     // Create XLSX file
-    const sheetData: SheetData[] = new Array()
-    const sheetNames: Array<string> = new Array()
-    const columnData: Array<{ width: number }[]> = new Array()
+    const sheetData: SheetData[] = []
+    const sheetNames: Array<string> = []
+    const columnData: Array<{ width: number }[]> = []
 
     const allUserSheetData: SheetData = [];
     allUserSheetData.push([

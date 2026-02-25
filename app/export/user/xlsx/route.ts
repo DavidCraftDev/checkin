@@ -8,7 +8,7 @@ export async function GET() {
     if (!user) return new NextResponse(null, { status: 401 });
     if (user.permission < 2) return new NextResponse(null, { status: 403 });
     const users = await db.user.findMany()
-    const data: SheetData = new Array()
+    const data: SheetData = []
     data.push([{
         "type": String,
         "value": "Alle Nutzer",

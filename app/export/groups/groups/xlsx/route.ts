@@ -9,10 +9,10 @@ export async function GET() {
     if (user.permission < 2) return new NextResponse(null, { status: 403 });
 
     const groups = await getGroupsWithUserData()
-    const sheetData: SheetData[] = new Array()
-    const sheetName: Array<string> = new Array()
-    const columnData: Array<{ width: number }[]> = new Array()
-    const meta = new Array()
+    const sheetData: SheetData[] = []
+    const sheetName: Array<string> = []
+    const columnData: Array<{ width: number }[]> = []
+    const meta: SheetData = []
     meta.push([{
         "type": String,
         "value": "Alle Gruppen",
@@ -76,7 +76,7 @@ export async function GET() {
         { width: 20 }
     ]);
     for (const group of groups) {
-        const groupData = new Array()
+        const groupData: SheetData = []
         groupData.push([{
             "type": String,
             "value": group.group,

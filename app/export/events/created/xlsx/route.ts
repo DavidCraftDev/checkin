@@ -20,10 +20,10 @@ export async function GET(request: NextRequest) {
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
 
-    const sheetData: SheetData[] = new Array()
-    const sheetName: Array<string> = new Array()
-    const columnData: Array<{ width: number }[]> = new Array()
-    const meta = new Array()
+    const sheetData: SheetData[] = []
+    const sheetName: Array<string> = []
+    const columnData: Array<{ width: number }[]> = []
+    const meta: SheetData = []
     meta.push([{
         "type": String,
         "value": "Erstellte Studienzeiten von " + user.displayname,
