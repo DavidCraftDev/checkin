@@ -16,7 +16,7 @@ async function DashboardPage() {
     const currentIsoWeek = dayjs().isoWeek();
     const currentYear = dayjs().year();
     const attendances = await getAttendancesPerUser(user.id, currentIsoWeek, currentYear);
-    let missingStudyTimes: Array<string> = new Array();
+    let missingStudyTimes: Array<string> = [];
     if (!user.needs) user.needs = [];
     user.needs.forEach((neededStudyTime) => {
         const foundAttendance = attendances.find((attendanceData) => {
@@ -35,7 +35,7 @@ async function DashboardPage() {
             {config_data.MODULES.SPONSORENLAUF && (
                 <p>{await getRoundCountForUser(user.id)} Runden gelaufen!</p>
             )}
-            { config_data.MODULES.SPONSORENLAUF && user.permission !== 0 && (
+            {config_data.MODULES.SPONSORENLAUF && user.permission !== 0 && (
                 <p className="mt-2"><a href="/dashboard/modules/sponsorenlauf" className="btn">Zum Sponsorenlauf</a></p>
             )}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4">

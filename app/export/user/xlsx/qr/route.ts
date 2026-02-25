@@ -2,8 +2,7 @@ import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import db from "@/app/src/modules/db";
 import { NextResponse } from "next/server";
 import QRCode from "qrcode";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile, { Image } from "write-excel-file/node";
+import writeXlsxFile, { Image, SheetData } from "write-excel-file/node";
 
 export async function GET() {
     const { user } = await getCurrentSession();
@@ -36,7 +35,7 @@ export async function GET() {
     const sheetData: SheetData[] = [];
     const imagesAll: Image[][] = [];
     const sheetNames: Array<string> = [];
-    const columnData: Columns[] = [];
+    const columnData: Array<{ width: number }[]> = [];
 
     const allUserImages: Image[] = [];
     const allUserSheetData: SheetData = [];

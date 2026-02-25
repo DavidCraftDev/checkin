@@ -1,13 +1,13 @@
 import "server-only";
 
 import dayjs from "dayjs";
-import { Columns, SheetData } from "write-excel-file";
 import { getAttendancesPerEvent } from "@/app/src/modules/eventUtilities";
 import { Events, User } from "@/app/src/modules/db";
+import { SheetData } from "write-excel-file/node";
 
 async function getEventXLSX(user: User, event: Events, cw: number, year: number) {
     const sheetData: SheetData = []
-    const columnData: Columns = []
+    const columnData: Array<{ width: number }> = []
 
     const attendances = await getAttendancesPerEvent(event.id)
     sheetData.push([{

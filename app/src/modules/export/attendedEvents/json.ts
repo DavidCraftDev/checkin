@@ -7,7 +7,7 @@ import { User } from "@/app/src/modules/db";
 async function getAttendedEventsJSON(user: User, userData: User, cw: number, year: number) {
     const attendances = await getAttendancesPerUser(userData.id, cw, year)
     const savedNeeds = await getSavedNeededStudyTimes(userData, cw, year);
-    const data = new Array()
+    const data = []
     data.push({
         meta: {
             type: "attendedEvents",

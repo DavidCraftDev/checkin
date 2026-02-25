@@ -40,7 +40,7 @@ async function updateUserData(ldapData: Entry[]) {
     if (lastUpdate && dayjs().diff(lastUpdate, "minute") < 1) return;
     lastUpdate = dayjs();
     const dbData = await db.user.findMany({ where: { password: null } })
-    const existUser: Array<string> = new Array()
+    const existUser: Array<string> = []
     await Promise.all(dbData.map(async (entry) => {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
@@ -75,7 +75,7 @@ async function updateUserData(ldapData: Entry[]) {
         existUser.push(user.id)
     }))
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
-    const createData: any[] = new Array();
+    const createData: any[] = [];
     newUser.map(async (entry) => {
         let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
@@ -126,7 +126,7 @@ function readLDAPUserData(ldapUser: Entry, dbUser?: User) {
     let coursesData = { courses: [] as any[] }
     if (config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
         let memberData = new Set()
-        let coursesArray = new Array()
+        let coursesArray: string[] = []
         ldapUser.memberOf.map((groupData: string) => {
             let string = groupData.replace(",", "!°SPLIT°!")
             let data = string.split("!°SPLIT°!")

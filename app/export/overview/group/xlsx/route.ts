@@ -4,8 +4,7 @@ import { getGroupUsers } from "@/app/src/modules/group";
 import { getSortedGroupOverviewData } from "@/app/src/modules/overview/group";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 
 export async function GET(request: NextRequest) {
         // Get the current user and check if there a allowed to access this route
@@ -36,7 +35,7 @@ export async function GET(request: NextRequest) {
         // Initialize the data
         const sheetData: SheetData[] = [];
         const sheetName: string[] = [];
-        const columeData: Columns[] = [];
+        const columnData: Array<{ width: number }[]> = [];
 
         // Add meta sheet
         const meta: SheetData = [];
@@ -190,7 +189,7 @@ export async function GET(request: NextRequest) {
         });
         sheetData.push(meta);
         sheetName.push("Übersicht " + groupID.substring(0, 23));
-        columeData.push([
+        columnData.push([
                 { width: 20 },
                 { width: 20 },
                 { width: 20 },
@@ -206,10 +205,10 @@ export async function GET(request: NextRequest) {
                 const data = await getUserOverviewDataXLSX(user.displayname, sortedData.categoriesPerUser[key], startCW, startYear, endCW, endYear);
                 sheetData.push(data.sheetData[0]);
                 sheetName.push(data.sheetName[0]);
-                columeData.push(data.columeData[0]);
+                columnData.push(data.columnData[0]);
         }));
 
-        const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+        const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columnData })
         return new NextResponse(new Uint8Array(bufferData), {
                 status: 200,
                 headers: {

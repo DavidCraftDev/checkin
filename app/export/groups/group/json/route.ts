@@ -13,8 +13,8 @@ dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 1) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 1) return new NextResponse(null, { status: 403 });
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
@@ -23,9 +23,9 @@ export async function GET(request: NextRequest) {
     if (!groupID) return NextResponse.json({ error: "No groupID provided" })
     if (!user.group.includes(groupID) && user.permission < 2) return NextResponse.json({ error: "User not authorized" })
     const groupMember = await getGroupMembers(groupID, calendarWeek, year)
-    const groupMemberData: any[] = new Array()
+    const groupMemberData: any[] = []
     await Promise.all(groupMember.map(async (member) => groupMemberData.push(await getAttendedEventsJSON(user, member.user, calendarWeek, year))))
-    const data = new Array()
+    const data = []
     data.push({
         meta: {
             type: "group",

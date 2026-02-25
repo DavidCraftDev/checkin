@@ -1,16 +1,16 @@
 import "server-only";
 
-import { Columns, SheetData } from "write-excel-file";
 import { SortedData } from "@/app/src/modules/overview/user";
+import { SheetData } from "write-excel-file/node";
 
 export async function getUserOverviewDataXLSX(userDisplayname: string, sortedData: SortedData, startCW: number, startYear: number, endCW: number, endYear: number) {
     // Initialize data
     const sheetData: SheetData[] = [];
     const sheetName: Array<string> = [];
-    const columeData: Columns[] = new Array();
+    const columnData: Array<{ width: number }[]> = [];
 
     // Add meta sheet
-    const meta = new Array()
+    const meta: SheetData = [];
     meta.push([{
         "type": String,
         "value": "Übersicht " + userDisplayname,
@@ -156,7 +156,7 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
         }])
     }
 
-    columeData.push([
+    columnData.push([
         { width: 20 },
         { width: 20 },
         { width: 20 },
@@ -167,5 +167,5 @@ export async function getUserOverviewDataXLSX(userDisplayname: string, sortedDat
     sheetName.push("Übersicht " + userDisplayname.substring(0, 23));
     sheetData.push(meta)
 
-    return { sheetData, sheetName, columeData };
+    return { sheetData, sheetName, columnData };
 }

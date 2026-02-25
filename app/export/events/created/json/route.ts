@@ -1,5 +1,5 @@
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
-import getEventDataJSON from "@/app/src/modules/export/event/json";
+import getEventDataJSON, { CreatedEventData } from "@/app/src/modules/export/event/json";
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -13,14 +13,14 @@ dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 1) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 1) return new NextResponse(null, { status: 403 });
 
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
 
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
-    const data = new Array()
+    const data = []
     data.push({
         meta: {
             type: "createdEvents",
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
             time: new Date()
         }
     })
-    const eventsData = new Array()
+    const eventsData: CreatedEventData[] = []
     await Promise.all(events.map(async (event) => eventsData.push(await getEventDataJSON(event.event, user))))
     data.push(eventsData)
     return NextResponse.json(data)

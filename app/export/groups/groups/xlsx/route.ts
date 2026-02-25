@@ -1,19 +1,18 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { getGroupsWithUserData } from "@/app/src/modules/groupUtilities";
 import { NextResponse } from "next/server";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 
 export async function GET() {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 2) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 2) return new NextResponse(null, { status: 403 });
 
     const groups = await getGroupsWithUserData()
-    const sheetData: SheetData[] = new Array()
-    const sheetName: Array<string> = new Array()
-    const columeData: Columns[] = new Array()
-    const meta = new Array()
+    const sheetData: SheetData[] = []
+    const sheetName: Array<string> = []
+    const columnData: Array<{ width: number }[]> = []
+    const meta: SheetData = []
     meta.push([{
         "type": String,
         "value": "Alle Gruppen",
@@ -71,13 +70,13 @@ export async function GET() {
     })
     sheetData.push(meta)
     sheetName.push("Meta")
-    columeData.push([
+    columnData.push([
         { width: 20 },
         { width: 20 },
         { width: 20 }
     ]);
     for (const group of groups) {
-        const groupData = new Array()
+        const groupData: SheetData = []
         groupData.push([{
             "type": String,
             "value": group.group,
@@ -143,13 +142,13 @@ export async function GET() {
         } else {
             sheetName.push(group.group.substring(0, 31))
         }
-        columeData.push([
+        columnData.push([
             { width: 20 },
             { width: 20 },
             { width: 20 }
         ]);
     }
-    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columnData })
     return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {

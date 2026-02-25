@@ -31,19 +31,19 @@ export async function GET(request: NextRequest) {
     const { mergedData, sortedData } = overviewData;
 
     // Get the XLSX data (getUserOverviewDataXLSX)
-    let { sheetData, sheetName, columeData } = await getUserOverviewDataXLSX(userData.displayname, sortedData, startCW, startYear, endCW, endYear);
+    let { sheetData, sheetName, columnData } = await getUserOverviewDataXLSX(userData.displayname, sortedData, startCW, startYear, endCW, endYear);
 
     // Add sheet for every Calendar Week
     Object.keys(mergedData).forEach(async (key) => {
         // Get CW and Year from key
         const [year, cw] = key.split("-");
         const cwData = await getAttendedEventsXLSX(user, Number(cw), Number(year))
-        columeData.push(cwData.columnData);
+        columnData.push(cwData.columnData);
         sheetName.push(cw + "-" + year)
         sheetData.push(cwData.sheetData);
     });
 
-    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columnData })
     return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {

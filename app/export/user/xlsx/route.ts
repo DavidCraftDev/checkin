@@ -1,15 +1,14 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import db from "@/app/src/modules/db";
 import { NextResponse } from "next/server";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 
 export async function GET() {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 2) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 2) return new NextResponse(null, { status: 403 });
     const users = await db.user.findMany()
-    const data: SheetData = new Array()
+    const data: SheetData = []
     data.push([{
         "type": String,
         "value": "Alle Nutzer",
@@ -104,7 +103,7 @@ export async function GET() {
             "wrap": true
         }])
     })
-    const columns: Columns = [
+    const columns: Array<{ width: number }> = [
         { width: 20 },
         { width: 20 },
         { width: 20 },
