@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update": "prisma generate && next build && prisma migrate deploy && prisma db seed"
+    "update": "prisma generate && next build && prisma migrate deploy && prisma db seed",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build"
   },
   "dependencies": {
     "@heroicons/react": "2.2.0",
@@ -44,8 +46,12 @@
   },
   "devDependencies": {
     "@types/node": "24.10.13",
+    "@vitejs/plugin-rsc": "^0.5.20",
     "postcss": "8.5.6",
-    "prisma": "7.4.1"
+    "prisma": "7.4.1",
+    "react-server-dom-webpack": "^19.2.4",
+    "vinext": "^0.0.7",
+    "vite": "^7.3.1"
   },
   "description": "Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.\r Die Studienzeit ist ein Konzept zum selbstständigen Lernen in der Oberstufe.",
   "repository": {
@@ -56,5 +62,6 @@
   "bugs": {
     "url": "https://github.com/DavidCraftDev/checkin/issues"
   },
-  "homepage": "https://github.com/DavidCraftDev/checkin#readme"
+  "homepage": "https://github.com/DavidCraftDev/checkin#readme",
+  "type": "module"
 }

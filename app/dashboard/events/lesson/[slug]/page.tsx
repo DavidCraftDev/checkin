@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
-import { Metadata } from "next/types";
+import { Metadata } from "next";
 
 dayjs.extend(isoWeek);
 dayjs.extend(isoWeeksInYear);

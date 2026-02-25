@@ -6,7 +6,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { redirect } from "next/navigation";
-import { Metadata } from "next/types";
+import { Metadata } from "next";
 import React from "react";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
