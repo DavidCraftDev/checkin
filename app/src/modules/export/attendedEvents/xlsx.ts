@@ -1,13 +1,13 @@
 import "server-only";
 
 import { getAttendancesPerUser } from "@/app/src/modules/eventUtilities";
-import { Columns, SheetData } from "write-excel-file";
 import { getSavedNeededStudyTimes } from "@/app/src/modules/studytimeUtilities";
 import { User } from "@/app/src/modules/db";
+import { SheetData } from "write-excel-file/node";
 
 async function getAttendedEventsXLSX(user: User, cw: number, year: number) {
     const sheetData: SheetData = []
-    const columnData: Columns = []
+    const columnData: Array<{ width: number }> = []
     const sheetName: string = user.displayname.substring(0, 31)
     const attendances = await getAttendancesPerUser(user.id, cw, year)
     sheetData.push([{

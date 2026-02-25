@@ -1,7 +1,6 @@
 import { getCreatedEventsPerUser } from "@/app/src/modules/eventUtilities";
 import { NextRequest, NextResponse } from "next/server";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
@@ -15,15 +14,15 @@ dayjs.extend(isLeapYear)
 
 export async function GET(request: NextRequest) {
     const { user } = await getCurrentSession();
-    if(!user) return new NextResponse(null, { status: 401 });
-    if(user.permission < 1) return new NextResponse(null, { status: 403 });
+    if (!user) return new NextResponse(null, { status: 401 });
+    if (user.permission < 1) return new NextResponse(null, { status: 403 });
     const calendarWeek = Number(request.nextUrl.searchParams.get("cw")) || dayjs().isoWeek()
     const year = Number(request.nextUrl.searchParams.get("year")) || dayjs().year()
     const events = await getCreatedEventsPerUser(user.id, calendarWeek, year)
 
     const sheetData: SheetData[] = new Array()
     const sheetName: Array<string> = new Array()
-    const columeData: Columns[] = new Array()
+    const columnData: Array<{ width: number }[]> = new Array()
     const meta = new Array()
     meta.push([{
         "type": String,
@@ -91,7 +90,7 @@ export async function GET(request: NextRequest) {
     }
     sheetData.push(meta)
     sheetName.push("Meta")
-    columeData.push([{
+    columnData.push([{
         width: 20
     },
     {
@@ -107,7 +106,7 @@ export async function GET(request: NextRequest) {
     for (const event of events) {
         const eventData = await getEventXLSX(user, event.event, calendarWeek, year)
         sheetData.push(eventData.sheetData)
-        columeData.push(eventData.columnData)
+        columnData.push(eventData.columnData)
         if (sheetName.includes((event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 31))) {
             for (let i = 1; i < 999; i++) {
                 if (!(event.event.type + " " + dayjs(event.event.created_at).format("DD.MM.YYYY")).substring(0, 27) + " (" + i + ")") {
@@ -120,7 +119,7 @@ export async function GET(request: NextRequest) {
         }
     }
 
-    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columnData })
     return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {

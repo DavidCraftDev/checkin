@@ -1,8 +1,7 @@
 import { getCurrentSession } from "@/app/src/modules/auth/cookieManager";
 import { readData } from "@/app/dashboard/modules/sponsorenlauf/handler";
 import { getUsersByID } from "@/app/src/modules/userUtilities";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -46,7 +45,7 @@ export async function GET() {
     // Create XLSX file
     const sheetData: SheetData[] = new Array()
     const sheetNames: Array<string> = new Array()
-    const columnData: Columns[] = new Array()
+    const columnData: Array<{ width: number }[]> = new Array()
 
     const allUserSheetData: SheetData = [];
     allUserSheetData.push([

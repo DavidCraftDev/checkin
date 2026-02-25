@@ -1,7 +1,6 @@
 import getAttendedEventsXLSX from "@/app/src/modules/export/attendedEvents/xlsx";
 import { NextRequest, NextResponse } from "next/server";
-import { Columns, SheetData } from "write-excel-file";
-import writeXlsxFile from "write-excel-file/node";
+import writeXlsxFile, { SheetData } from "write-excel-file/node";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
@@ -31,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     const sheetData: SheetData[] = [];
     const sheetName: Array<string> = [];
-    const columeData: Columns[] = [];
+    const columnData: Array<{ width: number }[]> = [];
 
     const meta: SheetData = [];
     meta.push([{
@@ -103,7 +102,7 @@ export async function GET(request: NextRequest) {
         "fontWeight": "bold"
     }])
     await Promise.all(groupMember.map(async (user) => {
-        if(user.needs.length === 0 && user.permission !== 0) return;
+        if (user.needs.length === 0 && user.permission !== 0) return;
         const attendances = await getAttendancesPerUser(user.id, calendarWeek, year)
         const studyTimes: Array<string> = [];
         attendances.forEach((attendance) => {
@@ -137,7 +136,7 @@ export async function GET(request: NextRequest) {
     }))
     sheetData.push(meta)
     sheetName.push("Meta")
-    columeData.push([
+    columnData.push([
         { width: 22 },
         { width: 22 },
         { width: 22 },
@@ -145,13 +144,13 @@ export async function GET(request: NextRequest) {
         { width: 22 }
     ]);
     await Promise.all(groupMember.map(async (user) => {
-        if(user.needs.length === 0 && user.permission !== 0) return;
+        if (user.needs.length === 0 && user.permission !== 0) return;
         const userData = await getAttendedEventsXLSX(user, calendarWeek, year)
         sheetData.push(userData.sheetData)
         sheetName.push(userData.sheetName)
-        columeData.push(userData.columnData)
+        columnData.push(userData.columnData)
     }))
-    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columeData })
+    const bufferData = await writeXlsxFile(sheetData, { buffer: true, sheets: sheetName, columns: columnData })
     return new NextResponse(new Uint8Array(bufferData), {
         status: 200,
         headers: {
