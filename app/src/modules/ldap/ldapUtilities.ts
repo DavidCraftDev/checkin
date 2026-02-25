@@ -76,7 +76,7 @@ async function updateUserData(ldapData: Entry[]) {
     }))
     const newUser = ldapData.filter(e => !existUser.includes(String(e.objectGUID)))
     const createData: any[] = [];
-    newUser.map(async (entry) => {
+    await Promise.all(newUser.map(async (entry) => {
         let { permission, groups, needs, competence, coursesData } = readLDAPUserData(entry);
         if (permission.permission !== 0 && await existsTeacherCompetenceFile()) {
             const competences = await getTeacherCompetenceFile();
@@ -98,7 +98,7 @@ async function updateUserData(ldapData: Entry[]) {
             pwdLastSet: new Date(pwdLastSet)
         })
         logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
-    })
+    }))
     await db.user.createMany({ data: createData })
 }
 

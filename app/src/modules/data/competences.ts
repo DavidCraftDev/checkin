@@ -30,7 +30,7 @@ export async function saveTeacherCompetenceFile(file: File): Promise<functionRes
 
 export async function readTeacherCompetenceData(): Promise<boolean> {
     if (!config_data.LDAP.ENABLE || !config_data.LDAP.AUTOMATIC_DATA_DETECTION.STUDYTIME_DATA.ENABLE) {
-        const data = await getTeacherCompetenceFile();
+        const data = await getTeacherCompetenceFile(true);
         logger.info("Updating teacher competence data", "Import");
         if (!data) return false;
         for (const teacher in data) {
@@ -66,16 +66,22 @@ export async function deleteTeacherCompetenceFile(): Promise<boolean> {
     return false;
 }
 
-export async function getTeacherCompetenceFile(): Promise<Record<string, string[]> | null> {
-    //logger.info("Reading teacher competence file", "Import");
-    const dataPath = path.join(process.cwd(), "data", "teacher_competence.json");
+const teacherCompetenceFileData: Record<string, string[]> = {};
+const dataPath: string = path.join(process.cwd(), "data", "teacher_competence.json");
+
+export async function getTeacherCompetenceFile(forceUpdate: boolean = false): Promise<Record<string, string[]> | null> {
+    if (!forceUpdate && Object.keys(teacherCompetenceFileData).length > 0) {
+        return teacherCompetenceFileData;
+    }
     if (!fs.existsSync(dataPath)) {
         logger.warn("No teacher competence file found", "Import");
         return null;
     }
+    logger.info("Reading teacher competence file", "Import");
     const text = fs.readFileSync(dataPath, "utf-8");
     const json = JSON.parse(text);
     const data: Record<string, string[]> = json;
+    Object.assign(teacherCompetenceFileData, data);
     return data;
 }
 
