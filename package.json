@@ -56,5 +56,11 @@
   "bugs": {
     "url": "https://github.com/DavidCraftDev/checkin/issues"
   },
+  "overrides": {
+    "@prisma/dev": {
+      "hono": "4.11.10",
+      "lodash": "4.17.23"
+    }
+  },
   "homepage": "https://github.com/DavidCraftDev/checkin#readme"
 }
