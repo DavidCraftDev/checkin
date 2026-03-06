@@ -1,11 +1,11 @@
 {
   "extends": ["config:best-practices"],
   "rangeStrategy": "pin",
-	"packageRules": [
-		{
-			"matchManagers": ["docker-compose"],
-			"pinDigests": false
-		}
-	],
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose"],
+      "pinDigests": false
+    }
+  ],
   "branchPrefix": "renovate-deps-update-"
 }
