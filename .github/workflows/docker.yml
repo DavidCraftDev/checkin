@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4
         with:
           platforms: arm64 #all
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
         with:
           driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
       - name: Convert Username
@@ -23,13 +23,13 @@ jobs:
         id: rn
         run: echo "rn=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
           registry: ghcr.io
           username: ${{ steps.un.outputs.un }}
           password: ${{ github.token }}
       - name: Build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         if: ${{ github.event_name != 'pull_request' }}
         with:
           context: .
@@ -42,7 +42,7 @@ jobs:
         id: pr
         run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s|refs/pull/:||g" | sed "s|/merge||g")" >> $GITHUB_OUTPUT
       - name: Build (PR)
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         if: ${{ github.event_name == 'pull_request' }}
         with:
           context: .
@@ -51,7 +51,7 @@ jobs:
           push: ${{ github.event_name == 'pull_request' }}
           tags: ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ steps.pr.outputs.pr }}
       - name: add comment (PR)
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
           message: "The Docker Image can now be found here: `ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ steps.pr.outputs.pr }}`"
