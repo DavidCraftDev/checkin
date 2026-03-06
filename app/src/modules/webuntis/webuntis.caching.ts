@@ -49,6 +49,18 @@ export const cachedTimegrid = unstable_cache(
 )
 
 /**
+ * Gets the cached classes from the WebUntis API
+ *
+ * @export
+ * @returns {Promise<Klasse[]>}
+ */
+export const cachedClasses = unstable_cache(
+    async () => await getWebUntisAPIInstance().getClasses(),
+    [],
+    { revalidate: 900000 }
+)
+
+/**
  * Gets the cached teachers from the WebUntis API
  *
  * @export
