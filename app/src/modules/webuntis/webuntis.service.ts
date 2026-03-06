@@ -1,5 +1,5 @@
 import "server-only";
-import { Teacher, Timegrid, WebAPITimetable, WebUntis, WebUntisElementType } from "webuntis";
+import { Klasse, Teacher, Timegrid, WebAPITimetable, WebUntis, WebUntisElementType } from "webuntis";
 import logger from "@/app/src/modules/logger";
 
 /**  Class to interact with Untis API and hold authentication state */
@@ -73,6 +73,19 @@ export default class WebUntisService {
         await this.loginOnce();
         return await this.client.getTimegrid();
 
+    }
+
+    /**
+     * Get all classes for the school in the current school year
+     * 
+     * @public
+     * @async
+     * @returns {Promise<Klasse[]>} Returns a promise that resolves to an array of WebUntis class objects
+     */
+    public async getClasses(): Promise<Klasse[]> {
+        await this.loginOnce();
+        const currentSchoolyear = await this.client.getCurrentSchoolyear();
+        return await this.client.getClasses(true, currentSchoolyear.id);
     }
 
     /**

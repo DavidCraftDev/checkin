@@ -3,7 +3,7 @@
 import "server-only";
 import { LessonUnit, TimetableMapping } from "./webuntis.types";
 import courses from "@/app/src/modules/data/courses";
-import { cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable, lastTimetableRefresh } from "./webuntis.caching";
+import { cachedClasses, cachedDBTeacher, cachedLessonCloseStatus, cachedTeachers, cachedTimegrid, cachedTimetable, lastTimetableRefresh } from "./webuntis.caching";
 import { config_data } from "@/app/src/modules/data/config";
 import { WebAPITimetable } from "webuntis";
 
@@ -39,7 +39,14 @@ export async function getMappedTimetable(date: Date): Promise<TimetableMapping> 
 async function buildTimetable(date: Date) {
     // Fetch data
     const timetableDatas: Record<number, WebAPITimetable[]> = {};
-    await Promise.all(config_data.UNTIS.CLASS_IDS.map(async classID => {
+    const classIDs = config_data.UNTIS.CLASS_IDS || [];
+    const classNames = config_data.UNTIS.CLASS_NAMES;
+    if (classIDs.length === 0 && classNames && classNames.length > 0) {
+        // If no class IDs are configured, fetch all classes and filter by configured class names if available
+        const classes = await cachedClasses();
+        classIDs.push(...classes.filter(c => classNames.includes(c.name)).map(c => c.id));
+    }
+    await Promise.all(classIDs.map(async classID => {
         timetableDatas[classID] = await cachedTimetable(date, classID);
     }));
     const webuntisTeachers = await cachedTeachers();
