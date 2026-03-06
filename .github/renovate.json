@@ -1,15 +1,11 @@
 {
-  "extends": [
-    "config:recommended"
+  "extends": ["config:best-practices"],
+  "rangeStrategy": "pin",
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose"],
+      "pinDigests": false
+    }
   ],
-  "baseBranchPatterns": [
-    "main"
-  ],
-  "forkProcessing": "enabled",
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "automerge": false,
-  "branchPrefix": "renovate-deps-update-",
-  "rangeStrategy": "pin"
+  "branchPrefix": "renovate-deps-update-"
 }
