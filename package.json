@@ -24,7 +24,7 @@
     "clsx": "2.1.1",
     "dayjs": "1.11.19",
     "dotenv": "17.3.1",
-    "eslint": "9.39.3",
+    "eslint": "9.39.4",
     "eslint-config-next": "16.1.6",
     "ldapts": "8.1.7",
     "next": "16.1.6",
