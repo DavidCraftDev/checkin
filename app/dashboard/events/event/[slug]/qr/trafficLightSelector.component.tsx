@@ -10,7 +10,7 @@ function TrafficLightSelector({ eventID, userID }: { eventID: string; userID: st
     if (typeof result === "string") {
       toast.error(result);
     } else if (!result.success) {
-      toast.error(result.error || "Unbekannter Fehler");
+      toast.error(result.error || "Ein Fehler ohne Namen und Gesicht ist erschienen");
     } else {
       setSelected(color);
     }

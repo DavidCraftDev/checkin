@@ -9,9 +9,9 @@ function QRScanner() {
   async function handleScan(data: string) {
     const result = await increaseRoundCount(data.replace("checkin://", ""));
     if (result) {
-      toast.success(result.displayName + " +1 Runde (" + result.roundCount + ")");
+      toast.success(result.displayName + " hat eine weitere Runde im ewigen Kreislauf vollendet (" + result.roundCount + ")");
     } else {
-      toast.error("Nutzer nicht gefunden!");
+      toast.error("Das Wesen wurde in den Akten nicht gefunden — als hätte es nie existiert");
     }
   }
 

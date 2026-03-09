@@ -2,7 +2,7 @@ import { PrismaClient } from "@/app/src/modules/db";
 import logger from "@/app/src/modules/logger";
 
 export async function cleanUpData(prisma: PrismaClient) {
-    logger.info("Running cleanup script", "Seed")
+    logger.info("Das Reinigungsritual beginnt — die alten Akten zittern", "Seed")
     prisma.session.deleteMany({
         where: {
             expiresAt: {
@@ -50,6 +50,6 @@ export async function cleanUpData(prisma: PrismaClient) {
             ]
         }
     })
-    logger.info("Cleanup script completed", "Seed")
+    logger.info("Das Reinigungsritual ist vollendet — Ordnung kehrt ein, vorübergehend", "Seed")
     return
 }

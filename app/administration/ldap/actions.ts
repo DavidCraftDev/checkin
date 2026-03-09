@@ -11,12 +11,12 @@ export async function enableLDAP(): Promise<void> {
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
     if (user.permission !== 2) redirect("/dashboard");
-    if (config_data.LDAP.URI.length === 0) redirect("/administration/ldap?error=LDAP URI ist nicht gesezt!");
-    if(!(config_data.LDAP.URI.startsWith("ldap://") || config_data.LDAP.URI.startsWith("ldap://"))) redirect("/administration/ldap?error=LDAP URI ist keine LDAP URI!")
-    if (config_data.LDAP.SEARCH_BASE.length === 0) redirect("/administration/ldap?error=LDAP Search Base ist nicht gesezt!");
-    if (config_data.LDAP.USER_SEARCH_FILTER.length === 0) redirect("/administration/ldap?error=LDAP Search Filter ist nicht gesezt!");
-    if (config_data.LDAP.BIND_CREADENTIALS.DN.length === 0) redirect("/administration/ldap?error=LDAP Bind DN ist nicht gesezt!");
-    if (config_data.LDAP.BIND_CREADENTIALS.PASSWORD.length === 0) redirect("/administration/ldap?error=LDAP Bind Password ist nicht gesezt!");
+    if (config_data.LDAP.URI.length === 0) redirect("/administration/ldap?error=Die LDAP-Adresse wurde in den Akten nicht vermerkt!");
+    if(!(config_data.LDAP.URI.startsWith("ldap://") || config_data.LDAP.URI.startsWith("ldap://"))) redirect("/administration/ldap?error=Die angegebene Adresse ist keine gültige LDAP-Adresse — die Behörde ist verwirrt!")
+    if (config_data.LDAP.SEARCH_BASE.length === 0) redirect("/administration/ldap?error=Die LDAP-Suchbasis wurde in den Akten nicht vermerkt!");
+    if (config_data.LDAP.USER_SEARCH_FILTER.length === 0) redirect("/administration/ldap?error=Der LDAP-Suchfilter wurde in den Akten nicht vermerkt!");
+    if (config_data.LDAP.BIND_CREADENTIALS.DN.length === 0) redirect("/administration/ldap?error=Die LDAP-Bindungsidentität wurde in den Akten nicht vermerkt!");
+    if (config_data.LDAP.BIND_CREADENTIALS.PASSWORD.length === 0) redirect("/administration/ldap?error=Das LDAP-Bindungsgeheimwort wurde in den Akten nicht vermerkt!");
     const users = await db.user.findMany({
         where: {
             NOT: {
@@ -39,8 +39,8 @@ export async function enableLDAP(): Promise<void> {
     }));
     config_data.LDAP.ENABLE = true;
     writeConfig();
-    await logger.info("LDAP enabled by " + user.username + " (" + user.id + ")", "Administration");
-    redirect("/administration/ldap?success=LDAP aktiviert!");
+    await logger.info("Das LDAP-Verzeichnis wurde von " + user.username + " (" + user.id + ") zum Leben erweckt", "Administration");
+    redirect("/administration/ldap?success=Das LDAP-Verzeichnis wurde zum Leben erweckt!");
 }
 
 export async function disableLDAP(): Promise<void> {
@@ -71,8 +71,8 @@ export async function disableLDAP(): Promise<void> {
     });
     config_data.LDAP.ENABLE = false;
     writeConfig();
-    await logger.info("LDAP disabled by " + user.username + " (" + user.id + ")", "Administration");
-    redirect("/administration/ldap?success=LDAP deaktiviert!");
+    await logger.info("Das LDAP-Verzeichnis wurde von " + user.username + " (" + user.id + ") in den Schlaf versetzt", "Administration");
+    redirect("/administration/ldap?success=Das LDAP-Verzeichnis wurde in den Schlaf versetzt!");
 }
 
 export async function testLDAPConnection(): Promise<void> {
@@ -89,7 +89,7 @@ export async function testLDAPConnection(): Promise<void> {
     try {
         if(await ldap.bind(config_data.LDAP.BIND_CREADENTIALS.DN, config_data.LDAP.BIND_CREADENTIALS.PASSWORD, false)) {
             const users = await ldap.search(config_data.LDAP.USER_SEARCH_FILTER, config_data.LDAP.SEARCH_BASE);
-            redirect("/administration/ldap?testResult=Erfolgreich&userCount=" + users.length);
+            redirect("/administration/ldap?testResult=Die Verbindung lebt&userCount=" + users.length);
         } 
     } catch (error) {
         redirect("/administration/ldap?testResult=Fehlgeschlagen");
@@ -100,27 +100,27 @@ export async function testLDAPConnection(): Promise<void> {
 export async function saveLDAPBindCredentials(formData: FormData): Promise<void> {
     const dn = formData.get("ldapDN") as string;
     const password = formData.get("ldapPassword") as string;
-    if(!dn || dn.length === 0) redirect("/administration/ldap?error=Keine LDAP DN angegeben!");
-    if(!password || password.length === 0) redirect("/administration/ldap?error=Keine LDAP Passwort angegeben!");
-    if(!dn.includes("cn=") || !dn.includes(",dc=")) redirect("/administration/ldap?error=Keine gueltige LDAP DN angegeben!");
+    if(!dn || dn.length === 0) redirect("/administration/ldap?error=Keine LDAP-Bindungsidentität angegeben — die Behörde benötigt Ausweispapiere!");
+    if(!password || password.length === 0) redirect("/administration/ldap?error=Kein LDAP-Geheimwort angegeben — ohne Geheimwort bleibt das Tor verschlossen!");
+    if(!dn.includes("cn=") || !dn.includes(",dc=")) redirect("/administration/ldap?error=Die LDAP-Bindungsidentität entspricht nicht den Vorschriften der Behörde!");
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
     if (user.permission !== 2) redirect("/dashboard");
     config_data.LDAP.BIND_CREADENTIALS.DN = dn;
     config_data.LDAP.BIND_CREADENTIALS.PASSWORD = password;
-    await logger.info("LDAP Bind Credentials changed by " + user.username + " (" + user.id + ")", "Administration");
+    await logger.info("Die LDAP-Bindungspapiere wurden von " + user.username + " (" + user.id + ") erneuert", "Administration");
     writeConfig();
-    redirect("/administration/ldap?success=LDAP Bind Credentials gespeichert!");
+    redirect("/administration/ldap?success=Die LDAP-Bindungspapiere wurden in den Akten hinterlegt!");
 }
 
 export async function saveLDAPURI(formData: FormData): Promise<void> {
     const uri = formData.get("ldapURI") as string;
-    if(!uri || !(uri.startsWith("ldap://") || uri.startsWith("ldap://"))) redirect("/administration/ldap?error=Keine gueltige LDAP URI!");
+    if(!uri || !(uri.startsWith("ldap://") || uri.startsWith("ldap://"))) redirect("/administration/ldap?error=Die LDAP-Adresse entspricht nicht den Vorschriften der Behörde!");
     const { user } = await getCurrentSession();
     if (!user) redirect("/login");
     if (user.permission !== 2) redirect("/dashboard");
     config_data.LDAP.URI = uri;
-    await logger.info("LDAP URI changed to " + uri + " by " + user.username + " (" + user.id + ")", "Administration");
+    await logger.info("Die LDAP-Adresse wurde von " + user.username + " (" + user.id + ") auf '" + uri + "' geändert", "Administration");
     writeConfig();
-    redirect("/administration/ldap?success=LDAP URI gespeichert!");
+    redirect("/administration/ldap?success=Die LDAP-Adresse wurde in den Akten vermerkt!");
 }

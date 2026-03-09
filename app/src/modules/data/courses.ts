@@ -72,13 +72,13 @@ async function parseCSV() {
                 resolve(true);
             },
             error: (error: Papa.ParseError) => {
-                logger.error("Failed to parse CSV. Error: " + error, "Courses");
+                logger.error("Die Entschlüsselung der Kursakte scheiterte: " + error, "Courses");
                 reject(false);
             }
 
         } as Papa.ParseConfig);
     }).then(() => {
-        logger.info("Loaded courses from CSV.", "Courses");
+        logger.info("Die Kurse wurden aus den Tiefen der CSV-Akte geborgen", "Courses");
     });
 }
 

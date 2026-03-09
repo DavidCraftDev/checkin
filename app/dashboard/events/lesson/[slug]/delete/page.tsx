@@ -15,7 +15,7 @@ export default async function deleteLesson({ params }: { params: Promise<{ slug:
             id: slug
         },
     });
-    logger.info("Deleted lesson with ID " + slug, "Lesson");
+    logger.info("Der Unterricht mit der Akte " + slug + " wurde aus der Existenz gestrichen", "Lesson");
     redirect("/dashboard");
     return (<></>);
 }

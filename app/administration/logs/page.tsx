@@ -29,8 +29,8 @@ export default async function LogsPage(props: { searchParams: SearchParams }) {
         try {
             logContent = fs.readFileSync(path.join(logDir, selectedFile), "utf-8");
         } catch (e) {
-            logContent = "Fehler beim Laden der Log-Datei.";
-            logger.error(`Fehler beim Lesen der Log-Datei ${selectedFile}: ${e}`, "Logs");
+            logContent = "Die Protokollakte entzieht sich der Lektüre.";
+            logger.error(`Die Protokollakte ${selectedFile} verweigert die Lektüre: ${e}`, "Logs");
         }
     }
 

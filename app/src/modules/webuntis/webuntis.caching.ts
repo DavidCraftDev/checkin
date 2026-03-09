@@ -23,8 +23,8 @@ let WebUntisAPI: WebUntisService | undefined;
  */
 export function getWebUntisAPIInstance(): WebUntisService {
     if (!config_data.UNTIS.ENABLE) {
-        logger.error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.", "WebUntis-Caching");
-        throw new Error("WebUntis API is called but not enabled in the configuration. Please enable it in the config file.");
+        logger.error("Die WebUntis-Schnittstelle wurde gerufen, doch sie schläft — erwecke sie in der Konfigurationsakte", "WebUntis-Caching");
+        throw new Error("Die WebUntis-Schnittstelle wurde gerufen, doch sie schläft — erwecke sie in der Konfigurationsakte");
     }
     if (!WebUntisAPI) {
         const school = config_data.UNTIS.SCHOOL;
@@ -126,7 +126,7 @@ async function findCheckINTeacher(teacherDisplayName: string): Promise<User | nu
     });
     if (teacher.length === 0) return null;
     if (teacher.length > 1) {
-        logger.warn("Multiple teachers found with display name " + teacherDisplayName, "WebUntis-Mapper");
+        logger.warn("Mehrere Lehrende mit dem Namen " + teacherDisplayName + " wurden in den Akten gefunden — ein beunruhigender Doppelgänger-Fall", "WebUntis-Mapper");
     }
     return teacher[0];
 }

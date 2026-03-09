@@ -27,11 +27,11 @@ function TeacherNote(props: { attendance: Attendances }) {
             if (debouncedNote !== props.attendance.teacherNote) {
                 const data = await setTeacherNote(debouncedNote, props.attendance.id);
                 if (data && data.success) {
-                    toast.success("Notiz erfolgreich gespeichert");
+                    toast.success("Deine Worte wurden in die Akten aufgenommen — ob sie je gelesen werden, ist ungewiss");
                 } else if (data && data.error) {
                     toast.error(data.error);
                 } else {
-                    toast.error("Ein unbekannter Fehler ist aufgetreten");
+                    toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
                 }
             }
         }

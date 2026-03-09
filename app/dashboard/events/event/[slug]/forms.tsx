@@ -25,8 +25,8 @@ export function RemoveUserButton(props: { attendance: Attendances, user: User, r
         if (props.attendance.cw !== dayjs().isoWeek() || dayjs(props.attendance.created_at).year() !== dayjs().year()) return router.refresh();
         if (!confirm("Möchtest du " + props.removeUser.displayname + " wirklich entfernen?")) return;
         const data = await removeUserHandler(props.attendance, props.user, props.removeUser);
-        if (data && data.id === props.attendance.id) toast.success(props.removeUser.displayname + " erfolgreich entfernt");
-        else toast.error("Fehler beim Entfernen von " + props.removeUser.displayname);
+        if (data && data.id === props.attendance.id) toast.success(props.removeUser.displayname + " wurde aus den Akten getilgt");
+        else toast.error("Die Akten weigern sich, " + props.removeUser.displayname + " freizugeben");
         router.refresh();
     }
     return (
@@ -43,12 +43,12 @@ export function CheckinForm(props: { event: Events }) {
         if (!formData.get("name")) return;
         const data = await handleUserCheckIN(formData.get("name") as string, props.event)
         if (data && data.success && data.data) {
-            toast.success(`${data.data.displayname} erfolgreich hinzugefügt`);
+            toast.success(`${data.data.displayname} wurde in die Registratur aufgenommen`);
             router.refresh();
         } else if (data && data.error) {
             toast.error(data.error);
         } else {
-            toast.error("Unbekannter Fehler");
+            toast.error("Ein Fehler ohne Namen und Gesicht ist erschienen");
         }
     }
     return (
@@ -71,11 +71,11 @@ export function TrafficLightSelect(props: { attendance: Attendances }) {
     async function submitTrafficLightSelect(feedback: string): Promise<void> {
         const data = await saveSelectedStudyTimeFeedback(props.attendance.id, feedback.toUpperCase() as "GREEN" | "RED" | "YELLOW", props.attendance.userID);
         if (data && data.success) {
-            toast.success("Feedback gespeichert");
+            toast.success("Dein Urteil wurde in die Akten eingetragen");
         } else if (data && data.error) {
             toast.error(data.error);
         } else {
-            toast.error("Ein unbekannter Fehler ist aufgetreten");
+            toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
         }
         router.refresh();
     }

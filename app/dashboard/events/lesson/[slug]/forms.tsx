@@ -9,11 +9,11 @@ export function StudentAttendButton(props: { attendanceID: string, attended: boo
     async function setAttendance() {
         const data = await setAttendanceStatus(props.attendanceID, !props.attended);
         if(data && data.success) {
-            toast.success("Status erfolgreich geändert");
+            toast.success("Der Zustand wurde gewandelt — die Akten sind aktualisiert");
         } else if(data && data.error) {
             toast.error(data.error);
         } else {
-            toast.error("Ein unbekannter Fehler ist aufgetreten");
+            toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
         }
         router.refresh();
     }

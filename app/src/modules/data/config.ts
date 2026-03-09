@@ -113,24 +113,24 @@ export function readConfig(writeBack: boolean = true) {
         if (fs.existsSync(configFilePath)) {
             loadedConfig = JSON.parse(fs.readFileSync(configFilePath, "utf-8"));
             config_data = Object.assign({}, defaultConfig, loadedConfig);
-            logger.info("Loaded config file.", "Config");
+            logger.info("Die Konfigurationsakte wurde aus den Archiven geborgen", "Config");
         } else {
-            logger.warn("No config file found. Using default config.", "Config");
+            logger.warn("Keine Konfigurationsakte gefunden — die Standardvorschriften treten in Kraft", "Config");
         }
     } catch (error) {
-        logger.error("Error reading or parsing config file:" + error, "Config");
+        logger.error("Die Konfigurationsakte konnte nicht entziffert werden: " + error, "Config");
     }
 
     // Check if the POSTGRES_URL is set
     if (!config_data.POSTGRES_URL || config_data.POSTGRES_URL === "") {
-        logger.error("No POSTGRES_URL set in config file. Please set it before running the application.", "Config");
+        logger.error("Keine POSTGRES_URL in der Konfigurationsakte vermerkt — ohne Verbindung zur Datenbank ist das System zum Schweigen verdammt", "Config");
     }
 
     // Check if a password is set for the default login
     // If not, generate a random password and log a warning
     if (!config_data.DEFAULT_LOGIN.PASSWORD || config_data.DEFAULT_LOGIN.PASSWORD === "") {
         config_data.DEFAULT_LOGIN.PASSWORD = generateRandomSecurePassword();
-        logger.warn("No default password for the local admin account was found. A new one has been generated.", "Config");
+        logger.warn("Kein Geheimwort für das lokale Verwaltungswesen gefunden — ein neues wurde aus dem Nichts erschaffen", "Config");
     }
 
     // Apply environment variable overrides
@@ -143,7 +143,7 @@ export function writeConfig() {
     const dir = path.dirname(configFilePath);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
-        logger.info("Created config directory.", "Config");
+        logger.info("Das Konfigurationsarchiv wurde aus dem Nichts erschaffen", "Config");
     }
     fs.writeFileSync(configFilePath, JSON.stringify(config_data, null, 4));
 }

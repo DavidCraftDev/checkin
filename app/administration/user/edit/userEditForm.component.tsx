@@ -34,17 +34,17 @@ function UserEditForm(props: UserEditFormProps) {
         const data = await submitEditHandler(formData, props.userData.id)
         if (data === "displayname") {
             setDisplaynameError(true)
-            toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
+            toast.error("Der Name muss den ungeschriebenen Gesetzen der Behörde genügen — nur Buchstaben, Nummern und übliche Zeichen sind gestattet")
         } else if (data === "username") {
             setUsernameError(true)
-            toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
+            toast.error("Der Nutzername darf nur aus Buchstaben, Nummern und Punkten bestehen — so will es das Gesetz, das niemand je geschrieben hat")
             return
         } else if (data === "exist") {
             setUsernameError(true)
-            toast.error("Der Nutzername ist bereits belegt")
+            toast.error("Dieser Name ist bereits einem anderen Wesen zugewiesen — die Verwaltung duldet keine Doppelgänger")
             return
         } else {
-            toast.success("Nutzer bearbeitet")
+            toast.success("Die Akte des Wesens wurde mit zitternder Feder überarbeitet")
         }
     }
     const userData = props.userData

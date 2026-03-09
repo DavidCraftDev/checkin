@@ -12,27 +12,27 @@ export async function setStudentNote(studentNote: string, attendance: Attendance
     const data = await createStudentNote(attendance, studentNote);
     revalidatePath("/dashboard/events/attendedEvents");
     if (data.studentNote === studentNote) {
-        logger.debug(`Notiz für ${attendance.id} gespeichert`, "setStudentNote");
+        logger.debug(`Die Notiz für Akte ${attendance.id} wurde in die endlosen Register eingetragen`, "setStudentNote");
         return { success: true };
     }
-    logger.error(`Notiz für ${attendance.id} konnte nicht gespeichert werden`, "setStudentNote");
-    return { success: false, error: "Notiz konnte nicht gespeichert werden" };
+    logger.error(`Die Notiz für Akte ${attendance.id} wurde vom System zurückgewiesen — die Gründe bleiben im Dunkeln`, "setStudentNote");
+    return { success: false, error: "Die Notiz wurde vom System zurückgewiesen — die Gründe bleiben im Dunkeln" };
 }
 
 const disabledUsers: disabledType = {};
 export async function createStudyTimeNote(userID: string, cw: number, year: number): Promise<functionResult> {
     if (disabledUsers[userID] && disabledUsers[userID] + 5000 > Date.now()) {
         revalidatePath("/dashboard/events/attendedEvents");
-        return { success: false, warning: "Bitte warte 10 Sekunden" };
+        return { success: false, warning: "Die Behörde verlangt Geduld — warte zehn Herzschläge" };
     }
     disabledUsers[userID] = Date.now();
     const data = await createUserStudyTimeNote(userID, cw, year);
     const result: functionResult = { success: data };
     if (!result.success) {
-        logger.error(`Notiz für ${userID} konnte nicht erstellt werden`, "createStudyTimeNote");
-        result.error = "Notiz konnte nicht erstellt werden";
+        logger.error(`Die Notiz für Wesen ${userID} konnte nicht ins Dasein gerufen werden`, "createStudyTimeNote");
+        result.error = "Die Notiz konnte nicht ins Dasein gerufen werden";
     } else {
-        logger.info(`Notiz für ${userID} erstellt`, "createStudyTimeNote");
+        logger.info(`Eine Notiz für Wesen ${userID} wurde ins Dasein gerufen`, "createStudyTimeNote");
     }
     delete disabledUsers[userID];
     revalidatePath("/dashboard/events/attendedEvents");
@@ -41,9 +41,9 @@ export async function createStudyTimeNote(userID: string, cw: number, year: numb
 
 export async function saveSelectedStudyTimeType(attendance: Attendances, userID: string, type: string): Promise<functionResult> {
     const session = await getCurrentSession();
-    if (!session || !session.user) return { success: false, error: "Session not found" };
+    if (!session || !session.user) return { success: false, error: "Deine Sitzung existiert nicht — vielleicht hast du nie existiert" };
     if (session.user.id !== userID && session.user.permission < 2) {
-        return { success: false, error: "Keine Berechtigung zum Speichern" };
+        return { success: false, error: "Die Behörde verweigert dir das Recht zu speichern" };
     }
     if (type === "Löschen" && session.user.permission !== 0) {
         db.attendances.deleteMany({
@@ -55,10 +55,10 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
     const data = await saveStudyTimeType(attendance, userID, type);
     const result: functionResult = { success: data };
     if (!result.success) {
-        logger.error(`Studienzeit Fach für ${attendance.id} konnte nicht gespeichert werden`, "saveSelectedStudyTimeType");
-        result.error = "Studienzeit konnte nicht gespeichert werden";
+        logger.error(`Das Fach der Studienzeit ${attendance.id} wurde vom Register abgelehnt`, "saveSelectedStudyTimeType");
+        result.error = "Die Studienzeit wurde vom Register abgelehnt";
     } else {
-        logger.debug(`Studienzeit Fach für ${attendance.id} gespeichert`, "saveSelectedStudyTimeType");
+        logger.debug(`Das Fach der Studienzeit ${attendance.id} wurde in die Akten eingetragen`, "saveSelectedStudyTimeType");
     }
     revalidatePath("/dashboard/events/attendedEvents");
     return result;
@@ -66,9 +66,9 @@ export async function saveSelectedStudyTimeType(attendance: Attendances, userID:
 
 export async function saveSelfReflection(attendance: Attendances, emoji: string): Promise<functionResult> {
     const session = await getCurrentSession();
-    if (!session || !session.user) return { success: false, error: "Session not found" };
+    if (!session || !session.user) return { success: false, error: "Deine Sitzung existiert nicht — vielleicht hast du nie existiert" };
     if (session.user.id !== attendance.userID && session.user.permission < 1) {
-        return { success: false, error: "Keine Berechtigung zum Speichern" };
+        return { success: false, error: "Die Behörde verweigert dir das Recht zu speichern" };
     }
 
     let data;
@@ -82,16 +82,16 @@ export async function saveSelfReflection(attendance: Attendances, emoji: string)
             }
         });
     } catch (error) {
-        logger.error(`Selbstreflexion für ${attendance.id} konnte nicht gespeichert werden: ${error}`, "saveSelfReflection");
-        return { success: false, error: "Selbstreflexion konnte nicht gespeichert werden" };
+        logger.error(`Die Selbstreflexion für Akte ${attendance.id} scheiterte an unsichtbaren Mächten: ${error}`, "saveSelfReflection");
+        return { success: false, error: "Die Selbstreflexion scheiterte — das System verweigert den Blick nach innen" };
     }
 
     let result: functionResult = { success: data.selfReflection === emoji };
     if (!result.success) {
-        logger.error(`Selbstreflexion für ${attendance.id} konnte nicht gespeichert werden`, "saveSelfReflection");
-        result.error = "Selbstreflexion konnte nicht gespeichert werden";
+        logger.error(`Die Selbstreflexion für Akte ${attendance.id} wurde vom System verschluckt`, "saveSelfReflection");
+        result.error = "Die Selbstreflexion scheiterte — das System verweigert den Blick nach innen";
     } else {
-        logger.debug(`Selbstreflexion für ${attendance.id} gespeichert`, "saveSelfReflection");
+        logger.debug(`Die Selbstreflexion für Akte ${attendance.id} wurde in die Tiefen der Register versenkt`, "saveSelfReflection");
     }
     revalidatePath("/dashboard/events/attendedEvents");
     return result;

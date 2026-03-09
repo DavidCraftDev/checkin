@@ -9,11 +9,11 @@ const prisma = db;
 
 async function main() {
   if (config_data.LDAP.ENABLE) {
-    logger.info("Use LDAP Auth...", "Seed")
+    logger.info("Die LDAP-Authentifizierung wird herbeigerufen...", "Seed")
     await seedLdapData();
     await seedDefaultData(prisma);
   } else {
-    logger.info("Use Default Auth...", "Seed")
+    logger.info("Die Standard-Authentifizierung tritt in Kraft...", "Seed")
     await seedDefaultData(prisma);
   }
   cleanUpData(prisma);
@@ -27,6 +27,6 @@ main()
     process.exit(1);
   })
   .finally(() => {
-    logger.info("Exiting seeding...", "Seed")
+    logger.info("Die Aussaat ist vollendet — das System kehrt zur Stille zurück", "Seed")
     process.exit(0);
   });

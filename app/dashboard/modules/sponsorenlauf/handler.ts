@@ -38,7 +38,7 @@ export async function readData(): Promise<RoundSave> {
         const content = await fs.readFile(roundSavePath, "utf-8");
         return JSON.parse(content);
     } catch (error) {
-        logger.error("Error reading file: " + error, "Sponsorenlauf");
+        logger.error("Die Akten des Sponsorenlaufs verweigern die Lektüre: " + error, "Sponsorenlauf");
         return {};
     }
 }
@@ -47,7 +47,7 @@ async function writeData(data: RoundSave): Promise<void> {
     try {
         await fs.writeFile(roundSavePath, JSON.stringify(data, null, 2), "utf-8");
     } catch (error) {
-        logger.error("Error writing file: " + error, "Sponsorenlauf");
+        logger.error("Die Akten des Sponsorenlaufs verweigern die Niederschrift: " + error, "Sponsorenlauf");
     }
 }
 

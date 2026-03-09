@@ -17,18 +17,18 @@ function UserCreateForm() {
         const data = await submitCreateHandler(formData)
         if (data === "displayname") {
             setDisplaynameError(true)
-            toast.error("Der Name darf nur Buchstaben, Nummern, Übliche Sonderzeichen und Leerzeichen enthalten")
+            toast.error("Der Name muss den ungeschriebenen Gesetzen der Behörde genügen — nur Buchstaben, Nummern und übliche Zeichen sind gestattet")
         } else if (data === "username") {
             setUsernameError(true)
-            toast.error("Der Nutzername darf nur Buchstaben, Nummern und Punkte enthalten")
+            toast.error("Der Nutzername darf nur aus Buchstaben, Nummern und Punkten bestehen — so will es das Gesetz, das niemand je geschrieben hat")
         } else if (data === "password") {
             setPasswordError(true)
-            toast.error("Bitte ein Passwort eingeben")
+            toast.error("Ohne Geheimwort bleibt die Existenz unvollendet")
         } else if (data === "exist") {
             setUsernameError(true)
-            toast.error("Der Nutzername ist bereits belegt")
+            toast.error("Dieser Name ist bereits einem anderen Wesen zugewiesen — die Verwaltung duldet keine Doppelgänger")
         } else {
-            toast.success("Nutzer erstellt")
+            toast.success("Ein neues Wesen wurde in die Akten der Behörde aufgenommen")
         }
     }
     return (

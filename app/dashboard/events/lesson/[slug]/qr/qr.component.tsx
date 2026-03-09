@@ -19,7 +19,7 @@ function QRScanner({ eventID }: { eventID: string }) {
         errorAudioRef.current.play();
       }
     } else {
-      toast.success(`${result.displayname} hinzugefügt!`);
+      toast.success(`${result.displayname} wurde der Versammlung zugeführt`);
       if (successAudioRef.current) {
         successAudioRef.current.pause();
         successAudioRef.current.currentTime = 0;

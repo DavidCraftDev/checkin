@@ -22,7 +22,7 @@ export async function login(username: string, password: string): Promise<boolean
     if (rateLimit.rateLimit(header.get("x-forwarded-for") ?? "999.999.999.999")) return false;
     const userData = await getUserPerUsername(username, true);
     if (!userData) {
-        logger.warn("User " + username + " not found in Database" + " IP:" + header.get("x-forwarded-for"), "Auth");
+        logger.warn("Das Wesen '" + username + "' existiert nicht in den Registern der Datenbank. IP:" + header.get("x-forwarded-for"), "Auth");
         // Compare with dummy hash to mitigate timing attacks
         await compare(password, DUMMY_HASH);
         return false;
@@ -32,13 +32,13 @@ export async function login(username: string, password: string): Promise<boolean
         const ldapUserData = await getAllUsers();
         const ldapUser = ldapUserData.find(entry => entry.sAMAccountName.toString().toLowerCase() === username.toLowerCase());
         if (!ldapUser) {
-            logger.warn("User " + username + " not found in LDAP-Data", "Auth");
+            logger.warn("Das Wesen '" + username + "' konnte im LDAP-Verzeichnis nicht aufgefunden werden — die Akten schweigen", "Auth");
             // Compare with dummy hash to mitigate timing attacks
             await compare(password, DUMMY_HASH);
             return false;
         }
         if (ldapUser.objectGUID !== userData.id) {
-            logger.error("User " + username + " has a different GUID in LDAP-Data than the ID in Database", "Auth");
+            logger.error("Das Wesen '" + username + "' besitzt im LDAP eine andere Identität als in der Datenbank — ein Doppelgänger wurde entdeckt", "Auth");
             return false;
         }
         if (await client.bind(ldapUser.dn, password, false)) {
@@ -49,12 +49,12 @@ export async function login(username: string, password: string): Promise<boolean
             return true;
         } else {
             client.unbind();
-            logger.warn("Invalid login credentials for user " + username + " IP:" + header.get("x-forwarded-for"), "Auth");
+            logger.warn("Die Anmeldedaten für '" + username + "' wurden als ungültig befunden. IP:" + header.get("x-forwarded-for"), "Auth");
             return false;
         }
     } else {
         if (!userData.password) {
-            logger.info("User " + username + " has no password set", "Auth");
+            logger.info("Das Wesen '" + username + "' besitzt kein Geheimwort — es steht nackt vor den Toren der Behörde", "Auth");
             // Compare with dummy hash to mitigate timing attacks
             await compare(password, DUMMY_HASH);
             return false;
@@ -65,7 +65,7 @@ export async function login(username: string, password: string): Promise<boolean
             await setSessionTokenCookie(token, session.expiresAt);
             return true;
         } else {
-            logger.warn("Invalid login credentials for user " + username + " IP:" + header.get("x-forwarded-for"), "Auth");
+            logger.warn("Die Anmeldedaten für '" + username + "' wurden als ungültig befunden. IP:" + header.get("x-forwarded-for"), "Auth");
             return false;
         }
     }

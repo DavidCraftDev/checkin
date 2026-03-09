@@ -10,10 +10,10 @@ export function CreateStudyTimeNote(props: { userID: string, cw: number, year: n
     const router = useRouter();
     async function submitCreateStudyTimeNote(): Promise<void> {
         const data = await createStudyTimeNote(props.userID, props.cw, props.year);
-        if (data && data.success) toast.success("Notiz erstellt");
+        if (data && data.success) toast.success("Eine Notiz wurde in die unendlichen Akten eingetragen");
         else if (data && data.warning) toast.error(data.warning);
         else if (data && data.error) toast.error(data.error);
-        else toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
         router.refresh();
     }
     return (
@@ -28,9 +28,9 @@ export function StudyTimeSelect(props: { attendance: Attendances, studyTimeTypes
     const router = useRouter();
     async function submitStudyTimeSelect(type: string): Promise<void> {
         const data = await saveSelectedStudyTimeType(props.attendance, props.attendance.userID, type);
-        if (data && data.success) toast.success("Studienzeit gespeichert");
+        if (data && data.success) toast.success("Die Studienzeit wurde in den Registern der Behörde vermerkt");
         else if (data && data.error) toast.error(data.error);
-        else toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
         router.refresh();
     }
     if (props.attendance.type == "Unterricht") {
@@ -57,9 +57,9 @@ export function SelfReflectionEmojiSelect(props: { attendance: Attendances }) {
     const defaultValue = props.attendance.selfReflection || "";
     async function handleEmojiSelect(emoji: string) {
         const data = await saveSelfReflection(props.attendance, emoji);
-        if (data && data.success) toast.success("Emoji gespeichert");
+        if (data && data.success) toast.success("Dein stummes Zeichen wurde in den Akten verewigt");
         else if (data && data.error) toast.error(data.error);
-        else toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
         router.refresh();
     }
     return (

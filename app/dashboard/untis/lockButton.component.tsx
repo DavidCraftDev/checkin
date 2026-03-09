@@ -21,18 +21,18 @@ export function LockButtonComponent(props: { lessonID: string; courseID: string 
 }
 
 async function closeStudyTimeAction(lessonID: string, courseID: string) {
-    const confirm = window.confirm("Möchtest du die Studienzeit wirklich schließen? Dies kann nicht rückgängig gemacht werden.");
+    const confirm = window.confirm("Bist du gewillt, das Tor der Studienzeit unwiderruflich zu verschließen? Was verschlossen ist, bleibt verschlossen — für alle Ewigkeit.");
     if (!confirm) {
         return;
     }
     const data = await lockStudyTimeAction(lessonID, courseID);
     if (data === "SUCCESS") {
-        toast.success("Studienzeit erfolgreich geschlossen");
+        toast.success("Das Tor der Studienzeit wurde versiegelt — kein Zurück");
     } else if (data === "ALREADY_CLOSED") {
-        toast.error("Die Studienzeit ist bereits geschlossen");
+        toast.error("Das Tor ist längst versiegelt — dein Klopfen hallt ins Leere");
     } else if (data === "LIMIT_EXCEEDED") {
-        toast.error("Das Limit von 6 geschlossenen Studienzeiten pro Kurs wurde erreicht");
+        toast.error("Die Behörde gestattet nur sechs Versiegelungen je Kurs — diese Grenze ist unverhandelbar");
     } else {
-        toast.error("Fehler beim Schließen der Studienzeit");
+        toast.error("Das Tor widersteht dem Versiegeln — ein unerklärlicher Widerstand");
     }
 }

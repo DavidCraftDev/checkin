@@ -9,9 +9,9 @@ import dayjs from "dayjs";
 export async function addUserToLesson(userID: string, eventID: string) {
     const sessionUser: User = await getSessionUser(1);
     const event = await getEventPerID(eventID);
-    if (!event) return "Unterricht nicht gefunden";
-    if (event.cw !== dayjs().isoWeek()) return "Unterricht ist nicht aktuell";
-    if (event.user !== sessionUser.id) return "Keine Berechtigung";
+    if (!event) return "Der Unterricht existiert nicht — als hätte ihn jemand aus der Wirklichkeit gestrichen";
+    if (event.cw !== dayjs().isoWeek()) return "Der Unterricht gehört einer vergangenen Epoche an";
+    if (event.user !== sessionUser.id) return "Die Behörde verweigert dir den Zutritt";
     const data: User | string = await setAttendanceStatus(eventID, userID, true);
     return data;
 };

@@ -44,7 +44,7 @@ export default class WebUntisService {
         if (!this.loginPromise) {
             this.loginPromise = this.client.login().catch((error) => {
                 this.loginPromise = undefined;
-                logger.error("Untis login failed: " + error, "WebUntis-Service");
+                logger.error("Der Zutritt zum Untis-Verzeichnis wurde verweigert: " + error, "WebUntis-Service");
             });
         }
         return this.loginPromise;

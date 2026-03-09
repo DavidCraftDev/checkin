@@ -20,7 +20,7 @@ function QRScanner({ eventID }: { eventID: string }) {
         errorAudioRef.current.play();
       }
     } else {
-      toast.success(`${result.displayname} hinzugefügt!`, {
+      toast.success(`${result.displayname} wurde der Versammlung zugeführt`, {
         description: <TrafficLightSelector eventID={eventID} userID={result.id} />,
         duration: 5000,
       });

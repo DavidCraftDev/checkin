@@ -9,7 +9,7 @@ export async function setTeacherNote(teacherNote: string, attendanceID: string):
     const data = await createTeacherNote(attendanceID, teacherNote);
     revalidatePath("/dashboard/events/attendedEvents");
     if (data && data.teacherNote === teacherNote) return { success: true };
-    return { success: false, error: "Notiz konnte nicht gespeichert werden" };
+    return { success: false, error: "Die Notiz wurde vom System zurückgewiesen — die Gründe bleiben im Dunkeln" };
 }
 
 export async function setAttendanceStatus(attendanceID: string, status: boolean): Promise<functionResult> {
@@ -23,5 +23,5 @@ export async function setAttendanceStatus(attendanceID: string, status: boolean)
     });
     revalidatePath("/dashboard/events/attendedEvents");
     if (data && data.attended === status) return { success: true };
-    return { success: false, error: "Status konnte nicht gespeichert werden" };
+    return { success: false, error: "Der Zustand konnte nicht gewandelt werden — das System widersteht" };
 }

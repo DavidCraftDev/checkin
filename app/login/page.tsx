@@ -31,13 +31,13 @@ function LoginPage() {
 
     if (!username) {
       setUsernameError(true);
-      toast.error("Bitte einen Nutzernamen eingeben");
+      toast.error("Ohne Namen bist du hier nichts — ein Schatten im Flur der Bürokratie");
       hasError = true;
     }
 
     if (!password) {
       setPasswordError(true);
-      toast.error("Bitte ein Passwort eingeben");
+      toast.error("Das Passwort ist der Schlüssel, doch die Tür existiert vielleicht gar nicht");
       hasError = true;
     }
 
@@ -47,7 +47,7 @@ function LoginPage() {
     if (result) {
       router.push("/dashboard");
     } else {
-      toast.error("Falscher Nutzername oder Passwort");
+      toast.error("Die Behörde erkennt dich nicht an. Vielleicht warst du nie hier.");
       setErrorCount((prev) => prev + 1);
     }
   }

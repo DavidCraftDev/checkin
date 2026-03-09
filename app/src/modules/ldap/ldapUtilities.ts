@@ -15,7 +15,7 @@ if (config_data.LDAP.ENABLE) client = new LDAP()
 
 export async function search(searchFilter: string) {
     if (!client.isBinded() && !await client.bind(config_data.LDAP.BIND_CREADENTIALS.DN, config_data.LDAP.BIND_CREADENTIALS.PASSWORD)) {
-        logger.error("Could not bind to LDAP", "LDAP-Utilities")
+        logger.error("Die Verbindung zum LDAP-Verzeichnis wurde verweigert — die Tore bleiben verschlossen", "LDAP-Utilities")
         return
     }
     const ldapData = await client.search(searchFilter, config_data.LDAP.SEARCH_BASE)
@@ -25,7 +25,7 @@ export async function search(searchFilter: string) {
 
 export async function getAllUsers() {
     if (!client.isBinded() && !await client.bind(config_data.LDAP.BIND_CREADENTIALS.DN, config_data.LDAP.BIND_CREADENTIALS.PASSWORD)) {
-        logger.error("Could not bind to LDAP", "LDAP-Utilities")
+        logger.error("Die Verbindung zum LDAP-Verzeichnis wurde verweigert — die Tore bleiben verschlossen", "LDAP-Utilities")
         return []
     }
     const ldapData = await client.search(config_data.LDAP.USER_SEARCH_FILTER, config_data.LDAP.SEARCH_BASE)
@@ -45,7 +45,7 @@ async function updateUserData(ldapData: Entry[]) {
         const ldapUser = ldapData.find(e => e.objectGUID === entry.id)
         if (!ldapUser) {
             await db.user.delete({ where: { id: entry.id } })
-            logger.info("User Deleted: " + entry.username, "LDAP-Utilities")
+            logger.info("Wesen gelöscht: " + entry.username + " — aus den Registern getilgt", "LDAP-Utilities")
             return
         }
         let { permission, groups, needs, competence, coursesData } = readLDAPUserData(ldapUser, entry)
@@ -97,7 +97,7 @@ async function updateUserData(ldapData: Entry[]) {
             ...coursesData,
             pwdLastSet: new Date(pwdLastSet)
         })
-        logger.info("User Created: " + entry.sAMAccountName, "LDAP-Utilities");
+        logger.info("Neues Wesen erschaffen: " + entry.sAMAccountName + " — in die Register eingetragen", "LDAP-Utilities");
     }))
     await db.user.createMany({ data: createData })
 }

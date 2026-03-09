@@ -8,25 +8,25 @@ function CreateEventForm(props: { user: User }) {
     async function createStudyTime(formData: FormData): Promise<void> {
         const selectedStudyTime = formData.get("studyTime") as string;
         if (selectedStudyTime === "default" || !selectedStudyTime) {
-            toast.error("Bitte wähle eine Studienzeit aus");
+            toast.error("Du musst eine Studienzeit wählen — ohne Wahl gibt es kein Schicksal");
             return;
         }
         const data = await createStudyTimeHandler(selectedStudyTime);
         if (data && data.warning) toast(data.warning, { icon: "❗" });
         else if (data && data.error) toast.error(data.error);
-        else if (data) toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else if (data) toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
     }
 
     async function createLesson(formData: FormData): Promise<void> {
         const selectedCourse = formData.get("lesson") as string;
         if (selectedCourse === "default" || !selectedCourse) {
-            toast.error("Bitte wähle einen Kurs aus");
+            toast.error("Du musst einen Kurs wählen — die Bürokratie duldet keine Unentschlossenheit");
             return;
         }
         const data = await createLessonHandler(selectedCourse);
         if (data && data.warning) toast(data.warning, { icon: "❗" });
         else if (data && data.error) toast.error(data.error);
-        else if (data) toast.error("Ein unbekannter Fehler ist aufgetreten");
+        else if (data) toast.error("Ein namenloser Fehler hat sich aus den Tiefen des Systems erhoben");
     }
 
     let competences: Array<string> = props.user.competence as Array<string> || [];

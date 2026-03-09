@@ -17,7 +17,7 @@ async function deleteOldLogs() {
             if ((dayjs().diff(dayjs(fileStats.birthtime), "days")) > 30) fs.unlinkSync(filePath);
         });
     } catch (e) {
-        logger.error("Failed to clean up old log files: " + e, "Logger");
+        logger.error("Die alten Protokolle widerstehen ihrer Vernichtung: " + e, "Logger");
     }
 }
 
@@ -40,7 +40,7 @@ async function writeLog(message: string) {
             dayjs().format("DD.MM.YYYY HH:mm:ss ") + message + "\n"
         );
     } catch (err) {
-        console.error("Failed to write to log file", err);
+        console.error("Das Protokoll verweigert die Niederschrift — die Worte verhallen ungehört", err);
     }
 }
 

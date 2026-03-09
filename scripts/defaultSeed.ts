@@ -18,7 +18,7 @@ export async function seedDefaultData(prisma: PrismaClient) {
             }
         });
         if (usernameCount > 0) {
-            logger.error("Default admin username already exists in the database and there a no other admin user. Please provide a different username in the config file.", "Seed");
+            logger.error("Das Standard-Verwaltungswesen existiert bereits in den Registern, doch es gibt keinen anderen Verwalter — bitte ändere den Namen in der Konfigurationsakte", "Seed");
             process.exit(1);
         }
         const passwordHash = await hash(config_data.DEFAULT_LOGIN.PASSWORD, 12);
@@ -31,8 +31,8 @@ export async function seedDefaultData(prisma: PrismaClient) {
                 pwdLastSet: new Date()
             }
         })
-        logger.info("New default admin created because no admins were found in the database.", "Seed");
-        logger.info("Username: " + user.username, "Seed");
+        logger.info("Ein neues Verwaltungswesen wurde erschaffen, denn die Register waren leer", "Seed");
+        logger.info("Name des Wesens: " + user.username, "Seed");
     }
     return
 }

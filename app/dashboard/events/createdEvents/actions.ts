@@ -11,17 +11,17 @@ let disabled: disabledType = {};
 
 export async function createStudyTimeHandler(studyTimeType: string): Promise<functionResult> {
     const sessionUser = await getSessionUser(1);
-    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 5000 > Date.now()) return { success: false, warning: "Bitte warte 10 Sekunden" };
+    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 5000 > Date.now()) return { success: false, warning: "Die Behörde verlangt Geduld — warte zehn Herzschläge" };
     disabled[sessionUser.id] = Date.now();
     try {
         const data = await createEvent(studyTimeType.replace("parallel", "Vertretung"), sessionUser.id);
         if (data.id) {
-            logger.info(`Studienzeit für ${sessionUser.displayname} erstellt (ID: ${data.id} Fach: ${data.type})`, "createStudyTimeHandler");
+            logger.info(`Eine Studienzeit für ${sessionUser.displayname} wurde ins Dasein gerufen (Akte: ${data.id}, Fach: ${data.type})`, "createStudyTimeHandler");
             redirect(`/dashboard/events/event/${data.id}`)
         }
         else {
-            logger.error(`Studienzeit für ${sessionUser.displayname} konnte nicht erstellt werden`, "createStudyTimeHandler");
-            return { success: false, error: "Studienzeit konnte nicht erstellt werden" };
+            logger.error(`Die Studienzeit für ${sessionUser.displayname} konnte nicht ins Dasein gerufen werden — das System widersteht`, "createStudyTimeHandler");
+            return { success: false, error: "Die Studienzeit konnte nicht ins Dasein gerufen werden" };
         }
     } finally {
         delete disabled[sessionUser.id];
@@ -30,17 +30,17 @@ export async function createStudyTimeHandler(studyTimeType: string): Promise<fun
 
 export async function createLessonHandler(lessonType: string): Promise<functionResult> {
     const sessionUser = await getSessionUser(1);
-    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 5000 > Date.now()) return { success: false, warning: "Bitte warte 10 Sekunden" };
+    if (disabled[sessionUser.id] && disabled[sessionUser.id] + 5000 > Date.now()) return { success: false, warning: "Die Behörde verlangt Geduld — warte zehn Herzschläge" };
     disabled[sessionUser.id] = Date.now();
     try {
         const data = await createLesson(lessonType)
         if (data.id) {
-            logger.info(`Unterricht für ${sessionUser.displayname} erstellt (ID: ${data.id} Fach: ${data.type})`, "createLessonHandler");
+            logger.info(`Ein Unterricht für ${sessionUser.displayname} wurde ins Dasein gerufen (Akte: ${data.id}, Fach: ${data.type})`, "createLessonHandler");
             redirect(`/dashboard/events/lesson/${data.id}`)
         }
         else {
-            logger.error(`Unterricht für ${sessionUser.displayname} konnte nicht erstellt werden`, "createLessonHandler");
-            return { success: false, error: "Unterricht konnte nicht erstellt werden" };
+            logger.error(`Der Unterricht für ${sessionUser.displayname} konnte nicht ins Dasein gerufen werden — das System widersteht`, "createLessonHandler");
+            return { success: false, error: "Der Unterricht konnte nicht ins Dasein gerufen werden" };
         }
     } finally {
         delete disabled[sessionUser.id];

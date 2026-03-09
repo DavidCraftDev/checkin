@@ -75,7 +75,7 @@ export async function getAttendancesPerUser(userID: string, cw: number, year: nu
         if (attendance.eventID === "NOTE") {
             // Delete notes which are older than 1 minute and have no type or note or have the type "Notiz:Löschen"
             if ((((!attendance.type || !attendance.studentNote) && !attendance.teacherNote) && dayjs().diff(dayjs(attendance.created_at), "minutes") > 1) || attendance.type === "Notiz:Löschen") {
-                logger.info("Notiz mit der ID " + attendance.id + " von " + attendance.userID + " wurde gelöscht", "Event");
+                logger.info("Notiz " + attendance.id + " von Wesen " + attendance.userID + " wurde aus dem Dasein getilgt", "Event");
                 await db.attendances.deleteMany({
                     where: {
                         id: attendance.id
@@ -238,8 +238,8 @@ export async function eventExists(eventID: string) {
 }
 
 export async function checkINUser(eventID: string, userID: string) {
-    if (!await existUserPerID(userID)) return "Schüler nicht gefunden"
-    if (await attendanceExists(eventID, userID)) return "Schüler bereits hinzugefügt";
+    if (!await existUserPerID(userID)) return "Das gesuchte Wesen konnte in den Akten nicht gefunden werden"
+    if (await attendanceExists(eventID, userID)) return "Das Wesen befindet sich bereits in der Versammlung";
     await db.attendances.create({
         data: {
             eventID: eventID,
@@ -316,7 +316,7 @@ export async function deleteEmptyEvent(eventID: string) {
                 id: eventID
             }
         });
-        logger.info("Studienzeit mit der ID " + eventID + " wurde gelöscht", "Event");
+        logger.info("Studienzeit " + eventID + " wurde aus der Existenz gestrichen", "Event");
         return true;
     }
     return false;
