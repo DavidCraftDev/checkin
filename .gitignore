@@ -1,0 +1,73 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+.pnp.js
+/.pnp
+.yarn/install-state.gz
+/node_modules
+node_modules/
+
+# Testing
+/coverage
+
+# Production
+.output
+/build
+dist
+
+# Debug & Logs
+*.log
+/log/
+lerna-debug.log*
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Local
+.env
+.env*.local
+.env.production
+
+# Vercel & Deployment
+.netlify
+.vercel
+.wrangler
+
+# TypeScript
+*.tsbuildinfo
+
+# Security
+*.crt
+*.pem
+
+# Data
+/data/
+
+# IDEs and Editors
+!.vscode/*.code-snippets
+!.vscode/launch.json
+*.launch
+.classpath
+.idea/shelf
+.idea/usage.statistics.xml
+.idea/workspace.xml
+.project
+.settings/
+.vscode/*
+.vscode/
+/.idea
+
+# Prisma
+/generated/prisma/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Misc / Frameworks / Tools
+!.yarn/releases
+.vinxi
+.yarn/
+app.config.timestamp_*.js

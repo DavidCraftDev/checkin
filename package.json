@@ -1,0 +1,22 @@
+{
+  "name": "checkin-tool",
+  "version": "2.0.0",
+  "description": "Ein Tool, um die Anwesenheit von Schülern in Studienzeiten zu überprüfen.",
+  "homepage": "https://github.com/DavidCraftDev/checkin#readme",
+  "bugs": {
+    "url": "https://github.com/DavidCraftDev/checkin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidCraftDev/checkin.git"
+  },
+  "license": "AGPL-3.0",
+  "author": "DavidCraftDev",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=3"
+  }
+}
