@@ -102,8 +102,8 @@ importers:
         specifier: github:davidcraftdev/webuntis#checkin
         version: https://codeload.github.com/davidcraftdev/webuntis/tar.gz/16767e16be544760361d2728917fd782e90ab47c
       write-excel-file:
-        specifier: 3.0.5
-        version: 3.0.5
+        specifier: 3.0.6
+        version: 3.0.6
     devDependencies:
       '@types/node':
         specifier: 24.12.0
@@ -2936,8 +2936,8 @@ packages:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
     engines: {node: '>=8'}
 
-  write-excel-file@3.0.5:
-    resolution: {integrity: sha512-xJuuBRTeNPNqRJeBv/tgozTmTxrZ4IRfnRD9AuTibf5CBM0f7aawyOi85P/nRyD8jHDsaDyEkDPQtag8yRyo/Q==}
+  write-excel-file@3.0.6:
+    resolution: {integrity: sha512-HeBcvD8VzezvnZvw4tbnUc6PXMRwk6qHrSBPeVuHQTe5Zwou+tm0OQcS9UVDzmMkBC0z6v+qzOW7um6nZQSN7Q==}
     engines: {node: '>=18'}
 
   xtend@4.0.2:
@@ -5971,7 +5971,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  write-excel-file@3.0.5:
+  write-excel-file@3.0.6:
     dependencies:
       archiver-node: 8.0.8
       fflate: 0.8.2
