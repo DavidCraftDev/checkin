@@ -1,6 +1,5 @@
 import { Prisma, PrismaClient } from '@/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
 import logger from './logger';
 import { config_data } from '@/app/src/modules/data/config';
 
