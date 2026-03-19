@@ -1,6 +1,6 @@
 {
   "name": "checkin",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -59,6 +59,7 @@
   "overrides": {
     "@prisma/dev": {
       "hono": "4.12.8",
+      "@hono/node-server": "1.19.11",
       "lodash": "4.17.23"
     }
   },
