@@ -12,8 +12,8 @@
     "@heroicons/react": "2.2.0",
     "@oslojs/crypto": "1.0.1",
     "@oslojs/encoding": "1.1.0",
-    "@prisma/adapter-pg": "7.5.0",
-    "@prisma/client": "7.5.0",
+    "@prisma/adapter-pg": "7.6.0",
+    "@prisma/client": "7.6.0",
     "@tailwindcss/postcss": "4.2.2",
     "@types/papaparse": "5.5.2",
     "@types/pg": "8.18.0",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "@types/node": "24.12.0",
     "postcss": "8.5.8",
-    "prisma": "7.5.0"
+    "prisma": "7.6.0"
   },
   "description": "Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.\r Die Studienzeit ist ein Konzept zum selbstständigen Lernen in der Oberstufe.",
   "repository": {
