@@ -4679,10 +4679,10 @@ wrap-ansi@^6.2.0:
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
 
-write-excel-file@3.0.6:
-  version "3.0.6"
-  resolved "https://registry.npmjs.org/write-excel-file/-/write-excel-file-3.0.6.tgz"
-  integrity sha512-HeBcvD8VzezvnZvw4tbnUc6PXMRwk6qHrSBPeVuHQTe5Zwou+tm0OQcS9UVDzmMkBC0z6v+qzOW7um6nZQSN7Q==
+write-excel-file@3.0.8:
+  version "3.0.8"
+  resolved "https://registry.npmjs.org/write-excel-file/-/write-excel-file-3.0.8.tgz"
+  integrity sha512-JZ83QoZSggcIaQA9UeaR2loCNnyQT41b65cn9ogyJtGKedrRmBDTS0Hh6F9pOUfctPbWKTIWsfB14E6iCFfLfA==
   dependencies:
     archiver-node "^8.0.7"
     fflate "^0.8.2"
