@@ -1,60 +1,27 @@
 {
   "name": "checkin",
-  "version": "1.7.2",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "update": "prisma generate && next build && prisma migrate deploy && prisma db seed"
+    "dev": "npm run dev -w @checkin/backend",
+    "dev:backend": "npm run dev -w @checkin/backend",
+    "dev:frontend": "npm run dev -w @checkin/frontend",
+    "build": "npx prisma generate && npm run build -w @checkin/frontend && npm run build -w @checkin/backend",
+    "start": "npm run start -w @checkin/backend",
+    "lint": "echo \"No root lint command configured for monorepo migration\"",
+    "update": "npx prisma migrate deploy && npx prisma db seed && npm run build"
   },
   "dependencies": {
-    "@heroicons/react": "2.2.0",
-    "@oslojs/crypto": "1.0.1",
-    "@oslojs/encoding": "1.1.0",
-    "@prisma/adapter-pg": "7.7.0",
     "@prisma/client": "7.7.0",
-    "@tailwindcss/postcss": "4.2.2",
-    "@types/papaparse": "5.5.2",
-    "@types/pg": "8.20.0",
-    "@types/qrcode": "1.5.6",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "bcryptjs": "3.0.3",
-    "clsx": "2.1.1",
-    "dayjs": "1.11.20",
     "dotenv": "17.4.0",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.2",
-    "ldapts": "8.1.7",
-    "next": "16.2.2",
-    "papaparse": "5.5.3",
-    "pg": "8.20.0",
-    "qr-scanner": "1.4.2",
-    "qrcode": "1.5.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "server-only": "0.0.1",
-    "sonner": "2.0.7",
-    "tailwindcss": "4.2.2",
-    "tsx": "4.21.0",
-    "typescript": "6.0.2",
-    "webuntis": "github:davidcraftdev/webuntis#checkin",
-    "write-excel-file": "3.0.8"
+    "prisma": "7.7.0",
+    "tsx": "4.21.0"
   },
   "devDependencies": {
-    "@types/node": "24.12.2",
-    "postcss": "8.5.8",
-    "prisma": "7.7.0"
-  },
-  "description": "Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.\r Die Studienzeit ist ein Konzept zum selbstständigen Lernen in der Oberstufe.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DavidCraftDev/checkin.git"
-  },
-  "author": "DavidCraftDev",
-  "bugs": {
-    "url": "https://github.com/DavidCraftDev/checkin/issues"
-  },
-  "homepage": "https://github.com/DavidCraftDev/checkin#readme"
+    "typescript": "6.0.2"
+  }
 }
