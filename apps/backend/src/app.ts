@@ -17,8 +17,12 @@ const prisma = new PrismaClient({
 });
 const app = new Hono<{ Variables: JwtVariables }>();
 
-const jwtSecret = process.env.JWT_SECRET || 'change-me-in-production';
+const jwtSecret = process.env.JWT_SECRET;
 const jwtAlgo = 'HS256' as const;
+
+if (!jwtSecret) {
+  throw new Error('JWT_SECRET is required.');
+}
 
 app.use('/api/*', cors());
 
@@ -29,7 +33,7 @@ app.post('/api/auth/login', async (c) => {
     .json<{ username?: string; password?: string }>()
     .catch(() => ({ username: undefined, password: undefined }));
   const username = body.username?.trim();
-  const password = body.password ?? '';
+  const password = typeof body.password === 'string' ? body.password.trim() : '';
 
   if (!username || !password) {
     return c.json({ message: 'Username and password are required.' }, 400);
@@ -40,9 +44,7 @@ app.post('/api/auth/login', async (c) => {
     return c.json({ message: 'Invalid credentials.' }, 401);
   }
 
-  const passwordValid = user.password.startsWith('$2')
-    ? await bcrypt.compare(password, user.password)
-    : password === user.password;
+  const passwordValid = await bcrypt.compare(password, user.password);
 
   if (!passwordValid) {
     return c.json({ message: 'Invalid credentials.' }, 401);
@@ -79,7 +81,7 @@ app.get('/api/auth/me', async (c) => {
   const payload = c.get('jwtPayload');
   const userId = payload.sub;
 
-  if (!userId) {
+  if (typeof userId !== 'string' || !userId) {
     return c.json({ message: 'Unauthorized.' }, 401);
   }
 

@@ -1,4 +1,4 @@
-import { createSignal, Show } from 'solid-js';
+import { createEffect, createSignal, Show } from 'solid-js';
 import { client } from './api';
 
 type LoginUser = {
@@ -7,6 +7,19 @@ type LoginUser = {
   displayname: string;
   permission: number;
   group: string[];
+};
+
+const isLoginUser = (value: unknown): value is LoginUser => {
+  if (!value || typeof value !== 'object') return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.id === 'string' &&
+    typeof v.username === 'string' &&
+    typeof v.displayname === 'string' &&
+    typeof v.permission === 'number' &&
+    Array.isArray(v.group) &&
+    v.group.every((item) => typeof item === 'string')
+  );
 };
 
 export function App() {
@@ -24,13 +37,25 @@ export function App() {
       return;
     }
 
-    const data = (await res.json()) as LoginUser;
+    const data = await res.json();
+    if (!isLoginUser(data)) {
+      setToken('');
+      setUser(null);
+      localStorage.removeItem('checkin_jwt');
+      return;
+    }
     setUser(data);
   };
 
-  if (token()) {
-    void loadMe(token());
-  }
+  createEffect(() => {
+    const jwt = token();
+    if (!jwt) {
+      setUser(null);
+      return;
+    }
+
+    void loadMe(jwt);
+  });
 
   const onLogin = async (event: SubmitEvent) => {
     event.preventDefault();
@@ -48,10 +73,22 @@ export function App() {
       return;
     }
 
-    const data = (await res.json()) as { token: string; user: LoginUser };
-    localStorage.setItem('checkin_jwt', data.token);
-    setToken(data.token);
-    setUser(data.user);
+    const data = await res.json();
+    if (
+      !data ||
+      typeof data !== 'object' ||
+      typeof (data as Record<string, unknown>).token !== 'string' ||
+      !isLoginUser((data as Record<string, unknown>).user)
+    ) {
+      setError('Unerwartete Serverantwort.');
+      return;
+    }
+
+    const tokenData = (data as { token: string; user: LoginUser }).token;
+    const userData = (data as { token: string; user: LoginUser }).user;
+    localStorage.setItem('checkin_jwt', tokenData);
+    setToken(tokenData);
+    setUser(userData);
   };
 
   const onLogout = () => {
