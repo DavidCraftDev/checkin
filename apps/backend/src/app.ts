@@ -4,7 +4,9 @@ import { jwt, type JwtVariables } from 'hono/jwt';
 import bcrypt from 'bcryptjs';
 import jwtLib from 'jsonwebtoken';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import prismaPkg from '@prisma/client';
+
+const { PrismaClient } = prismaPkg;
 
 const connectionString = process.env.POSTGRES_URL;
 

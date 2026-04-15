@@ -99,35 +99,38 @@ export function App() {
   };
 
   return (
-    <main class="min-h-screen bg-slate-100 p-4 sm:p-8">
-      <div class="mx-auto max-w-4xl">
-        <header class="mb-8 rounded-xl bg-slate-900 p-6 text-white shadow">
-          <h1 class="text-2xl font-bold">CheckIN</h1>
-          <p class="text-sm text-slate-300">Anwesenheitsverwaltung mit Hono + Prisma + Solid</p>
-        </header>
+    <main class="flex h-screen items-center justify-center bg-gray-200">
+      <div class="w-full max-w-md rounded-lg bg-white p-4 shadow-md">
+        <div class="mb-2 flex h-20 items-end justify-start rounded-md bg-green-600 p-4 md:h-40">
+          <span class="text-xl font-semibold text-white md:text-2xl">CheckIN</span>
+        </div>
 
         <Show
           when={user()}
           fallback={
-            <section class="rounded-xl bg-white p-6 shadow">
-              <h2 class="mb-4 text-xl font-semibold text-slate-800">Login</h2>
-              <form class="space-y-4" onSubmit={onLogin}>
-                <label class="block">
-                  <span class="mb-1 block text-sm font-medium text-slate-700">Benutzername</span>
+            <section class="flex flex-col gap-4 p-2">
+              <h2 class="text-2xl font-bold">Anmelden</h2>
+              <form class="flex flex-col gap-4" onSubmit={onLogin}>
+                <label class="flex flex-col gap-2">
+                  <span class="text-sm font-medium text-gray-700">Benutzername</span>
                   <input
-                    class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none ring-cyan-500 focus:ring"
+                    class="w-full rounded-lg border-2 border-gray-200 px-4 py-2 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-100"
                     value={username()}
                     onInput={(e) => setUsername(e.currentTarget.value)}
+                    placeholder="Benutzername"
+                    autocomplete="username"
                     required
                   />
                 </label>
-                <label class="block">
-                  <span class="mb-1 block text-sm font-medium text-slate-700">Passwort</span>
+                <label class="flex flex-col gap-2">
+                  <span class="text-sm font-medium text-gray-700">Passwort</span>
                   <input
                     type="password"
-                    class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none ring-cyan-500 focus:ring"
+                    class="w-full rounded-lg border-2 border-gray-200 px-4 py-2 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-100"
                     value={password()}
                     onInput={(e) => setPassword(e.currentTarget.value)}
+                    placeholder="Passwort"
+                    autocomplete="current-password"
                     required
                   />
                 </label>
@@ -135,7 +138,7 @@ export function App() {
                   <p class="text-sm text-red-600">{error()}</p>
                 </Show>
                 <button
-                  class="rounded-lg bg-cyan-600 px-4 py-2 font-semibold text-white transition hover:bg-cyan-700"
+                  class="rounded-full bg-green-600 p-2 font-semibold text-white shadow-md transition-transform active:scale-95 hover:bg-green-700"
                   type="submit"
                 >
                   Anmelden
@@ -144,15 +147,15 @@ export function App() {
             </section>
           }
         >
-          <section class="rounded-xl bg-white p-6 shadow">
-            <h2 class="mb-4 text-xl font-semibold text-slate-800">Dashboard</h2>
-            <p class="text-slate-700">
-              Willkommen, <span class="font-semibold">{user()?.displayname}</span>!
+          <section class="flex flex-col gap-3 p-2">
+            <h2 class="text-2xl font-bold">Dashboard</h2>
+            <p class="text-gray-700">
+              Willkommen, <span class="font-semibold">{user()?.displayname}</span>
             </p>
-            <p class="mt-2 text-sm text-slate-600">Benutzer: {user()?.username}</p>
-            <p class="text-sm text-slate-600">Rechtelevel: {user()?.permission}</p>
+            <p class="text-sm text-gray-600">Benutzername: {user()?.username}</p>
+            <p class="text-sm text-gray-600">Rechtelevel: {user()?.permission}</p>
             <button
-              class="mt-6 rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white transition hover:bg-slate-800"
+              class="mt-2 rounded-full bg-green-600 p-2 font-semibold text-white shadow-md transition-transform active:scale-95 hover:bg-green-700"
               onClick={onLogout}
             >
               Abmelden
