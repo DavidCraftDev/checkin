@@ -1,7 +1,6 @@
 # CheckIN
 
-
-| :exclamation:  Das Checkin wird in der Zukunft komplett neugeschrieben, mit SolidJS für das Frontend und Hono als Backend. Dieses Funktion wird nur noch am leben erhalten bis die neue Version fertig ist. Die alte Codebasis ist sehr chaotisch und schwer wartbar. |
+| :white_check_mark: CheckIN läuft jetzt als Monorepo mit **Hono + Prisma** im Backend und **Solid + TailwindCSS** im Frontend. |
 |----------------------------------------------|
 
 Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.
@@ -53,7 +52,22 @@ volumes:
 
 ### Standalone
 
-Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe PostgreSQL-Datenbank, den Connection String dafür muss im Prisma Ordner in der schema.prisma Datei in Zeile acht statt dem `env("POSTGRES_URL")` angeben werden oder alternativ in einer .env Datei hinterlegt werden. Die sonstigen Einstellungen werden in der config.json gesetzt, die genauen Einstellungswerte werden in der Tabelle hier drunter genauer erläutert. Zum Starten und Updaten muss zunächst die aktuelle Version des CheckIN von diesem GitHub Repository von der Branch main geklont werden. Darauf folgend müssen zunächst mit `npm i` die Dependencies installiert werden, dies sollte auch nach jedem Update geschehen. Anschließend kann das System jederzeit mit `npm run start` gestartet werden. Das Webinterface ist darauf folgend unter localhost:3000 aufrufbar. 
+Das CheckIN-System benötigt, wenn es eigenständig betrieben wird, eine externe PostgreSQL-Datenbank. Der Connection String wird über die Umgebungsvariable `POSTGRES_URL` bereitgestellt.
+
+Das Projekt ist als Monorepo aufgebaut:
+
+- `apps/backend`: Hono API + Prisma + JWT Auth
+- `apps/frontend`: Solid Frontend mit TailwindCSS
+
+Start lokal:
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+Das Frontend wird statisch gebaut und im Production-Betrieb vom Hono-Backend im selben Prozess ausgeliefert (`http://localhost:3000`).
 
 |Attribute|Beschreibung|
 |---------|------------|

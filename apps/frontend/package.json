@@ -1,0 +1,23 @@
+{
+  "name": "@checkin/frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
+  },
+  "dependencies": {
+    "hono": "4.12.4",
+    "solid-js": "1.9.9"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.2",
+    "postcss": "8.5.8",
+    "tailwindcss": "4.2.2",
+    "typescript": "6.0.2",
+    "vite": "7.3.2",
+    "vite-plugin-solid": "2.11.8"
+  }
+}

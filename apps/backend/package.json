@@ -1,0 +1,26 @@
+{
+  "name": "@checkin/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "echo \"Backend build completed (runtime via tsx).\"",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.7.0",
+    "@hono/node-server": "1.19.10",
+    "@prisma/client": "7.7.0",
+    "bcryptjs": "3.0.3",
+    "hono": "4.12.4",
+    "jsonwebtoken": "9.0.2",
+    "pg": "8.20.0",
+    "tsx": "4.21.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "9.0.10",
+    "@types/node": "24.12.2",
+    "typescript": "6.0.2"
+  }
+}
