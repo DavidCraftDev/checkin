@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.23.0@sha256:2780b5c3bab67f1f76c781860de469442999ed1a0d7992a5efdf2cffc0e3d769
-FROM --platform="$BUILDPLATFORM" node:24.14.1-alpine3.23@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS build
+FROM --platform="$BUILDPLATFORM" node:24.15.0-alpine3.23@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94f AS build
 COPY . /app
 ARG NEXT_TELEMETRY_DISABLED=1 \
     NODE_ENV=production
@@ -12,7 +12,7 @@ RUN npm cache clean --force
 RUN find node_modules -type f -name "*.map" -delete
 RUN find /app/node_modules -name "*.node" -type f -delete
 
-FROM node:24.14.1-alpine3.23@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b
+FROM node:24.15.0-alpine3.23@sha256:d1b3b4da11eefd5941e7f0b9cf17783fc99d9c6fc34884a665f40a06dbdfc94f
 COPY --chmod=775                        scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --from=build --chown=nobody:nobody /app                  /app
 RUN apk upgrade --no-cache -a && \
