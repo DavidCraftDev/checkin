@@ -23,7 +23,7 @@
     "bcryptjs": "3.0.3",
     "clsx": "2.1.1",
     "dayjs": "1.11.20",
-    "dotenv": "17.4.0",
+    "dotenv": "17.4.2",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
     "ldapts": "8.1.7",
