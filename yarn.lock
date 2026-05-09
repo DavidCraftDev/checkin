@@ -2823,9 +2823,9 @@ hermes-parser@^0.25.1:
     hermes-estree "0.25.1"
 
 hono@^4.12.8:
-  version "4.12.8"
-  resolved "https://registry.npmjs.org/hono/-/hono-4.12.8.tgz"
-  integrity sha512-VJCEvtrezO1IAR+kqEYnxUOoStaQPGrCmX3j4wDTNOcD1uRPFpGlwQUIW8niPuvHXaTUxeOUl5MMDGrl+tmO9A==
+  version "4.12.18"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.12.18.tgz#f6d301938868c3a8bdb639495f4e326a19181505"
+  integrity sha512-RWzP96k/yv0PQfyXnWjs6zot20TqfpfsNXhOnev8d1InAxubW93L11/oNUc3tQqn2G0bSdAOBpX+2uDFHV7kdQ==
 
 http-status-codes@2.3.0:
   version "2.3.0"
