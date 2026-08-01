@@ -60,8 +60,8 @@ importers:
         specifier: 16.2.12
         version: 16.2.12(@typescript-eslint/parser@8.56.1(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@9.39.5(jiti@2.6.1)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       ldapts:
-        specifier: 8.1.7
-        version: 8.1.7
+        specifier: 8.2.0
+        version: 8.2.0
       next:
         specifier: 16.2.12
         version: 16.2.12(@babel/core@7.29.0(supports-color@7.2.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -2149,8 +2149,8 @@ packages:
     resolution: {integrity: sha512-MbjN408fEndfiQXbFQ1vnd+1NoLDsnQW41410oQBXiyXDMYH5z505juWa4KUE1LqxRC7DgOgZDbKLxHIwm27hA==}
     engines: {node: '>=0.10'}
 
-  ldapts@8.1.7:
-    resolution: {integrity: sha512-TJl6T92eIwMf/OJ0hDfKVa6ISwzo+lqCWCI5Mf//ARlKa3LKQZaSrme/H2rCRBhW0DZCQlrsV+fgoW5YHRNLUw==}
+  ldapts@8.2.0:
+    resolution: {integrity: sha512-XfKocadpoHc1kNgtbTBBhD+pSh1U9KVTzxcKwDS4ulFFyC7rJkLC3TwIfbQ4rt3my9KHz8qsw9qFXVjcPOGebw==}
     engines: {node: '>=20'}
 
   levn@0.4.1:
@@ -5090,7 +5090,7 @@ snapshots:
     dependencies:
       language-subtag-registry: 0.3.23
 
-  ldapts@8.1.7:
+  ldapts@8.2.0:
     dependencies:
       strict-event-emitter-types: 2.0.0
 
