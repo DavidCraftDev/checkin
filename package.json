@@ -39,7 +39,7 @@
     "tailwindcss": "4.3.3",
     "tsx": "4.23.5",
     "typescript": "6.0.3",
-    "webuntis": "github:davidcraftdev/webuntis#checkin",
+    "webuntis": "git+https://github.com/davidcraftdev/webuntis.git#checkin",
     "write-excel-file": "3.0.8"
   },
   "devDependencies": {
