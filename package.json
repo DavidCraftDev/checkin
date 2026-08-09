@@ -38,7 +38,7 @@
     "sonner": "2.0.7",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.11",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "webuntis": "git+https://github.com/davidcraftdev/webuntis.git#checkin",
     "write-excel-file": "3.0.8"
   },
