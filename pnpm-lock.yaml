@@ -66,8 +66,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       papaparse:
-        specifier: 5.6.0
-        version: 5.6.0
+        specifier: 5.7.0
+        version: 5.7.0
       pg:
         specifier: 8.23.0
         version: 8.23.0
@@ -1976,6 +1976,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -2707,8 +2708,8 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
-  papaparse@5.6.0:
-    resolution: {integrity: sha512-N2vuNQAYGK1/4vs6HJX86+VYU6OkiSTgdJz3JQfTk1y51cFCO/U8gnaeTF4iNE4r57Tt0sV47dUua1/19pxO6Q==}
+  papaparse@5.7.0:
+    resolution: {integrity: sha512-qBGxg/7Q3Kl9Wfhrz2Z74UnvnHTXLNG6jmKJFeBvP2+y4lV7So+7SR62+Zd47JvdrCkX+nDcnr0ObPzek/+6RA==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -5939,7 +5940,7 @@ snapshots:
 
   p-try@2.2.0: {}
 
-  papaparse@5.6.0: {}
+  papaparse@5.7.0: {}
 
   parent-module@1.0.1:
     dependencies:
