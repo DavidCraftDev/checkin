@@ -22,7 +22,7 @@
     "@types/react-dom": "19.2.4",
     "bcryptjs": "3.0.3",
     "clsx": "2.1.1",
-    "dayjs": "1.11.22",
+    "dayjs": "1.11.23",
     "dotenv": "17.4.2",
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.1",
