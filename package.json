@@ -45,7 +45,7 @@
   "devDependencies": {
     "@types/node": "24.13.3",
     "postcss": "8.5.26",
-    "prisma": "7.9.1"
+    "prisma": "7.10.0"
   },
   "description": "Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.\r Die Studienzeit ist ein Konzept zum selbstständigen Lernen in der Oberstufe.",
   "repository": {
