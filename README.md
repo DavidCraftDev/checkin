@@ -1,7 +1,7 @@
 # CheckIN
 
 
-| :exclamation:  Das Checkin wird in der Zukunft komplett neugeschrieben, mit SolidJS für das Frontend und Hono als Backend. Dieses Funktion wird nur noch am leben erhalten bis die neue Version fertig ist. Die alte Codebasis ist sehr chaotisch und schwer wartbar. |
+| :exclamation:  Das Check-in ist aufgrund keiner Nutzer vorerst archiviert. Sollte Interesse bestehen, das Programm zu nutzen, gerne bei mir melden, dann nehme ich die Wartung und Erweiterung dieses Projektes wieder auf. |
 |----------------------------------------------|
 
 Ein System, um die Anwesenheit von Schülerinnen und Schülern in Studienzeiten zu überprüfen.
